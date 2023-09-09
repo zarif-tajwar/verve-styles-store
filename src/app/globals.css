@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .container-main {
+    @apply mx-auto w-full max-w-screen-container px-8;
+  }
+}
+@layer base {
+  h2 {
+    @apply font-integral-cf text-5xl font-bold uppercase;
+  }
+}
