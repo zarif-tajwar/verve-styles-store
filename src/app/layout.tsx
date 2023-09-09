@@ -1,6 +1,5 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import Satoshi from './_fonts/satoshi/font';
 import IntegralCF from './_fonts/integral-cf/font';
 import Navbar from '@/components/Navbar/Navbar';
 import PlusJakartaSans from './_fonts/plus-jakarta-sans/font';
@@ -19,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${Satoshi.variable} ${IntegralCF.variable} ${PlusJakartaSans.variable} bg-white font-plus-jakarta-sans antialiased selection:bg-black selection:text-white`}
+        className={`${IntegralCF.variable} ${PlusJakartaSans.variable} bg-white font-plus-jakarta-sans antialiased selection:bg-black selection:text-white`}
       >
         <Navbar />
         {children}
