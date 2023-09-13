@@ -11,7 +11,6 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        satoshi: ['var(--font-satoshi)', ...fontFamily.sans],
         'integral-cf': ['var(--font-integral-cf)', ...fontFamily.sans],
         'plus-jakarta-sans': [
           'var(--font-plus-jakarta-sans)',

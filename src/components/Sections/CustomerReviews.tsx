@@ -72,18 +72,16 @@ const CustomerReviews = () => {
                     <motion.div
                       animate={{
                         x: `${currCard * -100}%`,
-                        // transform: `translateX(${currCard * -100}%)`,
                         transition: {
-                          // ease: 'easeInOut',
                           duration: 0.5,
                           filter: {
                             delay: 0.25,
                           },
                         },
-                        filter:
+                        opacity:
                           i >= currCard && i < currCard + cardsPerSlide
-                            ? 'none'
-                            : 'blur(2px) grayscale(100%)',
+                            ? 1
+                            : 0.4,
                       }}
                       key={i}
                       className={cn('relative z-50 h-full w-max bg-white pr-5')}
