@@ -11,6 +11,7 @@
     "mig:push": "node -r esbuild-register src/lib/db/migrate.ts",
     "mig:drop": "drizzle-kit drop --config=drizzle.config.ts",
     "db:push": "drizzle-kit push:pg",
+    "db:seed": "node -r esbuild-register src/lib/db/seed.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
@@ -36,6 +37,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@types/pg": "^8.10.2",
     "drizzle-kit": "^0.19.13",
     "esbuild-register": "^3.5.0",
