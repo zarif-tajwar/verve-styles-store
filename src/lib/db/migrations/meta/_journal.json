@@ -8,6 +8,13 @@
       "when": 1694951527584,
       "tag": "0000_classy_red_ghost",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1694955095997,
+      "tag": "0001_exotic_doctor_octopus",
+      "breakpoints": true
     }
   ]
 }

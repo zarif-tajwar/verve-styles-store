@@ -10,6 +10,7 @@ import {
 import { clothing } from './clothing';
 import { dressStyles } from './dressStyles';
 import { relations } from 'drizzle-orm';
+import { productEntries } from './productEntries';
 
 export const products = pgTable('products', {
   id: serial('id').primaryKey(),
@@ -21,7 +22,7 @@ export const products = pgTable('products', {
   description: text('description'),
   color: varchar('color'),
   clothingID: integer('clothing_id').references(() => clothing.id),
-  styleID: integer('clothing_id').references(() => dressStyles.id),
+  styleID: integer('style_id').references(() => dressStyles.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -32,7 +33,8 @@ export const productRelations = relations(products, ({ one, many }) => ({
     references: [clothing.id],
   }),
   style: one(dressStyles, {
-    fields: [products.clothingID],
+    fields: [products.styleID],
     references: [dressStyles.id],
   }),
+  productEntry: many(productEntries),
 }));
