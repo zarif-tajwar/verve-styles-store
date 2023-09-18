@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   pgTable,
   primaryKey,
@@ -7,7 +8,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { products } from './products';
 import { sizes } from './sizes';
-import { relations } from 'drizzle-orm';
+import { InferInsertModel, relations } from 'drizzle-orm';
 
 export const productEntries = pgTable(
   'product_entries',
@@ -23,7 +24,11 @@ export const productEntries = pgTable(
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },
-  (table) => ({ pk: primaryKey(table.productID, table.sizeID) }),
+  (table) => ({
+    pk: primaryKey(table.productID, table.sizeID),
+    productIdIdx: index('product_id_idx').on(table.productID),
+    sizeIdIdx: index('size_id_idx').on(table.sizeID),
+  }),
 );
 
 export const productEntryRelations = relations(productEntries, ({ one }) => ({
@@ -36,3 +41,5 @@ export const productEntryRelations = relations(productEntries, ({ one }) => ({
     references: [sizes.id],
   }),
 }));
+
+export type ProductEntry = InferInsertModel<typeof productEntries>;

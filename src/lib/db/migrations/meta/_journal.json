@@ -15,6 +15,13 @@
       "when": 1694955095997,
       "tag": "0001_exotic_doctor_octopus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1695028674085,
+      "tag": "0002_clear_eternity",
+      "breakpoints": true
     }
   ]
 }
