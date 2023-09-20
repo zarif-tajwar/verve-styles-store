@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, sql } from 'drizzle-orm';
 import { db } from './index';
 import { clothing } from './schema/clothing';
 import { dressStyles } from './schema/dressStyles';
@@ -131,10 +131,27 @@ async function populateTables() {
 
   // await populateProductEntries();
 
-  const x = await db
-    .select()
-    .from(productEntries)
-    .where(and(eq(productEntries.productID, 70), eq(productEntries.sizeID, 1)));
+  async function generateStaticParams() {
+    const slugs = await db.query.products.findMany({
+      columns: {
+        name: true,
+      },
+      with: {
+        clothing: {
+          columns: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return slugs.map((slug) => ({
+      clothing: slug.clothing?.name,
+      products: slug.name.replaceAll(' ', '-').toLowerCase(),
+    }));
+  }
+
+  const x = await generateStaticParams();
 
   console.log(x);
 

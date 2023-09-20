@@ -9,7 +9,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { clothing } from './clothing';
 import { dressStyles } from './dressStyles';
-import { relations } from 'drizzle-orm';
+import { InferSelectModel, relations } from 'drizzle-orm';
 import { productEntries } from './productEntries';
 
 export const products = pgTable('products', {
@@ -20,6 +20,10 @@ export const products = pgTable('products', {
     scale: 2,
   }).notNull(),
   description: text('description'),
+  discount: numeric('discount', {
+    precision: 3,
+    scale: 1,
+  }).default('0'),
   color: varchar('color'),
   clothingID: integer('clothing_id').references(() => clothing.id),
   styleID: integer('style_id').references(() => dressStyles.id),
@@ -38,3 +42,5 @@ export const productRelations = relations(products, ({ one, many }) => ({
   }),
   productEntry: many(productEntries),
 }));
+
+export type ProductSelect = InferSelectModel<typeof products>;
