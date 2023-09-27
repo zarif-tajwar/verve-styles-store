@@ -2,6 +2,7 @@ import { Icons } from '@/components/Svgs/icons';
 import { db } from '@/lib/db';
 import { ProductSelect, products } from '@/lib/db/schema/products';
 import Image from 'next/image';
+import DoubleRangeSlider from '@/components/UI/DoubleRangeSlider';
 
 const page = async () => {
   // const products = [...Array(9).keys()];
@@ -77,7 +78,7 @@ const ProductListing = ({
 
 const FilterSidebar = () => {
   return (
-    <div className="min-w-[296px]">
+    <div className="w-full max-w-[296px]">
       <div className="h-[800px] rounded-main border border-black/10 px-6 py-5">
         <div className="flex items-center justify-between">
           <h2 className="font-plus-jakarta-sans text-xl font-bold capitalize">
@@ -86,29 +87,37 @@ const FilterSidebar = () => {
           <Icons.filter className="text-black/40" />
         </div>
         <VerticalDivider />
-        <h3 className="font-plus-jakarta-sans font-bold capitalize">
+        <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
           Clothing
         </h3>
         <div className="grid grid-cols-2 gap-2.5 text-sm">
-          <div className="col-span-2 rounded-full bg-black/5 px-4 py-2 font-medium text-black/60">
-            <p>T-Shirts</p>
-          </div>
-          <div className="rounded-full bg-black/5 px-4 py-2 font-medium text-black/60">
+          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
+            <Icons.Shorts className="h-[18px]" />
             <p>Shorts</p>
-          </div>
-          <div className="rounded-full bg-black/5 px-4 py-2 font-medium text-black/60">
+          </button>
+          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
+            <Icons.Shirt className="h-[18px]" />
             <p>Shirts</p>
-          </div>
-          <div className="rounded-full bg-black/5 px-4 py-2 font-medium text-black/60">
+          </button>
+          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
+            <Icons.TShirt className="h-[18px]" />
+            <p>T-Shirts</p>
+          </button>
+          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
+            <Icons.Hoodie className="h-[18px]" />
             <p>Hoodie</p>
-          </div>
-          <div className="rounded-full bg-black/5 px-4 py-2 font-medium text-black/60">
+          </button>
+          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
+            <Icons.Jeans className="h-[18px]" />
             <p>Jeans</p>
-          </div>
+          </button>
         </div>
         <VerticalDivider />
-        <div>
-          <input type="range" name="" id="" className="w-full accent-black" />
+        <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
+          Price
+        </h3>
+        <div className="relative">
+          <DoubleRangeSlider />
         </div>
         <VerticalDivider />
       </div>
