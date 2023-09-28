@@ -23,7 +23,7 @@ const DesktopMenu = () => {
 export default DesktopMenu;
 
 const navLinksList = [
-  { title: 'Shop', href: '/' },
+  { title: 'Shop', href: '/shop' },
   { title: 'On Sale', href: '/' },
   { title: 'New Arrivals', href: '/' },
   { title: 'Brands', href: '/' },
