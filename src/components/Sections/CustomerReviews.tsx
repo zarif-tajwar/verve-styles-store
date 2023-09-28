@@ -22,17 +22,17 @@ const CustomerReviews = () => {
       return currCard;
     });
 
-  const handleKeyboardControl = (e: globalThis.KeyboardEvent) => {
-    if (!isVisible) return;
+  // const handleKeyboardControl = (e: globalThis.KeyboardEvent) => {
+  //   if (!isVisible) return;
 
-    if (e.key === 'ArrowRight') goRight();
-    if (e.key === 'ArrowLeft') goLeft();
-  };
+  //   if (e.key === 'ArrowRight') goRight();
+  //   if (e.key === 'ArrowLeft') goLeft();
+  // };
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyboardControl);
-    return () => document.removeEventListener('keydown', handleKeyboardControl);
-  }, [isVisible]);
+  // useEffect(() => {
+  //   document.addEventListener('keydown', handleKeyboardControl);
+  //   return () => document.removeEventListener('keydown', handleKeyboardControl);
+  // }, [isVisible]);
 
   return (
     <section className="mt-20 overflow-x-hidden">

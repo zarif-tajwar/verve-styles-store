@@ -23,11 +23,11 @@ const DoubleRangeSlider = () => {
           <Slider.Range className="absolute h-full rounded-full bg-black" />
         </Slider.Track>
         <Slider.Thumb
-          className="block h-5 w-5 rounded-[10px] bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          className="block h-5 w-5 rounded-full bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-white"
           aria-label="Minimum Price"
         />
         <Slider.Thumb
-          className="block h-5 w-5 rounded-[10px] bg-black focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          className="block h-5 w-5 rounded-full bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-white"
           aria-label="Maximum Price"
         />
       </Slider.Root>

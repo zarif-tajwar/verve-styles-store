@@ -3,6 +3,10 @@ import { db } from '@/lib/db';
 import { ProductSelect, products } from '@/lib/db/schema/products';
 import Image from 'next/image';
 import DoubleRangeSlider from '@/components/UI/DoubleRangeSlider';
+import SizesCheckbox from '@/components/UI/SizesCheckbox';
+import DressStyleCheckbox from '@/components/UI/DressStyleCheckbox';
+import ClothingCheckbox from '@/components/UI/ClothingCheckbox';
+import SortBySelect from '@/components/UI/SortBySelect';
 
 const page = async () => {
   // const products = [...Array(9).keys()];
@@ -19,13 +23,7 @@ const page = async () => {
           <div>
             <div>
               <p>Showing 1-9 of 1000 Products</p>
-              <p>
-                Sort by:{' '}
-                <select name="" id="">
-                  <option value="m">Most Popular</option>
-                  <option value="m">Most Recent</option>
-                </select>
-              </p>
+              <SortBySelect />
             </div>
             <div className="grid grid-cols-3 gap-x-5 gap-y-9">
               {productItems.map((product, i) => (
@@ -79,7 +77,7 @@ const ProductListing = ({
 const FilterSidebar = () => {
   return (
     <div className="w-full max-w-[296px]">
-      <div className="h-[800px] rounded-main border border-black/10 px-6 py-5">
+      <div className="rounded-main border border-black/10 px-6 pb-8 pt-8">
         <div className="flex items-center justify-between">
           <h2 className="font-plus-jakarta-sans text-xl font-bold capitalize">
             Filters
@@ -90,36 +88,23 @@ const FilterSidebar = () => {
         <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
           Clothing
         </h3>
-        <div className="grid grid-cols-2 gap-2.5 text-sm">
-          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
-            <Icons.Shorts className="h-[18px]" />
-            <p>Shorts</p>
-          </button>
-          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
-            <Icons.Shirt className="h-[18px]" />
-            <p>Shirts</p>
-          </button>
-          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
-            <Icons.TShirt className="h-[18px]" />
-            <p>T-Shirts</p>
-          </button>
-          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
-            <Icons.Hoodie className="h-[18px]" />
-            <p>Hoodie</p>
-          </button>
-          <button className="flex items-center gap-1 rounded-lg bg-black/5 px-2 py-2 font-medium text-black/60 transition-all duration-200 hover:bg-black/10 hover:text-black">
-            <Icons.Jeans className="h-[18px]" />
-            <p>Jeans</p>
-          </button>
-        </div>
+        <ClothingCheckbox />
+
         <VerticalDivider />
         <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
           Price
         </h3>
-        <div className="relative">
-          <DoubleRangeSlider />
-        </div>
+        <DoubleRangeSlider />
         <VerticalDivider />
+        <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
+          Size
+        </h3>
+        <SizesCheckbox />
+        <VerticalDivider />
+        <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
+          Dress Style
+        </h3>
+        <DressStyleCheckbox />
       </div>
     </div>
   );

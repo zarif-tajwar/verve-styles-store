@@ -326,7 +326,7 @@ export const Icons = {
       />
     </svg>
   ),
-  Shirt: (props: LucideProps) => (
+  Shirts: (props: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -341,7 +341,7 @@ export const Icons = {
       </g>
     </svg>
   ),
-  TShirt: (props: LucideProps) => (
+  'T-Shirts': (props: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       data-name="Layer 1"
@@ -392,7 +392,7 @@ export const Icons = {
       </g>
     </svg>
   ),
-  Hoodie: (props: LucideProps) => (
+  Hoodies: (props: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       data-name="Layer 1"
