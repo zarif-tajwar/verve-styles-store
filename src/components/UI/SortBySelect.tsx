@@ -7,16 +7,18 @@ import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
 
 const sortOptions = [
-  { id: 1, name: 'Most Recent' },
-  { id: 2, name: 'Most Popular' },
-  { id: 3, name: 'Price (Low to High)' },
-  { id: 4, name: 'Price (High to Low)' },
+  { value: 'mr', title: 'Most Recent' },
+  { value: 'mp', title: 'Most Popular' },
+  { value: 'plh', title: 'Price (Low to High)' },
+  { value: 'phl', title: 'Price (High to Low)' },
 ];
 
 const SortBySelect = () => {
   return (
-    <div className="flex items-center justify-end">
-      <span className="mr-1 inline-block text-black/60">Sort by :</span>{' '}
+    <div className="flex flex-col items-end gap-1">
+      <span className="mr-1 inline-block pr-3 text-sm text-black/60">
+        Sort By
+      </span>
       <SelectMain />
     </div>
   );
@@ -24,7 +26,7 @@ const SortBySelect = () => {
 export default SortBySelect;
 
 const SelectMain = () => {
-  const [selectedOption, setSelectedOption] = useState('1');
+  const [selectedOption, setSelectedOption] = useState(sortOptions[0].value);
 
   return (
     <Select.Root
@@ -33,7 +35,7 @@ const SelectMain = () => {
     >
       <Select.Trigger
         className={cn(
-          'flex h-9 items-center gap-1 rounded-lg border-none px-3 py-2 outline-none',
+          'flex h-9 items-center gap-1 rounded-lg border-none px-3 py-4 outline-none',
           'hover:bg-offwhite',
           'transition-all duration-200',
           'focus-visible:ring-2 focus-visible:ring-black',
@@ -56,18 +58,20 @@ const SelectMain = () => {
         className="rounded-lg bg-white px-1.5 py-1.5 text-neutral-700 shadow-md ring-1 ring-offwhite"
       >
         <Select.Viewport>
-          <Select.Group>
+          <Select.Group className="space-y-1.5">
             {sortOptions.map((option) => (
               <Select.Item
                 className={cn(
-                  'cursor-pointer rounded-md px-1.5 py-1.5 text-sm outline-none',
+                  'cursor-pointer rounded-md px-2 py-2 text-sm outline-none',
                   'data-[highlighted]:bg-offwhite',
-                  'data-[state=checked]:bg-neutral-200',
+                  'data-[state=checked]:bg-black data-[state=checked]:text-white',
+                  'transition-all duration-200',
                 )}
-                key={option.id}
-                value={option.id.toString()}
+                key={option.value}
+                value={option.value}
               >
-                <Select.ItemText>{option.name}</Select.ItemText>
+                {/* <Select.ItemIndicator>+</Select.ItemIndicator> */}
+                <Select.ItemText>{option.title}</Select.ItemText>
               </Select.Item>
             ))}
           </Select.Group>

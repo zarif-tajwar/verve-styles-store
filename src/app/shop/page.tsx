@@ -8,12 +8,25 @@ import DressStyleCheckbox from '@/components/UI/DressStyleCheckbox';
 import ClothingCheckbox from '@/components/UI/ClothingCheckbox';
 import SortBySelect from '@/components/UI/SortBySelect';
 
+const staticProducts = [
+  { name: 'Awesome Soft Computer', price: '8889.00' },
+  { name: 'Elegant Bronze Gloves', price: '1969.00' },
+  { name: 'Electronic Cotton Chair', price: '6091.00' },
+  { name: 'Licensed Rubber Table', price: '4264.00' },
+  { name: 'Electronic Soft Bike', price: '3239.00' },
+  { name: 'Electronic Wooden Chips', price: '4521.00' },
+  { name: 'Unbranded Fresh Car', price: '4394.00' },
+  { name: 'Modern Metal Fish', price: '8554.00' },
+  { name: 'Electronic Granite Cheese', price: '598.00' },
+];
+
 const page = async () => {
   // const products = [...Array(9).keys()];
-  const productItems = await db
-    .select({ name: products.name, price: products.price })
-    .from(products)
-    .limit(9);
+  // const productItems = await db
+  //   .select({ name: products.name, price: products.price })
+  //   .from(products)
+  //   .limit(9);
+  const productItems = staticProducts;
 
   return (
     <section className="mt-16">
@@ -21,7 +34,7 @@ const page = async () => {
         <div className="flex gap-4" id="lol-portal">
           <FilterSidebar />
           <div>
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex items-end justify-between">
               <p>Showing 1-9 of 1000 Products</p>
               <SortBySelect />
             </div>
