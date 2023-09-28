@@ -44,9 +44,7 @@ const DressStyleCheckbox = () => {
               setCheckedStyles(checkedStylesCopy);
             }}
           >
-            <label htmlFor={`style-${style.name}`} className="cursor-pointer">
-              {capitalize(style.name)}
-            </label>
+            <div>{capitalize(style.name)}</div>
           </Checkbox.Root>
         ))}
       </div>

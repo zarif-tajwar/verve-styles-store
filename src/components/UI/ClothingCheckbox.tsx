@@ -64,12 +64,7 @@ const ClothingCheckbox = () => {
             <div className="aspect-square w-[24px] rounded-full bg-black" />
           )}
 
-          <label
-            className="cursor-pointer"
-            htmlFor={`clothing-${clothing.name}`}
-          >
-            {capitalize(clothing.name)}
-          </label>
+          <div>{capitalize(clothing.name)}</div>
         </Checkbox.Root>
       ))}
     </div>

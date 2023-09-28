@@ -15,10 +15,6 @@ const sizes = [
 const SizesCheckbox = () => {
   const [checkedSizes, setCheckedSizes] = useState(new Map<number, string>());
 
-  //   const checkedSizesList = Array.from(checkedSizes).toSorted(
-  //     (a, b) => a[0] - b[0],
-  //   );
-
   return (
     <div>
       <div className="flex flex-wrap gap-2">
@@ -48,21 +44,14 @@ const SizesCheckbox = () => {
               'data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
             )}
           >
-            <label htmlFor={`size-${size.name}`} className="cursor-pointer">
+            <div>
               {size.name.length > 3
                 ? capitalize(size.name)
                 : size.name.toUpperCase()}
-            </label>
+            </div>
           </Checkbox.Root>
         ))}
       </div>
-      {/* <div>
-        {checkedSizesList.map((c) => (
-          <p key={c[1]}>
-            {c[0]} : {c[1]}
-          </p>
-        ))}
-      </div> */}
     </div>
   );
 };

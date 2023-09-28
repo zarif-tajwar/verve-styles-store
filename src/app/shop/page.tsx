@@ -18,10 +18,10 @@ const page = async () => {
   return (
     <section className="mt-16">
       <div className="container-main">
-        <div className="flex gap-4">
+        <div className="flex gap-4" id="lol-portal">
           <FilterSidebar />
           <div>
-            <div>
+            <div className="mb-4 flex items-center justify-between">
               <p>Showing 1-9 of 1000 Products</p>
               <SortBySelect />
             </div>
