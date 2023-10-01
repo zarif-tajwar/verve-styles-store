@@ -10,7 +10,7 @@ export default function useQueryParams<T>() {
 
   function setQueryParams(params: Partial<T>) {
     Object.entries(params).forEach(([key, value]) => {
-      if (value === undefined || value === null) {
+      if (value === undefined || value === null || value === '') {
         urlSearchParams.delete(key);
       } else {
         urlSearchParams.set(key, String(value));

@@ -5,16 +5,30 @@ import * as Slider from '@radix-ui/react-slider';
 import { useSearchParams } from 'next/navigation';
 import useQueryParams from '@/lib/hooks/useQueryParams';
 
-const defaultRange = [0, 10000];
+type PriceRange = [number, number];
+
+const defaultRange: PriceRange = [0, 10000];
 
 const DoubleRangeSlider = () => {
-  // const searchParams = useSearchParams();
-  // const price = searchParams.get('price')?.split(',').map(Number);
-  const { queryParams, setQueryParams } = useQueryParams<{ price?: string }>();
-  const price = queryParams.get('price')?.split('-').map(Number);
+  const { queryParams, setQueryParams } = useQueryParams<{
+    price_range?: string;
+  }>();
 
-  const [rangeValues, setRangeValues] = useState<number[]>(
-    price || defaultRange,
+  const priceQueryParam = queryParams
+    .get('price_range')
+    ?.split('-')
+    .map(Number);
+
+  if (
+    priceQueryParam &&
+    priceQueryParam[0] === defaultRange[0] &&
+    priceQueryParam[1] === defaultRange[1]
+  ) {
+    setQueryParams({ price_range: '' });
+  }
+
+  const [rangeValues, setRangeValues] = useState<PriceRange>(
+    (priceQueryParam as PriceRange) || defaultRange,
   );
 
   return (
@@ -28,7 +42,11 @@ const DoubleRangeSlider = () => {
         step={1}
         // onValueChange={(values) => setRangeValues(values)}
         onValueChange={(values) => setRangeValues(values)}
-        onValueCommit={(values) => setQueryParams({ price: values.join('-') })}
+        onValueCommit={(values) => {
+          if (values[0] === defaultRange[0] && values[1] === defaultRange[1]) {
+            setQueryParams({ price_range: '' });
+          } else setQueryParams({ price_range: values.join('-') });
+        }}
       >
         <Slider.Track className="relative h-1.5 grow cursor-pointer rounded-full bg-offwhite">
           <Slider.Range className="absolute h-full rounded-full bg-black" />
