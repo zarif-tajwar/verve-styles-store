@@ -31,7 +31,7 @@ const page = async () => {
   return (
     <section className="mt-16">
       <div className="container-main">
-        <div className="flex gap-4" id="lol-portal">
+        <div className="flex gap-8">
           <FilterSidebar />
           <div>
             <div className="mb-4 flex items-end justify-between">

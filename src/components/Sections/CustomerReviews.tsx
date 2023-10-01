@@ -52,7 +52,7 @@ const CustomerReviews = () => {
           <div className="container-main">
             <AnimatePresence initial={false}>
               <motion.div
-                className="relative grid w-max touch-none select-none bg-white"
+                className="relative grid w-max cursor-grab touch-none select-none bg-white"
                 style={{
                   gridTemplateColumns: `repeat(${Reviews.length}, 1fr)`,
                 }}
