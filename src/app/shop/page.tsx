@@ -20,7 +20,11 @@ const staticProducts = [
   { name: 'Electronic Granite Cheese', price: '598.00' },
 ];
 
-const page = async () => {
+const ShopPage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
   // const products = [...Array(9).keys()];
   // const productItems = await db
   //   .select({ name: products.name, price: products.price })
@@ -31,6 +35,7 @@ const page = async () => {
   return (
     <section className="mt-16">
       <div className="container-main">
+        <p>{JSON.stringify(searchParams)}</p>
         <div className="flex gap-8">
           <FilterSidebar />
           <div>
@@ -49,7 +54,7 @@ const page = async () => {
     </section>
   );
 };
-export default page;
+export default ShopPage;
 
 const ProductListing = ({
   product,

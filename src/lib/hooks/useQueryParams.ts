@@ -1,12 +1,26 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import {
+  usePathname,
+  useRouter,
+  useSearchParams,
+  type ReadonlyURLSearchParams,
+} from 'next/navigation';
+
+const stringifySearchParam = (
+  searchParamObject: URLSearchParams | ReadonlyURLSearchParams,
+) =>
+  Array.from(searchParamObject.entries())
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&');
 
 export default function useQueryParams<T>() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const urlSearchParams = new URLSearchParams(searchParams?.toString());
+  const urlSearchParams = new URLSearchParams(
+    stringifySearchParam(searchParams),
+  );
 
   function setQueryParams(params: Partial<T>) {
     Object.entries(params).forEach(([key, value]) => {
@@ -17,7 +31,8 @@ export default function useQueryParams<T>() {
       }
     });
 
-    const search = urlSearchParams.toString();
+    const search = stringifySearchParam(urlSearchParams);
+
     const query = search ? `?${search}` : '';
     // replace since we don't want to build a history
     router.replace(`${pathname}${query}`);

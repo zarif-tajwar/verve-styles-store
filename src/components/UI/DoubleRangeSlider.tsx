@@ -35,13 +35,11 @@ const DoubleRangeSlider = () => {
     <div>
       <Slider.Root
         className="relative mb-2 flex h-5 w-full touch-none select-none items-center"
-        // defaultValue={price}
         value={rangeValues}
         min={defaultRange[0]}
         max={defaultRange[1]}
         step={1}
-        // onValueChange={(values) => setRangeValues(values)}
-        onValueChange={(values) => setRangeValues(values)}
+        onValueChange={(values) => setRangeValues(values as PriceRange)}
         onValueCommit={(values) => {
           if (values[0] === defaultRange[0] && values[1] === defaultRange[1]) {
             setQueryParams({ price_range: '' });
@@ -64,7 +62,6 @@ const DoubleRangeSlider = () => {
         <p>${rangeValues[0]}</p>
         <p>${rangeValues[1]}</p>
       </div>
-      <button onClick={() => console.log(price)}>Click Me</button>
     </div>
   );
 };

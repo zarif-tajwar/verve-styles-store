@@ -23,7 +23,7 @@ const ClothingCheckbox = () => {
 
   queryParams
     .get('clothing')
-    ?.split('-')
+    ?.split('~')
     .forEach((value) => {
       const id = clothingItems.find((item) => item.value === value)?.id;
       if (id || id === 0) selectedClothingItems.set(id, value);
@@ -65,7 +65,7 @@ const ClothingCheckbox = () => {
               .map((item) => item[1]);
 
             setQueryParams({
-              clothing: values.join('-'),
+              clothing: values.join('~'),
             });
           }}
         >
