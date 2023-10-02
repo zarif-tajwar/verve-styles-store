@@ -14,7 +14,7 @@ const stringifySearchParam = (
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
 
-export default function useQueryParams<T>() {
+export default function useQueryParams<T>(scroll: boolean = true) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -35,7 +35,7 @@ export default function useQueryParams<T>() {
 
     const query = search ? `?${search}` : '';
     // replace since we don't want to build a history
-    router.replace(`${pathname}${query}`);
+    router.replace(`${pathname}${query}`, { scroll });
   }
 
   return { queryParams: searchParams, setQueryParams };

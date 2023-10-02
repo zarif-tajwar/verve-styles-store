@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import { useSearchParams } from 'next/navigation';
 import useQueryParams from '@/lib/hooks/useQueryParams';
@@ -13,23 +13,26 @@ const DoubleRangeSlider = () => {
   const { queryParams, setQueryParams } = useQueryParams<{
     price_range?: string;
   }>();
+  const [rangeValues, setRangeValues] = useState<PriceRange>(defaultRange);
 
-  const priceQueryParam = queryParams
-    .get('price_range')
-    ?.split('-')
-    .map(Number);
+  useEffect(() => {
+    const priceQueryParam = queryParams
+      .get('price_range')
+      ?.split('-')
+      .map(Number);
 
-  if (
-    priceQueryParam &&
-    priceQueryParam[0] === defaultRange[0] &&
-    priceQueryParam[1] === defaultRange[1]
-  ) {
-    setQueryParams({ price_range: '' });
-  }
+    if (!priceQueryParam || priceQueryParam.length === 0) return;
 
-  const [rangeValues, setRangeValues] = useState<PriceRange>(
-    (priceQueryParam as PriceRange) || defaultRange,
-  );
+    setRangeValues(priceQueryParam as PriceRange);
+
+    if (
+      priceQueryParam &&
+      priceQueryParam[0] === defaultRange[0] &&
+      priceQueryParam[1] === defaultRange[1]
+    ) {
+      setQueryParams({ price_range: '' });
+    }
+  }, []);
 
   return (
     <div>

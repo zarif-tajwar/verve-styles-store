@@ -3,7 +3,7 @@
 import useQueryParams from '@/lib/hooks/useQueryParams';
 import { capitalize, cn } from '@/lib/util';
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const sizes = [
   { id: 1, value: 'sm', label: 'Small' },
@@ -13,24 +13,33 @@ const sizes = [
   { id: 5, value: '2xl', label: '2XL' },
 ];
 
+const sizesValues = sizes.map((option) => option.value);
+
 const SizesCheckbox = () => {
   const { queryParams, setQueryParams } = useQueryParams<{
     sizes?: string;
-  }>();
-  const selectedSizes = new Map<number, string>();
+  }>(false);
 
-  queryParams
-    .get('sizes')
-    ?.split('~')
-    .forEach((value) => {
-      const id = sizes.find((item) => item.value === value)?.id;
-      if (id || id === 0) selectedSizes.set(id, value);
-    });
+  const getParamsArray = () => queryParams.get('sizes')?.split('~');
+  const stringifyParamsArray = (params: string[]) => params.join('~');
 
-  if (selectedSizes.size === sizes.length) {
-    selectedSizes.clear();
-    setQueryParams({ sizes: '' });
-  }
+  useEffect(() => {
+    const params = getParamsArray();
+
+    if (!params) return;
+
+    // checking if url search param has supported values
+    if (
+      params.some(
+        (paramValue) =>
+          !sizesValues.find((sizeValue) => sizeValue === paramValue),
+      ) ||
+      params.length === sizesValues.length
+    ) {
+      setQueryParams({ sizes: '' });
+      return;
+    }
+  }, []);
 
   return (
     <div>
@@ -40,26 +49,31 @@ const SizesCheckbox = () => {
             key={size.value}
             name={size.value}
             value={size.value}
-            checked={selectedSizes.has(size.id)}
+            checked={Boolean(
+              getParamsArray()?.find((paramValue) => paramValue === size.value),
+            )}
             onCheckedChange={(checked) => {
+              const params = new Set(getParamsArray());
+
               if (checked) {
-                if (selectedSizes.size + 1 === sizes.length) {
-                  selectedSizes.clear();
-                  setQueryParams({ sizes: '' });
-                  return;
-                } else selectedSizes.set(size.id, size.value);
+                if (params.size + 1 === sizesValues.length) {
+                  params.clear();
+                } else {
+                  params.add(size.value);
+                }
               }
+
               if (!checked) {
-                selectedSizes.delete(size.id);
+                params.delete(size.value);
               }
 
-              const values = Array.from(selectedSizes)
-                .toSorted((a, b) => a[0] - b[0])
-                .map((item) => item[1]);
+              const newParams = Array.from(params).toSorted(
+                (a, b) =>
+                  sizes.find((sizeOption) => a === sizeOption.value)?.id! -
+                  sizes.find((sizeOption) => b === sizeOption.value)?.id!,
+              );
 
-              setQueryParams({
-                sizes: values.join('~'),
-              });
+              setQueryParams({ sizes: stringifyParamsArray(newParams) });
             }}
             className={cn(
               'rounded-full border-none bg-offwhite px-5 py-1.5 text-sm font-medium text-black/60 outline-none',
