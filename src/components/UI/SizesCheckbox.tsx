@@ -39,7 +39,7 @@ const SizesCheckbox = () => {
       setQueryParams({ sizes: '' });
       return;
     }
-  }, []);
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>

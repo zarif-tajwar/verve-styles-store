@@ -14,7 +14,7 @@ const stringifySearchParam = (
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
 
-export default function useQueryParams<T>(scroll: boolean = true) {
+export default function useQueryParams<T>() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -22,7 +22,7 @@ export default function useQueryParams<T>(scroll: boolean = true) {
     stringifySearchParam(searchParams),
   );
 
-  function setQueryParams(params: Partial<T>) {
+  function setQueryParams(params: Partial<T>, scroll: boolean = true) {
     Object.entries(params).forEach(([key, value]) => {
       if (value === undefined || value === null || value === '') {
         urlSearchParams.delete(key);
@@ -40,3 +40,8 @@ export default function useQueryParams<T>(scroll: boolean = true) {
 
   return { queryParams: searchParams, setQueryParams };
 }
+
+const searchQueryUnreservedChars = ['-', '.', '_', '~'] as const;
+
+export type SearchQueryUnreservedChars =
+  (typeof searchQueryUnreservedChars)[number];
