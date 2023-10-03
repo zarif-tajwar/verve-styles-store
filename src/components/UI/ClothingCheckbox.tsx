@@ -1,10 +1,9 @@
 'use client';
 
-import { capitalize, cn } from '@/lib/util';
+import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { useState } from 'react';
-import useQueryParams from '@/lib/hooks/useQueryParams';
+import { useMultiCheckboxSearchQuery } from '@/lib/hooks/useMultiCheckboxSearchQuery';
 
 const clothingItems = [
   { id: 1, value: 'tshirts', label: 'T-Shirts', icon: Icons['T-Shirts'] },
@@ -15,24 +14,10 @@ const clothingItems = [
 ];
 
 const ClothingCheckbox = () => {
-  const { queryParams, setQueryParams } = useQueryParams<{
-    clothing?: string;
-  }>();
-
-  const selectedClothingItems = new Map<number, string>();
-
-  queryParams
-    .get('clothing')
-    ?.split('~')
-    .forEach((value) => {
-      const id = clothingItems.find((item) => item.value === value)?.id;
-      if (id || id === 0) selectedClothingItems.set(id, value);
-    });
-
-  if (selectedClothingItems.size === clothingItems.length) {
-    selectedClothingItems.clear();
-    setQueryParams({ clothing: '' });
-  }
+  const { isChecked, handleCheck } = useMultiCheckboxSearchQuery({
+    options: clothingItems,
+    searchQueryKey: 'clothing',
+  });
 
   return (
     <div className="grid grid-cols-2 gap-2.5 text-sm">
@@ -47,26 +32,9 @@ const ClothingCheckbox = () => {
             'focus-visible:ring-2 focus-visible:ring-black',
             'data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
           )}
-          checked={selectedClothingItems.has(clothing.id)}
+          checked={isChecked(clothing.value)}
           onCheckedChange={(checked) => {
-            if (checked) {
-              if (selectedClothingItems.size + 1 === clothingItems.length) {
-                selectedClothingItems.clear();
-                setQueryParams({ clothing: '' });
-                return;
-              } else selectedClothingItems.set(clothing.id, clothing.value);
-            }
-            if (!checked) {
-              selectedClothingItems.delete(clothing.id);
-            }
-
-            const values = Array.from(selectedClothingItems)
-              .toSorted((a, b) => a[0] - b[0])
-              .map((item) => item[1]);
-
-            setQueryParams({
-              clothing: values.join('~'),
-            });
+            handleCheck(checked, clothing.value, false);
           }}
         >
           {clothing.icon && <clothing.icon className="h-[18px]" />}
