@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
-import { useSearchParams } from 'next/navigation';
 import useQueryParams from '@/lib/hooks/useQueryParams';
 
 type PriceRange = [number, number];
@@ -32,7 +31,7 @@ const DoubleRangeSlider = () => {
     ) {
       setQueryParams({ price_range: '' });
     }
-  }, []);
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>

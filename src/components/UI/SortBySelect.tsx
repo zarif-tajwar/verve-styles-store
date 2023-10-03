@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import * as Select from '@radix-ui/react-select';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
-import useQueryParams from '@/lib/hooks/useQueryParams';
+
+import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
 
 const sortOptions = [
   { value: 'most-recent', title: 'Most Recent' },
@@ -29,21 +30,16 @@ const SortBySelect = () => {
 export default SortBySelect;
 
 const SelectMain = () => {
-  const { queryParams, setQueryParams } = useQueryParams<{
-    sort_by: string;
-  }>();
-
-  const selectedOptionValue = queryParams.get('sort_by');
-
-  if (selectedOptionValue === defaultOptionValue)
-    setQueryParams({ sort_by: '' });
+  const { getOptionValue, handleValueChange } = useSelectSearchQuery({
+    defaultOptionValue,
+    options: sortOptions.map((o) => o.value),
+    searchQueryKey: 'sort_by',
+  });
 
   return (
     <Select.Root
-      value={selectedOptionValue || defaultOptionValue}
-      onValueChange={(value) =>
-        setQueryParams({ sort_by: value === defaultOptionValue ? '' : value })
-      }
+      value={getOptionValue() || defaultOptionValue}
+      onValueChange={handleValueChange}
     >
       <Select.Trigger
         className={cn(
@@ -73,7 +69,7 @@ const SelectMain = () => {
               {sortOptions.map((option) => (
                 <Select.Item
                   className={cn(
-                    'flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-2 text-sm outline-none',
+                    'flex cursor-pointer select-none items-center justify-between gap-2 rounded-md px-2 py-2 text-sm outline-none',
                     'data-[highlighted]:bg-offwhite',
                     'transition-all duration-200',
                   )}
