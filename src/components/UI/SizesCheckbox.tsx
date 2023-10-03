@@ -1,9 +1,7 @@
 'use client';
 
-import useQueryParams from '@/lib/hooks/useQueryParams';
-import { capitalize, cn } from '@/lib/util';
+import { cn } from '@/lib/util';
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { useEffect, useState } from 'react';
 import { useMultiCheckboxSearchQuery } from '../../lib/hooks/useMultiCheckboxSearchQuery';
 
 const sizes = [

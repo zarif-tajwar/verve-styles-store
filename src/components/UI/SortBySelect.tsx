@@ -7,6 +7,7 @@ import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
 
 import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
+import { Variants, motion, AnimatePresence } from 'framer-motion';
 
 const sortOptions = [
   { value: 'most-recent', title: 'Most Recent' },
@@ -47,10 +48,11 @@ const SelectMain = () => {
           'hover:bg-offwhite',
           'transition-all duration-200',
           'focus-visible:ring-2 focus-visible:ring-black',
+          'group',
         )}
       >
         <Select.Value />
-        <Select.Icon className="h-4 w-4">
+        <Select.Icon className="h-4 w-4 transition-all duration-100 group-data-[state=open]:-rotate-180">
           <ChevronDownIcon className="h-full w-full" />
         </Select.Icon>
       </Select.Trigger>
@@ -63,6 +65,7 @@ const SelectMain = () => {
           side="bottom"
           align="end"
           className="rounded-lg bg-white px-1.5 py-1.5 text-neutral-700 shadow-xl ring-1 ring-offwhite"
+          asChild
         >
           <Select.Viewport>
             <Select.Group className="space-y-1.5">

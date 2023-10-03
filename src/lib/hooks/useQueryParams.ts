@@ -7,20 +7,11 @@ import {
   type ReadonlyURLSearchParams,
 } from 'next/navigation';
 
-const stringifySearchParam = (
-  searchParamObject: URLSearchParams | ReadonlyURLSearchParams,
-) =>
-  Array.from(searchParamObject.entries())
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&');
-
 export default function useQueryParams<T>() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const urlSearchParams = new URLSearchParams(
-    stringifySearchParam(searchParams),
-  );
+  const urlSearchParams = new URLSearchParams(searchParams.toString());
 
   function setQueryParams(params: Partial<T>, scroll: boolean = true) {
     Object.entries(params).forEach(([key, value]) => {
@@ -31,7 +22,7 @@ export default function useQueryParams<T>() {
       }
     });
 
-    const search = stringifySearchParam(urlSearchParams);
+    const search = urlSearchParams.toString();
 
     const query = search ? `?${search}` : '';
     // replace since we don't want to build a history
