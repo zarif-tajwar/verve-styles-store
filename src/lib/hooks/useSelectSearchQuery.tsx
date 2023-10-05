@@ -18,16 +18,13 @@ export const useSelectSearchQuery = ({
   const getOptionValue = () => queryParams.get(searchQueryKey);
 
   useEffect(() => {
-    const urlOptionValue = getOptionValue();
-
-    if (urlOptionValue === null) return;
-
-    const parsedValue = zParseSingleOptionSearchQuery(
-      options,
-      defaultOptionValue,
-    ).parse(urlOptionValue);
-
-    setQueryParams({ [searchQueryKey]: parsedValue });
+    // const urlOptionValue = getOptionValue();
+    // if (urlOptionValue === null) return;
+    // const parsedValue = zParseSingleOptionSearchQuery(
+    //   options,
+    //   defaultOptionValue,
+    // ).parse(urlOptionValue);
+    // setQueryParams({ [searchQueryKey]: parsedValue });
   }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   const handleValueChange = useCallback(

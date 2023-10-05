@@ -26,22 +26,22 @@ export const useMultiCheckboxSearchQuery = ({
   const stringifyParamsArray = (params: string[]) =>
     params.join(searchQueryValueSeparator);
 
-  useEffect(() => {
-    const params = getParamsArray();
+  // useEffect(() => {
+  //   const params = getParamsArray();
 
-    if (!params) return;
+  //   if (!params) return;
 
-    // checking if url search param has supported values
-    if (
-      params.some(
-        (paramValue) => !options.find((option) => option.value === paramValue),
-      ) ||
-      params.length === options.length
-    ) {
-      setQueryParams({ [searchQueryKey]: '' });
-      return;
-    }
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+  //   // checking if url search param has supported values
+  //   if (
+  //     params.some(
+  //       (paramValue) => !options.find((option) => option.value === paramValue),
+  //     ) ||
+  //     params.length === options.length
+  //   ) {
+  //     setQueryParams({ [searchQueryKey]: '' });
+  //     return;
+  //   }
+  // }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   const isChecked = (value: string) =>
     Boolean(getParamsArray()?.find((paramValue) => paramValue === value));

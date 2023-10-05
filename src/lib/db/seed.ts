@@ -8,9 +8,15 @@ import { sizes } from './schema/sizes';
 import { faker } from '@faker-js/faker';
 import crypto from 'crypto';
 import { ProductEntry, productEntries } from './schema/productEntries';
-import { number, z } from 'zod';
+import { number, object, string, z } from 'zod';
 import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
-import { FilterSearchQueryValuesSchema } from '../validation/schemas';
+import {
+  FilterSearchQueryValuesSchema,
+  FilterSearchQueryValuesType,
+} from '../validation/schemas';
+import { isValueInArray } from '../util';
+import { filterOrderMap } from '../validation/constants';
+import { URLSearchParams } from 'url';
 
 async function populateSizes() {
   await db
@@ -122,20 +128,77 @@ async function populateProductEntries() {
 }
 
 const exampleSearchParam = {
-  sizes: 'sm~xl~2xl~md',
-  styles: 'formal~festival~casual~gym',
+  sizes: 'md~xl~2xl',
+  styles: 'formal~festival',
   clothing: 'tshirts~shirts~jeans',
-  price_range: '0-10000',
-  sort_by: undefined,
+  price_range: '4289-7703',
+  sort_by: 'most-popular',
 };
 
 const parsed = FilterSearchQueryValuesSchema.safeParse(exampleSearchParam);
 
-if (parsed.success) {
-  console.log(parsed.data);
-} else {
-  console.error(parsed.error);
-}
+console.log(
+  decodeURIComponent(
+    new URLSearchParams(Object.entries(exampleSearchParam)).toString(),
+  ),
+);
+
+const parsedSearchQueryValues = {
+  sizes: ['md', '2xl'],
+  styles: ['casual', 'formal'],
+  clothing: ['shirts', 'shorts', 'jeans'],
+  price_range: [1362, 8598],
+  sort_by: 'price-low-to-high',
+};
+
+console.log(FilterSearchQueryValuesSchema.safeParse({}).success);
+
+const FilteredSearchQueryObjectToString = (
+  parsedSearchQueryValues: FilterSearchQueryValuesType,
+  currentSearchParamsInstance: URLSearchParams,
+) => {
+  const newSearchQuery = new URLSearchParams(
+    currentSearchParamsInstance.toString(),
+  );
+
+  const parsedSearchQueryValueEntries = Object.entries(
+    parsedSearchQueryValues,
+  ).toSorted(([a], [b]) => {
+    return filterOrderMap.get(a)! - filterOrderMap.get(b)!;
+  });
+
+  for (let i = 0; i < parsedSearchQueryValueEntries.length; i++) {
+    let [key, value] = parsedSearchQueryValueEntries[i];
+
+    if (value === undefined) continue;
+
+    if (isValueInArray(key, ['clothing', 'sizes', 'styles'])) {
+      const forceArr = value as string[];
+      newSearchQuery.set(key, forceArr.join('~'));
+      continue;
+    }
+
+    if (key === 'price_range') {
+      const forceArr = value as number[];
+      newSearchQuery.set(key, forceArr.join('-'));
+      continue;
+    }
+
+    if (key === 'sort_by') {
+      newSearchQuery.set(key, value as string);
+      continue;
+    }
+  }
+  return decodeURIComponent(newSearchQuery.toString());
+};
+
+// newSearchQuery.sort();
+
+// if (parsed.success) {
+//   console.log(parsed.data);
+// } else {
+//   console.error(parsed.error);
+// }
 
 async function execute() {
   console.log('⏳ Running ...');

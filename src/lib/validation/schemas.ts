@@ -8,6 +8,7 @@ import {
   dressStylesColumnNames,
   sizesColumnNamesMap,
   sortOptionValues,
+  filterOrderMap,
 } from './constants';
 
 export const zParseMultiOptionSearchQuery = (
@@ -26,6 +27,10 @@ export const zParseMultiOptionSearchQuery = (
             new Set(
               array.filter((value) => isValueInArray(value, targetArray)),
             ),
+          ).toSorted(
+            (a, b) =>
+              targetArray.findIndex((v) => v === a) -
+              targetArray.findIndex((v) => v === b),
           );
           return filteredArray.length === 0 ||
             filteredArray.length >= targetArray.length
@@ -69,15 +74,7 @@ export const zParseSingleOptionSearchQuery = (
 
 export const FilterSearchQueryValuesSchema = z
   .object({
-    sizes: zParseMultiOptionSearchQuery(
-      Array.from(sizesColumnNamesMap.keys()),
-    ).pipe(
-      z
-        .string()
-        .array()
-        .nullish()
-        .transform((array) => array?.map((v) => sizesColumnNamesMap.get(v))),
-    ),
+    sizes: zParseMultiOptionSearchQuery(Array.from(sizesColumnNamesMap.keys())),
     styles: zParseMultiOptionSearchQuery(dressStylesColumnNames),
     clothing: zParseMultiOptionSearchQuery(clothingColumnNames),
     price_range: zParsePriceRangeSearchQuery(),
@@ -87,3 +84,43 @@ export const FilterSearchQueryValuesSchema = z
     ),
   })
   .partial();
+
+export type FilterSearchQueryValuesType = z.infer<
+  typeof FilterSearchQueryValuesSchema
+>;
+
+export const FilteredSearchQueryObjectToString = (
+  parsedSearchQueryValues: FilterSearchQueryValuesType,
+  currentSearchParamsInstance: URLSearchParams | string,
+) => {
+  const newSearchQuery = new URLSearchParams(
+    currentSearchParamsInstance.toString(),
+  );
+
+  const parsedSearchQueryValueEntries = Object.entries(parsedSearchQueryValues);
+
+  for (let i = 0; i < parsedSearchQueryValueEntries.length; i++) {
+    let [key, value] = parsedSearchQueryValueEntries[i];
+
+    if (value === undefined) continue;
+
+    if (isValueInArray(key, ['clothing', 'sizes', 'styles'])) {
+      const forceArr = value as string[];
+      newSearchQuery.set(key, forceArr.join('~'));
+      continue;
+    }
+
+    if (key === 'price_range') {
+      const forceArr = value as number[];
+      newSearchQuery.set(key, forceArr.join('-'));
+      continue;
+    }
+
+    if (key === 'sort_by') {
+      newSearchQuery.set(key, value as string);
+      continue;
+    }
+  }
+  console.log(decodeURIComponent(newSearchQuery.toString()));
+  return decodeURIComponent(newSearchQuery.toString());
+};

@@ -49,3 +49,11 @@ const sortOptions = [
 export const sortOptionValues = sortOptions.map((o) => o.value);
 
 export const defaultSortOptionValue = sortOptionValues[0];
+
+export const filterOrderMap = new Map([
+  ['clothing', 1],
+  ['price_range', 2],
+  ['sizes', 3],
+  ['styles', 4],
+  ['sort_by', 5],
+]);
