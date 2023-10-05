@@ -7,6 +7,9 @@ import SizesCheckbox from '@/components/UI/SizesCheckbox';
 import DressStyleCheckbox from '@/components/UI/DressStyleCheckbox';
 import ClothingCheckbox from '@/components/UI/ClothingCheckbox';
 import SortBySelect from '@/components/UI/SortBySelect';
+import { clothing } from '@/lib/db/schema/clothing';
+import { eq, inArray, or } from 'drizzle-orm';
+import { dressStyles } from '@/lib/db/schema/dressStyles';
 
 const staticProducts = [
   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -20,17 +23,27 @@ const staticProducts = [
   { name: 'Electronic Granite Cheese', price: '598.00' },
 ];
 
+const exampleSearchParam = {
+  sizes: 'md~xl~2xl',
+  styles: 'formal~festival',
+  clothing: 'tshirts~shirts~jeans',
+  price_range: '4289-7703',
+  sort_by: 'most-popular',
+};
+
 const ShopPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   // const products = [...Array(9).keys()];
-  // const productItems = await db
-  //   .select({ name: products.name, price: products.price })
-  //   .from(products)
-  //   .limit(9);
-  const productItems = staticProducts;
+  const productItems = await db
+    .select({ name: products.name, price: products.price })
+    .from(products)
+    .limit(9);
+  // const productItems = staticProducts;
+
+  // console.log(productItems);
 
   return (
     <section className="mt-16">

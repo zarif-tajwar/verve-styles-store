@@ -18,19 +18,24 @@ const DoubleRangeSlider = () => {
     const priceQueryParam = queryParams
       .get('price_range')
       ?.split('-')
-      .map(Number);
+      .map((val) => Number.parseInt(val));
 
     if (!priceQueryParam || priceQueryParam.length === 0) return;
 
-    setRangeValues(priceQueryParam as PriceRange);
+    console.log(priceQueryParam);
 
     if (
-      priceQueryParam &&
-      priceQueryParam[0] === defaultRange[0] &&
-      priceQueryParam[1] === defaultRange[1]
+      priceQueryParam.length < 2 ||
+      priceQueryParam.some((val) => Number.isNaN(val)) ||
+      (priceQueryParam[0] === defaultRange[0] &&
+        priceQueryParam[1] === defaultRange[1])
     ) {
+      setRangeValues(defaultRange);
       setQueryParams({ price_range: '' });
+      return;
     }
+
+    setRangeValues(priceQueryParam as PriceRange);
   }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   return (

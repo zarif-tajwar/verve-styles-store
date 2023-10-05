@@ -1,4 +1,5 @@
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { SQL, and, eq, inArray, sql } from 'drizzle-orm';
+import { PgTableWithColumns, QueryBuilder } from 'drizzle-orm/pg-core';
 import { db } from './index';
 import { clothing } from './schema/clothing';
 import { dressStyles } from './schema/dressStyles';
@@ -7,6 +8,9 @@ import { sizes } from './schema/sizes';
 import { faker } from '@faker-js/faker';
 import crypto from 'crypto';
 import { ProductEntry, productEntries } from './schema/productEntries';
+import { number, z } from 'zod';
+import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
+import { SearchQueryValuesSchema } from '../validation/schemas';
 
 async function populateSizes() {
   await db
@@ -117,43 +121,77 @@ async function populateProductEntries() {
   await db.insert(productEntries).values(inputProductEntries);
 }
 
-async function populateTables() {
+const exampleSearchParam = {
+  sizes: 'sm~xl~2xl~md',
+  styles: 'formal~festival~casual~gym',
+  clothing: 'tshirts~shirts~jeans',
+  price_range: '0-10000',
+  sort_by: undefined,
+};
+
+const parsed = SearchQueryValuesSchema.safeParse(exampleSearchParam);
+
+if (parsed.success) {
+  console.log(parsed.data);
+} else {
+  console.error(parsed.error);
+}
+
+async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  //   await Promise.all([
-  //     populateSizes(),
-  //     populateClothing(),
-  //     populateStyles(),
-  //     populateProducts(1000),
-  //   ]);
+  const sqlCunks: SQL[] = [];
 
-  // await populateProductEntries();
+  sqlCunks.push(
+    sql`select distinct ${products.id}, ${products.name}, ${products.price} from ${products}`,
+  );
 
-  async function generateStaticParams() {
-    const slugs = await db.query.products.findMany({
-      columns: {
-        name: true,
-      },
-      with: {
-        clothing: {
-          columns: {
-            name: true,
-          },
-        },
-      },
-    });
-
-    return slugs.map((slug) => ({
-      clothing: slug.clothing?.name,
-      products: slug.name.replaceAll(' ', '-').toLowerCase(),
-    }));
+  if (exampleSearchParam.clothing !== undefined) {
+    sqlCunks.push(
+      sql`left join ${clothing} on ${products.clothingID} = ${clothing.id}`,
+    );
   }
 
-  const x = await generateStaticParams();
+  if (exampleSearchParam.styles !== undefined) {
+    sqlCunks.push(
+      sql`left join ${dressStyles} on ${products.styleID} = ${dressStyles.id}`,
+    );
+  }
 
-  console.log(x);
+  if (exampleSearchParam.sizes !== undefined) {
+    sqlCunks.push(
+      sql`left join ${productEntries} on ${products.id} = ${productEntries.productID}`,
+    );
+    sqlCunks.push(
+      sql`left join ${sizes} on ${productEntries.sizeID} = ${sizes.id}`,
+    );
+  }
+
+  if (Object.keys(exampleSearchParam).length > 0) {
+    sqlCunks.push(sql`where`);
+  }
+
+  if (exampleSearchParam.clothing !== undefined) {
+    sqlCunks.push(
+      sql`${clothing.name} in ${exampleSearchParam.clothing.split('~')} and`,
+    );
+  }
+
+  if (exampleSearchParam.styles !== undefined) {
+    sqlCunks.push(
+      sql`${dressStyles.name} in ${exampleSearchParam.styles.split('~')} and`,
+    );
+  }
+
+  sqlCunks.push(sql`order by ${products.price} desc`);
+
+  const finalSql: SQL = sql.join(sqlCunks, sql.raw(' '));
+
+  // const data = await db.execute(finalSql);
+
+  // console.log(data);
 
   const end = performance.now();
 
@@ -162,7 +200,7 @@ async function populateTables() {
   process.exit(0);
 }
 
-populateTables().catch((err) => {
+execute().catch((err) => {
   console.error('❌ Task failed');
   console.error(err);
   process.exit(1);
