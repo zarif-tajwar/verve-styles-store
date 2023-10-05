@@ -10,6 +10,8 @@ import SortBySelect from '@/components/UI/SortBySelect';
 import { clothing } from '@/lib/db/schema/clothing';
 import { eq, inArray, or } from 'drizzle-orm';
 import { dressStyles } from '@/lib/db/schema/dressStyles';
+import { zParsePriceRangeSearchQuery } from '@/lib/validation/schemas';
+import { redirect } from 'next/navigation';
 
 const staticProducts = [
   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -37,11 +39,23 @@ const ShopPage = async ({
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   // const products = [...Array(9).keys()];
-  const productItems = await db
-    .select({ name: products.name, price: products.price })
-    .from(products)
-    .limit(9);
-  // const productItems = staticProducts;
+  // const productItems = await db
+  //   .select({ name: products.name, price: products.price })
+  //   .from(products)
+  //   .limit(9);
+
+  let lol: string | undefined = 'no price';
+
+  const parsedPrice = zParsePriceRangeSearchQuery().safeParse(
+    searchParams['price_range'],
+  );
+
+  if (parsedPrice.success) {
+    lol = parsedPrice.data?.toString();
+    if (lol === undefined) redirect('/shop');
+  }
+
+  const productItems = staticProducts;
 
   // console.log(productItems);
 
@@ -49,6 +63,7 @@ const ShopPage = async ({
     <section className="mt-16">
       <div className="container-main">
         <p>{JSON.stringify(searchParams)}</p>
+        <p>{lol}</p>
         <div className="flex gap-8">
           <FilterSidebar />
           <div>

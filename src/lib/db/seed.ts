@@ -10,7 +10,7 @@ import crypto from 'crypto';
 import { ProductEntry, productEntries } from './schema/productEntries';
 import { number, z } from 'zod';
 import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
-import { SearchQueryValuesSchema } from '../validation/schemas';
+import { FilterSearchQueryValuesSchema } from '../validation/schemas';
 
 async function populateSizes() {
   await db
@@ -129,7 +129,7 @@ const exampleSearchParam = {
   sort_by: undefined,
 };
 
-const parsed = SearchQueryValuesSchema.safeParse(exampleSearchParam);
+const parsed = FilterSearchQueryValuesSchema.safeParse(exampleSearchParam);
 
 if (parsed.success) {
   console.log(parsed.data);

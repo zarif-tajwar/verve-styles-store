@@ -3,7 +3,7 @@ import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
 import { isValueInArray } from '../util';
 import {
   clothingColumnNames,
-  defaultOptionValue,
+  defaultSortOptionValue,
   defaultPriceRange,
   dressStylesColumnNames,
   sizesColumnNamesMap,
@@ -48,18 +48,26 @@ export const zParsePriceRangeSearchQuery = (
       priceRange[1] === defaultPriceRange[1]
     )
       return undefined;
+    if (
+      priceRange[0] < defaultPriceRange[0] ||
+      priceRange[1] > defaultPriceRange[1]
+    )
+      return undefined;
     if (priceRange[0] > priceRange[1]) return undefined;
     return priceRange;
   });
 
-export const zParseSortSearchQuery = () =>
+export const zParseSingleOptionSearchQuery = (
+  optionValues: string[],
+  defaultSortOptionValue: string,
+) =>
   z.string().transform((value) => {
-    if (value === defaultOptionValue) return undefined;
-    if (isValueInArray(value, sortOptionValues)) return value;
+    if (value === defaultSortOptionValue) return undefined;
+    if (isValueInArray(value, optionValues)) return value;
     return undefined;
   });
 
-export const SearchQueryValuesSchema = z
+export const FilterSearchQueryValuesSchema = z
   .object({
     sizes: zParseMultiOptionSearchQuery(
       Array.from(sizesColumnNamesMap.keys()),
@@ -73,6 +81,9 @@ export const SearchQueryValuesSchema = z
     styles: zParseMultiOptionSearchQuery(dressStylesColumnNames),
     clothing: zParseMultiOptionSearchQuery(clothingColumnNames),
     price_range: zParsePriceRangeSearchQuery(),
-    sort_by: zParseSortSearchQuery(),
+    sort_by: zParseSingleOptionSearchQuery(
+      sortOptionValues,
+      defaultSortOptionValue,
+    ),
   })
   .partial();

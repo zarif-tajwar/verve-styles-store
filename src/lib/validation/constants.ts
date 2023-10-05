@@ -48,4 +48,4 @@ const sortOptions = [
 
 export const sortOptionValues = sortOptions.map((o) => o.value);
 
-export const defaultOptionValue = sortOptionValues[0];
+export const defaultSortOptionValue = sortOptionValues[0];

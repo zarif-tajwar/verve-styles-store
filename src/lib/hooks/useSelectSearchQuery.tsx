@@ -1,31 +1,8 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
-import * as Select from '@radix-ui/react-select';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
-import { cn } from '@/lib/util';
+import React, { useCallback, useEffect } from 'react';
 import useQueryParams from '@/lib/hooks/useQueryParams';
-
-// const sortOptions = [
-//   { value: 'most-recent', title: 'Most Recent' },
-//   { value: 'most-popular', title: 'Most Popular' },
-//   { value: 'price-low-to-high', title: 'Price (Low to High)' },
-//   { value: 'price-high-to-low', title: 'Price (High to Low)' },
-// ];
-
-// const defaultOptionValue = sortOptions[0].value;
-
-// const SortBySelect = () => {
-//   return (
-//     <div className="flex flex-col items-end gap-1">
-//       <span className="mr-1 inline-block pr-3 text-sm text-black/60">
-//         Sort By
-//       </span>
-//       <SelectMain />
-//     </div>
-//   );
-// };
-// export default SortBySelect;
+import { zParseSingleOptionSearchQuery } from '../validation/schemas';
 
 export const useSelectSearchQuery = ({
   defaultOptionValue,
@@ -43,13 +20,14 @@ export const useSelectSearchQuery = ({
   useEffect(() => {
     const urlOptionValue = getOptionValue();
 
-    if (!urlOptionValue) return;
+    if (urlOptionValue === null) return;
 
-    if (
-      urlOptionValue === defaultOptionValue ||
-      !options.some((option) => option === urlOptionValue)
-    )
-      setQueryParams({ [searchQueryKey]: '' });
+    const parsedValue = zParseSingleOptionSearchQuery(
+      options,
+      defaultOptionValue,
+    ).parse(urlOptionValue);
+
+    setQueryParams({ [searchQueryKey]: parsedValue });
   }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   const handleValueChange = useCallback(

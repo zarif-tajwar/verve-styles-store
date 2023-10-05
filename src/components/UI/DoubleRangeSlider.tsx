@@ -3,39 +3,28 @@
 import { useEffect, useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import useQueryParams from '@/lib/hooks/useQueryParams';
+import { zParsePriceRangeSearchQuery } from '@/lib/validation/schemas';
 
-type PriceRange = [number, number];
-
-const defaultRange: PriceRange = [0, 10000];
+const defaultRange = [0, 10000];
 
 const DoubleRangeSlider = () => {
   const { queryParams, setQueryParams } = useQueryParams<{
     price_range?: string;
   }>();
-  const [rangeValues, setRangeValues] = useState<PriceRange>(defaultRange);
+  const [rangeValues, setRangeValues] = useState(defaultRange);
 
   useEffect(() => {
-    const priceQueryParam = queryParams
-      .get('price_range')
-      ?.split('-')
-      .map((val) => Number.parseInt(val));
-
-    if (!priceQueryParam || priceQueryParam.length === 0) return;
-
-    console.log(priceQueryParam);
-
-    if (
-      priceQueryParam.length < 2 ||
-      priceQueryParam.some((val) => Number.isNaN(val)) ||
-      (priceQueryParam[0] === defaultRange[0] &&
-        priceQueryParam[1] === defaultRange[1])
-    ) {
-      setRangeValues(defaultRange);
-      setQueryParams({ price_range: '' });
-      return;
-    }
-
-    setRangeValues(priceQueryParam as PriceRange);
+    const priceQueryParam = queryParams.get('price_range');
+    // if (priceQueryParam === null) return;
+    // const parsedPrice =
+    //   zParsePriceRangeSearchQuery().safeParse(priceQueryParam);
+    // if (!parsedPrice.success) return;
+    // if (parsedPrice.data === undefined) {
+    //   setRangeValues(defaultRange);
+    //   setQueryParams({ price_range: '' });
+    // } else {
+    //   setRangeValues(parsedPrice.data);
+    // }
   }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -46,7 +35,7 @@ const DoubleRangeSlider = () => {
         min={defaultRange[0]}
         max={defaultRange[1]}
         step={1}
-        onValueChange={(values) => setRangeValues(values as PriceRange)}
+        onValueChange={(values) => setRangeValues(values)}
         onValueCommit={(values) => {
           if (values[0] === defaultRange[0] && values[1] === defaultRange[1]) {
             setQueryParams({ price_range: '' });
