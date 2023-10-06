@@ -37,11 +37,11 @@ export const clothingItemsOptions = [
 
 export const clothingColumnNames = clothingItemsOptions.map((o) => o.value);
 
-const sortOptions = [
-  { value: 'most-recent', title: 'Most Recent' },
-  { value: 'most-popular', title: 'Most Popular' },
-  { value: 'price-low-to-high', title: 'Price (Low to High)' },
-  { value: 'price-high-to-low', title: 'Price (High to Low)' },
+export const sortOptions = [
+  { value: 'most recent', title: 'Most Recent' },
+  { value: 'most popular', title: 'Most Popular' },
+  { value: 'price low to high', title: 'Price (Low to High)' },
+  { value: 'price high to low', title: 'Price (High to Low)' },
 ];
 
 export const sortOptionValues = sortOptions.map((o) => o.value);
@@ -55,3 +55,9 @@ export const filterOrderMap = new Map([
   ['styles', 4],
   ['sort_by', 5],
 ]);
+
+export const URL_QUERY_SEPERATORS = {
+  word: '+',
+  multipleOption: ',',
+  range: '-',
+} as const;

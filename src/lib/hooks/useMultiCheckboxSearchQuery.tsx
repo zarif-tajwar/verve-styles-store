@@ -6,42 +6,24 @@ import useQueryParams, {
 import { FilterCheckboxOption } from '@/lib/types/FilterCheckbox';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { useCallback, useEffect } from 'react';
+import { URL_QUERY_SEPERATORS } from '../validation/constants';
 
 interface Props {
-  searchQueryValueSeparator?: SearchQueryUnreservedChars;
   searchQueryKey: string;
   options: FilterCheckboxOption[];
 }
 
 export const useMultiCheckboxSearchQuery = ({
-  searchQueryValueSeparator = '~',
   searchQueryKey,
   options,
 }: Props) => {
   const { queryParams, setQueryParams } = useQueryParams();
 
   const getParamsArray = () =>
-    queryParams.get(searchQueryKey)?.split(searchQueryValueSeparator);
+    queryParams.get(searchQueryKey)?.split(URL_QUERY_SEPERATORS.multipleOption);
 
   const stringifyParamsArray = (params: string[]) =>
-    params.join(searchQueryValueSeparator);
-
-  // useEffect(() => {
-  //   const params = getParamsArray();
-
-  //   if (!params) return;
-
-  //   // checking if url search param has supported values
-  //   if (
-  //     params.some(
-  //       (paramValue) => !options.find((option) => option.value === paramValue),
-  //     ) ||
-  //     params.length === options.length
-  //   ) {
-  //     setQueryParams({ [searchQueryKey]: '' });
-  //     return;
-  //   }
-  // }, []); //eslint-disable-line react-hooks/exhaustive-deps
+    params.join(URL_QUERY_SEPERATORS.multipleOption);
 
   const isChecked = (value: string) =>
     Boolean(getParamsArray()?.find((paramValue) => paramValue === value));

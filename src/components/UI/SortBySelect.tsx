@@ -5,17 +5,12 @@ import * as Select from '@radix-ui/react-select';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
+import {
+  defaultSortOptionValue,
+  sortOptions,
+} from '@/lib/validation/constants';
 
 import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
-
-const sortOptions = [
-  { value: 'most-recent', title: 'Most Recent' },
-  { value: 'most-popular', title: 'Most Popular' },
-  { value: 'price-low-to-high', title: 'Price (Low to High)' },
-  { value: 'price-high-to-low', title: 'Price (High to Low)' },
-];
-
-const defaultOptionValue = sortOptions[0].value;
 
 const SortBySelect = () => {
   return (
@@ -31,14 +26,14 @@ export default SortBySelect;
 
 const SelectMain = () => {
   const { getOptionValue, handleValueChange } = useSelectSearchQuery({
-    defaultOptionValue,
+    defaultOptionValue: defaultSortOptionValue,
     options: sortOptions.map((o) => o.value),
     searchQueryKey: 'sort_by',
   });
 
   return (
     <Select.Root
-      value={getOptionValue() || defaultOptionValue}
+      value={getOptionValue() || defaultSortOptionValue}
       onValueChange={handleValueChange}
     >
       <Select.Trigger

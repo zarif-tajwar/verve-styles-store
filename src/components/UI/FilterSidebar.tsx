@@ -8,7 +8,10 @@ import DressStyleCheckbox from './DressStyleCheckbox';
 import SizesCheckbox from './SizesCheckbox';
 import { FilterSearchQueryValuesSchema } from '@/lib/validation/schemas';
 import useQueryParams from '@/lib/hooks/useQueryParams';
-import { defaultPriceRange } from '@/lib/validation/constants';
+import {
+  URL_QUERY_SEPERATORS,
+  defaultPriceRange,
+} from '@/lib/validation/constants';
 
 export const FilterSidebar = () => {
   const [priceRangeValues, setPriceRangeValues] = useState(defaultPriceRange);
@@ -27,10 +30,10 @@ export const FilterSidebar = () => {
           parseSearchParams.data;
 
         setQueryParams({
-          clothing: clothing?.join('~'),
-          sizes: sizes?.join('~'),
-          styles: styles?.join('~'),
-          price_range: price_range?.join('-'),
+          clothing: clothing?.join(URL_QUERY_SEPERATORS.multipleOption),
+          sizes: sizes?.join(URL_QUERY_SEPERATORS.multipleOption),
+          styles: styles?.join(URL_QUERY_SEPERATORS.multipleOption),
+          price_range: price_range?.join(URL_QUERY_SEPERATORS.range),
           sort_by,
         });
 

@@ -9,15 +9,13 @@ import {
   sizesColumnNamesMap,
   sortOptionValues,
   filterOrderMap,
+  URL_QUERY_SEPERATORS,
 } from './constants';
 
-export const zParseMultiOptionSearchQuery = (
-  targetArray: string[],
-  separator: SearchQueryUnreservedChars = '~',
-) =>
+export const zParseMultiOptionSearchQuery = (targetArray: string[]) =>
   z
     .string()
-    .transform((value) => value.split(separator))
+    .transform((value) => value.split(URL_QUERY_SEPERATORS.multipleOption))
     .pipe(
       z
         .string()
@@ -39,14 +37,12 @@ export const zParseMultiOptionSearchQuery = (
         }),
     );
 
-export const zParsePriceRangeSearchQuery = (
-  separator: SearchQueryUnreservedChars = '-',
-) =>
+export const zParsePriceRangeSearchQuery = () =>
   z
     .string()
     .transform((value) => {
       const priceRange = value
-        .split(separator)
+        .split(URL_QUERY_SEPERATORS.range)
         .map((numStr) => Number.parseInt(numStr))
         .filter((v) => !Number.isNaN(v));
       if (priceRange.length !== 2) return undefined;
@@ -109,13 +105,16 @@ export const FilteredSearchQueryValuesToSearchParams = (
 
     if (isValueInArray(key, ['clothing', 'sizes', 'styles'])) {
       const forceArr = value as string[];
-      newSearchQuery.set(key, forceArr.join('~'));
+      newSearchQuery.set(
+        key,
+        forceArr.join(URL_QUERY_SEPERATORS.multipleOption),
+      );
       continue;
     }
 
     if (key === 'price_range') {
       const forceArr = value as number[];
-      newSearchQuery.set(key, forceArr.join('-'));
+      newSearchQuery.set(key, forceArr.join(URL_QUERY_SEPERATORS.range));
       continue;
     }
 
