@@ -2,21 +2,8 @@ import { Icons } from '@/components/Svgs/icons';
 import { db } from '@/lib/db';
 import { ProductSelect, products } from '@/lib/db/schema/products';
 import Image from 'next/image';
-import DoubleRangeSlider from '@/components/UI/DoubleRangeSlider';
-import SizesCheckbox from '@/components/UI/SizesCheckbox';
-import DressStyleCheckbox from '@/components/UI/DressStyleCheckbox';
-import ClothingCheckbox from '@/components/UI/ClothingCheckbox';
 import SortBySelect from '@/components/UI/SortBySelect';
-import { clothing } from '@/lib/db/schema/clothing';
-import { eq, inArray, or } from 'drizzle-orm';
-import { dressStyles } from '@/lib/db/schema/dressStyles';
-import {
-  FilterSearchQueryValuesSchema,
-  FilteredSearchQueryObjectToString,
-  zParsePriceRangeSearchQuery,
-} from '@/lib/validation/schemas';
-import { redirect, RedirectType } from 'next/navigation';
-import { isValueInArray } from '@/lib/util';
+import { FilterSidebar } from '@/components/UI/FilterSidebar';
 
 const staticProducts = [
   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -104,43 +91,3 @@ const ProductListing = ({
     </div>
   );
 };
-
-const FilterSidebar = () => {
-  return (
-    <div className="w-full max-w-[296px]">
-      <div className="rounded-main border border-black/10 px-6 pb-8 pt-8">
-        <div className="flex items-center justify-between">
-          <h2 className="font-plus-jakarta-sans text-xl font-bold capitalize">
-            Filters
-          </h2>
-          <Icons.filter className="text-black/40" />
-        </div>
-        <VerticalDivider />
-        <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
-          Clothing
-        </h3>
-        <ClothingCheckbox />
-
-        <VerticalDivider />
-        <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
-          Price
-        </h3>
-        <DoubleRangeSlider />
-        <VerticalDivider />
-        <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
-          Size
-        </h3>
-        <SizesCheckbox />
-        <VerticalDivider />
-        <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
-          Dress Style
-        </h3>
-        <DressStyleCheckbox />
-      </div>
-    </div>
-  );
-};
-
-const VerticalDivider = () => (
-  <div className="my-6 h-px w-full bg-black/10"></div>
-);

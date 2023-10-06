@@ -25,7 +25,8 @@ export default function useQueryParams<T>() {
     const search = urlSearchParams.toString();
 
     const query = search ? `?${search}` : '';
-    console.log(query);
+    console.log(params, 'INPUT PARAMS');
+    console.log(query, 'FINAL QUERY');
     // replace since we don't want to build a history
     router.replace(`${pathname}${query}`, { scroll });
   }

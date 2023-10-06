@@ -7,7 +7,6 @@ import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
 
 import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
-import { Variants, motion, AnimatePresence } from 'framer-motion';
 
 const sortOptions = [
   { value: 'most-recent', title: 'Most Recent' },

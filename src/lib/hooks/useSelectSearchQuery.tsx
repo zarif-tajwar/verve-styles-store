@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import useQueryParams from '@/lib/hooks/useQueryParams';
-import { zParseSingleOptionSearchQuery } from '../validation/schemas';
 
 export const useSelectSearchQuery = ({
   defaultOptionValue,
@@ -16,16 +15,6 @@ export const useSelectSearchQuery = ({
   const { queryParams, setQueryParams } = useQueryParams();
 
   const getOptionValue = () => queryParams.get(searchQueryKey);
-
-  useEffect(() => {
-    // const urlOptionValue = getOptionValue();
-    // if (urlOptionValue === null) return;
-    // const parsedValue = zParseSingleOptionSearchQuery(
-    //   options,
-    //   defaultOptionValue,
-    // ).parse(urlOptionValue);
-    // setQueryParams({ [searchQueryKey]: parsedValue });
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   const handleValueChange = useCallback(
     (value: string) => {

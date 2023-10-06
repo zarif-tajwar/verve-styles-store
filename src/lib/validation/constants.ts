@@ -1,8 +1,6 @@
 import { Icons } from '@/components/Svgs/icons';
 
-export type PriceRange = [number, number];
-
-export const defaultPriceRange: PriceRange = [0, 10000];
+export const defaultPriceRange = [0, 10000];
 
 export const dressStylesOptions = [
   { id: 1, value: 'casual', label: 'Casual' },

@@ -42,25 +42,28 @@ export const zParseMultiOptionSearchQuery = (
 export const zParsePriceRangeSearchQuery = (
   separator: SearchQueryUnreservedChars = '-',
 ) =>
-  z.string().transform((value) => {
-    const priceRange = value
-      .split(separator)
-      .map((numStr) => Number.parseInt(numStr))
-      .filter((v) => !Number.isNaN(v));
-    if (priceRange.length !== 2) return undefined;
-    if (
-      priceRange[0] === defaultPriceRange[0] &&
-      priceRange[1] === defaultPriceRange[1]
-    )
-      return undefined;
-    if (
-      priceRange[0] < defaultPriceRange[0] ||
-      priceRange[1] > defaultPriceRange[1]
-    )
-      return undefined;
-    if (priceRange[0] > priceRange[1]) return undefined;
-    return priceRange;
-  });
+  z
+    .string()
+    .transform((value) => {
+      const priceRange = value
+        .split(separator)
+        .map((numStr) => Number.parseInt(numStr))
+        .filter((v) => !Number.isNaN(v));
+      if (priceRange.length !== 2) return undefined;
+      if (
+        priceRange[0] === defaultPriceRange[0] &&
+        priceRange[1] === defaultPriceRange[1]
+      )
+        return undefined;
+      if (
+        priceRange[0] < defaultPriceRange[0] ||
+        priceRange[1] > defaultPriceRange[1]
+      )
+        return undefined;
+      if (priceRange[0] > priceRange[1]) return undefined;
+      return priceRange;
+    })
+    .pipe(z.number().array().nullish());
 
 export const zParseSingleOptionSearchQuery = (
   optionValues: string[],
@@ -89,7 +92,7 @@ export type FilterSearchQueryValuesType = z.infer<
   typeof FilterSearchQueryValuesSchema
 >;
 
-export const FilteredSearchQueryObjectToString = (
+export const FilteredSearchQueryValuesToSearchParams = (
   parsedSearchQueryValues: FilterSearchQueryValuesType,
   currentSearchParamsInstance: URLSearchParams | string,
 ) => {
@@ -121,6 +124,5 @@ export const FilteredSearchQueryObjectToString = (
       continue;
     }
   }
-  console.log(decodeURIComponent(newSearchQuery.toString()));
-  return decodeURIComponent(newSearchQuery.toString());
+  return newSearchQuery;
 };
