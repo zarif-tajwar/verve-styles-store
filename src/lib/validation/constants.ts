@@ -12,20 +12,22 @@ export const dressStylesOptions = [
 export const dressStylesColumnNames = dressStylesOptions.map((o) => o.value);
 
 export const sizesOptions = [
-  { id: 1, value: 'sm', label: 'Small' },
-  { id: 2, value: 'md', label: 'Medium' },
-  { id: 3, value: 'lg', label: 'Large' },
+  { id: 1, value: 'small', label: 'Small' },
+  { id: 2, value: 'medium', label: 'Medium' },
+  { id: 3, value: 'large', label: 'Large' },
   { id: 4, value: 'xl', label: 'XL' },
   { id: 5, value: '2xl', label: '2XL' },
 ];
 
-export const sizesColumnNamesMap = new Map<string, string>([
-  ['sm', 'small'],
-  ['md', 'medium'],
-  ['lg', 'large'],
-  ['xl', 'xl'],
-  ['2xl', '2xl'],
-]);
+export const sizesColumnNames = sizesOptions.map((o) => o.value);
+
+// export const sizesColumnNamesMap = new Map<string, string>([
+//   ['sm', 'small'],
+//   ['md', 'medium'],
+//   ['lg', 'large'],
+//   ['xl', 'xl'],
+//   ['2xl', '2xl'],
+// ]);
 
 export const clothingItemsOptions = [
   { id: 1, value: 'tshirts', label: 'T-Shirts', icon: Icons['T-Shirts'] },

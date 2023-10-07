@@ -1,3 +1,4 @@
+import React from 'react';
 import { PartnerLogo } from '../Svgs/PartnerLogo';
 
 const highlightedInfos = [
@@ -38,13 +39,13 @@ const Hero = () => {
           </button>
           <div className="mt-4 flex h-full text-black/60">
             {highlightedInfos.map((info, i, arr) => (
-              <>
-                <HighlightInfo key={info}>{info}</HighlightInfo>
+              <React.Fragment key={info}>
+                <HighlightInfo>{info}</HighlightInfo>
                 {/* DIVIDER */}
                 {i !== arr.length - 1 && (
                   <div className="mx-6 h-auto w-px bg-black/10"></div>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </div>
         </div>

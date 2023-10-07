@@ -6,10 +6,9 @@ import {
   defaultSortOptionValue,
   defaultPriceRange,
   dressStylesColumnNames,
-  sizesColumnNamesMap,
   sortOptionValues,
-  filterOrderMap,
   URL_QUERY_SEPERATORS,
+  sizesColumnNames,
 } from './constants';
 
 export const zParseMultiOptionSearchQuery = (targetArray: string[]) =>
@@ -73,7 +72,7 @@ export const zParseSingleOptionSearchQuery = (
 
 export const FilterSearchQueryValuesSchema = z
   .object({
-    sizes: zParseMultiOptionSearchQuery(Array.from(sizesColumnNamesMap.keys())),
+    sizes: zParseMultiOptionSearchQuery(sizesColumnNames),
     styles: zParseMultiOptionSearchQuery(dressStylesColumnNames),
     clothing: zParseMultiOptionSearchQuery(clothingColumnNames),
     price_range: zParsePriceRangeSearchQuery(),

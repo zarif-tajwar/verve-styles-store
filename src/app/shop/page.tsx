@@ -4,6 +4,7 @@ import { ProductSelect, products } from '@/lib/db/schema/products';
 import Image from 'next/image';
 import SortBySelect from '@/components/UI/SortBySelect';
 import { FilterSidebar } from '@/components/UI/FilterSidebar';
+import { getProductsFromDB } from '@/lib/dbCalls/filter';
 
 const staticProducts = [
   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -17,20 +18,19 @@ const staticProducts = [
   { name: 'Electronic Granite Cheese', price: '598.00' },
 ];
 
-const exampleSearchParam = {
-  sizes: 'md~xl~2xl',
-  styles: 'formal~festival',
-  clothing: 'tshirts~shirts~jeans',
-  price_range: '4289-7703',
-  sort_by: 'most-popular',
-};
-
 const ShopPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const productItems = staticProducts;
+  // const productItems = staticProducts;
+  const productItemsRes = await getProductsFromDB(searchParams);
+  const productItems = productItemsRes?.rows as {
+    name: string;
+    price: string;
+  }[];
+
+  // console.log(searchParams);
 
   return (
     <section className="mt-16">
@@ -40,7 +40,7 @@ const ShopPage = async ({
           <FilterSidebar />
           <div>
             <div className="mb-4 flex items-end justify-between">
-              <p>Showing 1-9 of 1000 Products</p>
+              <p>Showing {productItems.length} Products</p>
               <SortBySelect />
             </div>
             <div className="grid grid-cols-3 gap-x-5 gap-y-9">

@@ -3,24 +3,17 @@
 import { cn } from '@/lib/util';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { useMultiCheckboxSearchQuery } from '../../lib/hooks/useMultiCheckboxSearchQuery';
-
-const sizes = [
-  { id: 1, value: 'sm', label: 'Small' },
-  { id: 2, value: 'md', label: 'Medium' },
-  { id: 3, value: 'lg', label: 'Large' },
-  { id: 4, value: 'xl', label: 'XL' },
-  { id: 5, value: '2xl', label: '2XL' },
-];
+import { sizesOptions } from '@/lib/validation/constants';
 
 const SizesCheckbox = () => {
   const { isChecked, handleCheck } = useMultiCheckboxSearchQuery({
-    options: sizes,
+    options: sizesOptions,
     searchQueryKey: 'sizes',
   });
 
   return (
     <div className="flex flex-wrap gap-2">
-      {sizes.map((size) => (
+      {sizesOptions.map((size) => (
         <Checkbox.Root
           key={size.value}
           name={size.value}
