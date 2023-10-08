@@ -12,36 +12,37 @@ import {
   URL_QUERY_SEPERATORS,
   defaultPriceRange,
 } from '@/lib/validation/constants';
+import TempCheckbox from './TempCheckbox';
 
 export const FilterSidebar = () => {
   const [priceRangeValues, setPriceRangeValues] = useState(defaultPriceRange);
-  const { queryParams, setQueryParams } = useQueryParams();
-  useEffect(
-    () => {
-      if (queryParams.size === 0) return;
+  // const { queryParams, setQueryParams } = useQueryParams();
+  // useEffect(
+  //   () => {
+  //     if (queryParams.size === 0) return;
 
-      const queryParamsObject = Object.fromEntries(queryParams.entries());
+  //     const queryParamsObject = Object.fromEntries(queryParams.entries());
 
-      const parseSearchParams =
-        FilterSearchQueryValuesSchema.safeParse(queryParamsObject);
+  //     const parseSearchParams =
+  //       FilterSearchQueryValuesSchema.safeParse(queryParamsObject);
 
-      if (parseSearchParams.success) {
-        const { clothing, sizes, sort_by, styles, price_range } =
-          parseSearchParams.data;
+  //     if (parseSearchParams.success) {
+  //       const { clothing, sizes, sort_by, styles, price_range } =
+  //         parseSearchParams.data;
 
-        setQueryParams({
-          clothing: clothing?.join(URL_QUERY_SEPERATORS.multipleOption),
-          sizes: sizes?.join(URL_QUERY_SEPERATORS.multipleOption),
-          styles: styles?.join(URL_QUERY_SEPERATORS.multipleOption),
-          price_range: price_range?.join(URL_QUERY_SEPERATORS.range),
-          sort_by,
-        });
+  //       setQueryParams({
+  //         clothing: clothing?.join(URL_QUERY_SEPERATORS.multipleOption),
+  //         sizes: sizes?.join(URL_QUERY_SEPERATORS.multipleOption),
+  //         styles: styles?.join(URL_QUERY_SEPERATORS.multipleOption),
+  //         price_range: price_range?.join(URL_QUERY_SEPERATORS.range),
+  //         sort_by,
+  //       });
 
-        setPriceRangeValues(price_range ? price_range : defaultPriceRange);
-      }
-    },
-    [], //eslint-disable-line react-hooks/exhaustive-deps
-  );
+  //       setPriceRangeValues(price_range ? price_range : defaultPriceRange);
+  //     }
+  //   },
+  //   [], //eslint-disable-line react-hooks/exhaustive-deps
+  // );
 
   return (
     <div className="w-full max-w-[296px]">

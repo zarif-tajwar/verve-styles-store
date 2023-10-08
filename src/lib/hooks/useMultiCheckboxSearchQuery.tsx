@@ -5,7 +5,7 @@ import useQueryParams, {
 } from '@/lib/hooks/useQueryParams';
 import { FilterCheckboxOption } from '@/lib/types/FilterCheckbox';
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { URL_QUERY_SEPERATORS } from '../validation/constants';
 
 interface Props {
@@ -18,6 +18,7 @@ export const useMultiCheckboxSearchQuery = ({
   options,
 }: Props) => {
   const { queryParams, setQueryParams } = useQueryParams();
+  const [checkedOptions, setCheckedOptions] = useState(new Set<string>());
 
   const getParamsArray = () =>
     queryParams.get(searchQueryKey)?.split(URL_QUERY_SEPERATORS.multipleOption);
@@ -25,40 +26,71 @@ export const useMultiCheckboxSearchQuery = ({
   const stringifyParamsArray = (params: string[]) =>
     params.join(URL_QUERY_SEPERATORS.multipleOption);
 
-  const isChecked = (value: string) =>
-    Boolean(getParamsArray()?.find((paramValue) => paramValue === value));
+  // const isChecked = (value: string) =>
+  //   Boolean(getParamsArray()?.find((paramValue) => paramValue === value));
+
+  useEffect(() => {
+    const checkedOptionsFromUrl = getParamsArray();
+
+    if (checkedOptionsFromUrl === undefined) {
+      if (checkedOptions.size > 0) setCheckedOptions(new Set<string>());
+      return;
+    }
+
+    const checkedOptionsCopy = new Set(checkedOptions);
+
+    checkedOptionsFromUrl.forEach((option) => {
+      checkedOptionsCopy.add(option);
+    });
+
+    setCheckedOptions(checkedOptionsCopy);
+  }, []);
+
+  useEffect(() => {
+    setQueryParams({
+      [searchQueryKey]: stringifyParamsArray(
+        Array.from(checkedOptions.values()),
+      ),
+    });
+  }, [checkedOptions]);
 
   const handleCheck = useCallback(
-    (checked: Checkbox.CheckedState, value: string, scroll: boolean = true) => {
-      const params = new Set(getParamsArray());
+    (
+      checked: Checkbox.CheckedState,
+      value: string,
+      scroll: boolean = false,
+    ) => {
+      const checkedOptionsCopy = new Set(checkedOptions);
 
       if (checked) {
-        if (params.size + 1 === options.length) {
-          params.clear();
+        if (checkedOptionsCopy.size + 1 === options.length) {
+          checkedOptionsCopy.clear();
         } else {
-          params.add(value);
+          checkedOptionsCopy.add(value);
         }
       }
 
       if (!checked) {
-        params.delete(value);
+        checkedOptionsCopy.delete(value);
       }
 
-      const newParams = Array.from(params).toSorted(
-        (a, b) =>
-          options.find((option) => a === option.value)?.id! -
-          options.find((option) => b === option.value)?.id!,
-      );
+      setCheckedOptions(checkedOptionsCopy);
 
-      setQueryParams(
-        {
-          [searchQueryKey]: stringifyParamsArray(newParams),
-        },
-        scroll,
-      );
+      // const newParams = Array.from(params).toSorted(
+      //   (a, b) =>
+      //     options.find((option) => a === option.value)?.id! -
+      //     options.find((option) => b === option.value)?.id!,
+      // );
+
+      // setQueryParams(
+      //   {
+      //     [searchQueryKey]: stringifyParamsArray(newParams),
+      //   },
+      //   scroll,
+      // );
     },
-    [queryParams], //eslint-disable-line react-hooks/exhaustive-deps
+    [queryParams, checkedOptions],
   );
 
-  return { isChecked, handleCheck };
+  return { checkedOptions, handleCheck };
 };

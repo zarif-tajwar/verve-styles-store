@@ -12,7 +12,7 @@ const dressStyles = [
 ];
 
 const DressStyleCheckbox = () => {
-  const { isChecked, handleCheck } = useMultiCheckboxSearchQuery({
+  const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
     options: dressStyles,
     searchQueryKey: 'styles',
   });
@@ -31,10 +31,8 @@ const DressStyleCheckbox = () => {
               'transition-all duration-200',
               'data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
             )}
-            checked={isChecked(style.value)}
-            onCheckedChange={(checked) =>
-              handleCheck(checked, style.value, false)
-            }
+            checked={checkedOptions.has(style.value)}
+            onCheckedChange={(checked) => handleCheck(checked, style.value)}
           >
             <div>{style.label}</div>
           </Checkbox.Root>

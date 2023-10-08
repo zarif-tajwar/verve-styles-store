@@ -6,7 +6,7 @@ import { useMultiCheckboxSearchQuery } from '../../lib/hooks/useMultiCheckboxSea
 import { sizesOptions } from '@/lib/validation/constants';
 
 const SizesCheckbox = () => {
-  const { isChecked, handleCheck } = useMultiCheckboxSearchQuery({
+  const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
     options: sizesOptions,
     searchQueryKey: 'sizes',
   });
@@ -18,9 +18,9 @@ const SizesCheckbox = () => {
           key={size.value}
           name={size.value}
           value={size.value}
-          checked={isChecked(size.value)}
+          checked={checkedOptions.has(size.value)}
           onCheckedChange={(checked) => {
-            handleCheck(checked, size.value, false);
+            handleCheck(checked, size.value);
           }}
           className={cn(
             'rounded-full border-none bg-offwhite px-5 py-1.5 text-sm font-medium text-black/60 outline-none',

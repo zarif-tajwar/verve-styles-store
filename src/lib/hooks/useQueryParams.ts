@@ -13,7 +13,7 @@ export default function useQueryParams<T>() {
   const searchParams = useSearchParams();
   const urlSearchParams = new URLSearchParams(searchParams.toString());
 
-  function setQueryParams(params: Partial<T>, scroll: boolean = true) {
+  function setQueryParams(params: Partial<T>, scroll: boolean = false) {
     Object.entries(params).forEach(([key, value]) => {
       if (value === undefined || value === null || value === '') {
         urlSearchParams.delete(key);

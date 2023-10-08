@@ -14,7 +14,7 @@ const clothingItems = [
 ];
 
 const ClothingCheckbox = () => {
-  const { isChecked, handleCheck } = useMultiCheckboxSearchQuery({
+  const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
     options: clothingItems,
     searchQueryKey: 'clothing',
   });
@@ -32,9 +32,9 @@ const ClothingCheckbox = () => {
             'focus-visible:ring-2 focus-visible:ring-black',
             'data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
           )}
-          checked={isChecked(clothing.value)}
+          checked={checkedOptions.has(clothing.value)}
           onCheckedChange={(checked) => {
-            handleCheck(checked, clothing.value, false);
+            handleCheck(checked, clothing.value);
           }}
         >
           {clothing.icon && <clothing.icon className="h-[18px]" />}

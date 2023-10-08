@@ -1,60 +1,50 @@
 import { Icons } from '@/components/Svgs/icons';
-import { db } from '@/lib/db';
-import { ProductSelect, products } from '@/lib/db/schema/products';
 import Image from 'next/image';
-import SortBySelect from '@/components/UI/SortBySelect';
-import { FilterSidebar } from '@/components/UI/FilterSidebar';
 import { getProductsFromDB } from '@/lib/dbCalls/filter';
+import { number } from 'zod';
 
-const staticProducts = [
-  { name: 'Awesome Soft Computer', price: '8889.00' },
-  { name: 'Elegant Bronze Gloves', price: '1969.00' },
-  { name: 'Electronic Cotton Chair', price: '6091.00' },
-  { name: 'Licensed Rubber Table', price: '4264.00' },
-  { name: 'Electronic Soft Bike', price: '3239.00' },
-  { name: 'Electronic Wooden Chips', price: '4521.00' },
-  { name: 'Unbranded Fresh Car', price: '4394.00' },
-  { name: 'Modern Metal Fish', price: '8554.00' },
-  { name: 'Electronic Granite Cheese', price: '598.00' },
-];
+// const staticProducts = [
+//   { name: 'Awesome Soft Computer', price: '8889.00' },
+//   { name: 'Elegant Bronze Gloves', price: '1969.00' },
+//   { name: 'Electronic Cotton Chair', price: '6091.00' },
+//   { name: 'Licensed Rubber Table', price: '4264.00' },
+//   { name: 'Electronic Soft Bike', price: '3239.00' },
+//   { name: 'Electronic Wooden Chips', price: '4521.00' },
+//   { name: 'Unbranded Fresh Car', price: '4394.00' },
+//   { name: 'Modern Metal Fish', price: '8554.00' },
+//   { name: 'Electronic Granite Cheese', price: '598.00' },
+// ];
+
+export const revalidate = 0;
 
 const ShopPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
+  await wait(1000);
+  return <p>{JSON.stringify(searchParams)}</p>;
   // const productItems = staticProducts;
-  const productItemsRes = await getProductsFromDB(searchParams);
-  const productItems = productItemsRes?.rows as {
-    name: string;
-    price: string;
-  }[];
-
-  // console.log(searchParams);
-
-  return (
-    <section className="mt-16">
-      <div className="container-main">
-        <p>{JSON.stringify(searchParams)}</p>
-        <div className="flex gap-8">
-          <FilterSidebar />
-          <div>
-            <div className="mb-4 flex items-end justify-between">
-              <p>Showing {productItems.length} Products</p>
-              <SortBySelect />
-            </div>
-            <div className="grid grid-cols-3 gap-x-5 gap-y-9">
-              {productItems.map((product, i) => (
-                <ProductListing key={i} product={product} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  // const productItemsRes = await getProductsFromDB(searchParams);
+  // const productItems = productItemsRes?.rows as {
+  //   name: string;
+  //   price: string;
+  // }[];
+  // return (
+  //   <>
+  //     <p className="absolute left-0 top-8">{productItems.length} products</p>
+  //     <div className="grid grid-cols-3 gap-x-5 gap-y-9">
+  //       {productItems.map((product, i) => (
+  //         <ProductListing key={i} product={product} />
+  //       ))}
+  //     </div>
+  //   </>
+  // );
 };
+
 export default ShopPage;
+
+const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const ProductListing = ({
   product,
