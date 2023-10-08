@@ -15,36 +15,6 @@ import {
 import { useRouter } from 'next/navigation';
 
 export const FilterSidebar = () => {
-  const [priceRangeValues, setPriceRangeValues] = useState(defaultPriceRange);
-  const router = useRouter();
-  // const { queryParams, setQueryParams } = useQueryParams();
-  // useEffect(
-  //   () => {
-  //     if (queryParams.size === 0) return;
-
-  //     const queryParamsObject = Object.fromEntries(queryParams.entries());
-
-  //     const parseSearchParams =
-  //       FilterSearchQueryValuesSchema.safeParse(queryParamsObject);
-
-  //     if (parseSearchParams.success) {
-  //       const { clothing, sizes, sort_by, styles, price_range } =
-  //         parseSearchParams.data;
-
-  //       setQueryParams({
-  //         clothing: clothing?.join(URL_QUERY_SEPERATORS.multipleOption),
-  //         sizes: sizes?.join(URL_QUERY_SEPERATORS.multipleOption),
-  //         styles: styles?.join(URL_QUERY_SEPERATORS.multipleOption),
-  //         price_range: price_range?.join(URL_QUERY_SEPERATORS.range),
-  //         sort_by,
-  //       });
-
-  //       setPriceRangeValues(price_range ? price_range : defaultPriceRange);
-  //     }
-  //   },
-  //   [], //eslint-disable-line react-hooks/exhaustive-deps
-  // );
-
   return (
     <div className="w-full max-w-[296px]">
       <div className="rounded-main border border-black/10 px-6 pb-8 pt-8">
@@ -64,10 +34,7 @@ export const FilterSidebar = () => {
         <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
           Price
         </h3>
-        <DoubleRangeSlider
-          priceRangeValues={priceRangeValues}
-          setPriceRangeValues={setPriceRangeValues}
-        />
+        <DoubleRangeSlider />
         <VerticalDivider />
         <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
           Size

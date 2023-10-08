@@ -1,18 +1,48 @@
 'use client';
 
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import useQueryParams from '@/lib/hooks/useQueryParams';
 import { defaultPriceRange } from '@/lib/validation/constants';
+import { zParsePriceRangeSearchQuery } from '@/lib/validation/schemas';
 
-const DoubleRangeSlider = ({
-  priceRangeValues,
-  setPriceRangeValues,
-}: {
-  priceRangeValues: number[];
-  setPriceRangeValues: Dispatch<SetStateAction<number[]>>;
-}) => {
-  const { setQueryParams } = useQueryParams<{ price_range: string }>();
+const DoubleRangeSlider = () => {
+  const { queryParams, setQueryParams } = useQueryParams<{
+    price_range: string;
+  }>();
+  const [priceRangeValues, setPriceRangeValues] = useState(defaultPriceRange);
+  const isMounted = useRef(false);
+
+  const isNoSearchParam = queryParams.get('price_range') === null;
+
+  useEffect(() => {
+    isMounted.current = true;
+
+    const priceRangeValuesFromUrl = queryParams.get('price_range');
+
+    const validate = zParsePriceRangeSearchQuery().safeParse(
+      priceRangeValuesFromUrl,
+    );
+
+    if (validate.success) {
+      const { data } = validate;
+      if (!data) {
+        setPriceRangeValues(defaultPriceRange);
+      } else {
+        setPriceRangeValues(data);
+      }
+    }
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (isNoSearchParam && isMounted) {
+      setPriceRangeValues(defaultPriceRange);
+    }
+  }, [isNoSearchParam]); //eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
@@ -29,7 +59,9 @@ const DoubleRangeSlider = ({
             values[1] === defaultPriceRange[1]
           ) {
             setQueryParams({ price_range: '' });
-          } else setQueryParams({ price_range: values.join('-') });
+          } else {
+            setQueryParams({ price_range: values.join('-') });
+          }
         }}
       >
         <Slider.Track className="relative h-1.5 grow cursor-pointer rounded-full bg-offwhite">
