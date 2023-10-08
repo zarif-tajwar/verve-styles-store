@@ -83,7 +83,7 @@ const CustomerReviews = () => {
                             ? 1
                             : 0.4,
                       }}
-                      key={review.name}
+                      key={i}
                       className={cn('relative z-50 h-full w-max bg-white pr-5')}
                     >
                       <ReviewCard

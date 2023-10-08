@@ -12,10 +12,11 @@ import {
   URL_QUERY_SEPERATORS,
   defaultPriceRange,
 } from '@/lib/validation/constants';
-import TempCheckbox from './TempCheckbox';
+import { useRouter } from 'next/navigation';
 
 export const FilterSidebar = () => {
   const [priceRangeValues, setPriceRangeValues] = useState(defaultPriceRange);
+  const router = useRouter();
   // const { queryParams, setQueryParams } = useQueryParams();
   // useEffect(
   //   () => {

@@ -1,11 +1,9 @@
 'use client';
 
-import useQueryParams, {
-  type SearchQueryUnreservedChars,
-} from '@/lib/hooks/useQueryParams';
+import useQueryParams from '@/lib/hooks/useQueryParams';
 import { FilterCheckboxOption } from '@/lib/types/FilterCheckbox';
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { URL_QUERY_SEPERATORS } from '../validation/constants';
 
 interface Props {
@@ -17,8 +15,11 @@ export const useMultiCheckboxSearchQuery = ({
   searchQueryKey,
   options,
 }: Props) => {
-  const { queryParams, setQueryParams } = useQueryParams();
+  const { queryParams, setQueryParams } = useQueryParams<{
+    [key: string]: string;
+  }>();
   const [checkedOptions, setCheckedOptions] = useState(new Set<string>());
+  const isMounted = useRef(false);
 
   const getParamsArray = () =>
     queryParams.get(searchQueryKey)?.split(URL_QUERY_SEPERATORS.multipleOption);
@@ -26,16 +27,15 @@ export const useMultiCheckboxSearchQuery = ({
   const stringifyParamsArray = (params: string[]) =>
     params.join(URL_QUERY_SEPERATORS.multipleOption);
 
-  // const isChecked = (value: string) =>
-  //   Boolean(getParamsArray()?.find((paramValue) => paramValue === value));
+  const isNoSearchParam = queryParams.get(searchQueryKey) === null;
 
+  // First Mount
   useEffect(() => {
+    isMounted.current = true;
+
     const checkedOptionsFromUrl = getParamsArray();
 
-    if (checkedOptionsFromUrl === undefined) {
-      if (checkedOptions.size > 0) setCheckedOptions(new Set<string>());
-      return;
-    }
+    if (checkedOptionsFromUrl === undefined) return;
 
     const checkedOptionsCopy = new Set(checkedOptions);
 
@@ -44,15 +44,18 @@ export const useMultiCheckboxSearchQuery = ({
     });
 
     setCheckedOptions(checkedOptionsCopy);
-  }, []);
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setQueryParams({
-      [searchQueryKey]: stringifyParamsArray(
-        Array.from(checkedOptions.values()),
-      ),
-    });
-  }, [checkedOptions]);
+    if (isNoSearchParam && isMounted) {
+      console.log(true, 'Z');
+      setCheckedOptions(new Set<string>());
+    }
+  }, [isNoSearchParam]); //eslist-disable-line react-hooks/exhaustive-deps
 
   const handleCheck = useCallback(
     (
@@ -60,7 +63,7 @@ export const useMultiCheckboxSearchQuery = ({
       value: string,
       scroll: boolean = false,
     ) => {
-      const checkedOptionsCopy = new Set(checkedOptions);
+      let checkedOptionsCopy = new Set(checkedOptions);
 
       if (checked) {
         if (checkedOptionsCopy.size + 1 === options.length) {
@@ -75,6 +78,11 @@ export const useMultiCheckboxSearchQuery = ({
       }
 
       setCheckedOptions(checkedOptionsCopy);
+      setQueryParams({
+        [searchQueryKey]: stringifyParamsArray(
+          Array.from(checkedOptionsCopy.values()),
+        ),
+      });
 
       // const newParams = Array.from(params).toSorted(
       //   (a, b) =>
@@ -89,7 +97,7 @@ export const useMultiCheckboxSearchQuery = ({
       //   scroll,
       // );
     },
-    [queryParams, checkedOptions],
+    [queryParams, checkedOptions, searchQueryKey],
   );
 
   return { checkedOptions, handleCheck };

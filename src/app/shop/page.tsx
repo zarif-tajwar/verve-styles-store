@@ -22,7 +22,7 @@ const ShopPage = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  await wait(1000);
+  // await wait(1000);
   return <p>{JSON.stringify(searchParams)}</p>;
   // const productItems = staticProducts;
   // const productItemsRes = await getProductsFromDB(searchParams);

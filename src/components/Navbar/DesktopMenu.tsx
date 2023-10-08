@@ -37,6 +37,7 @@ const NavLinks = () => (
           <Link
             href={link.href}
             className="px-3 py-2 text-black/70 transition-colors hover:text-black"
+            prefetch={false}
           >
             {link.title}
           </Link>
