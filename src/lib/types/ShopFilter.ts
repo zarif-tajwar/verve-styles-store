@@ -3,5 +3,7 @@ export type ShopFilterState = {
   sizes: Set<string>;
   clothing: Set<string>;
   styles: Set<string>;
-  price_range: [number, number];
+  price_range: PriceRange;
 };
+
+export type PriceRange = [number, number];

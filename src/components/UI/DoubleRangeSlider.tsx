@@ -1,48 +1,17 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import useQueryParams from '@/lib/hooks/useQueryParams';
 import { defaultPriceRange } from '@/lib/validation/constants';
-import { zParsePriceRangeSearchQuery } from '@/lib/validation/schemas';
+import { useShopFilterStore } from '@/lib/store/shop-filter';
+import { PriceRange } from '@/lib/types/ShopFilter';
 
 const DoubleRangeSlider = () => {
-  const { queryParams, setQueryParams } = useQueryParams<{
+  const { setQueryParams } = useQueryParams<{
     price_range: string;
   }>();
-  const [priceRangeValues, setPriceRangeValues] = useState(defaultPriceRange);
-  const isMounted = useRef(false);
-
-  const isNoSearchParam = queryParams.get('price_range') === null;
-
-  useEffect(() => {
-    isMounted.current = true;
-
-    const priceRangeValuesFromUrl = queryParams.get('price_range');
-
-    const validate = zParsePriceRangeSearchQuery().safeParse(
-      priceRangeValuesFromUrl,
-    );
-
-    if (validate.success) {
-      const { data } = validate;
-      if (!data) {
-        setPriceRangeValues(defaultPriceRange);
-      } else {
-        setPriceRangeValues(data);
-      }
-    }
-
-    return () => {
-      isMounted.current = false;
-    };
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (isNoSearchParam && isMounted) {
-      setPriceRangeValues(defaultPriceRange);
-    }
-  }, [isNoSearchParam]); //eslint-disable-line react-hooks/exhaustive-deps
+  const priceRangeValues = useShopFilterStore((store) => store.price_range);
+  const updateFilterState = useShopFilterStore((store) => store.update);
 
   return (
     <div>
@@ -52,7 +21,9 @@ const DoubleRangeSlider = () => {
         min={defaultPriceRange[0]}
         max={defaultPriceRange[1]}
         step={1}
-        onValueChange={(values) => setPriceRangeValues(values)}
+        onValueChange={(values) =>
+          updateFilterState({ price_range: values as PriceRange })
+        }
         onValueCommit={(values) => {
           if (
             values[0] === defaultPriceRange[0] &&

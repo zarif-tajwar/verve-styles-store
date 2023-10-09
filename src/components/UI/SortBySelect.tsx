@@ -25,17 +25,13 @@ const SortBySelect = () => {
 export default SortBySelect;
 
 const SelectMain = () => {
-  const { getOptionValue, handleValueChange } = useSelectSearchQuery({
+  const { selectValue, handleValueChange } = useSelectSearchQuery({
     defaultOptionValue: defaultSortOptionValue,
-    options: sortOptions.map((o) => o.value),
     searchQueryKey: 'sort_by',
   });
 
   return (
-    <Select.Root
-      value={getOptionValue() || defaultSortOptionValue}
-      onValueChange={handleValueChange}
-    >
+    <Select.Root value={selectValue} onValueChange={handleValueChange}>
       <Select.Trigger
         className={cn(
           'flex h-9 items-center gap-1 rounded-lg border-none px-3 py-4 outline-none',

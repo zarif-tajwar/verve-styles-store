@@ -19,7 +19,7 @@ export const useMultiCheckboxSearchQuery = ({
   options,
 }: Props) => {
   const checkedOptions = useShopFilterStore((store) => store[searchQueryKey]);
-  const updateCheckedOptions = useShopFilterStore((store) => store.update);
+  const updateFilterState = useShopFilterStore((store) => store.update);
 
   const { queryParams, setQueryParams } = useQueryParams<{
     [key: string]: string;
@@ -48,7 +48,7 @@ export const useMultiCheckboxSearchQuery = ({
         checkedOptionsCopy.delete(value);
       }
 
-      updateCheckedOptions({ [searchQueryKey]: checkedOptionsCopy });
+      updateFilterState({ [searchQueryKey]: checkedOptionsCopy });
 
       setQueryParams(
         {
