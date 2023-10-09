@@ -11,19 +11,16 @@ export const useSelectSearchQuery = ({
   defaultOptionValue: string;
   searchQueryKey: string;
 }) => {
-  const { queryParams, setQueryParams } = useQueryParams();
+  const { setQueryParams } = useQueryParams();
   const selectValue = useShopFilterStore((store) => store.sort_by);
   const updateFilterState = useShopFilterStore((store) => store.update);
 
-  const handleValueChange = useCallback(
-    (value: string) => {
-      updateFilterState({ sort_by: value });
-      setQueryParams({
-        [searchQueryKey]: value === defaultOptionValue ? '' : value,
-      });
-    },
-    [queryParams], //eslint-disable-line react-hooks/exhaustive-deps
-  );
+  const handleValueChange = (value: string) => {
+    updateFilterState({ sort_by: value });
+    setQueryParams({
+      [searchQueryKey]: value === defaultOptionValue ? '' : value,
+    });
+  };
 
   return { selectValue, handleValueChange };
 };

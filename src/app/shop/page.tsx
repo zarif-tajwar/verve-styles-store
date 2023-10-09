@@ -1,7 +1,6 @@
 import { Icons } from '@/components/Svgs/icons';
 import Image from 'next/image';
 import { getProductsFromDB } from '@/lib/dbCalls/filter';
-import { number } from 'zod';
 
 // const staticProducts = [
 //   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -22,28 +21,28 @@ const ShopPage = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  await wait(1000);
-  return <p>{JSON.stringify(searchParams)}</p>;
+  // await wait(100000);
+  // return <p>{JSON.stringify(searchParams)}</p>;
   // const productItems = staticProducts;
 
-  // const productItemsRes = await getProductsFromDB(searchParams);
-  // const productItems = productItemsRes?.rows as {
-  //   name: string;
-  //   price: string;
-  // }[];
-  // return (
-  //   <>
-  //     <p className="absolute left-0 top-8">
-  //       [Found {productItems.length} products! Showing First 9 products!]
-  //     </p>
-  //     <div className="grid grid-cols-3 gap-x-5 gap-y-9">
-  //       {productItems.map((product, i) => {
-  //         // return <ProductListing key={i} product={product} />;
-  //         return i < 9 && <ProductListing key={i} product={product} />;
-  //       })}
-  //     </div>
-  //   </>
-  // );
+  const productItemsRes = await getProductsFromDB(searchParams);
+  const productItems = productItemsRes?.rows as {
+    name: string;
+    price: string;
+  }[];
+  return (
+    <>
+      <p className="absolute left-0 top-8">
+        [Found {productItems.length} products! Showing First 9 products!]
+      </p>
+      <div className="grid grid-cols-3 gap-x-5 gap-y-9">
+        {productItems.map((product, i) => {
+          // return <ProductListing key={i} product={product} />;
+          return i < 9 && <ProductListing key={i} product={product} />;
+        })}
+      </div>
+    </>
+  );
 };
 
 export default ShopPage;
