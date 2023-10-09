@@ -15,6 +15,8 @@ import { ProductEntry, productEntries } from './schema/productEntries';
 import { number, object, string, z } from 'zod';
 import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
 import { FilterSearchQueryValuesSchema } from '../validation/schemas';
+import { quickSortValuesByID } from '../util';
+import { clothingItemsOptions } from '../validation/constants';
 
 async function populateSizes() {
   await db
@@ -125,113 +127,16 @@ async function populateProductEntries() {
   await db.insert(productEntries).values(inputProductEntries);
 }
 
-const exampleSearchParam = {
-  price_range: '500-800',
-  clothing: 'tshirts,shirts,jeans',
-  sizes: 'xl,lg,md',
-  styles: 'formal,casual',
-  sort_by: 'price high to low',
-};
-
-// console.log(FilterSearchQueryValuesSchema.parse(exampleSearchParam));
-
-const getProductsFromDB = async (inputSearchParams: {
-  [key: string]: string;
-}) => {
-  const parsed = FilterSearchQueryValuesSchema.safeParse(inputSearchParams);
-
-  if (!parsed.success) return;
-
-  const { data } = parsed;
-
-  const conditionals = Array.from(Object.entries(data)).filter(
-    ([key, val]) => val !== undefined && key !== 'sort_by',
-  );
-
-  const sqlCunks: SQL[] = [];
-
-  sqlCunks.push(
-    sql`select distinct ${products.id}, ${products.name}, ${products.price} from ${products}`,
-  );
-
-  if (conditionals.length > 0) {
-    if (data.clothing !== undefined) {
-      sqlCunks.push(
-        sql`join ${clothing} on ${products.clothingID} = ${clothing.id}`,
-      );
-    }
-
-    if (data.styles !== undefined) {
-      sqlCunks.push(
-        sql`join ${dressStyles} on ${products.styleID} = ${dressStyles.id}`,
-      );
-    }
-
-    if (data.sizes !== undefined) {
-      sqlCunks.push(
-        sql`join ${productEntries} on ${products.id} = ${productEntries.productID}`,
-      );
-      sqlCunks.push(
-        sql`join ${sizes} on ${productEntries.sizeID} = ${sizes.id}`,
-      );
-    }
-
-    sqlCunks.push(sql`where`);
-
-    const conditionals: SQL[] = [];
-
-    if (data.clothing !== undefined) {
-      conditionals.push(sql`${clothing.name} in ${data.clothing}`);
-    }
-
-    if (data.styles !== undefined) {
-      conditionals.push(sql`${dressStyles.name} in ${data.styles}`);
-    }
-
-    if (data.price_range !== undefined) {
-      conditionals.push(
-        sql`${products.price} between ${data.price_range!.at(
-          0,
-        )} and ${data.price_range!.at(1)}`,
-      );
-    }
-
-    if (data.sizes !== undefined) {
-      conditionals.push(sql`${sizes.name} in ${data.sizes}`);
-    }
-
-    if (conditionals.length >= 2)
-      sqlCunks.push(sql.join(conditionals, sql.raw(' and ')));
-    if (conditionals.length === 1)
-      sqlCunks.push(sql.join(conditionals, sql.raw(' ')));
-  }
-
-  if (data.sort_by !== undefined) {
-    if (data.sort_by === 'price low to high') {
-      sqlCunks.push(sql`order by ${products.price}`);
-    }
-    if (data.sort_by === 'price high to low') {
-      sqlCunks.push(sql`order by ${products.price} desc`);
-    }
-  }
-
-  const finalSql: SQL = sql.join(sqlCunks, sql.raw(' '));
-
-  // const sqlString = new PgDialect().sqlToQuery(finalSql);
-
-  const recievedData = await db.execute(finalSql);
-
-  return recievedData;
-};
-
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  const data = await getProductsFromDB(exampleSearchParam);
+  const randomValueArray: string[] = ['hoodies', 'tshirts', 'jeans', 'shorts'];
 
-  console.log(data?.rows);
+  const sorted = quickSortValuesByID(randomValueArray, clothingItemsOptions);
+
+  console.log(sorted);
 
   const end = performance.now();
 

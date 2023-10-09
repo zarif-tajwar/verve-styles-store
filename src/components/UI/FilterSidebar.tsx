@@ -6,7 +6,6 @@ import DressStyleCheckbox from './DressStyleCheckbox';
 import SizesCheckbox from './SizesCheckbox';
 
 export const FilterSidebar = () => {
-  const update = useShopFilterStore((store) => store.update);
   return (
     <>
       <div className="w-full max-w-[296px]">

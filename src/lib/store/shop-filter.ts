@@ -3,14 +3,7 @@ import {
   defaultPriceRange,
   defaultSortOptionValue,
 } from '../validation/constants';
-
-type ShopFilterState = {
-  sort_by: string;
-  sizes: string[];
-  clothing: string[];
-  styles: string[];
-  price_range: [number, number];
-};
+import { ShopFilterState } from '../types/ShopFilter';
 
 type ShopFilterAction = {
   reset: () => void;
@@ -23,9 +16,9 @@ type ShopFilterAction = {
 
 const initialState: ShopFilterState = {
   sort_by: defaultSortOptionValue,
-  sizes: [],
-  clothing: [],
-  styles: [],
+  sizes: new Set(),
+  clothing: new Set(),
+  styles: new Set(),
   price_range: defaultPriceRange,
 };
 

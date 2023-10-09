@@ -3,11 +3,14 @@
 import useQueryParams from '@/lib/hooks/useQueryParams';
 import { FilterCheckboxOption } from '@/lib/types/FilterCheckbox';
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback } from 'react';
 import { URL_QUERY_SEPERATORS } from '../validation/constants';
+import { useShopFilterStore } from '../store/shop-filter';
+import { ShopFilterState } from '../types/ShopFilter';
+import { quickSortValuesByID } from '../util';
 
 interface Props {
-  searchQueryKey: string;
+  searchQueryKey: keyof Pick<ShopFilterState, 'sizes' | 'clothing' | 'styles'>;
   options: FilterCheckboxOption[];
 }
 
@@ -15,47 +18,15 @@ export const useMultiCheckboxSearchQuery = ({
   searchQueryKey,
   options,
 }: Props) => {
+  const checkedOptions = useShopFilterStore((store) => store[searchQueryKey]);
+  const updateCheckedOptions = useShopFilterStore((store) => store.update);
+
   const { queryParams, setQueryParams } = useQueryParams<{
     [key: string]: string;
   }>();
-  const [checkedOptions, setCheckedOptions] = useState(new Set<string>());
-  const isMounted = useRef(false);
-
-  const getParamsArray = () =>
-    queryParams.get(searchQueryKey)?.split(URL_QUERY_SEPERATORS.multipleOption);
 
   const stringifyParamsArray = (params: string[]) =>
     params.join(URL_QUERY_SEPERATORS.multipleOption);
-
-  const isNoSearchParam = queryParams.get(searchQueryKey) === null;
-
-  // First Mount
-  useEffect(() => {
-    isMounted.current = true;
-
-    const checkedOptionsFromUrl = getParamsArray();
-
-    if (checkedOptionsFromUrl === undefined) return;
-
-    const checkedOptionsCopy = new Set(checkedOptions);
-
-    checkedOptionsFromUrl.forEach((option) => {
-      checkedOptionsCopy.add(option);
-    });
-
-    setCheckedOptions(checkedOptionsCopy);
-
-    return () => {
-      isMounted.current = false;
-    };
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (isNoSearchParam && isMounted) {
-      console.log(true, 'Z');
-      setCheckedOptions(new Set<string>());
-    }
-  }, [isNoSearchParam]); //eslist-disable-line react-hooks/exhaustive-deps
 
   const handleCheck = useCallback(
     (
@@ -77,27 +48,18 @@ export const useMultiCheckboxSearchQuery = ({
         checkedOptionsCopy.delete(value);
       }
 
-      setCheckedOptions(checkedOptionsCopy);
-      setQueryParams({
-        [searchQueryKey]: stringifyParamsArray(
-          Array.from(checkedOptionsCopy.values()),
-        ),
-      });
+      updateCheckedOptions({ [searchQueryKey]: checkedOptionsCopy });
 
-      // const newParams = Array.from(params).toSorted(
-      //   (a, b) =>
-      //     options.find((option) => a === option.value)?.id! -
-      //     options.find((option) => b === option.value)?.id!,
-      // );
-
-      // setQueryParams(
-      //   {
-      //     [searchQueryKey]: stringifyParamsArray(newParams),
-      //   },
-      //   scroll,
-      // );
+      setQueryParams(
+        {
+          [searchQueryKey]: stringifyParamsArray(
+            quickSortValuesByID([...checkedOptionsCopy], options),
+          ),
+        },
+        scroll,
+      );
     },
-    [queryParams, checkedOptions, searchQueryKey], //eslint-disable-line react-hooks/exhaustive-deps
+    [queryParams, searchQueryKey], //eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return { checkedOptions, handleCheck };
