@@ -7,11 +7,11 @@ import { useCallback } from 'react';
 import { URL_QUERY_SEPERATORS } from '../validation/constants';
 import { useShopFilterStore } from '../store/shop-filter';
 import { ShopFilterState } from '../types/ShopFilter';
-import { quickSortValuesByID } from '../util';
+import { quickSortByReference } from '../util';
 
 interface Props {
   searchQueryKey: keyof Pick<ShopFilterState, 'sizes' | 'clothing' | 'styles'>;
-  options: FilterCheckboxOption[];
+  options: string[];
 }
 
 export const useMultiCheckboxSearchQuery = ({
@@ -53,7 +53,7 @@ export const useMultiCheckboxSearchQuery = ({
       setQueryParams(
         {
           [searchQueryKey]: stringifyParamsArray(
-            quickSortValuesByID([...checkedOptionsCopy], options),
+            quickSortByReference([...checkedOptionsCopy], options),
           ),
         },
         scroll,

@@ -3,11 +3,11 @@
 import { cn } from '@/lib/util';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { useMultiCheckboxSearchQuery } from '../../lib/hooks/useMultiCheckboxSearchQuery';
-import { sizesOptions } from '@/lib/validation/constants';
+import { sizesColumnNames, sizesOptions } from '@/lib/validation/constants';
 
 const SizesCheckbox = () => {
   const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
-    options: sizesOptions,
+    options: sizesColumnNames,
     searchQueryKey: 'sizes',
   });
 

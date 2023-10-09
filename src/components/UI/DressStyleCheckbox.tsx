@@ -2,25 +2,22 @@
 
 import { useMultiCheckboxSearchQuery } from '@/lib/hooks/useMultiCheckboxSearchQuery';
 import { cn } from '@/lib/util';
+import {
+  dressStylesColumnNames,
+  dressStylesOptions,
+} from '@/lib/validation/constants';
 import * as Checkbox from '@radix-ui/react-checkbox';
-
-const dressStyles = [
-  { id: 1, value: 'casual', label: 'Casual' },
-  { id: 2, value: 'formal', label: 'Formal' },
-  { id: 3, value: 'festival', label: 'Festival' },
-  { id: 4, value: 'gym', label: 'Gym' },
-];
 
 const DressStyleCheckbox = () => {
   const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
-    options: dressStyles,
+    options: dressStylesColumnNames,
     searchQueryKey: 'styles',
   });
 
   return (
     <div>
       <div className="grid grid-cols-2 gap-2.5 text-sm font-medium text-black/60">
-        {dressStyles.map((style) => (
+        {dressStylesOptions.map((style) => (
           <Checkbox.Root
             key={style.value}
             name={style.value}

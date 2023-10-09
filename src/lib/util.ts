@@ -12,42 +12,74 @@ export const isValueInArray = <T>(value: T, array: T[]): boolean =>
 export const isSubset = <T>(subsetArray: T[], targetArray: T[]): boolean =>
   subsetArray.every((v) => isValueInArray(v, targetArray));
 
-export const quickSortValuesByID = <T>(
+export const quickSortByReference = <T>(
   values: T[],
-  valuesWithID: { id: number; value: T }[],
+  referenceValues: T[],
 ): T[] => {
   if (values.length <= 1) {
     return values;
   }
 
-  const pivot = valuesWithID.find((item) => item.value === values[0]);
-  if (!pivot) {
-    return values;
-  }
+  const pivotIndex = Math.floor(values.length / 2);
+  const pivot = values[pivotIndex];
 
-  const pivotId = pivot.id;
-
-  const less: T[] = [];
-  const equal: T[] = [];
-  const greater: T[] = [];
-
-  for (const item of values) {
-    const itemId = valuesWithID.find((clothing) => clothing.value === item)?.id;
-
-    if (itemId !== undefined) {
-      if (itemId < pivotId) {
-        less.push(item);
-      } else if (itemId > pivotId) {
-        greater.push(item);
-      } else {
-        equal.push(item);
-      }
+  const less = values.filter((value, index) => {
+    if (index === pivotIndex) {
+      return false;
     }
-  }
+    return referenceValues.indexOf(value) < referenceValues.indexOf(pivot);
+  });
+
+  const greater = values.filter((value, index) => {
+    if (index === pivotIndex) {
+      return false;
+    }
+    return referenceValues.indexOf(value) > referenceValues.indexOf(pivot);
+  });
 
   return [
-    ...quickSortValuesByID(less, valuesWithID),
-    ...equal,
-    ...quickSortValuesByID(greater, valuesWithID),
+    ...quickSortByReference(less, referenceValues),
+    pivot,
+    ...quickSortByReference(greater, referenceValues),
   ];
 };
+
+// export const quickSortValuesByID = <T>(
+//   values: T[],
+//   valuesWithID: { id: number; value: T }[],
+// ): T[] => {
+//   if (values.length <= 1) {
+//     return values;
+//   }
+
+//   const pivot = valuesWithID.find((item) => item.value === values[0]);
+//   if (!pivot) {
+//     return values;
+//   }
+
+//   const pivotId = pivot.id;
+
+//   const less: T[] = [];
+//   const equal: T[] = [];
+//   const greater: T[] = [];
+
+//   for (const item of values) {
+//     const itemId = valuesWithID.find((clothing) => clothing.value === item)?.id;
+
+//     if (itemId !== undefined) {
+//       if (itemId < pivotId) {
+//         less.push(item);
+//       } else if (itemId > pivotId) {
+//         greater.push(item);
+//       } else {
+//         equal.push(item);
+//       }
+//     }
+//   }
+
+//   return [
+//     ...quickSortValuesByID(less, valuesWithID),
+//     ...equal,
+//     ...quickSortValuesByID(greater, valuesWithID),
+//   ];
+// };

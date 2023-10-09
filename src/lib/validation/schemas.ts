@@ -1,6 +1,6 @@
 import { array, z } from 'zod';
 import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
-import { isValueInArray } from '../util';
+import { isValueInArray, quickSortByReference } from '../util';
 import {
   clothingColumnNames,
   defaultSortOptionValue,
@@ -20,19 +20,18 @@ export const zParseMultiOptionSearchQuery = (targetArray: string[]) =>
         .string()
         .array()
         .transform((array) => {
-          const filteredArray = Array.from(
-            new Set(
+          const filteredArray = [
+            ...new Set(
               array.filter((value) => isValueInArray(value, targetArray)),
             ),
-          ).toSorted(
-            (a, b) =>
-              targetArray.findIndex((v) => v === a) -
-              targetArray.findIndex((v) => v === b),
-          );
-          return filteredArray.length === 0 ||
-            filteredArray.length >= targetArray.length
+          ];
+
+          const sortedArray = quickSortByReference(filteredArray, targetArray);
+
+          return sortedArray.length === 0 ||
+            sortedArray.length >= targetArray.length
             ? undefined
-            : filteredArray;
+            : sortedArray;
         }),
     );
 
@@ -58,7 +57,7 @@ export const zParsePriceRangeSearchQuery = () =>
       if (priceRange[0] > priceRange[1]) return undefined;
       return priceRange;
     })
-    .pipe(z.number().array().nullish());
+    .pipe(z.number().array().length(2).nullish());
 
 export const zParseSingleOptionSearchQuery = (
   optionValues: string[],

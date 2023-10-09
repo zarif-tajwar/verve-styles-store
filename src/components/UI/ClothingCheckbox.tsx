@@ -4,24 +4,20 @@ import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { useMultiCheckboxSearchQuery } from '@/lib/hooks/useMultiCheckboxSearchQuery';
-
-const clothingItems = [
-  { id: 1, value: 'tshirts', label: 'T-Shirts', icon: Icons['T-Shirts'] },
-  { id: 2, value: 'shorts', label: 'Shorts', icon: Icons.Shorts },
-  { id: 3, value: 'shirts', label: 'Shirts', icon: Icons.Shirts },
-  { id: 4, value: 'hoodies', label: 'Hoodies', icon: Icons.Hoodies },
-  { id: 5, value: 'jeans', label: 'Jeans', icon: Icons.Jeans },
-];
+import {
+  clothingColumnNames,
+  clothingItemsOptions,
+} from '@/lib/validation/constants';
 
 const ClothingCheckbox = () => {
   const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
-    options: clothingItems,
+    options: clothingColumnNames,
     searchQueryKey: 'clothing',
   });
 
   return (
     <div className="grid grid-cols-2 gap-2.5 text-sm">
-      {clothingItems.map((clothing) => (
+      {clothingItemsOptions.map((clothing) => (
         <Checkbox.Root
           key={clothing.value}
           name={clothing.label}

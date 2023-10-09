@@ -15,7 +15,6 @@ import { ProductEntry, productEntries } from './schema/productEntries';
 import { number, object, string, z } from 'zod';
 import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
 import { FilterSearchQueryValuesSchema } from '../validation/schemas';
-import { quickSortValuesByID } from '../util';
 import { clothingItemsOptions } from '../validation/constants';
 
 async function populateSizes() {
@@ -133,10 +132,6 @@ async function execute() {
   const start = performance.now();
 
   const randomValueArray: string[] = ['hoodies', 'tshirts', 'jeans', 'shorts'];
-
-  const sorted = quickSortValuesByID(randomValueArray, clothingItemsOptions);
-
-  console.log(sorted);
 
   const end = performance.now();
 
