@@ -97,7 +97,7 @@ export const useMultiCheckboxSearchQuery = ({
       //   scroll,
       // );
     },
-    [queryParams, checkedOptions, searchQueryKey],
+    [queryParams, checkedOptions, searchQueryKey], //eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return { checkedOptions, handleCheck };
