@@ -70,7 +70,6 @@ export const FilterSidebar = () => {
             continue;
           }
         }
-        console.log(validStatesFromUrl, validatedSearchParams);
         updateFilterState(validStatesFromUrl);
         setQueryParams(validatedSearchParams);
       } else {

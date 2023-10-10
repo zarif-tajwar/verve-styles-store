@@ -21,7 +21,7 @@ const ShopPage = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  // await wait(100000);
+  // await wait(600);
   // return <p>{JSON.stringify(searchParams)}</p>;
   // const productItems = staticProducts;
 
