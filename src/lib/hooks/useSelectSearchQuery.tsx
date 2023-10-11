@@ -16,7 +16,7 @@ export const useSelectSearchQuery = ({
   const updateFilterState = useShopFilterStore((store) => store.update);
 
   const handleValueChange = (value: string) => {
-    updateFilterState({ sort_by: value });
+    updateFilterState({ sort_by: value, page: 1 });
     setQueryParams({
       [searchQueryKey]: value === defaultOptionValue ? '' : value,
     });

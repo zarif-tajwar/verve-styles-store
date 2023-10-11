@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 192.168.68.101",
     "lint": "next lint",
     "mig:generate": "drizzle-kit generate:pg",
     "mig:push": "node -r esbuild-register src/lib/db/migrate.ts",

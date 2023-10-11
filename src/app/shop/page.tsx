@@ -1,6 +1,7 @@
 import { Icons } from '@/components/Svgs/icons';
 import Image from 'next/image';
 import { getProductsFromDB } from '@/lib/dbCalls/filter';
+import ShopFilterPagination from '@/components/UI/ShopFilterPagination';
 
 // const staticProducts = [
 //   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -40,6 +41,9 @@ const ShopPage = async ({
           // return <ProductListing key={i} product={product} />;
           return i < 9 && <ProductListing key={i} product={product} />;
         })}
+      </div>
+      <div className="pt-16">
+        <ShopFilterPagination totalProducts={productItems.length} />
       </div>
     </>
   );

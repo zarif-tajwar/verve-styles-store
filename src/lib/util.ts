@@ -44,42 +44,7 @@ export const quickSortByReference = <T>(
   ];
 };
 
-// export const quickSortValuesByID = <T>(
-//   values: T[],
-//   valuesWithID: { id: number; value: T }[],
-// ): T[] => {
-//   if (values.length <= 1) {
-//     return values;
-//   }
-
-//   const pivot = valuesWithID.find((item) => item.value === values[0]);
-//   if (!pivot) {
-//     return values;
-//   }
-
-//   const pivotId = pivot.id;
-
-//   const less: T[] = [];
-//   const equal: T[] = [];
-//   const greater: T[] = [];
-
-//   for (const item of values) {
-//     const itemId = valuesWithID.find((clothing) => clothing.value === item)?.id;
-
-//     if (itemId !== undefined) {
-//       if (itemId < pivotId) {
-//         less.push(item);
-//       } else if (itemId > pivotId) {
-//         greater.push(item);
-//       } else {
-//         equal.push(item);
-//       }
-//     }
-//   }
-
-//   return [
-//     ...quickSortValuesByID(less, valuesWithID),
-//     ...equal,
-//     ...quickSortValuesByID(greater, valuesWithID),
-//   ];
-// };
+export const range = (start: number, end: number) => {
+  const length = end - start + 1;
+  return Array.from({ length }, (_, index) => index + start);
+};

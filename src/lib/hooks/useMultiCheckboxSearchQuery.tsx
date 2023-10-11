@@ -44,7 +44,7 @@ export const useMultiCheckboxSearchQuery = ({
       checkedOptionsCopy.delete(value);
     }
 
-    updateFilterState({ [searchQueryKey]: checkedOptionsCopy });
+    updateFilterState({ [searchQueryKey]: checkedOptionsCopy, page: 1 });
 
     setQueryParams(
       {

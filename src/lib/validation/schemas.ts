@@ -69,6 +69,13 @@ export const zParseSingleOptionSearchQuery = (
     return undefined;
   });
 
+export const zParsePageNumber = () =>
+  z.string().transform((value) => {
+    const valueToNumber = Number.parseInt(value);
+    if (Number.isNaN(valueToNumber)) return undefined;
+    return valueToNumber;
+  });
+
 export const FilterSearchQueryValuesSchema = z
   .object({
     sizes: zParseMultiOptionSearchQuery(sizesColumnNames),
@@ -79,6 +86,7 @@ export const FilterSearchQueryValuesSchema = z
       sortOptionValues,
       defaultSortOptionValue,
     ),
+    page: zParsePageNumber(),
   })
   .partial();
 

@@ -22,7 +22,7 @@ const DoubleRangeSlider = () => {
         max={defaultPriceRange[1]}
         step={1}
         onValueChange={(values) =>
-          updateFilterState({ price_range: values as PriceRange })
+          updateFilterState({ price_range: values as PriceRange, page: 1 })
         }
         onValueCommit={(values) => {
           if (

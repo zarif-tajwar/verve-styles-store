@@ -6,6 +6,7 @@ import { dressStyles } from '../db/schema/dressStyles';
 import { productEntries } from '../db/schema/productEntries';
 import { sizes } from '../db/schema/sizes';
 import { db } from '../db';
+import { PgDialect } from 'drizzle-orm/pg-core';
 
 export const getProductsFromDB = async (inputSearchParams: {
   [key: string]: string | string[] | undefined;
@@ -17,7 +18,7 @@ export const getProductsFromDB = async (inputSearchParams: {
   const { data } = parsed;
 
   const conditionals = Array.from(Object.entries(data)).filter(
-    ([key, val]) => val !== undefined && key !== 'sort_by',
+    ([key, val]) => val !== undefined && key !== 'sort_by' && key !== 'page',
   );
 
   const sqlCunks: SQL[] = [];
