@@ -29,6 +29,20 @@
       "when": 1695088348267,
       "tag": "0003_wandering_sandman",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1697137860978,
+      "tag": "0004_dizzy_onslaught",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1697138184573,
+      "tag": "0005_real_crusher_hogan",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "product_id_index" ON "products" ("id");
