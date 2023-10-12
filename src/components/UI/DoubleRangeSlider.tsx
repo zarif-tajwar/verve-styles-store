@@ -2,13 +2,17 @@
 
 import * as Slider from '@radix-ui/react-slider';
 import useQueryParams from '@/lib/hooks/useQueryParams';
-import { defaultPriceRange } from '@/lib/validation/constants';
+import {
+  URL_QUERY_SEPERATORS,
+  defaultPriceRange,
+} from '@/lib/validation/constants';
 import { useShopFilterStore } from '@/lib/store/shop-filter';
 import { PriceRange } from '@/lib/types/ShopFilter';
 
 const DoubleRangeSlider = () => {
   const { setQueryParams } = useQueryParams<{
     price_range: string;
+    page: undefined;
   }>();
   const priceRangeValues = useShopFilterStore((store) => store.price_range);
   const updateFilterState = useShopFilterStore((store) => store.update);
@@ -25,14 +29,16 @@ const DoubleRangeSlider = () => {
           updateFilterState({ price_range: values as PriceRange, page: 1 })
         }
         onValueCommit={(values) => {
+          let priceRangeToString = values.join(URL_QUERY_SEPERATORS.range);
+
           if (
             values[0] === defaultPriceRange[0] &&
             values[1] === defaultPriceRange[1]
           ) {
-            setQueryParams({ price_range: '' });
-          } else {
-            setQueryParams({ price_range: values.join('-') });
+            priceRangeToString = '';
           }
+
+          setQueryParams({ page: undefined, price_range: priceRangeToString });
         }}
       >
         <Slider.Track className="relative h-1.5 grow cursor-pointer rounded-full bg-offwhite">

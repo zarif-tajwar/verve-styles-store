@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https",
     "build": "next build",
-    "start": "next start -H 192.168.68.101",
+    "start": "next start",
     "lint": "next lint",
     "mig:generate": "drizzle-kit generate:pg",
     "mig:push": "node -r esbuild-register src/lib/db/migrate.ts",

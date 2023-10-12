@@ -36,7 +36,7 @@ const CustomerReviews = () => {
   }, [isVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <section className="mt-20 overflow-x-hidden">
+    <section className="mt-20 overflow-x-hidden" id="reviews">
       <div>
         <div className="container-main flex items-end justify-between">
           <h2>Our Happy Customers</h2>

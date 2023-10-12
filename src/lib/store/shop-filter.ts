@@ -7,10 +7,6 @@ import { ShopFilterState } from '../types/ShopFilter';
 
 type ShopFilterAction = {
   reset: () => void;
-  //   update: <K extends keyof ShopFilterState>(
-  //     key: K,
-  //     value: ShopFilterState[K],
-  //   ) => void;
   update: (state: Partial<ShopFilterState>) => void;
 };
 
@@ -32,8 +28,5 @@ export const useShopFilterStore = create<ShopFilterState & ShopFilterAction>()(
     update: (state) => {
       set({ ...state });
     },
-    // update: (key, value) => {
-    //   set({ [key]: value });
-    // },
   }),
 );

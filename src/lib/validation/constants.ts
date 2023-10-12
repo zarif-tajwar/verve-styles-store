@@ -63,3 +63,5 @@ export const URL_QUERY_SEPERATORS = {
   multipleOption: ',',
   range: '-',
 } as const;
+
+export const FILTER_PRODUCTS_PER_PAGE = 9;

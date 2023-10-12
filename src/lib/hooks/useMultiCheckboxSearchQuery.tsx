@@ -20,7 +20,7 @@ export const useMultiCheckboxSearchQuery = ({
   const updateFilterState = useShopFilterStore((store) => store.update);
 
   const { setQueryParams } =
-    useQueryParams<Record<typeof searchQueryKey, string>>();
+    useQueryParams<Record<typeof searchQueryKey | 'page', string>>();
 
   const stringifyParamsArray = (params: string[]) =>
     params.join(URL_QUERY_SEPERATORS.multipleOption);
@@ -44,13 +44,17 @@ export const useMultiCheckboxSearchQuery = ({
       checkedOptionsCopy.delete(value);
     }
 
-    updateFilterState({ [searchQueryKey]: checkedOptionsCopy, page: 1 });
+    updateFilterState({
+      [searchQueryKey]: checkedOptionsCopy,
+      page: 1,
+    });
 
     setQueryParams(
       {
         [searchQueryKey]: stringifyParamsArray(
           quickSortByReference([...checkedOptionsCopy], options),
         ),
+        page: undefined,
       },
       scroll,
     );

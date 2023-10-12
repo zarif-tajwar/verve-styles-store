@@ -4,32 +4,30 @@ import { usePagination } from '@/lib/hooks/mantine/usePagination';
 import useQueryParams from '@/lib/hooks/useQueryParams';
 import { useShopFilterStore } from '@/lib/store/shop-filter';
 import { cn } from '@/lib/util';
+import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { zParsePageNumber } from '@/lib/validation/schemas';
-import { ChevronLeftIcon } from '@radix-ui/react-icons';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const ShopFilterPagination = ({
   totalProducts,
 }: {
   totalProducts?: number;
 }) => {
-  const totalPages = Math.ceil((totalProducts ?? 0) / 9);
+  // const totalPages = Math.ceil((1000 ?? 0) / FILTER_PRODUCTS_PER_PAGE);
+  const totalPages = Math.ceil((totalProducts ?? 0) / FILTER_PRODUCTS_PER_PAGE);
+
   const [page, updateFilterState] = useShopFilterStore((store) => [
     store.page,
     store.update,
   ]);
 
-  const { active, range, setPage } = usePagination({
-    total: totalPages,
-    initialPage: 1,
-  });
   const { queryParams, setQueryParams } = useQueryParams<{ page: string }>();
 
-  const setPageWithUrl = (pageNum: number) => {
-    setPage(pageNum);
-    updateFilterState({ page: pageNum });
-    setQueryParams({ page: pageNum === 1 ? undefined : pageNum.toString() });
-  };
+  const { active, range } = usePagination({
+    total: totalPages,
+    initialPage: 1,
+    page: page,
+  });
 
   useEffect(() => {
     const pageFromUrl = queryParams.get('page');
@@ -47,31 +45,33 @@ const ShopFilterPagination = ({
     if (data > totalPages) {
       setQueryParams({ page: undefined });
     } else {
-      setPage(data);
       updateFilterState({ page: data });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // useEffect(() => {
-  //   setPage(page);
-  //   setQueryParams({ page: page === 1 ? undefined : page.toString() });
-  // }, [page]);
+  // if (totalPages < 2) return null;
+
+  const setPage = (pageNum: number) => {
+    if (pageNum < 1 || pageNum === page || pageNum > totalPages) return;
+    updateFilterState({ page: pageNum });
+    setQueryParams({ page: pageNum === 1 ? undefined : pageNum.toString() });
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
 
   return (
-    <>
-      <div>{active}</div>
-      <div>{page}</div>
+    <div className="">
       <div className="flex w-full items-center justify-center">
-        <nav className="overflow-hidden rounded-lg bg-offwhite px-3.5 py-2.5 text-sm font-medium">
+        <nav className="overflow-hidden rounded-xl bg-offwhite px-3.5 py-2.5 text-sm font-medium">
           <div className="flex gap-2">
             <button
               onClick={() => {
-                // previous();
-                setPageWithUrl(active - 1);
+                setPage(page - 1);
               }}
               className={cn(
                 'flex h-10 w-10 items-center justify-center rounded-lg',
                 'hover:bg-black/5',
+                page === 1 && 'cursor-default opacity-20 hover:bg-transparent',
+                // 'disabled:opacity-20 disabled:hover:bg-transparent',
               )}
             >
               <svg
@@ -111,12 +111,14 @@ const ShopFilterPagination = ({
                   className={cn(
                     'flex h-10 w-10 items-center justify-center rounded-lg tracking-wider',
                     //   'transition-all duration-200',
-                    active === value && 'bg-black text-white duration-0',
+                    active === value &&
+                      'cursor-default bg-black text-white duration-0',
                     active !== value && 'hover:bg-black/5',
                   )}
                   onClick={() => {
-                    setPageWithUrl(value);
+                    setPage(value);
                   }}
+                  // disabled={active === value}
                 >
                   {value}
                 </button>
@@ -124,12 +126,13 @@ const ShopFilterPagination = ({
             })}
             <button
               onClick={() => {
-                // next();
-                setPageWithUrl(active + 1);
+                setPage(page + 1);
               }}
               className={cn(
                 'flex h-10 w-10 items-center justify-center rounded-lg',
                 'hover:bg-black/5',
+                page === totalPages &&
+                  'cursor-default opacity-20 hover:bg-transparent',
               )}
             >
               <svg
@@ -152,7 +155,7 @@ const ShopFilterPagination = ({
           </div>
         </nav>
       </div>
-    </>
+    </div>
   );
 };
 export default ShopFilterPagination;

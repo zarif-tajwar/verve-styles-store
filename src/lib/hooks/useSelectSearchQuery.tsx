@@ -19,6 +19,7 @@ export const useSelectSearchQuery = ({
     updateFilterState({ sort_by: value, page: 1 });
     setQueryParams({
       [searchQueryKey]: value === defaultOptionValue ? '' : value,
+      page: undefined,
     });
   };
 

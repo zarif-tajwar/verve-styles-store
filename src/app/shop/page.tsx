@@ -22,20 +22,21 @@ const ShopPage = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  // await wait(600);
+  // await wait(1000);
   // return <p>{JSON.stringify(searchParams)}</p>;
+
   // const productItems = staticProducts;
 
   const productItemsRes = await getProductsFromDB(searchParams);
   const productItems = productItemsRes?.rows as {
     name: string;
     price: string;
+    total_count: number;
   }[];
+  const totalProducts = productItems[0].total_count;
+
   return (
     <>
-      <p className="absolute left-0 top-8">
-        [Found {productItems.length} products! Showing First 9 products!]
-      </p>
       <div className="grid grid-cols-3 gap-x-5 gap-y-9">
         {productItems.map((product, i) => {
           // return <ProductListing key={i} product={product} />;
@@ -43,7 +44,7 @@ const ShopPage = async ({
         })}
       </div>
       <div className="pt-16">
-        <ShopFilterPagination totalProducts={productItems.length} />
+        <ShopFilterPagination totalProducts={totalProducts} />
       </div>
     </>
   );

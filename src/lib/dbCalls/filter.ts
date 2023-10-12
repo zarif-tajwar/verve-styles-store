@@ -7,6 +7,7 @@ import { productEntries } from '../db/schema/productEntries';
 import { sizes } from '../db/schema/sizes';
 import { db } from '../db';
 import { PgDialect } from 'drizzle-orm/pg-core';
+import { FILTER_PRODUCTS_PER_PAGE } from '../validation/constants';
 
 export const getProductsFromDB = async (inputSearchParams: {
   [key: string]: string | string[] | undefined;
@@ -24,7 +25,7 @@ export const getProductsFromDB = async (inputSearchParams: {
   const sqlCunks: SQL[] = [];
 
   sqlCunks.push(
-    sql`select distinct ${products.id}, ${products.name}, ${products.price} from ${products}`,
+    sql`select distinct ${products.id}, ${products.name}, ${products.price}, count(${products.id}) over () as total_count from ${products}`,
   );
 
   if (conditionals.length > 0) {
@@ -87,12 +88,23 @@ export const getProductsFromDB = async (inputSearchParams: {
       sqlCunks.push(sql`order by ${products.price} desc`);
     }
   }
+  sqlCunks.push(sql`LIMIT ${FILTER_PRODUCTS_PER_PAGE}`);
+
+  if (data.page !== undefined) {
+    sqlCunks.push(sql`offset ${FILTER_PRODUCTS_PER_PAGE * (data.page - 1)}`);
+  }
 
   const finalSql: SQL = sql.join(sqlCunks, sql.raw(' '));
 
   // const sqlString = new PgDialect().sqlToQuery(finalSql);
 
+  // console.log('\nINPUT SEARCH PARAMS: ', inputSearchParams);
+  // console.log('\nPARSED DATA FROM INPUT SEARCH PARAMS: ', data);
+  // console.log('\nSQL QUERY: ', sqlString);
+
   const recievedData = await db.execute(finalSql);
+
+  // console.log('\nRECIEVED DATA: ', recievedData.rows);
 
   return recievedData;
 };

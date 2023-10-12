@@ -131,7 +131,9 @@ async function execute() {
 
   const start = performance.now();
 
-  const randomValueArray: string[] = ['hoodies', 'tshirts', 'jeans', 'shorts'];
+  const lol = db.query.productEntries.findMany().toSQL();
+
+  console.log(lol);
 
   const end = performance.now();
 
