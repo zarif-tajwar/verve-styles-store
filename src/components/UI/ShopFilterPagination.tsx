@@ -30,6 +30,10 @@ const ShopFilterPagination = ({
   });
 
   useEffect(() => {
+    updateFilterState({ totalProducts });
+  }, [totalProducts]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     const pageFromUrl = queryParams.get('page');
 
     if (pageFromUrl === null) return;
@@ -49,7 +53,7 @@ const ShopFilterPagination = ({
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // if (totalPages < 2) return null;
+  if (totalPages < 2) return null;
 
   const setPage = (pageNum: number) => {
     if (pageNum < 1 || pageNum === page || pageNum > totalPages) return;

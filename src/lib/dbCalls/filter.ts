@@ -25,16 +25,14 @@ export const getProductsFromDB = async (inputSearchParams: {
   const sqlCunks: SQL[] = [];
 
   sqlCunks.push(
-    sql`select distinct ${products.id}, ${products.name}, ${products.price}, count(${products.id}) over () as total_count from ${products}`,
+    sql`select distinct ${products.id}, ${products.name}, ${products.price}, ${clothing.name} as category, count(${products.id}) over () as total_count from ${products}`,
+  );
+
+  sqlCunks.push(
+    sql`join ${clothing} on ${products.clothingID} = ${clothing.id}`,
   );
 
   if (conditionals.length > 0) {
-    if (data.clothing !== undefined) {
-      sqlCunks.push(
-        sql`join ${clothing} on ${products.clothingID} = ${clothing.id}`,
-      );
-    }
-
     if (data.styles !== undefined) {
       sqlCunks.push(
         sql`join ${dressStyles} on ${products.styleID} = ${dressStyles.id}`,

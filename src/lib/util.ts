@@ -48,3 +48,15 @@ export const range = (start: number, end: number) => {
   const length = end - start + 1;
   return Array.from({ length }, (_, index) => index + start);
 };
+
+export const makeValidURL = (str: string) => {
+  const unsupportedCharacters = /[^a-zA-Z0-9-]/g;
+  let result = '';
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i].toLowerCase();
+    result += char.match(unsupportedCharacters) ? '-' : char;
+  }
+
+  return result;
+};

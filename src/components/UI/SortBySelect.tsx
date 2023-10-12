@@ -34,7 +34,7 @@ const SelectMain = () => {
     <Select.Root value={selectValue} onValueChange={handleValueChange}>
       <Select.Trigger
         className={cn(
-          'flex h-9 items-center gap-1 rounded-lg border-none px-3 py-4 outline-none',
+          'flex items-center gap-1 rounded-lg border-none px-3 py-2 outline-none',
           'hover:bg-offwhite',
           'transition-all duration-200',
           'focus-visible:ring-2 focus-visible:ring-black',
@@ -62,7 +62,7 @@ const SelectMain = () => {
               {sortOptions.map((option) => (
                 <Select.Item
                   className={cn(
-                    'flex cursor-pointer select-none items-center justify-between gap-2 rounded-md px-2 py-2 text-sm outline-none',
+                    'flex cursor-pointer select-none items-center justify-between gap-2 rounded-md px-4 py-2 text-sm outline-none',
                     'data-[highlighted]:bg-offwhite',
                     'transition-all duration-200',
                   )}

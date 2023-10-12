@@ -5,6 +5,7 @@ export type ShopFilterState = {
   styles: Set<string>;
   price_range: PriceRange;
   page: number;
+  totalProducts: number;
 };
 
 export type PriceRange = [number, number];

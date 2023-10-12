@@ -2,6 +2,9 @@ import { Icons } from '@/components/Svgs/icons';
 import Image from 'next/image';
 import { getProductsFromDB } from '@/lib/dbCalls/filter';
 import ShopFilterPagination from '@/components/UI/ShopFilterPagination';
+import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
+import Link from 'next/link';
+import { makeValidURL } from '@/lib/util';
 
 // const staticProducts = [
 //   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -22,7 +25,6 @@ const ShopPage = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  // await wait(1000);
   // return <p>{JSON.stringify(searchParams)}</p>;
 
   // const productItems = staticProducts;
@@ -32,21 +34,23 @@ const ShopPage = async ({
     name: string;
     price: string;
     total_count: number;
+    category: string;
+    id: number;
   }[];
-  const totalProducts = productItems[0].total_count;
+  const currentPage = Number.parseInt(searchParams.page as string) || 1;
+  const totalProducts = productItems.at(0)?.total_count || 0;
 
   return (
-    <>
+    <div>
       <div className="grid grid-cols-3 gap-x-5 gap-y-9">
         {productItems.map((product, i) => {
-          // return <ProductListing key={i} product={product} />;
-          return i < 9 && <ProductListing key={i} product={product} />;
+          return <ProductListing key={i} product={product} />;
         })}
       </div>
       <div className="pt-16">
         <ShopFilterPagination totalProducts={totalProducts} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -57,35 +61,43 @@ const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const ProductListing = ({
   product,
 }: {
-  product: { name: string; price: string };
+  product: { name: string; price: string; category: string; id: number };
 }) => {
   return (
-    <div>
-      <div className="mb-4 aspect-square w-full overflow-hidden rounded-main">
-        <Image
-          src={'/products/black-striped-tshirt.png'}
-          alt="product"
-          width={300}
-          height={300}
-          className="h-full w-full object-cover"
-        />
-      </div>
+    <Link
+      href={`/${makeValidURL(product.category)}/${makeValidURL(product.name)}-${
+        product.id
+      }`}
+    >
       <div>
-        <h3 className="mb-2 font-plus-jakarta-sans text-xl font-bold capitalize">
-          {product.name}
-        </h3>
-      </div>
-      <div className="mb-2 flex gap-3">
-        <div className="flex gap-1 text-amber-400">
-          {[...Array(4).keys()].map((_, i) => (
-            <Icons.star key={i} />
-          ))}
+        <div className="mb-4 aspect-square w-full overflow-hidden rounded-main">
+          <Image
+            src={'/products/black-striped-tshirt.png'}
+            alt="product"
+            width={300}
+            height={300}
+            className="h-full w-full object-cover"
+          />
         </div>
-        <p className="text-sm font-medium text-black/60">
-          <span className="text-black">4.0/</span>5.0
+        <div>
+          <h3 className="mb-2 font-plus-jakarta-sans text-xl font-bold capitalize">
+            {product.name}
+          </h3>
+        </div>
+        <div className="mb-2 flex gap-3">
+          <div className="flex gap-1 text-amber-400">
+            {[...Array(4).keys()].map((_, i) => (
+              <Icons.star key={i} />
+            ))}
+          </div>
+          <p className="text-sm font-medium text-black/60">
+            <span className="text-black">4.0/</span>5.0
+          </p>
+        </div>
+        <p className="text-2xl font-bold">
+          ${Number.parseFloat(product.price)}
         </p>
       </div>
-      <p className="text-2xl font-bold">${Number.parseFloat(product.price)}</p>
-    </div>
+    </Link>
   );
 };

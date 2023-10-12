@@ -46,9 +46,9 @@ const NavLinks = () => (
       <li className="inline-block">
         <Link
           className="px-3 py-2 text-black/70 transition-colors hover:text-black"
-          href={'/#reviews'}
+          href={'/categories'}
         >
-          Brands
+          Categories
         </Link>
       </li>
     </ul>
