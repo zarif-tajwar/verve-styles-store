@@ -4,6 +4,7 @@ import { cn } from '@/lib/util';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { useMultiCheckboxSearchQuery } from '../../lib/hooks/useMultiCheckboxSearchQuery';
 import { sizesColumnNames, sizesOptions } from '@/lib/validation/constants';
+import { buttonVariants } from './Button';
 
 const SizesCheckbox = () => {
   const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
@@ -22,13 +23,13 @@ const SizesCheckbox = () => {
           onCheckedChange={(checked) => {
             handleCheck(checked, size.value);
           }}
-          className={cn(
-            'rounded-full border-none bg-offwhite px-5 py-1.5 text-sm font-medium text-black/60 outline-none',
-            'focus-visible:ring-2 focus-visible:ring-black',
-            'transition-all duration-200',
-            'hover:bg-black/10',
-            'data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
-          )}
+          className={buttonVariants({
+            align: 'left',
+            variant: 'secondary',
+            roundness: 'default',
+            className:
+              'px-6 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
+          })}
         >
           <div>{size.label}</div>
         </Checkbox.Root>

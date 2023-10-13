@@ -1,6 +1,7 @@
 'use client';
 
 import { animate, motion, Variants } from 'framer-motion';
+import { Button } from '../UI/Button';
 
 const Featured = () => {
   return (
@@ -83,9 +84,9 @@ const FeaturedItem = ({ title }: { title: string }) => {
           4
         </motion.div>
       </motion.div>
-      <button className="rounded-full px-14 py-4 shadow-sm ring-1 ring-black/10 transition-all duration-200 hover:bg-offwhite hover:ring-offwhite">
+      <Button variant={'outline'} size={'xl'}>
         View All
-      </button>
+      </Button>
     </div>
   );
 };

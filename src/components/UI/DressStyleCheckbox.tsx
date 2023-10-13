@@ -7,6 +7,7 @@ import {
   dressStylesOptions,
 } from '@/lib/validation/constants';
 import * as Checkbox from '@radix-ui/react-checkbox';
+import { Button, buttonVariants } from './Button';
 
 const DressStyleCheckbox = () => {
   const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
@@ -22,12 +23,13 @@ const DressStyleCheckbox = () => {
             key={style.value}
             name={style.value}
             value={style.value}
-            className={cn(
-              'rounded-lg border-none bg-black/5 px-3 py-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-black',
-              'hover:bg-black/10',
-              'transition-all duration-200',
-              'data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
-            )}
+            className={buttonVariants({
+              align: 'left',
+              variant: 'secondary',
+              roundness: 'lg',
+              className:
+                'data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
+            })}
             checked={checkedOptions.has(style.value)}
             onCheckedChange={(checked) => handleCheck(checked, style.value)}
           >

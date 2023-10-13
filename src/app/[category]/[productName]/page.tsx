@@ -47,13 +47,15 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
         ),
       ),
     );
-  if (
-    product === undefined ||
-    `${makeValidURL(product.products.name)}-${product.products.id}` !==
-      params.productName
-  ) {
-    notFound();
-  }
+
+  // if (
+  //   product === undefined ||
+  //   `${makeValidURL(product.products.name)}-${product.products.id}` !==
+  //     params.productName
+  // ) {
+  //   notFound();
+  // }
+
   return (
     <main className="container-main pt-20">
       <section>

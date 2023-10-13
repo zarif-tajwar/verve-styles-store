@@ -4,6 +4,7 @@ import { cn } from '@/lib/util';
 import { sizesOptions } from '@/lib/validation/constants';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { MinusIcon, MinusSquare, PlusIcon } from 'lucide-react';
+import { Button, buttonVariants } from './Button';
 
 const ProductAdd = () => {
   return (
@@ -26,13 +27,20 @@ const ProductAdd = () => {
           {sizesOptions.map((size) => (
             <RadioGroup.Item
               key={size.value}
-              className={cn(
-                'min-w-[5.4rem] rounded-full bg-offwhite px-6 py-2 tracking-wide',
-                'data-[state=checked]:bg-black data-[state=checked]:text-white',
-                'transition-all duration-200',
-                'hover:bg-black/10',
-                'focus-visible:ring-2 focus-visible:ring-black data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
-              )}
+              className={buttonVariants({
+                align: 'left',
+                variant: 'secondary',
+                roundness: 'default',
+                className:
+                  'px-6 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
+              })}
+              // className={cn(
+              //   'min-w-[5.4rem] rounded-full bg-offwhite px-6 py-2 tracking-wide',
+              //   'data-[state=checked]:bg-black data-[state=checked]:text-white',
+              //   'transition-all duration-200',
+              //   'hover:bg-black/10',
+              //   'focus-visible:ring-2 focus-visible:ring-black data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
+              // )}
               value={size.value}
             >
               {size.label}
@@ -70,14 +78,7 @@ const ProductAdd = () => {
               <PlusIcon className="h-5 w-5" />
             </button>
           </div>
-          <button
-            className={cn(
-              'col-span-2 h-full rounded-full bg-black text-white transition-all duration-200 hover:bg-black/80',
-              'focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white',
-            )}
-          >
-            Add to Cart
-          </button>
+          <Button className={'col-span-2 w-full'}>Add to Cart</Button>
         </div>
       </form>
     </div>

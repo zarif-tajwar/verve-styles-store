@@ -1,5 +1,6 @@
 import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
+import { Button } from '../UI/Button';
 
 const NewsLetterSubscription = () => {
   return (
@@ -8,14 +9,14 @@ const NewsLetterSubscription = () => {
         <p className="max-w-[35rem] font-integral-cf text-[2.5rem] font-bold uppercase leading-[1.125] text-white">
           Stay upto date about our latest offers
         </p>
-        <form className="w-full max-w-[22.5rem]">
-          <div className="relative mb-4">
+        <form className="grid w-full max-w-[22.5rem] grid-cols-1 grid-rows-2 gap-4">
+          <div className="relative">
             <input
               type="email"
               name=""
               id=""
               className={cn(
-                'peer h-12 w-full rounded-full bg-white py-3 pl-[3.25rem] pr-8 placeholder:text-black/40',
+                'peer h-full w-full rounded-full bg-white py-3 pl-[3.25rem] pr-8 placeholder:text-black/40',
                 'outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black',
                 'transition-all duration-200',
               )}
@@ -29,16 +30,9 @@ const NewsLetterSubscription = () => {
               )}
             />
           </div>
-          <button
-            className={cn(
-              'h-12 w-full rounded-full bg-white text-center text-black',
-              'transition-all duration-200',
-              'hover:bg-white/95',
-              'outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black',
-            )}
-          >
+          <Button variant={'inverse'} size={'xl'}>
             Subscribe to Newsletter
-          </button>
+          </Button>
         </form>
       </div>
     </div>

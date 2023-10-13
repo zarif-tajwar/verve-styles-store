@@ -23,4 +23,15 @@
   input[type='number'] {
     -moz-appearance: textfield;
   }
+
+  :root {
+    --primary-0: #ffffff;
+    --primary-50: #f0f0f0;
+    --primary-100: #e6e6e6;
+    --primary-200: #c6c6c6;
+    --primary-300: #a4a4a4;
+    --primary-400: #606060;
+    --primary-500: #303030;
+    --primary-900: #080808;
+  }
 }

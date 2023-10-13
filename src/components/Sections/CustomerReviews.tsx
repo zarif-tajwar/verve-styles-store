@@ -4,6 +4,7 @@ import { HTMLAttributes, useEffect, useState } from 'react';
 import { Icons } from '../Svgs/icons';
 import { cn } from '@/lib/util';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Button } from '../UI/Button';
 
 const CustomerReviews = () => {
   const [currCard, setCurrCard] = useState(3);
@@ -41,12 +42,23 @@ const CustomerReviews = () => {
         <div className="container-main flex items-end justify-between">
           <h2>Our Happy Customers</h2>
           <div className="flex items-center gap-2">
-            <Arrow left onClick={goLeft} disabled={currCard === 0} />
-
-            <Arrow
-              onClick={goRight}
+            <Button
+              variant={'outline'}
+              size={'square'}
+              className="rotate-180"
+              disabled={currCard === 0}
+              onClick={goLeft}
+            >
+              <Icons.arrow />
+            </Button>
+            <Button
+              variant={'outline'}
+              size={'square'}
               disabled={currCard > Reviews.length - 1 - cardsPerSlide}
-            />
+              onClick={goRight}
+            >
+              <Icons.arrow />
+            </Button>
           </div>
         </div>
         <div className="mt-10">

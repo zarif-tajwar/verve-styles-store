@@ -7,6 +7,7 @@ import { cn } from '@/lib/util';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { zParsePageNumber } from '@/lib/validation/schemas';
 import { useEffect } from 'react';
+import { Button } from './Button';
 
 const ShopFilterPagination = ({
   totalProducts,
@@ -65,17 +66,18 @@ const ShopFilterPagination = ({
   return (
     <div className="">
       <div className="flex w-full items-center justify-center">
-        <nav className="overflow-hidden rounded-xl bg-offwhite px-3.5 py-2.5 text-sm font-medium">
+        <nav className="overflow-hidden rounded-xl bg-primary-50 px-3.5 py-2.5 text-sm font-medium">
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => {
                 setPage(page - 1);
               }}
+              size={'square'}
+              variant={'ghost'}
+              roundness={'lg'}
               className={cn(
-                'flex h-10 w-10 items-center justify-center rounded-lg',
-                'hover:bg-black/5',
                 page === 1 && 'cursor-default opacity-20 hover:bg-transparent',
-                // 'disabled:opacity-20 disabled:hover:bg-transparent',
+                'hover:bg-primary-100',
               )}
             >
               <svg
@@ -95,7 +97,7 @@ const ShopFilterPagination = ({
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </Button>
             {range.map((value) => {
               return typeof value !== 'number' ? (
                 <div
@@ -110,33 +112,43 @@ const ShopFilterPagination = ({
                   ))}
                 </div>
               ) : (
-                <button
+                <Button
                   key={value}
+                  size={'square'}
+                  variant={active === value ? 'default' : 'ghost'}
+                  roundness={'lg'}
                   className={cn(
-                    'flex h-10 w-10 items-center justify-center rounded-lg tracking-wider',
-                    //   'transition-all duration-200',
-                    active === value &&
-                      'cursor-default bg-black text-white duration-0',
-                    active !== value && 'hover:bg-black/5',
+                    'tracking-wider transition-none',
+                    active === value && 'cursor-default hover:bg-primary-900',
+                    active !== value && 'hover:bg-primary-100',
                   )}
+                  // className={cn(
+                  //   'flex h-10 w-10 items-center justify-center rounded-lg tracking-wider',
+                  //   //   'transition-all duration-200',
+                  //   active === value &&
+                  //     'cursor-default bg-black text-white duration-0',
+                  //   active !== value && 'hover:bg-black/5',
+                  // )}
                   onClick={() => {
                     setPage(value);
                   }}
                   // disabled={active === value}
                 >
                   {value}
-                </button>
+                </Button>
               );
             })}
-            <button
+            <Button
               onClick={() => {
                 setPage(page + 1);
               }}
+              size={'square'}
+              variant={'ghost'}
+              roundness={'lg'}
               className={cn(
-                'flex h-10 w-10 items-center justify-center rounded-lg',
-                'hover:bg-black/5',
                 page === totalPages &&
                   'cursor-default opacity-20 hover:bg-transparent',
+                'hover:bg-primary-100',
               )}
             >
               <svg
@@ -155,7 +167,7 @@ const ShopFilterPagination = ({
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </Button>
           </div>
         </nav>
       </div>

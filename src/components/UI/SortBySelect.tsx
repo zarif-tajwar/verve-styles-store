@@ -11,6 +11,7 @@ import {
 } from '@/lib/validation/constants';
 
 import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
+import { buttonVariants } from './Button';
 
 const SortBySelect = () => {
   return (
@@ -33,17 +34,28 @@ const SelectMain = () => {
   return (
     <Select.Root value={selectValue} onValueChange={handleValueChange}>
       <Select.Trigger
-        className={cn(
-          'flex items-center gap-1 rounded-lg border-none px-3 py-2 outline-none',
-          'hover:bg-offwhite',
-          'transition-all duration-200',
-          'focus-visible:ring-2 focus-visible:ring-black',
-          'group',
-        )}
+        className={buttonVariants({
+          variant: 'ghost',
+          size: 'md',
+          roundness: 'lg',
+        })}
       >
         <Select.Value />
         <Select.Icon className="h-4 w-4 transition-all duration-100 group-data-[state=open]:-rotate-180">
-          <ChevronDownIcon className="h-full w-full" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="h-full w-full"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+            />
+          </svg>
         </Select.Icon>
       </Select.Trigger>
 
