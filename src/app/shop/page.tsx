@@ -95,7 +95,10 @@ const ProductListing = ({
           </p>
         </div>
         <p className="text-2xl font-bold">
-          ${Number.parseFloat(product.price)}
+          {new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+          }).format(Number.parseFloat(product.price))}
         </p>
       </div>
     </Link>

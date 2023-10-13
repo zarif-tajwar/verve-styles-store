@@ -54,8 +54,20 @@ const DoubleRangeSlider = () => {
         />
       </Slider.Root>
       <div className="flex items-center justify-between gap-4 font-medium">
-        <p>${priceRangeValues[0]}</p>
-        <p>${priceRangeValues[1]}</p>
+        <p>
+          {new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0,
+          }).format(priceRangeValues[0])}
+        </p>
+        <p>
+          {new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0,
+          }).format(priceRangeValues[1])}
+        </p>
       </div>
     </div>
   );

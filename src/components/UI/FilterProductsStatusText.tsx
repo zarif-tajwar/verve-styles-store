@@ -11,11 +11,14 @@ const FilterProductsStatusText = () => {
 
   if (totalProducts < 1) return null;
 
+  const range = [
+    (page - 1) * FILTER_PRODUCTS_PER_PAGE + 1,
+    Math.min(page * FILTER_PRODUCTS_PER_PAGE, totalProducts),
+  ];
+
   return (
     <p className="flex-grow pb-2 text-black/60">
-      Showing {(page - 1) * FILTER_PRODUCTS_PER_PAGE + 1}-
-      {Math.min(page * FILTER_PRODUCTS_PER_PAGE, totalProducts)} of{' '}
-      {totalProducts} Products
+      Showing {range.at(0)}-{range.at(1)} of {totalProducts} Products
     </p>
   );
 };
