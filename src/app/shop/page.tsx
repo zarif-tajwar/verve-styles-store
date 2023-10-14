@@ -5,6 +5,7 @@ import ShopFilterPagination from '@/components/UI/ShopFilterPagination';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import Link from 'next/link';
 import { makeValidURL } from '@/lib/util';
+import Star from '@/components/UI/Star';
 
 // const staticProducts = [
 //   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -83,11 +84,7 @@ const ProductListing = ({
           </h3>
         </div>
         <div className="mb-2 flex gap-3">
-          <div className="flex gap-1 text-amber-400">
-            {[...Array(4).keys()].map((_, i) => (
-              <Icons.star key={i} />
-            ))}
-          </div>
+          <Star rating={4} size="sm" />
           <p className="text-sm font-medium text-black/60">
             <span className="text-black">4.0/</span>5.0
           </p>

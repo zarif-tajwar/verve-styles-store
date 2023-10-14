@@ -1,5 +1,6 @@
 import { Icons } from '@/components/Svgs/icons';
 import ProductAdd from '@/components/UI/ProductAdd';
+import Star from '@/components/UI/Star';
 import { db } from '@/lib/db';
 import { clothing } from '@/lib/db/schema/clothing';
 import { products } from '@/lib/db/schema/products';
@@ -106,11 +107,7 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
               {product.products.name}
             </h1>
             <div className="mb-5 flex gap-4">
-              <span className="flex gap-1 text-amber-400">
-                {[...Array(4).keys()].map((_, i) => (
-                  <Icons.star key={i} className="h-6 w-6" />
-                ))}
-              </span>
+              <Star rating={4.5} />
               <span className="inline-block font-medium text-black/60">
                 <span className="text-black">4.0/</span>5.0
               </span>
