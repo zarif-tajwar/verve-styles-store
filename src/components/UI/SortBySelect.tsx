@@ -38,6 +38,7 @@ const SelectMain = () => {
           variant: 'ghost',
           size: 'md',
           roundness: 'lg',
+          className: 'group',
         })}
       >
         <Select.Value />

@@ -60,3 +60,5 @@ export const makeValidURL = (str: string) => {
 
   return result;
 };
+
+export const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));

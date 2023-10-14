@@ -35,3 +35,20 @@
     --primary-900: #080808;
   }
 }
+
+.slice-half {
+  -webkit-mask: linear-gradient(
+    to left,
+    transparent 0%,
+    transparent 50%,
+    black 50%,
+    black 100%
+  );
+  mask: linear-gradient(
+    to left,
+    transparent 0%,
+    transparent 50%,
+    black 50%,
+    black 100%
+  );
+}

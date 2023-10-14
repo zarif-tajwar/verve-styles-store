@@ -56,8 +56,6 @@ const ShopPage = async ({
 
 export default ShopPage;
 
-const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
 const ProductListing = ({
   product,
 }: {

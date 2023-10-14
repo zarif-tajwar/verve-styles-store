@@ -7,6 +7,7 @@ import { makeValidURL } from '@/lib/util';
 import { and, eq, sql } from 'drizzle-orm';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export async function generateStaticParams() {
   const slugs = await db
@@ -126,7 +127,9 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
               {product.products.description}
             </p>
             <div className="my-6 h-px w-full bg-black/10" />
-            <ProductAdd />
+            <Suspense fallback={<div>Sizes Loading...</div>}>
+              <ProductAdd productId={product.products.id} />
+            </Suspense>
           </div>
         </div>
       </section>
