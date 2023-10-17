@@ -1,6 +1,7 @@
 import React from 'react';
 import { PartnerLogo } from '../Svgs/PartnerLogo';
-import { Button } from '../UI/Button';
+import { Button, buttonVariants } from '../UI/Button';
+import Link from 'next/link';
 
 const highlightedInfos = [
   '200+ International Brands',
@@ -35,9 +36,15 @@ const Hero = () => {
             designed to bring out your individuality and cater to your sense of
             style.
           </p>
-          <Button size={'xl'} className="w-full max-w-[13rem]">
+          <Link
+            href="/shop"
+            className={buttonVariants({
+              size: 'xl',
+              className: 'w-full max-w-[13rem]',
+            })}
+          >
             Shop Now
-          </Button>
+          </Link>
           <div className="mt-4 flex h-full text-black/60">
             {highlightedInfos.map((info, i, arr) => (
               <React.Fragment key={info}>

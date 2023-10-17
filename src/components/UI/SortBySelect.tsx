@@ -2,7 +2,6 @@
 
 import React from 'react';
 import * as Select from '@radix-ui/react-select';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { cn } from '@/lib/util';
 import { Icons } from '../Svgs/icons';
 import {
@@ -11,7 +10,8 @@ import {
 } from '@/lib/validation/constants';
 
 import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
-import { Button, buttonVariants } from './Button';
+import { Button } from './Button';
+import { ChevronDown } from 'lucide-react';
 
 const SortBySelect = () => {
   return (
@@ -38,24 +38,11 @@ const SelectMain = () => {
           variant={'ghost'}
           size={'md'}
           roundness={'lg'}
-          className="group data-[state=open]:scale-95 data-[state=open]:bg-primary-50"
+          className="group origin-top-right duration-200 data-[state=open]:scale-90 data-[state=open]:bg-primary-50 data-[state=open]:text-primary-300"
         >
           <Select.Value />
-          <Select.Icon className="h-4 w-4 transition-all duration-100 group-data-[state=open]:-rotate-180">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="h-full w-full"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              />
-            </svg>
+          <Select.Icon className="h-4 w-4 transition-all duration-100 ease-linear group-data-[state=open]:-rotate-180">
+            <ChevronDown size={18} />
           </Select.Icon>
         </Button>
       </Select.Trigger>
@@ -70,6 +57,7 @@ const SelectMain = () => {
           className={cn(
             'rounded-lg bg-white p-2 text-neutral-700 ring-1 ring-offwhite',
             'shadow-drop',
+            'origin-top-right data-[state=open]:animate-scaleFromTopRightAnim',
           )}
           asChild
         >
@@ -78,17 +66,17 @@ const SelectMain = () => {
               {sortOptions.map((option) => (
                 <Select.Item
                   className={cn(
-                    'flex cursor-pointer select-none items-center justify-between gap-2 rounded-md px-2 py-2.5 text-sm outline-none',
+                    'relative flex cursor-pointer select-none items-center justify-start gap-2 rounded-md py-2.5 pl-8 pr-4 text-sm outline-none',
                     'data-[highlighted]:bg-offwhite',
                     'transition-all duration-200',
                   )}
                   key={option.value}
                   value={option.value}
                 >
-                  <Select.ItemText>{option.title}</Select.ItemText>
-                  <Select.ItemIndicator>
+                  <Select.ItemIndicator className="absolute left-2 top-1/2 -translate-y-1/2">
                     <Icons.checkMini className="h-4 w-4" />
                   </Select.ItemIndicator>
+                  <Select.ItemText>{option.title}</Select.ItemText>
                 </Select.Item>
               ))}
             </Select.Group>

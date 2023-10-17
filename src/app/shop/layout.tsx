@@ -14,9 +14,6 @@ const ShopLayout = ({ children }: { children: React.ReactNode }) => {
               <FilterProductsStatusText />
               <SortBySelect />
             </div>
-            {/* <div className="pb-4">
-              <ShopFilterPagination />
-            </div> */}
             {children}
           </div>
         </div>

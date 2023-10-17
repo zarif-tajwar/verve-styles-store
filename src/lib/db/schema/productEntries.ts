@@ -3,6 +3,7 @@ import {
   integer,
   pgTable,
   primaryKey,
+  serial,
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -13,6 +14,7 @@ import { InferInsertModel, relations } from 'drizzle-orm';
 export const productEntries = pgTable(
   'product_entries',
   {
+    id: serial('id'),
     productID: integer('product_id')
       .references(() => products.id)
       .notNull(),
@@ -25,7 +27,7 @@ export const productEntries = pgTable(
     updatedAt: timestamp('updated_at').defaultNow(),
   },
   (table) => ({
-    pk: primaryKey(table.productID, table.sizeID),
+    pk: primaryKey(table.id),
     productIdIdx: index('product_id_idx').on(table.productID),
     sizeIdIdx: index('size_id_idx').on(table.sizeID),
   }),

@@ -12,6 +12,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         'integral-cf': ['var(--font-integral-cf)', ...fontFamily.sans],
+        inter: ['var(--font-inter)', ...fontFamily.sans],
         'plus-jakarta-sans': [
           'var(--font-plus-jakarta-sans)',
           ...fontFamily.sans,
@@ -53,6 +54,9 @@ const config: Config = {
         scaleFromTopRightAnim:
           'scaleFromTopRight 200ms cubic-bezier(0.34, 1.56, 0.64, 1)',
         shrinkToTopRightAnim: 'shrinkToTopRight 100ms ease',
+      },
+      transitionTimingFunction: {
+        subtleSpring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
     },
   },

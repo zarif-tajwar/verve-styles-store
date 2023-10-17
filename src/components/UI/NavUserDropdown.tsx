@@ -27,7 +27,7 @@ const NavUserDropdown = () => {
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
         >
-          <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
+          <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md text-primary-500 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
             <Link
               href={'/login'}
               className="inline-flex w-full items-center gap-2.5 p-2"
@@ -36,7 +36,7 @@ const NavUserDropdown = () => {
               <span>Login</span>
             </Link>
           </DropdownMenu.DropdownMenuItem>
-          <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
+          <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md text-primary-500 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
             <Link
               href={'/sign-up'}
               className="inline-flex w-full items-center gap-2.5 p-2"
