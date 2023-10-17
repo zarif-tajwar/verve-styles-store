@@ -431,6 +431,8 @@ interface StarIconProps extends SVGProps<SVGSVGElement> {
   className?: string;
 }
 
+interface SvgIconProps extends SVGProps<SVGSVGElement> {}
+
 export const StarIcon = ({ className, ...props }: StarIconProps) => {
   return (
     <svg
@@ -450,3 +452,43 @@ export const StarIcon = ({ className, ...props }: StarIconProps) => {
     </svg>
   );
 };
+
+export const UserIcon = ({ ...props }: SvgIconProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+      />
+    </svg>
+  );
+};
+
+export const CartIcon = ({ ...props }: SvgIconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path d="M22 18H6a2 2 0 01-2-2V7a2 2 0 00-2-2"></path>
+    <path d="M17 14V4a2 2 0 00-2-2h-1a2 2 0 00-2 2v10"></path>
+    <rect width="13" height="8" x="8" y="6" rx="1"></rect>
+    <circle cx="18" cy="20" r="2"></circle>
+    <circle cx="9" cy="20" r="2"></circle>
+  </svg>
+);

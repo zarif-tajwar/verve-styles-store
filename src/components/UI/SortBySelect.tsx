@@ -11,7 +11,7 @@ import {
 } from '@/lib/validation/constants';
 
 import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
-import { buttonVariants } from './Button';
+import { Button, buttonVariants } from './Button';
 
 const SortBySelect = () => {
   return (
@@ -33,31 +33,31 @@ const SelectMain = () => {
 
   return (
     <Select.Root value={selectValue} onValueChange={handleValueChange}>
-      <Select.Trigger
-        className={buttonVariants({
-          variant: 'ghost',
-          size: 'md',
-          roundness: 'lg',
-          className: 'group',
-        })}
-      >
-        <Select.Value />
-        <Select.Icon className="h-4 w-4 transition-all duration-100 group-data-[state=open]:-rotate-180">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="h-full w-full"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-            />
-          </svg>
-        </Select.Icon>
+      <Select.Trigger asChild>
+        <Button
+          variant={'ghost'}
+          size={'md'}
+          roundness={'lg'}
+          className="group data-[state=open]:scale-95 data-[state=open]:bg-primary-50"
+        >
+          <Select.Value />
+          <Select.Icon className="h-4 w-4 transition-all duration-100 group-data-[state=open]:-rotate-180">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="h-full w-full"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+              />
+            </svg>
+          </Select.Icon>
+        </Button>
       </Select.Trigger>
 
       <Select.Portal>
@@ -67,15 +67,18 @@ const SelectMain = () => {
           sideOffset={4}
           side="bottom"
           align="end"
-          className="rounded-lg bg-white px-1.5 py-1.5 text-neutral-700 shadow-xl ring-1 ring-offwhite"
+          className={cn(
+            'rounded-lg bg-white p-2 text-neutral-700 ring-1 ring-offwhite',
+            'shadow-drop',
+          )}
           asChild
         >
           <Select.Viewport>
-            <Select.Group className="space-y-1.5">
+            <Select.Group>
               {sortOptions.map((option) => (
                 <Select.Item
                   className={cn(
-                    'flex cursor-pointer select-none items-center justify-between gap-2 rounded-md px-4 py-2 text-sm outline-none',
+                    'flex cursor-pointer select-none items-center justify-between gap-2 rounded-md px-2 py-2.5 text-sm outline-none',
                     'data-[highlighted]:bg-offwhite',
                     'transition-all duration-200',
                   )}

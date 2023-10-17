@@ -27,19 +27,35 @@ const config: Config = {
           300: 'var(--primary-300)',
           400: 'var(--primary-400)',
           500: 'var(--primary-500)',
-          600: 'var(--primary-600)',
-          700: 'var(--primary-700)',
-          800: 'var(--primary-800)',
           900: 'var(--primary-900)',
         },
       },
       screens: {
-        container: '1304px',
+        container: '90rem',
       },
       borderRadius: {
         main: '1.25rem',
       },
+      boxShadow: {
+        drop: '0px 0px 8px 0px rgba(0, 0, 0, 0.1)',
+      },
+      keyframes: {
+        scaleFromTopRight: {
+          from: { opacity: '0', transform: 'scale(0.8)' },
+          to: { opacity: '1', transform: 'scale(1)' },
+        },
+        shrinkToTopRight: {
+          from: { opacity: '1', transform: 'scale(1)' },
+          to: { opacity: '0', transform: 'scale(0.8)' },
+        },
+      },
+      animation: {
+        scaleFromTopRightAnim:
+          'scaleFromTopRight 200ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        shrinkToTopRightAnim: 'shrinkToTopRight 100ms ease',
+      },
     },
   },
+  // plugins: [require('tailwindcss-animated')],
 };
 export default config;

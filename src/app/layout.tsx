@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${IntegralCF.variable} ${PlusJakartaSans.variable} bg-primary-0 text-primary-900 selection:bg-primary-900 selection:text-primary-50 font-plus-jakarta-sans antialiased`}
+        className={`${IntegralCF.variable} ${PlusJakartaSans.variable} bg-primary-0 font-plus-jakarta-sans text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
       >
         <Navbar />
         {children}

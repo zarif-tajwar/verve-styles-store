@@ -107,7 +107,7 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
               {product.products.name}
             </h1>
             <div className="mb-5 flex gap-4">
-              <Star rating={4.5} />
+              <Star rating={4.0} />
               <span className="inline-block font-medium text-black/60">
                 <span className="text-black">4.0/</span>5.0
               </span>

@@ -5,6 +5,7 @@ import { Icons } from '../Svgs/icons';
 import { cn } from '@/lib/util';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '../UI/Button';
+import Star from '../UI/Star';
 
 const CustomerReviews = () => {
   const [currCard, setCurrCard] = useState(3);
@@ -65,7 +66,7 @@ const CustomerReviews = () => {
           <div className="container-main">
             <AnimatePresence initial={false}>
               <motion.div
-                className="relative grid w-max cursor-grab touch-none select-none bg-white"
+                className="relative grid w-max cursor-grab touch-none select-none bg-primary-0"
                 style={{
                   gridTemplateColumns: `repeat(${Reviews.length}, 1fr)`,
                 }}
@@ -97,7 +98,9 @@ const CustomerReviews = () => {
                             : 0.4,
                       }}
                       key={i}
-                      className={cn('relative z-50 h-full w-max bg-white pr-5')}
+                      className={cn(
+                        'relative z-50 h-full w-max bg-primary-0 pr-5',
+                      )}
                     >
                       <ReviewCard
                         review={review}
@@ -115,30 +118,6 @@ const CustomerReviews = () => {
   );
 };
 export default CustomerReviews;
-
-interface ArrowProps extends HTMLAttributes<HTMLButtonElement> {
-  left?: boolean;
-  className?: string;
-  disabled?: boolean;
-}
-
-const Arrow = ({ left, className, disabled, ...props }: ArrowProps) => {
-  return (
-    <button
-      className={cn(
-        'flex aspect-square h-10 items-center justify-center rounded-full p-2 ring-1 ring-black/10 transition-all duration-200 hover:bg-offwhite hover:ring-offwhite',
-        left && 'rotate-180',
-        'outline-none focus-visible:ring-2 focus-visible:ring-black/70',
-        'disabled:text-black/5 disabled:ring-black/5 disabled:hover:bg-transparent',
-        className,
-      )}
-      disabled={disabled}
-      {...props}
-    >
-      <Icons.arrow />
-    </button>
-  );
-};
 
 type Review = {
   name: string;
@@ -201,21 +180,20 @@ interface ReviewCardProps extends HTMLAttributes<HTMLDivElement> {
 const ReviewCard = ({ review, className, ...props }: ReviewCardProps) => {
   return (
     <div
-      className={cn('rounded-main border border-black/10 px-8 py-7', className)}
+      className={cn(
+        'rounded-main border border-primary-100 px-8 py-7',
+        className,
+      )}
       {...props}
     >
-      <div className="flex gap-1.5 text-amber-400">
-        <Icons.star />
-        <Icons.star />
-        <Icons.star />
-        <Icons.star />
-        <Icons.star />
-      </div>
-      <div className="mt-6 flex items-end gap-1">
+      <Star rating={5} />
+      <div className="mt-5 flex items-end gap-1">
         <p className="font-bold">{review.name}</p>
         <Icons.verified />
       </div>
-      <blockquote className="mt-2 text-black/60">{review.quote}</blockquote>
+      <blockquote className="mt-2 leading-relaxed text-primary-400">
+        {review.quote}
+      </blockquote>
     </div>
   );
 };

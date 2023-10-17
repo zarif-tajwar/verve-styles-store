@@ -1,6 +1,6 @@
 import { cn } from '@/lib/util';
 import { StarIcon } from '../Svgs/icons';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 
 interface StarProps extends HTMLAttributes<HTMLSpanElement> {
   rating: number;
@@ -18,7 +18,7 @@ const Star = ({
   return (
     <span
       className={cn(
-        'flex items-center justify-center text-yellow-400',
+        'inline-flex items-center justify-center text-yellow-400',
         className,
       )}
       {...props}

@@ -5,11 +5,11 @@ import { MouseEvent, RefObject, useState } from 'react';
 const useStar = <T extends HTMLElement>({
   maxRating = 5,
   selectOnce = false,
-  starParentRef,
+  starWrapperRef,
 }: {
   maxRating?: number;
   selectOnce?: boolean;
-  starParentRef: RefObject<T>;
+  starWrapperRef: RefObject<T>;
 }) => {
   const [selectedRating, setSelectedRating] = useState<number>(0);
   const [tempHoverRating, setTempHoverRating] = useState<number | undefined>(
@@ -17,11 +17,11 @@ const useStar = <T extends HTMLElement>({
   );
 
   const getRating = (e: MouseEvent<T, globalThis.MouseEvent>) => {
-    if (!starParentRef.current) return;
+    if (!starWrapperRef.current) return;
 
     const mouseX = e.clientX;
 
-    const containerRect = starParentRef.current.getBoundingClientRect();
+    const containerRect = starWrapperRef.current.getBoundingClientRect();
     const containerX = containerRect.x;
 
     const containerWidth = containerRect.width;
@@ -56,7 +56,6 @@ const useStar = <T extends HTMLElement>({
   return {
     selectedRating,
     tempHoverRating,
-    starParentRef,
     handleHover,
     handleHoverLeave,
     handleClick,
