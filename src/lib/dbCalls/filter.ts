@@ -25,7 +25,7 @@ export const getProductsFromDB = async (inputSearchParams: {
   const sqlCunks: SQL[] = [];
 
   sqlCunks.push(
-    sql`select distinct ${products.id}, ${products.name}, ${products.price}, ${clothing.name} as category, count(${products.id}) over () as total_count from ${products}`,
+    sql`select distinct ${products.id}, ${products.name}, ${products.price}, ${clothing.name} as category, count(${products.id}) over() as total_count from ${products}`,
   );
 
   sqlCunks.push(
@@ -38,16 +38,6 @@ export const getProductsFromDB = async (inputSearchParams: {
         sql`join ${dressStyles} on ${products.styleID} = ${dressStyles.id}`,
       );
     }
-
-    if (data.sizes !== undefined) {
-      sqlCunks.push(
-        sql`join ${productEntries} on ${products.id} = ${productEntries.productID}`,
-      );
-      sqlCunks.push(
-        sql`join ${sizes} on ${productEntries.sizeID} = ${sizes.id}`,
-      );
-    }
-
     sqlCunks.push(sql`where`);
 
     const conditionals: SQL[] = [];
@@ -69,7 +59,9 @@ export const getProductsFromDB = async (inputSearchParams: {
     }
 
     if (data.sizes !== undefined) {
-      conditionals.push(sql`${sizes.name} in ${data.sizes}`);
+      conditionals.push(sql`${products.id} in (SELECT ${productEntries.productID} FROM ${productEntries} WHERE ${productEntries.sizeID} IN (SELECT ${sizes.id} FROM ${sizes}
+      WHERE ${sizes.name} IN ${data.sizes}
+      ))`);
     }
 
     if (conditionals.length >= 2)

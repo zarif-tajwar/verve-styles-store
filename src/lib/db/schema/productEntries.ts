@@ -5,6 +5,7 @@ import {
   primaryKey,
   serial,
   timestamp,
+  unique,
   varchar,
 } from 'drizzle-orm/pg-core';
 import { products } from './products';
@@ -29,6 +30,8 @@ export const productEntries = pgTable(
   },
   (table) => ({
     pk: primaryKey(table.id),
+    unq: unique('unq').on(table.productID, table.sizeID),
+    IdIdx: index('id_idx').on(table.id),
     productIdIdx: index('product_id_idx').on(table.productID),
     sizeIdIdx: index('size_id_idx').on(table.sizeID),
   }),

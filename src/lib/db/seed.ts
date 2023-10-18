@@ -13,7 +13,7 @@ import { faker } from '@faker-js/faker';
 import crypto from 'crypto';
 import { ProductEntry, productEntries } from './schema/productEntries';
 import { FilterSearchQueryValuesSchema } from '../validation/schemas';
-import { wait } from '../util';
+import { genRandomInt, wait } from '../util';
 
 async function populateSizes() {
   await db
@@ -56,22 +56,34 @@ function range(start: number, end: number) {
   return [...Array(end - start + 1).keys()].map((_, i) => i + start);
 }
 
-function genRandomInt(start: number, end: number) {
-  return Math.floor(start + Math.random() * (end - start + 1));
-}
-
-async function populateProductEntries() {
+async function populateProductEntries(n: number) {
   let entryProductAndSizeID: [number, number][] = [];
-  const to1000 = range(1, 1000);
-  const to5 = range(1, 5);
-  const combinations = to1000.flatMap((x) => to5.map((y) => [x, y]));
 
-  while (entryProductAndSizeID.length < 2000) {
-    const index = genRandomInt(1, combinations.length);
-    const pickedCombination = combinations[index] as [number, number];
+  const existingEntryProductAndSizeID = (
+    await db
+      .select({
+        productId: productEntries.productID,
+        sizeId: productEntries.sizeID,
+      })
+      .from(productEntries)
+  ).map((combination) => [combination.productId, combination.sizeId]) as [
+    number,
+    number,
+  ][];
+
+  while (entryProductAndSizeID.length < n) {
+    const pickedCombination = [genRandomInt(1, 32000), genRandomInt(1, 5)] as [
+      number,
+      number,
+    ];
 
     if (
       !entryProductAndSizeID.some(
+        (arr: [number, number]) =>
+          arr.at(0) === pickedCombination.at(0) &&
+          arr.at(1) === pickedCombination.at(1),
+      ) &&
+      !existingEntryProductAndSizeID.some(
         (arr: [number, number]) =>
           arr.at(0) === pickedCombination.at(0) &&
           arr.at(1) === pickedCombination.at(1),
@@ -116,13 +128,43 @@ async function populateProductEntries() {
     ([productID, sizeID], i) => ({
       productID: productID,
       sizeID: sizeID,
-      quantity: genRandomInt(20, 40),
+      quantity: genRandomInt(800, 1200),
       sku: skus.at(i)!,
     }),
   );
 
   await db.insert(productEntries).values(inputProductEntries);
+
+  console.log(
+    `${inputProductEntries.length} product entries have been populated!`,
+  );
 }
+
+const updateProductEntryQuantity = async () => {
+  const productEntriesId = await db
+    .select({ id: productEntries.id })
+    .from(productEntries);
+
+  const length = productEntriesId.length;
+
+  const promises = [];
+
+  for (let i = 0; i < length; i++) {
+    const promise = new Promise((res) =>
+      res(
+        db
+          .update(productEntries)
+          .set({
+            quantity: genRandomInt(800, 1200),
+          })
+          .where(eq(productEntries.id, productEntriesId[i].id)),
+      ),
+    );
+    promises.push(promise);
+  }
+
+  await Promise.all(promises);
+};
 
 async function execute() {
   console.log('⏳ Running ...');

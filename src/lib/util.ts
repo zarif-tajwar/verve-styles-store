@@ -58,3 +58,7 @@ export const makeValidURL = (str: string) => {
 };
 
 export const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+export const genRandomInt = (start: number, end: number) => {
+  return Math.floor(start + Math.random() * (end - start + 1));
+};

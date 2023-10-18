@@ -50,6 +50,20 @@
       "when": 1697526261375,
       "tag": "0006_fantastic_romulus",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1697645253059,
+      "tag": "0007_crazy_violations",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1697648130976,
+      "tag": "0008_great_inhumans",
+      "breakpoints": true
     }
   ]
 }
