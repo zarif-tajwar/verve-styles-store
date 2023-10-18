@@ -20,4 +20,5 @@ export const db = drizzle(connection, {
     ...productsSchema,
     ...productEntriesSchema,
   },
+  logger: true,
 });

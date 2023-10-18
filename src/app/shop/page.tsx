@@ -30,6 +30,7 @@ const ShopPage = async ({
 
   // const productItems = staticProducts;
 
+  console.log(searchParams);
   const productItemsRes = await getProductsFromDB(searchParams);
   const productItems = productItemsRes?.rows as {
     name: string;

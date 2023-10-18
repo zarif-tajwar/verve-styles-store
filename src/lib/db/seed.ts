@@ -12,10 +12,8 @@ import { sizes } from './schema/sizes';
 import { faker } from '@faker-js/faker';
 import crypto from 'crypto';
 import { ProductEntry, productEntries } from './schema/productEntries';
-import { number, object, string, z } from 'zod';
-import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
 import { FilterSearchQueryValuesSchema } from '../validation/schemas';
-import { clothingItemsOptions } from '../validation/constants';
+import { wait } from '../util';
 
 async function populateSizes() {
   await db
@@ -130,10 +128,6 @@ async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
-
-  const lol = db.query.productEntries.findMany().toSQL();
-
-  console.log(lol);
 
   const end = performance.now();
 

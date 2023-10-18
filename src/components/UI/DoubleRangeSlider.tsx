@@ -41,15 +41,15 @@ const DoubleRangeSlider = () => {
           setQueryParams({ page: undefined, price_range: priceRangeToString });
         }}
       >
-        <Slider.Track className="relative h-1.5 grow cursor-pointer rounded-full bg-offwhite">
-          <Slider.Range className="absolute h-full rounded-full bg-black" />
+        <Slider.Track className="relative h-1.5 grow cursor-pointer rounded-full bg-primary-50">
+          <Slider.Range className="absolute h-full rounded-full bg-primary-900" />
         </Slider.Track>
         <Slider.Thumb
-          className="block h-5 w-5 cursor-grab rounded-full bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-white"
+          className="block h-5 w-5 cursor-grab rounded-full bg-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-primary-0"
           aria-label="Minimum Price"
         />
         <Slider.Thumb
-          className="block h-5 w-5 cursor-grab rounded-full bg-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-white"
+          className="block h-5 w-5 cursor-grab rounded-full bg-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-primary-0"
           aria-label="Maximum Price"
         />
       </Slider.Root>

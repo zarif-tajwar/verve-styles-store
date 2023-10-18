@@ -38,7 +38,7 @@ const SelectMain = () => {
           variant={'ghost'}
           size={'md'}
           roundness={'lg'}
-          className="group origin-top-right duration-200 data-[state=open]:scale-90 data-[state=open]:bg-primary-50 data-[state=open]:text-primary-300"
+          className="group origin-top-right select-none font-medium text-primary-900 duration-200 data-[state=open]:scale-90 data-[state=open]:bg-primary-50 data-[state=open]:text-primary-300"
         >
           <Select.Value />
           <Select.Icon className="h-4 w-4 transition-all duration-100 ease-linear group-data-[state=open]:-rotate-180">
@@ -55,8 +55,8 @@ const SelectMain = () => {
           side="bottom"
           align="end"
           className={cn(
-            'rounded-lg bg-white p-2 text-neutral-700 ring-1 ring-offwhite',
-            'shadow-drop',
+            'rounded-lg bg-white p-2 ring-1 ring-primary-50',
+            'select-none shadow-drop',
             'origin-top-right data-[state=open]:animate-scaleFromTopRightAnim',
           )}
           asChild
@@ -66,8 +66,8 @@ const SelectMain = () => {
               {sortOptions.map((option) => (
                 <Select.Item
                   className={cn(
-                    'relative flex cursor-pointer select-none items-center justify-start gap-2 rounded-md py-2.5 pl-8 pr-4 text-sm outline-none',
-                    'data-[highlighted]:bg-offwhite',
+                    'relative flex cursor-pointer select-none items-center justify-start gap-2 rounded-md py-2.5 pl-8 pr-4 text-sm text-primary-500 outline-none',
+                    'data-[highlighted]:bg-primary-50',
                     'transition-all duration-200',
                   )}
                   key={option.value}

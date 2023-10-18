@@ -24,16 +24,12 @@ export const quickSortByReference = <T>(
   const pivot = values[pivotIndex];
 
   const less = values.filter((value, index) => {
-    if (index === pivotIndex) {
-      return false;
-    }
+    if (index === pivotIndex) return false;
     return referenceValues.indexOf(value) < referenceValues.indexOf(pivot);
   });
 
   const greater = values.filter((value, index) => {
-    if (index === pivotIndex) {
-      return false;
-    }
+    if (index === pivotIndex) return false;
     return referenceValues.indexOf(value) > referenceValues.indexOf(pivot);
   });
 

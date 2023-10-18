@@ -28,14 +28,8 @@ const ClothingCheckbox = () => {
             variant: 'secondary',
             roundness: 'lg',
             className:
-              'data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
+              'py-2.5 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
           })}
-          // className={cn(
-          //   'flex items-center gap-1 rounded-lg border-none bg-black/5 px-2 py-2 font-medium text-black/60 outline-none transition-all duration-200',
-          //   'hover:bg-black/10',
-          //   'focus-visible:ring-2 focus-visible:ring-black',
-          //   'data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:focus-visible:ring-offset-2 data-[state=checked]:focus-visible:ring-offset-white',
-          // )}
           checked={checkedOptions.has(clothing.value)}
           onCheckedChange={(checked) => {
             handleCheck(checked, clothing.value);
