@@ -1,5 +1,7 @@
 import { integer, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users';
+import { relations } from 'drizzle-orm';
+import { orderLine } from './orderLine';
 
 export const orders = pgTable('orders', {
   id: serial('id').primaryKey(),
@@ -9,3 +11,11 @@ export const orders = pgTable('orders', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
+
+export const orderRelations = relations(orders, ({ one, many }) => ({
+  users: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  orderLine: many(orderLine),
+}));

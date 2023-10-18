@@ -24,7 +24,7 @@ export const revalidate = 0;
 const ShopPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: SearchParamsServer;
 }) => {
   // return <p>{JSON.stringify(searchParams)}</p>;
 

@@ -10,6 +10,7 @@ import {
 import { products } from './products';
 import { sizes } from './sizes';
 import { InferInsertModel, relations } from 'drizzle-orm';
+import { orderLine } from './orderLine';
 
 export const productEntries = pgTable(
   'product_entries',
@@ -33,15 +34,19 @@ export const productEntries = pgTable(
   }),
 );
 
-export const productEntryRelations = relations(productEntries, ({ one }) => ({
-  product: one(products, {
-    fields: [productEntries.productID],
-    references: [products.id],
+export const productEntryRelations = relations(
+  productEntries,
+  ({ one, many }) => ({
+    product: one(products, {
+      fields: [productEntries.productID],
+      references: [products.id],
+    }),
+    size: one(sizes, {
+      fields: [productEntries.sizeID],
+      references: [sizes.id],
+    }),
+    orderLine: many(orderLine),
   }),
-  size: one(sizes, {
-    fields: [productEntries.sizeID],
-    references: [sizes.id],
-  }),
-}));
+);
 
 export type ProductEntry = InferInsertModel<typeof productEntries>;

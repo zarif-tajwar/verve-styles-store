@@ -4,6 +4,12 @@ import * as clothingSchema from './schema/clothing';
 import * as dressStylesSchema from './schema/dressStyles';
 import * as productsSchema from './schema/products';
 import * as productEntriesSchema from './schema/productEntries';
+import * as cartsSchema from './schema/carts';
+import * as cartItemsSchema from './schema/cartItems';
+import * as usersSchema from './schema/users';
+import * as userReviewsSchema from './schema/userReviews';
+import * as ordersSchema from './schema/orders';
+import * as orderLineSchema from './schema/orderLine';
 import { Pool } from 'pg';
 import 'dotenv/config';
 
@@ -19,6 +25,11 @@ export const db = drizzle(connection, {
     ...dressStylesSchema,
     ...productsSchema,
     ...productEntriesSchema,
+    ...cartsSchema,
+    ...cartItemsSchema,
+    ...usersSchema,
+    ...userReviewsSchema,
+    ...ordersSchema,
+    ...orderLineSchema,
   },
-  logger: true,
 });
