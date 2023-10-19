@@ -14,6 +14,9 @@ import crypto from 'crypto';
 import { ProductEntry, productEntries } from './schema/productEntries';
 import { FilterSearchQueryValuesSchema } from '../validation/schemas';
 import { genRandomInt, wait } from '../util';
+import { UsersInsert, users } from './schema/users';
+import { CartsInsert, carts } from './schema/carts';
+import { CartItemsInsert, cartItems } from './schema/cartItems';
 
 async function populateSizes() {
   await db
@@ -163,13 +166,141 @@ const updateProductEntryQuantity = async () => {
     promises.push(promise);
   }
 
-  await Promise.all(promises);
+  await Promise.allSettled(promises);
+};
+
+const populateUsers = async (n: number) => {
+  const randomlyGeneratedUsers: UsersInsert[] = [...Array(n).keys()].map(() => {
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+
+    const generatedUser = {
+      firstName,
+      lastName,
+      username: faker.internet.userName({ firstName, lastName }).toLowerCase(),
+      email: faker.internet.email({ firstName, lastName }).toLowerCase(),
+    };
+
+    return generatedUser;
+  });
+
+  await db.insert(users).values(randomlyGeneratedUsers);
+};
+
+const populateCarts = async (n: number) => {
+  const userIdArr = await db
+    .select({
+      userId: users.id,
+    })
+    .from(users);
+
+  const alreadyExistingCartsUserIdArr = await db
+    .select({
+      userId: carts.userId,
+    })
+    .from(carts);
+
+  const selectedUsersIndex: number[] = [];
+
+  while (selectedUsersIndex.length < n) {
+    const randomIndex = genRandomInt(0, userIdArr.length - 1);
+
+    if (selectedUsersIndex.findIndex((val) => val === randomIndex) !== -1)
+      continue;
+
+    if (
+      alreadyExistingCartsUserIdArr.some(
+        (val) => val.userId === userIdArr[randomIndex].userId,
+      )
+    )
+      continue;
+
+    selectedUsersIndex.push(randomIndex);
+  }
+
+  const generatedCarts: CartsInsert[] = selectedUsersIndex.map((val) => {
+    const date = faker.date.past({ years: 1 });
+    return {
+      userId: userIdArr[val].userId,
+      createdAt: date,
+      updatedAt: date,
+    };
+  });
+
+  await db.insert(carts).values(generatedCarts);
+};
+
+const populateCartItems = async (n: number) => {
+  const productEntryIdArray = await db
+    .select({
+      productEntryId: productEntries.id,
+    })
+    .from(productEntries);
+
+  const cartIdArray = await db
+    .select({
+      cartId: carts.id,
+    })
+    .from(carts);
+
+  const cartItemsArray = await db
+    .select({
+      cartId: cartItems.cartId,
+      productEntryID: cartItems.productEntryId,
+    })
+    .from(cartItems);
+
+  const combinations: [number, number][] = [];
+
+  while (combinations.length < n) {
+    const selectedCombination = [
+      productEntryIdArray[genRandomInt(0, productEntryIdArray.length - 1)]
+        .productEntryId,
+      cartIdArray[genRandomInt(0, cartIdArray.length - 1)].cartId,
+    ];
+
+    if (
+      combinations.some(
+        (arr: [number, number]) =>
+          arr.at(0) === selectedCombination.at(0) &&
+          arr.at(1) === selectedCombination.at(1),
+      )
+    )
+      continue;
+
+    if (
+      cartItemsArray.some((item) => {
+        item.productEntryID === selectedCombination.at(0) &&
+          item.cartId === selectedCombination.at(1);
+      })
+    )
+      continue;
+
+    combinations.push(selectedCombination as [number, number]);
+  }
+
+  const generatedCartItems: CartItemsInsert[] = combinations.map(
+    ([productEntryId, cartId]) => {
+      const date = faker.date.recent();
+      return {
+        cartId,
+        productEntryId,
+        quantity: genRandomInt(200, 800),
+        createdAt: date,
+        updatedAt: date,
+      };
+    },
+  );
+
+  await db.insert(cartItems).values(generatedCartItems);
 };
 
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
+
+  await populateCartItems(800);
 
   const end = performance.now();
 

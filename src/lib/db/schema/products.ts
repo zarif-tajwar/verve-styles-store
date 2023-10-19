@@ -37,6 +37,7 @@ export const products = pgTable(
     return {
       productIdIdx: index('product_id_index').on(table.id),
       productNameIdx: index('product_name_index').on(table.name),
+      productPriceIdx: index('product_price_index').on(table.price),
     };
   },
 );

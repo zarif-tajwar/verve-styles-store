@@ -44,10 +44,9 @@ const ShopPage = async ({
 
   return (
     <div>
-      <div>{productItems.length}</div>
       <div className="grid grid-cols-3 gap-x-5 gap-y-9">
         {productItems.map((product, i) => {
-          return i < 9 && <ProductListing key={i} product={product} />;
+          return <ProductListing key={i} product={product} />;
         })}
       </div>
       <div className="pt-16">

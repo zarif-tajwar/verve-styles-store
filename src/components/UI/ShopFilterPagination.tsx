@@ -122,17 +122,12 @@ const ShopFilterPagination = ({
                     active === value && 'cursor-default hover:bg-primary-900',
                     active !== value && 'hover:bg-primary-100',
                   )}
-                  // className={cn(
-                  //   'flex h-10 w-10 items-center justify-center rounded-lg tracking-wider',
-                  //   //   'transition-all duration-200',
-                  //   active === value &&
-                  //     'cursor-default bg-black text-white duration-0',
-                  //   active !== value && 'hover:bg-black/5',
-                  // )}
+                  style={{
+                    width: `max(2.5rem, ${value.toString().length + 2}ch)`,
+                  }}
                   onClick={() => {
                     setPage(value);
                   }}
-                  // disabled={active === value}
                 >
                   {value}
                 </Button>

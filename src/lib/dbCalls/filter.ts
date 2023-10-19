@@ -25,7 +25,7 @@ export const getProductsFromDB = async (inputSearchParams: {
   const sqlCunks: SQL[] = [];
 
   sqlCunks.push(
-    sql`select distinct ${products.id}, ${products.name}, ${products.price}, ${clothing.name} as category, count(${products.id}) over() as total_count from ${products}`,
+    sql`select distinct ${products.id}, ${products.name}, ${products.price}, ${clothing.name} as category, count(*) over() as total_count from ${products}`,
   );
 
   sqlCunks.push(
@@ -72,10 +72,10 @@ export const getProductsFromDB = async (inputSearchParams: {
 
   if (data.sort_by !== undefined) {
     if (data.sort_by === 'price low to high') {
-      sqlCunks.push(sql`order by ${products.price}`);
+      sqlCunks.push(sql`order by ${products.price}, ${products.id}`);
     }
     if (data.sort_by === 'price high to low') {
-      sqlCunks.push(sql`order by ${products.price} desc`);
+      sqlCunks.push(sql`order by ${products.price} desc, ${products.id}`);
     }
   }
   sqlCunks.push(sql`LIMIT ${FILTER_PRODUCTS_PER_PAGE}`);
