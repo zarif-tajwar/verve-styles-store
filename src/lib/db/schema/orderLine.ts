@@ -7,7 +7,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { orders } from './orders';
 import { productEntries } from './productEntries';
-import { relations } from 'drizzle-orm';
+import { InferInsertModel, InferSelectModel, relations } from 'drizzle-orm';
 
 export const orderLine = pgTable('order_line', {
   id: serial('id').primaryKey(),
@@ -18,7 +18,7 @@ export const orderLine = pgTable('order_line', {
     .references(() => productEntries.id)
     .notNull(),
   quantity: integer('quantity').notNull(),
-  price: numeric('price', {
+  pricePerUnit: numeric('price_per_unit', {
     precision: 6,
     scale: 2,
   }).notNull(),
@@ -36,3 +36,7 @@ export const orderLineRelations = relations(orderLine, ({ one, many }) => ({
     references: [productEntries.id],
   }),
 }));
+
+export type OrderLinesInsert = InferInsertModel<typeof orderLine>;
+
+export type OrderLinesSelect = InferSelectModel<typeof orderLine>;

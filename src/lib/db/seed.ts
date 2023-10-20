@@ -1,4 +1,4 @@
-import { SQL, and, eq, inArray, sql } from 'drizzle-orm';
+import { SQL, and, eq, inArray, lt, sql } from 'drizzle-orm';
 import {
   PgDialect,
   PgTableWithColumns,
@@ -15,8 +15,10 @@ import { ProductEntry, productEntries } from './schema/productEntries';
 import { FilterSearchQueryValuesSchema } from '../validation/schemas';
 import { genRandomInt, wait } from '../util';
 import { UsersInsert, users } from './schema/users';
-import { CartsInsert, carts } from './schema/carts';
+import { CartsInsert, CartsSelect, carts } from './schema/carts';
 import { CartItemsInsert, cartItems } from './schema/cartItems';
+import { orders } from './schema/orders';
+import { OrderLinesInsert, orderLine } from './schema/orderLine';
 
 async function populateSizes() {
   await db
@@ -285,14 +287,233 @@ const populateCartItems = async (n: number) => {
       return {
         cartId,
         productEntryId,
-        quantity: genRandomInt(200, 800),
+        // quantity: genRandomInt(200, 800),
+        quantity: 200,
         createdAt: date,
         updatedAt: date,
       };
     },
   );
 
-  await db.insert(cartItems).values(generatedCartItems);
+  const promises: Promise<void>[] = [];
+
+  for (let i = 0; i < generatedCartItems.length; i++) {
+    const cartItem = generatedCartItems.at(i);
+
+    if (cartItem === undefined) continue;
+
+    const cartItemTransactionPromise = db.transaction(async (tx1) => {
+      const [{ quantity: inventoryQuantity }] = await tx1
+        .select({
+          quantity: productEntries.quantity,
+        })
+        .from(productEntries)
+        .where(eq(productEntries.id, cartItem.productEntryId));
+
+      if (inventoryQuantity < cartItem.quantity) {
+        await tx1.rollback();
+        return;
+      }
+
+      await tx1.insert(cartItems).values(cartItem);
+    });
+
+    promises.push(cartItemTransactionPromise);
+  }
+
+  await Promise.allSettled(promises);
+
+  // await db.insert(cartItems).values(generatedCartItems);
+};
+
+const makeRandomOrders = async (n: number) => {
+  const getUserIdsPromise = db
+    .select({
+      userId: users.id,
+    })
+    .from(users);
+
+  const getProductEntryIdsPromise = db
+    .select({
+      productEntryId: productEntries.id,
+    })
+    .from(productEntries);
+
+  const [userIds, productEntryIds] = await Promise.all([
+    getUserIdsPromise,
+    getProductEntryIdsPromise,
+  ]);
+
+  let ordersMade = 0;
+  let firstLoop = 0;
+  let secondLoop = 0;
+
+  while (ordersMade < n) {
+    firstLoop += 1;
+    console.log(`First loop ran ${firstLoop}`);
+    const chosenRandomUserId =
+      userIds[genRandomInt(0, userIds.length - 1)].userId;
+
+    await db.transaction(async (tx1) => {
+      const usersCart = await tx1.query.carts.findFirst({
+        where: eq(carts.userId, chosenRandomUserId),
+      });
+
+      let cartId = usersCart?.id;
+
+      if (usersCart === undefined) {
+        const date = faker.date.past({ years: 1 });
+        const returnedCart = await tx1
+          .insert(carts)
+          .values({
+            userId: chosenRandomUserId,
+            createdAt: date,
+            updatedAt: date,
+          })
+          .returning();
+        cartId = returnedCart[0].id;
+      }
+
+      if (cartId === undefined) {
+        tx1.rollback();
+        return;
+      }
+
+      const targetCartItemsCount = genRandomInt(3, 9);
+
+      let currentCartItemsCount = 0;
+      console.log(targetCartItemsCount, 'Target Items Count');
+
+      while (currentCartItemsCount < targetCartItemsCount) {
+        secondLoop += 1;
+        console.log(`Second loop ran ${secondLoop}`);
+
+        const randomProductEntryId =
+          productEntryIds[genRandomInt(0, productEntryIds.length - 1)]
+            .productEntryId;
+        const randomQuantity = genRandomInt(4, 10);
+
+        const stockQuantity = (
+          await tx1.query.productEntries.findFirst({
+            columns: {
+              quantity: true,
+            },
+            where: eq(productEntries.id, randomProductEntryId),
+          })
+        )?.quantity;
+
+        if (!stockQuantity || stockQuantity < randomQuantity) {
+          tx1.rollback();
+          continue;
+        }
+
+        const cartItemAlreadyExists =
+          (await tx1.query.cartItems.findFirst({
+            where: and(
+              eq(cartItems.cartId, cartId),
+              eq(cartItems.productEntryId, randomProductEntryId),
+            ),
+          })) !== undefined;
+
+        if (cartItemAlreadyExists) {
+          await tx1
+            .update(cartItems)
+            .set({
+              quantity: randomQuantity,
+              updatedAt: new Date(),
+            })
+            .where(
+              and(
+                eq(cartItems.cartId, cartId),
+                eq(cartItems.productEntryId, randomProductEntryId),
+              ),
+            );
+        } else {
+          await tx1.insert(cartItems).values({
+            cartId,
+            productEntryId: randomProductEntryId,
+            quantity: randomQuantity,
+          });
+        }
+        currentCartItemsCount += 1;
+      }
+      secondLoop = 0;
+
+      const date = new Date();
+      const orderId = (
+        await tx1
+          .insert(orders)
+          .values({
+            userId: chosenRandomUserId,
+            createdAt: date,
+            updatedAt: date,
+          })
+          .returning()
+      )[0].id;
+
+      console.log(orderId, 'ORDER ID');
+
+      const cartItemsProps = await tx1
+        .select({
+          productEntryId: productEntries.id,
+          stockQuantity: productEntries.quantity,
+          orderQuantity: cartItems.quantity,
+          price: products.price,
+        })
+        .from(cartItems)
+        .innerJoin(
+          productEntries,
+          eq(productEntries.id, cartItems.productEntryId),
+        )
+        .innerJoin(products, eq(products.id, productEntries.productID))
+        .where(eq(cartItems.cartId, cartId));
+
+      // console.log(cartItemsProps, 'cartItemProps');
+
+      // tx1.rollback();
+      // return;
+
+      const promises: Promise<unknown>[] = [];
+
+      for (let carItemProp of cartItemsProps) {
+        console.log(carItemProp.productEntryId, 'productID');
+        console.log(carItemProp.stockQuantity, 'stock');
+        if (carItemProp.stockQuantity < carItemProp.orderQuantity) {
+          tx1.rollback();
+          return;
+        }
+
+        const inputOrder = tx1.insert(orderLine).values({
+          orderId,
+          pricePerUnit: carItemProp.price,
+          productEntryId: carItemProp.productEntryId,
+          quantity: carItemProp.orderQuantity,
+          createdAt: date,
+          updatedAt: date,
+        });
+
+        const updateStock = tx1
+          .update(productEntries)
+          .set({
+            quantity: carItemProp.stockQuantity - carItemProp.orderQuantity,
+            updatedAt: date,
+          })
+          .where(eq(productEntries.id, carItemProp.productEntryId));
+
+        promises.push(inputOrder, updateStock);
+      }
+
+      const deleteCartItems = tx1
+        .delete(cartItems)
+        .where(eq(cartItems.cartId, cartId));
+
+      promises.push(deleteCartItems);
+
+      await Promise.all(promises);
+
+      ordersMade += 1;
+    });
+  }
 };
 
 async function execute() {
@@ -300,7 +521,10 @@ async function execute() {
 
   const start = performance.now();
 
-  await populateCartItems(800);
+  // await populateCartItems(100);
+
+  await makeRandomOrders(100);
+  // await populateUsers(1000);
 
   const end = performance.now();
 
