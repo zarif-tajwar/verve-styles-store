@@ -21,6 +21,7 @@ export const users = pgTable(
   },
   (table) => ({
     userIdIdx: index('user_id_idx').on(table.id),
+    userNameIdx: index('user_Name_idx').on(table.username),
   }),
 );
 

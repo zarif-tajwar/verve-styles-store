@@ -8,6 +8,7 @@ import { sizes } from '../db/schema/sizes';
 import { db } from '../db';
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { FILTER_PRODUCTS_PER_PAGE } from '../validation/constants';
+import { productRating } from '../db/schema/productRating';
 
 export const getProductsFromDB = async (inputSearchParams: {
   [key: string]: string | string[] | undefined;
@@ -25,11 +26,15 @@ export const getProductsFromDB = async (inputSearchParams: {
   const sqlCunks: SQL[] = [];
 
   sqlCunks.push(
-    sql`select distinct ${products.id}, ${products.name}, ${products.price}, ${clothing.name} as category, count(*) over() as total_count from ${products}`,
+    sql`select distinct ${products.id}, ${products.name}, ${products.price}, ${clothing.name} as category, ${productRating.averageRating}, count(*) over() as total_count from ${products}`,
   );
 
   sqlCunks.push(
     sql`join ${clothing} on ${products.clothingID} = ${clothing.id}`,
+  );
+
+  sqlCunks.push(
+    sql`left join ${productRating} on ${products.id} = ${productRating.productId}`,
   );
 
   if (conditionals.length > 0) {

@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   pgTable,
   serial,
@@ -25,6 +26,11 @@ export const cartItems = pgTable(
   },
   (table) => ({
     unq: unique().on(table.cartId, table.productEntryId),
+    cartItemsIdIdx: index('cart)items_id_idx').on(table.id),
+    cartItemsCartIdIdx: index('cart)items_order_id_idx').on(table.cartId),
+    cartItemsProductEntryIdx: index('cart)items_product_entry_id_idx').on(
+      table.productEntryId,
+    ),
   }),
 );
 

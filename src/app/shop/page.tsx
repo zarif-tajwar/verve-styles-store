@@ -21,6 +21,15 @@ import Star from '@/components/UI/Star';
 
 export const revalidate = 0;
 
+type ProductItemProps = {
+  name: string;
+  price: string;
+  total_count: number;
+  category: string;
+  id: number;
+  average_rating: string | null | undefined;
+};
+
 const ShopPage = async ({
   searchParams,
 }: {
@@ -32,13 +41,7 @@ const ShopPage = async ({
 
   console.log(searchParams);
   const productItemsRes = await getProductsFromDB(searchParams);
-  const productItems = productItemsRes?.rows as {
-    name: string;
-    price: string;
-    total_count: number;
-    category: string;
-    id: number;
-  }[];
+  const productItems = productItemsRes?.rows as ProductItemProps[];
   const currentPage = Number.parseInt(searchParams.page as string) || 1;
   const totalProducts = productItems.at(0)?.total_count || 0;
 
@@ -58,11 +61,13 @@ const ShopPage = async ({
 
 export default ShopPage;
 
-const ProductListing = ({
-  product,
-}: {
-  product: { name: string; price: string; category: string; id: number };
-}) => {
+const ProductListing = ({ product }: { product: ProductItemProps }) => {
+  const ratingStr = product.average_rating;
+  const ratingFloat = product.average_rating
+    ? Number.parseFloat(product.average_rating)
+    : 0;
+
+  console.log(ratingFloat);
   return (
     <Link
       href={`/${makeValidURL(product.category)}/${makeValidURL(product.name)}-${
@@ -85,9 +90,9 @@ const ProductListing = ({
           </h3>
         </div>
         <div className="mb-2 flex gap-3">
-          <Star rating={4} size="sm" />
+          <Star rating={ratingFloat} size="sm" />
           <p className="text-sm font-medium text-black/60">
-            <span className="text-black">4.0/</span>5.0
+            <span className="text-black">{ratingStr}/</span>5.0
           </p>
         </div>
         <p className="text-2xl font-bold">

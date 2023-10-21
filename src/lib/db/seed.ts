@@ -19,6 +19,9 @@ import { CartsInsert, CartsSelect, carts } from './schema/carts';
 import { CartItemsInsert, cartItems } from './schema/cartItems';
 import { orders } from './schema/orders';
 import { OrderLinesInsert, orderLine } from './schema/orderLine';
+import { UserReviewsInsert, userReviews } from './schema/userReviews';
+import { productRating } from './schema/productRating';
+import { productSalesCount } from './schema/productSalesCount';
 
 async function populateSizes() {
   await db
@@ -516,15 +519,45 @@ const makeRandomOrders = async (n: number) => {
   }
 };
 
+const postFakeReviews = async () => {
+  const orderLines = await db
+    .select({ id: orderLine.id, date: orderLine.updatedAt })
+    .from(orderLine);
+
+  const generatedReviews: UserReviewsInsert[] = orderLines.map((orderLine) => ({
+    orderLineId: orderLine.id,
+    createdAt: orderLine.date,
+    updatedAt: orderLine.date,
+    rating: (genRandomInt(6, 10) / 2).toString(),
+    comment: faker.lorem.paragraph(5),
+  }));
+
+  const promises: Promise<unknown>[] = [];
+
+  for (let i = 0; i < generatedReviews.length; i += 1000) {
+    promises.push(
+      db
+        .insert(userReviews)
+        .values(
+          generatedReviews.slice(
+            i,
+            Math.min(i + 1000, generatedReviews.length - 1),
+          ),
+        ),
+    );
+  }
+
+  await Promise.all(promises);
+};
+
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  // await populateCartItems(100);
+  const lol = await db.select().from(productSalesCount).limit(10);
 
-  await makeRandomOrders(100);
-  // await populateUsers(1000);
+  console.log(lol);
 
   const end = performance.now();
 
