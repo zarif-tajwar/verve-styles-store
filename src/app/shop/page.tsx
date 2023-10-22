@@ -2,34 +2,12 @@ import { Icons } from '@/components/Svgs/icons';
 import Image from 'next/image';
 import { getProductsFromDB } from '@/lib/dbCalls/filter';
 import ShopFilterPagination from '@/components/UI/ShopFilterPagination';
-import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
-import Link from 'next/link';
 import { makeValidURL } from '@/lib/util';
 import Star from '@/components/UI/Star';
 import { FilteredProductItem } from '@/lib/dbCalls/filter';
-
-// const staticProducts = [
-//   { name: 'Awesome Soft Computer', price: '8889.00' },
-//   { name: 'Elegant Bronze Gloves', price: '1969.00' },
-//   { name: 'Electronic Cotton Chair', price: '6091.00' },
-//   { name: 'Licensed Rubber Table', price: '4264.00' },
-//   { name: 'Electronic Soft Bike', price: '3239.00' },
-//   { name: 'Electronic Wooden Chips', price: '4521.00' },
-//   { name: 'Unbranded Fresh Car', price: '4394.00' },
-//   { name: 'Modern Metal Fish', price: '8554.00' },
-//   { name: 'Electronic Granite Cheese', price: '598.00' },
-// ];
+import Link from 'next/link';
 
 export const revalidate = 0;
-
-// type ProductItemProps = {
-//   name: string;
-//   price: string;
-//   total_count: number;
-//   category: string;
-//   id: number;
-//   average_rating: string | null | undefined;
-// };
 
 const ShopPage = async ({
   searchParams,

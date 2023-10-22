@@ -31,9 +31,6 @@ import { OrderLinesInsert, orderLine } from './schema/orderLine';
 import { UserReviewsInsert, userReviews } from './schema/userReviews';
 import { productRating } from './schema/productRating';
 import { productSalesCount } from './schema/productSalesCount';
-import { getProductsFromDBTyped } from '../dbCalls/filter';
-import { getProductsFromDBOld } from '../dbCalls/filterOld';
-import { getProductsFromDBSelect } from '../dbCalls/filter-select-typed';
 import { getProductsFromDB } from '../dbCalls/filter';
 
 async function populateSizes() {
@@ -178,7 +175,7 @@ const updateProductEntryQuantity = async () => {
           .set({
             quantity: genRandomInt(800, 1200),
           })
-          .where(eq(productEntries.id, productEntriesId[i].id)),
+          .where(eq(productEntries.id, productEntriesId[i]!.id)),
       ),
     );
     promises.push(promise);
@@ -228,7 +225,7 @@ const populateCarts = async (n: number) => {
 
     if (
       alreadyExistingCartsUserIdArr.some(
-        (val) => val.userId === userIdArr[randomIndex].userId,
+        (val) => val.userId === userIdArr[randomIndex]!.userId,
       )
     )
       continue;
@@ -272,9 +269,9 @@ const populateCartItems = async (n: number) => {
 
   while (combinations.length < n) {
     const selectedCombination = [
-      productEntryIdArray[genRandomInt(0, productEntryIdArray.length - 1)]
+      productEntryIdArray[genRandomInt(0, productEntryIdArray.length - 1)]!
         .productEntryId,
-      cartIdArray[genRandomInt(0, cartIdArray.length - 1)].cartId,
+      cartIdArray[genRandomInt(0, cartIdArray.length - 1)]!.cartId,
     ];
 
     if (
@@ -368,7 +365,7 @@ const makeRandomOrders = async (n: number) => {
     firstLoop += 1;
     console.log(`First loop ran ${firstLoop}`);
     const chosenRandomUserId =
-      userIds[genRandomInt(0, userIds.length - 1)].userId;
+      userIds[genRandomInt(0, userIds.length - 1)]!.userId;
 
     await db.transaction(async (tx1) => {
       const usersCart = await tx1.query.carts.findFirst({
@@ -387,7 +384,7 @@ const makeRandomOrders = async (n: number) => {
             updatedAt: date,
           })
           .returning();
-        cartId = returnedCart[0].id;
+        cartId = returnedCart[0]!.id;
       }
 
       if (cartId === undefined) {
@@ -405,7 +402,7 @@ const makeRandomOrders = async (n: number) => {
         console.log(`Second loop ran ${secondLoop}`);
 
         const randomProductEntryId =
-          productEntryIds[genRandomInt(0, productEntryIds.length - 1)]
+          productEntryIds[genRandomInt(0, productEntryIds.length - 1)]!
             .productEntryId;
         const randomQuantity = genRandomInt(4, 10);
 
@@ -566,32 +563,11 @@ const postFakeReviews = async () => {
 async function execute() {
   console.log('⏳ Running ...');
 
-  let start = performance.now();
+  const start = performance.now();
 
-  const searchParams = {
-    clothing: 'shirts,hoodies',
-    sizes: 'medium,2xl,xl',
-    styles: 'casual,festival,gym',
-    sort_by: 'most popular',
-    price_range: '1626-7683',
-    page: '40',
-  };
-
-  const newRes = await getProductsFromDBTyped(searchParams);
-
-  let end = performance.now();
+  const end = performance.now();
 
   console.log(`✅ Completed in ${end - start}ms`);
-  console.log(newRes?.at(8)?.id);
-
-  start = performance.now();
-
-  const oldRes = await getProductsFromDB(searchParams);
-
-  end = performance.now();
-
-  console.log(`✅ Completed in ${end - start}ms`);
-  console.log(oldRes?.rows?.at(8)?.id);
 
   process.exit(0);
 }
