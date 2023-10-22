@@ -31,7 +31,7 @@ import { OrderLinesInsert, orderLine } from './schema/orderLine';
 import { UserReviewsInsert, userReviews } from './schema/userReviews';
 import { productRating } from './schema/productRating';
 import { productSalesCount } from './schema/productSalesCount';
-import { getProductsFromDBTyped } from '../dbCalls/filter-typed';
+import { getProductsFromDBTyped } from '../dbCalls/filter';
 import { getProductsFromDBOld } from '../dbCalls/filterOld';
 import { getProductsFromDBSelect } from '../dbCalls/filter-select-typed';
 import { getProductsFromDB } from '../dbCalls/filter';

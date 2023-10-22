@@ -6,10 +6,7 @@ import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import Link from 'next/link';
 import { makeValidURL } from '@/lib/util';
 import Star from '@/components/UI/Star';
-import {
-  FilteredProductItem,
-  getProductsFromDBTyped,
-} from '@/lib/dbCalls/filter-typed';
+import { FilteredProductItem } from '@/lib/dbCalls/filter';
 
 // const staticProducts = [
 //   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -39,7 +36,7 @@ const ShopPage = async ({
 }: {
   searchParams: SearchParamsServer;
 }) => {
-  const productItemsRes = await getProductsFromDBTyped(searchParams);
+  const productItemsRes = await getProductsFromDB(searchParams);
   const productItems = productItemsRes;
 
   if (productItems === undefined) return null;
