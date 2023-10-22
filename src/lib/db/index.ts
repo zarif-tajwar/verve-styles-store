@@ -32,4 +32,5 @@ export const db = drizzle(connection, {
     ...ordersSchema,
     ...orderLineSchema,
   },
+  // logger: true,
 });

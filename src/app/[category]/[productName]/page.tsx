@@ -3,9 +3,10 @@ import ProductAdd from '@/components/UI/ProductAdd';
 import Star from '@/components/UI/Star';
 import { db } from '@/lib/db';
 import { clothing } from '@/lib/db/schema/clothing';
+import { productRating } from '@/lib/db/schema/productRating';
 import { products } from '@/lib/db/schema/products';
 import { makeValidURL } from '@/lib/util';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, getTableColumns, sql } from 'drizzle-orm';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -34,10 +35,12 @@ interface PageProps {
 }
 
 const ProductPage = async ({ params, searchParams }: PageProps) => {
+  const productColumns = getTableColumns(products);
   const [product] = await db
-    .select()
+    .select({ ...productColumns, averageRating: productRating.averageRating })
     .from(products)
     .innerJoin(clothing, eq(products.clothingID, clothing.id))
+    .innerJoin(productRating, eq(products.id, productRating.productId))
     .where(
       and(
         eq(clothing.name, params.category),
@@ -48,15 +51,18 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
           ),
         ),
       ),
-    );
+    )
+    .limit(1);
 
   if (
     product === undefined ||
-    `${makeValidURL(product.products.name)}-${product.products.id}` !==
-      params.productName
+    `${makeValidURL(product.name)}-${product.id}` !== params.productName
   ) {
     notFound();
   }
+
+  const ratingStr = product.averageRating || '0.0';
+  const ratingFloat = Number.parseFloat(ratingStr);
 
   return (
     <main className="container-main pt-20">
@@ -104,12 +110,12 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
           </div>
           <div>
             <h1 className="mb-3.5 font-integral-cf text-4xl font-bold">
-              {product.products.name}
+              {product.name}
             </h1>
             <div className="mb-5 flex gap-4">
-              <Star rating={4.0} />
+              <Star rating={ratingFloat} />
               <span className="inline-block font-medium text-black/60">
-                <span className="text-black">4.0/</span>5.0
+                <span className="text-black">{ratingStr}/</span>5.0
               </span>
             </div>
             <div className="mb-5">
@@ -117,15 +123,15 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'USD',
-                }).format(Number.parseFloat(product.products.price))}
+                }).format(Number.parseFloat(product.price))}
               </span>
             </div>
             <p className="text-lg text-black/60 [text-wrap:balance]">
-              {product.products.description}
+              {product.description}
             </p>
             <div className="my-6 h-px w-full bg-black/10" />
             <Suspense fallback={<div>Sizes Loading...</div>}>
-              <ProductAdd productId={product.products.id} />
+              <ProductAdd productId={product.id} />
             </Suspense>
           </div>
         </div>

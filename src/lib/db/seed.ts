@@ -1,4 +1,13 @@
-import { SQL, and, eq, inArray, lt, sql } from 'drizzle-orm';
+import {
+  InferColumnsDataTypes,
+  SQL,
+  and,
+  eq,
+  getTableColumns,
+  inArray,
+  lt,
+  sql,
+} from 'drizzle-orm';
 import {
   PgDialect,
   PgTableWithColumns,
@@ -7,7 +16,7 @@ import {
 import { db } from './index';
 import { clothing } from './schema/clothing';
 import { dressStyles } from './schema/dressStyles';
-import { products } from './schema/products';
+import { ProductSelect, products } from './schema/products';
 import { sizes } from './schema/sizes';
 import { faker } from '@faker-js/faker';
 import crypto from 'crypto';
@@ -22,6 +31,10 @@ import { OrderLinesInsert, orderLine } from './schema/orderLine';
 import { UserReviewsInsert, userReviews } from './schema/userReviews';
 import { productRating } from './schema/productRating';
 import { productSalesCount } from './schema/productSalesCount';
+import { getProductsFromDBTyped } from '../dbCalls/filter-typed';
+import { getProductsFromDBOld } from '../dbCalls/filterOld';
+import { getProductsFromDBSelect } from '../dbCalls/filter-select-typed';
+import { getProductsFromDB } from '../dbCalls/filter';
 
 async function populateSizes() {
   await db
@@ -553,15 +566,32 @@ const postFakeReviews = async () => {
 async function execute() {
   console.log('⏳ Running ...');
 
-  const start = performance.now();
+  let start = performance.now();
 
-  const lol = await db.select().from(productSalesCount).limit(10);
+  const searchParams = {
+    clothing: 'shirts,hoodies',
+    sizes: 'medium,2xl,xl',
+    styles: 'casual,festival,gym',
+    sort_by: 'most popular',
+    price_range: '1626-7683',
+    page: '40',
+  };
 
-  console.log(lol);
+  const newRes = await getProductsFromDBTyped(searchParams);
 
-  const end = performance.now();
+  let end = performance.now();
 
   console.log(`✅ Completed in ${end - start}ms`);
+  console.log(newRes?.at(8)?.id);
+
+  start = performance.now();
+
+  const oldRes = await getProductsFromDB(searchParams);
+
+  end = performance.now();
+
+  console.log(`✅ Completed in ${end - start}ms`);
+  console.log(oldRes?.rows?.at(8)?.id);
 
   process.exit(0);
 }

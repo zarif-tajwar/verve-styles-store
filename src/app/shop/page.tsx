@@ -6,6 +6,10 @@ import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import Link from 'next/link';
 import { makeValidURL } from '@/lib/util';
 import Star from '@/components/UI/Star';
+import {
+  FilteredProductItem,
+  getProductsFromDBTyped,
+} from '@/lib/dbCalls/filter-typed';
 
 // const staticProducts = [
 //   { name: 'Awesome Soft Computer', price: '8889.00' },
@@ -21,29 +25,26 @@ import Star from '@/components/UI/Star';
 
 export const revalidate = 0;
 
-type ProductItemProps = {
-  name: string;
-  price: string;
-  total_count: number;
-  category: string;
-  id: number;
-  average_rating: string | null | undefined;
-};
+// type ProductItemProps = {
+//   name: string;
+//   price: string;
+//   total_count: number;
+//   category: string;
+//   id: number;
+//   average_rating: string | null | undefined;
+// };
 
 const ShopPage = async ({
   searchParams,
 }: {
   searchParams: SearchParamsServer;
 }) => {
-  // return <p>{JSON.stringify(searchParams)}</p>;
+  const productItemsRes = await getProductsFromDBTyped(searchParams);
+  const productItems = productItemsRes;
 
-  // const productItems = staticProducts;
+  if (productItems === undefined) return null;
 
-  console.log(searchParams);
-  const productItemsRes = await getProductsFromDB(searchParams);
-  const productItems = productItemsRes?.rows as ProductItemProps[];
-  const currentPage = Number.parseInt(searchParams.page as string) || 1;
-  const totalProducts = productItems.at(0)?.total_count || 0;
+  const totalProducts = productItems?.at(0)?.totalCount || 0;
 
   return (
     <div>
@@ -61,18 +62,15 @@ const ShopPage = async ({
 
 export default ShopPage;
 
-const ProductListing = ({ product }: { product: ProductItemProps }) => {
-  const ratingStr = product.average_rating;
-  const ratingFloat = product.average_rating
-    ? Number.parseFloat(product.average_rating)
-    : 0;
+const ProductListing = ({ product }: { product: FilteredProductItem }) => {
+  const ratingStr = product.averageRating || '0.0';
+  const ratingFloat = Number.parseFloat(ratingStr);
 
-  console.log(ratingFloat);
   return (
     <Link
-      href={`/${makeValidURL(product.category)}/${makeValidURL(product.name)}-${
-        product.id
-      }`}
+      href={`/${makeValidURL(product.categoryName!)}/${makeValidURL(
+        product.name,
+      )}-${product.id}`}
     >
       <div>
         <div className="mb-4 aspect-square w-full overflow-hidden rounded-main">

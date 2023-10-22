@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { InferSelectModel, relations } from 'drizzle-orm';
 import {
   index,
   pgTable,
@@ -25,3 +25,5 @@ export const clothing = pgTable(
 export const clothingRelations = relations(clothing, ({ many }) => ({
   products: many(products),
 }));
+
+export type ClothingSelect = InferSelectModel<typeof clothing>;
