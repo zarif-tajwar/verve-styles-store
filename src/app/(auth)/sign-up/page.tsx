@@ -1,4 +1,10 @@
+import WIP from '@/components/UI/WIP';
+
 const SignupPage = () => {
-  return <div>SignupPage</div>;
+  return (
+    <div>
+      <WIP />
+    </div>
+  );
 };
 export default SignupPage;

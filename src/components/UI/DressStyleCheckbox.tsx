@@ -17,7 +17,7 @@ const DressStyleCheckbox = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-2 gap-2.5 text-sm font-medium text-black/60">
+      <div className="grid grid-cols-2 gap-2.5 text-black/60">
         {dressStylesOptions.map((style) => (
           <Checkbox.Root
             key={style.value}

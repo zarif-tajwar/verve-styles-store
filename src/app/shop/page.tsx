@@ -14,8 +14,7 @@ const ShopPage = async ({
 }: {
   searchParams: SearchParamsServer;
 }) => {
-  const productItemsRes = await getProductsFromDB(searchParams);
-  const productItems = productItemsRes;
+  const productItems = await getProductsFromDB(searchParams);
 
   if (productItems === undefined) return null;
 

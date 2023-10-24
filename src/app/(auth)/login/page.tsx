@@ -1,4 +1,10 @@
+import WIP from '@/components/UI/WIP';
+
 const LoginPage = () => {
-  return <div>LoginPage</div>;
+  return (
+    <div>
+      <WIP />
+    </div>
+  );
 };
 export default LoginPage;

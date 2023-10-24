@@ -1,3 +1,4 @@
+import ProductDetailsReviewFaq from '@/components/Sections/ProductDetailsReviewFaq';
 import { Icons } from '@/components/Svgs/icons';
 import ProductAdd from '@/components/UI/ProductAdd';
 import Star from '@/components/UI/Star';
@@ -11,27 +12,27 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-// export async function generateStaticParams() {
-//   const slugs = await db
-//     .select({
-//       name: products.name,
-//       id: products.id,
-//       category: clothing.name,
-//     })
-//     .from(products)
-//     .innerJoin(clothing, eq(products.clothingID, clothing.id));
+export async function generateStaticParams() {
+  const slugs = await db
+    .select({
+      name: products.name,
+      id: products.id,
+      category: clothing.name,
+    })
+    .from(products)
+    .innerJoin(clothing, eq(products.clothingID, clothing.id));
 
-//   return slugs.map((slug) => ({
-//     category: makeValidURL(slug.category),
-//     productName: `${makeValidURL(slug.name)}-${slug.id}`,
-//   }));
-// }
+  return slugs.map((slug) => ({
+    category: makeValidURL(slug.category),
+    productName: `${makeValidURL(slug.name)}-${slug.id}`,
+  }));
+}
 
-// export const dynamicParams = false;
+export const dynamicParams = false;
 
 interface PageProps {
   params: { category: string; productName: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: SearchParamsServer;
 }
 
 const ProductPage = async ({ params, searchParams }: PageProps) => {
@@ -66,7 +67,7 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
     <main className="container-main pt-20">
       <section>
         <div className="grid grid-cols-2 gap-10">
-          <div className="flex gap-4">
+          <div className="flex max-h-[34rem] gap-4">
             <div className="grid h-full w-[152px] grid-cols-1 grid-rows-3 gap-4">
               <div className="overflow-hidden rounded-main ring-2 ring-black/60">
                 <Image
@@ -96,7 +97,7 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
                 />
               </div>
             </div>
-            <div className="max-h-[34rem] flex-grow overflow-hidden rounded-main">
+            <div className="flex-grow overflow-hidden rounded-main">
               <Image
                 src={'/products/one-life-graphic-tshirt.png'}
                 alt="One Life Graphic T-Shirt"
@@ -113,7 +114,7 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
             <div className="mb-5 flex gap-4">
               <Star rating={ratingFloat} />
               <span className="inline-block font-medium text-black/60">
-                <span className="text-black">{ratingStr}/</span>5.0
+                <span className="text-black">{ratingStr}</span>/5.0
               </span>
             </div>
             <div className="mb-5">
@@ -133,6 +134,14 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
             </Suspense>
           </div>
         </div>
+      </section>
+      <section className="mt-20">
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProductDetailsReviewFaq
+            productId={productId}
+            searchParams={searchParams}
+          />
+        </Suspense>
       </section>
     </main>
   );

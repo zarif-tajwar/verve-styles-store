@@ -6,7 +6,7 @@ import { dressStyles } from '../db/schema/dressStyles';
 import { productEntries } from '../db/schema/productEntries';
 import { sizes } from '../db/schema/sizes';
 import { db } from '../db';
-import { PgColumn } from 'drizzle-orm/pg-core';
+import { PgColumn, PgDialect } from 'drizzle-orm/pg-core';
 import { FILTER_PRODUCTS_PER_PAGE } from '../validation/constants';
 import { productRating } from '../db/schema/productRating';
 import { productSalesCount } from '../db/schema/productSalesCount';
@@ -39,6 +39,7 @@ export const getProductsFromDB = async (
       name: products.name,
       price: products.price,
       categoryName: clothing.name,
+      // categoryID: clothing.id,
       averageRating: productRating.averageRating,
       totalCount: sql<number>`COUNT(*) OVER()`,
       ...(data.sort_by === 'most popular'
@@ -46,7 +47,7 @@ export const getProductsFromDB = async (
         : {}),
     })
     .from(products)
-    .leftJoin(clothing, eq(clothing.id, products.clothingID))
+    .innerJoin(clothing, eq(clothing.id, products.clothingID))
     .leftJoin(productRating, eq(productRating.productId, products.id));
 
   if (data.clothing !== undefined) {
@@ -60,7 +61,7 @@ export const getProductsFromDB = async (
 
   if (data.sizes !== undefined) {
     const sq = db
-      .select({ productId: productEntries.productID })
+      .selectDistinct({ productId: productEntries.productID })
       .from(productEntries)
       .innerJoin(sizes, eq(productEntries.sizeID, sizes.id))
       .where(inArray(sizes.name, data.sizes));
@@ -78,11 +79,14 @@ export const getProductsFromDB = async (
   }
 
   if (data.sort_by === 'most popular') {
-    query.innerJoin(
+    query.leftJoin(
       productSalesCount,
       eq(productSalesCount.productId, products.id),
     );
-    sortingMethods.push(desc(productSalesCount.totalSales), products.id);
+    sortingMethods.push(
+      sql`${productSalesCount.totalSales} desc nulls last`,
+      products.id,
+    );
   }
 
   if (data.sort_by !== undefined) {

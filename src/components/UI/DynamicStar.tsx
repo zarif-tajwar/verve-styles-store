@@ -3,10 +3,10 @@
 import useStar from '../../lib/hooks/useStar';
 import { useRef } from 'react';
 import Star from './Star';
-import { Slot } from '@radix-ui/react-slot';
 
 const DynamicStar = () => {
   const starWrapperRef = useRef<HTMLButtonElement>(null);
+  const maxRating = 10;
 
   const {
     selectedRating,
@@ -14,7 +14,7 @@ const DynamicStar = () => {
     handleHover,
     handleHoverLeave,
     tempHoverRating,
-  } = useStar({ starWrapperRef, maxRating: 10 });
+  } = useStar({ starWrapperRef, maxRating });
 
   const rating =
     tempHoverRating !== undefined ? tempHoverRating : selectedRating;
@@ -27,7 +27,7 @@ const DynamicStar = () => {
       onMouseLeave={handleHoverLeave}
       className="flex cursor-pointer flex-col border-none outline-none"
     >
-      <Star rating={rating} maxRating={10} />
+      <Star rating={rating} maxRating={maxRating} />
     </button>
   );
 };

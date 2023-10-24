@@ -5,14 +5,16 @@ import { sizesOptions as lol } from '@/lib/validation/constants';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { MinusIcon, MinusSquare, PlusIcon } from 'lucide-react';
 import { Button, buttonVariants } from './Button';
+import { useRef } from 'react';
 
 const ProductAddCartRadioGroup = ({
   sizeOptions,
 }: {
   sizeOptions: string[];
 }) => {
+  const quantityInputRef = useRef<HTMLInputElement>(null);
   return (
-    <form action="" onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={(e) => e.preventDefault()}>
       <label
         htmlFor="clothing-size"
         className="mb-4 block font-medium leading-none text-black/60"
@@ -51,7 +53,17 @@ const ProductAddCartRadioGroup = ({
               'flex h-full w-full items-center justify-center rounded-full',
               'transition-all duration-200 hover:bg-black hover:text-white',
             )}
-            onClick={(e) => e.preventDefault()}
+            onClick={(e) => {
+              e.preventDefault();
+              if (!quantityInputRef.current) return;
+
+              const currentValue = Number.parseInt(
+                quantityInputRef.current?.value || '1',
+              );
+              if (currentValue - 1 > 0) {
+                quantityInputRef.current.value = (currentValue - 1).toString();
+              }
+            }}
           >
             <MinusIcon className="h-5 w-5" />
           </button>
@@ -61,6 +73,7 @@ const ProductAddCartRadioGroup = ({
             max={10}
             min={1}
             defaultValue={1}
+            ref={quantityInputRef}
           />
           <button
             className={cn(
@@ -69,6 +82,14 @@ const ProductAddCartRadioGroup = ({
             )}
             onClick={(e) => {
               e.preventDefault();
+              if (!quantityInputRef.current) return;
+
+              const currentValue = Number.parseInt(
+                quantityInputRef.current?.value || '1',
+              );
+              if (currentValue + 1 <= 10) {
+                quantityInputRef.current.value = (currentValue + 1).toString();
+              }
             }}
           >
             <PlusIcon className="h-5 w-5" />
