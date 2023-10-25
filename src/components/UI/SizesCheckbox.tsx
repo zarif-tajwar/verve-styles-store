@@ -14,14 +14,14 @@ const SizesCheckbox = () => {
 
   return (
     <div className="flex flex-wrap gap-2">
-      {sizesOptions.map((size) => (
+      {sizesOptions.map((option) => (
         <Checkbox.Root
-          key={size.value}
-          name={size.value}
-          value={size.value}
-          checked={checkedOptions.has(size.value)}
+          key={option.value}
+          name={option.value}
+          value={option.value}
+          checked={checkedOptions.has(option.value)}
           onCheckedChange={(checked) => {
-            handleCheck(checked, size.value);
+            handleCheck(checked, option.value);
           }}
           className={buttonVariants({
             align: 'left',
@@ -31,7 +31,7 @@ const SizesCheckbox = () => {
               'px-6 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
           })}
         >
-          <div>{size.label}</div>
+          <div>{option.label}</div>
         </Checkbox.Root>
       ))}
     </div>

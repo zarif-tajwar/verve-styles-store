@@ -236,7 +236,7 @@ const populateCarts = async (n: number) => {
   const generatedCarts: CartsInsert[] = selectedUsersIndex.map((val) => {
     const date = faker.date.past({ years: 1 });
     return {
-      userId: userIdArr[val].userId,
+      userId: userIdArr.at(val)?.userId || 0,
       createdAt: date,
       updatedAt: date,
     };
@@ -316,12 +316,14 @@ const populateCartItems = async (n: number) => {
     if (cartItem === undefined) continue;
 
     const cartItemTransactionPromise = db.transaction(async (tx1) => {
-      const [{ quantity: inventoryQuantity }] = await tx1
+      const res = await tx1
         .select({
           quantity: productEntries.quantity,
         })
         .from(productEntries)
         .where(eq(productEntries.id, cartItem.productEntryId));
+
+      const inventoryQuantity = res.at(0)?.quantity || 0;
 
       if (inventoryQuantity < cartItem.quantity) {
         await tx1.rollback();
@@ -462,9 +464,12 @@ const makeRandomOrders = async (n: number) => {
             updatedAt: date,
           })
           .returning()
-      )[0].id;
+      )?.at(0)?.id;
 
-      console.log(orderId, 'ORDER ID');
+      if (!orderId) {
+        tx1.rollback();
+        return;
+      }
 
       const cartItemsProps = await tx1
         .select({
@@ -564,6 +569,14 @@ async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
+
+  const lol = { name: 'xd', id: 10, createdAt: new Date() };
+
+  const serialized = JSON.parse(JSON.stringify(lol));
+  serialized.createdAt = new Date(serialized.createdAt);
+
+  console.log(lol, 'SOURCE');
+  console.log(serialized, 'JSON SERIALIZED');
 
   const end = performance.now();
 

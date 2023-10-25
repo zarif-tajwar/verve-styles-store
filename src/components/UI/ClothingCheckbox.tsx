@@ -18,11 +18,16 @@ const ClothingCheckbox = () => {
 
   return (
     <div className="grid grid-cols-2 gap-2.5 text-sm">
-      {clothingItemsOptions.map((clothing) => (
+      {clothingItemsOptions.map((option) => (
         <Checkbox.Root
-          key={clothing.value}
-          name={clothing.label}
-          value={clothing.value}
+          key={option.value}
+          name={option.label}
+          value={option.value}
+          title={
+            checkedOptions.size < 1
+              ? `Select ${option.label}`
+              : `Also select ${option.label}`
+          }
           className={buttonVariants({
             align: 'left',
             variant: 'secondary',
@@ -30,13 +35,13 @@ const ClothingCheckbox = () => {
             className:
               'py-2.5 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
           })}
-          checked={checkedOptions.has(clothing.value)}
+          checked={checkedOptions.has(option.value)}
           onCheckedChange={(checked) => {
-            handleCheck(checked, clothing.value);
+            handleCheck(checked, option.value);
           }}
         >
-          <clothing.icon className="h-[18px]" />
-          <div>{clothing.label}</div>
+          <option.icon className="h-[18px]" />
+          <div>{option.label}</div>
         </Checkbox.Root>
       ))}
     </div>

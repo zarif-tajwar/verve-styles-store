@@ -18,6 +18,7 @@ import {
   ShopFilterState,
 } from '@/lib/types/ShopFilter';
 import { URL_QUERY_SEPERATORS } from '@/lib/validation/constants';
+import { Sliders } from 'lucide-react';
 
 export const FilterSidebar = () => {
   const updateFilterState = useShopFilterStore((store) => store.update);
@@ -86,12 +87,13 @@ export const FilterSidebar = () => {
   return (
     <>
       <div className="w-full max-w-[296px]">
-        <div className="rounded-main border border-black/10 px-6 pb-8 pt-8">
+        <div className="shadow-light-drop rounded-main border border-primary-100 px-6 pb-8 pt-8">
           <div className="flex items-center justify-between">
             <h2 className="font-plus-jakarta-sans text-xl font-bold capitalize">
               Filters
             </h2>
-            <Icons.filter className="text-black/40" />
+            {/* <Icons.filter className="text-black/40" /> */}
+            <Sliders size={20} className="text-primary-400" />
           </div>
           <VerticalDivider />
           <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
@@ -121,5 +123,5 @@ export const FilterSidebar = () => {
 };
 
 const VerticalDivider = () => (
-  <div className="my-6 h-px w-full bg-black/10"></div>
+  <div className="my-6 h-px w-full bg-primary-100"></div>
 );

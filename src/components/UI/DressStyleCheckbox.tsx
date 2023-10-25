@@ -7,7 +7,7 @@ import {
   dressStylesOptions,
 } from '@/lib/validation/constants';
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { Button, buttonVariants } from './Button';
+import { buttonVariants } from './Button';
 
 const DressStyleCheckbox = () => {
   const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
@@ -18,11 +18,11 @@ const DressStyleCheckbox = () => {
   return (
     <div>
       <div className="grid grid-cols-2 gap-2.5 text-black/60">
-        {dressStylesOptions.map((style) => (
+        {dressStylesOptions.map((option) => (
           <Checkbox.Root
-            key={style.value}
-            name={style.value}
-            value={style.value}
+            key={option.value}
+            name={option.value}
+            value={option.value}
             className={buttonVariants({
               align: 'left',
               variant: 'secondary',
@@ -30,10 +30,10 @@ const DressStyleCheckbox = () => {
               className:
                 'data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
             })}
-            checked={checkedOptions.has(style.value)}
-            onCheckedChange={(checked) => handleCheck(checked, style.value)}
+            checked={checkedOptions.has(option.value)}
+            onCheckedChange={(checked) => handleCheck(checked, option.value)}
           >
-            <div>{style.label}</div>
+            <div>{option.label}</div>
           </Checkbox.Root>
         ))}
       </div>

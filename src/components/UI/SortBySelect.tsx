@@ -66,9 +66,10 @@ const SelectMain = () => {
               {sortOptions.map((option) => (
                 <Select.Item
                   className={cn(
-                    'relative flex cursor-pointer select-none items-center justify-start gap-2 rounded-md py-2.5 pl-8 pr-4 text-sm text-primary-500 outline-none',
+                    'relative flex cursor-pointer select-none items-center justify-start gap-2 rounded-md text-sm text-primary-500 outline-none',
                     'data-[highlighted]:bg-primary-50',
                     'transition-all duration-200',
+                    'py-2.5 pl-8 pr-4',
                   )}
                   key={option.value}
                   value={option.value}

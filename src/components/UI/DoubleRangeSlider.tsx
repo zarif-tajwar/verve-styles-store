@@ -53,7 +53,7 @@ const DoubleRangeSlider = () => {
           aria-label="Maximum Price"
         />
       </Slider.Root>
-      <div className="flex items-center justify-between gap-4 font-medium">
+      <div className="flex items-center justify-between gap-4 text-primary-400">
         <p>
           {new Intl.NumberFormat('en-US', {
             style: 'currency',

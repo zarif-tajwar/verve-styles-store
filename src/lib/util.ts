@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 export const capitalize = (str: string) =>
-  str[0].toUpperCase() + str.slice(1).toLowerCase();
+  str.at(0)?.toUpperCase() + str.slice(1).toLowerCase();
 
 export const isValueInArray = <T>(value: T, array: T[]): boolean =>
   array.some((v) => v === value);
@@ -21,7 +21,7 @@ export const quickSortByReference = <T>(
   }
 
   const pivotIndex = Math.floor(values.length / 2);
-  const pivot = values[pivotIndex];
+  const pivot = values[pivotIndex] as T;
 
   const less = values.filter((value, index) => {
     if (index === pivotIndex) return false;
@@ -50,7 +50,7 @@ export const makeValidURL = (str: string) => {
   let result = '';
 
   for (let i = 0; i < str.length; i++) {
-    const char = str[i].toLowerCase();
+    const char = str.at(i)?.toLowerCase() || '';
     result += char.match(unsupportedCharacters) ? '-' : char;
   }
 
