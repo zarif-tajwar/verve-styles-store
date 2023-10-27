@@ -1,4 +1,4 @@
-import { Icons } from '@/components/Svgs/icons';
+import { ClothingIcons } from '@/components/Svgs/icons';
 
 export const defaultPriceRange = [0, 10000] as [number, number];
 
@@ -21,20 +21,12 @@ export const sizesOptions = [
 
 export const sizesColumnNames = sizesOptions.map((o) => o.value);
 
-// export const sizesColumnNamesMap = new Map<string, string>([
-//   ['sm', 'small'],
-//   ['md', 'medium'],
-//   ['lg', 'large'],
-//   ['xl', 'xl'],
-//   ['2xl', '2xl'],
-// ]);
-
 export const clothingItemsOptions = [
-  { id: 1, value: 'tshirts', label: 'T-Shirts', icon: Icons['T-Shirts'] },
-  { id: 2, value: 'shorts', label: 'Shorts', icon: Icons.Shorts },
-  { id: 3, value: 'shirts', label: 'Shirts', icon: Icons.Shirts },
-  { id: 4, value: 'hoodies', label: 'Hoodies', icon: Icons.Hoodies },
-  { id: 5, value: 'jeans', label: 'Jeans', icon: Icons.Jeans },
+  { id: 1, value: 'tshirts', label: 'T-Shirts', icon: ClothingIcons.tshirts },
+  { id: 2, value: 'shorts', label: 'Shorts', icon: ClothingIcons.shorts },
+  { id: 3, value: 'shirts', label: 'Shirts', icon: ClothingIcons.shirts },
+  { id: 4, value: 'hoodies', label: 'Hoodies', icon: ClothingIcons.hoodies },
+  { id: 5, value: 'jeans', label: 'Jeans', icon: ClothingIcons.jeans },
 ];
 
 export const clothingColumnNames = clothingItemsOptions.map((o) => o.value);

@@ -1,10 +1,8 @@
 import SearchProduct from '../UI/SearchProduct';
-import { CartIcon, Icons, UserIcon } from '../Svgs/icons';
 import Link from 'next/link';
 import ShopLink from './ShopLink';
-import { BaggageClaim, User, UserCircle2 } from 'lucide-react';
-import { Button } from '../UI/Button';
-import NavUserDropdown from '../UI/NavUserDropdown';
+import NavUserDropdown from './NavUserDropdown';
+import NavCartDropdown from './NavCartDropdown';
 
 const DesktopMenu = () => {
   return (
@@ -14,9 +12,7 @@ const DesktopMenu = () => {
         <SearchProduct />
       </div>
       <div className="-mx-2 flex items-center">
-        <Button size={'square'} variant={'ghost'} className="text-primary-500">
-          <BaggageClaim />
-        </Button>
+        <NavCartDropdown />
         <NavUserDropdown />
       </div>
     </div>

@@ -1,6 +1,6 @@
-import ProductDetailsReviewFaq from '@/components/Sections/ProductDetailsReviewFaq';
+import ProductDetailsReviewFaq from '@/components/HomePage/ProductDetailsReviewFaq';
 import { Icons } from '@/components/Svgs/icons';
-import ProductAdd from '@/components/UI/ProductAdd';
+import ProductAdd from '@/components/Product/ProductAdd';
 import Star from '@/components/UI/Star';
 import { db } from '@/lib/db';
 import { clothing } from '@/lib/db/schema/clothing';

@@ -1,7 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
-import { Icons } from '../Svgs/icons';
+import { Search } from '../Svgs/icons';
 
 const SearchProduct = () => {
   return (
@@ -15,7 +15,7 @@ const SearchProduct = () => {
           'focus-visible:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/70',
         )}
       />
-      <Icons.search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40 transition-colors duration-200 peer-focus-visible:text-black/70" />
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40 transition-colors duration-200 peer-focus-visible:text-black/70" />
     </div>
   );
 };

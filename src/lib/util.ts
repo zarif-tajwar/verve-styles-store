@@ -62,3 +62,11 @@ export const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 export const genRandomInt = (start: number, end: number) => {
   return Math.floor(start + Math.random() * (end - start + 1));
 };
+
+export const priceFormat = (priceInNumber: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 2,
+  }).format(priceInNumber);
+};

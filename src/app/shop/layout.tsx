@@ -1,6 +1,6 @@
-import FilterProductsStatusText from '@/components/UI/FilterProductsStatusText';
-import { FilterSidebar } from '@/components/UI/FilterSidebar';
-import SortBySelect from '@/components/UI/SortBySelect';
+import FilterProductsStatusText from '@/components/ShopFilter/FilterProductsStatusText';
+import { FilterSidebar } from '@/components/ShopFilter/FilterSidebar';
+import SortBySelect from '@/components/ShopFilter/SortBySelect';
 import React from 'react';
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => {
@@ -10,11 +10,13 @@ const ShopLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="flex justify-between gap-8">
           <FilterSidebar />
           <div className="relative flex-grow">
-            <div className="mb-2 flex w-full items-end justify-end gap-4">
-              <FilterProductsStatusText />
-              <SortBySelect />
+            <div className="mb-2 grid w-full grid-cols-2 items-end justify-end gap-4">
+              {/* <FilterProductsStatusText /> */}
+              <div className="col-start-2">
+                <SortBySelect />
+              </div>
+              {children}
             </div>
-            {children}
           </div>
         </div>
       </div>

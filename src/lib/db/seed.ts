@@ -565,18 +565,40 @@ const postFakeReviews = async () => {
   await Promise.all(promises);
 };
 
+const cookies = () => {
+  const lol = [...Array(5).keys()].map(() => {
+    return {
+      name: faker.person.fullName(),
+      number: faker.phone.number(),
+      age: faker.number.int({
+        min: 18,
+        max: 50,
+      }),
+      date: faker.date.anytime(),
+      email: faker.internet.email(),
+      adress: faker.location.streetAddress({
+        useFullAddress: true,
+      }),
+    };
+  });
+  console.log('BEFORE');
+  console.table(lol);
+  const jsonString = JSON.stringify(lol);
+  const base64enc = btoa(jsonString);
+  const base64dec = atob(base64enc);
+  const returedObject = JSON.parse(base64dec);
+  console.log(base64enc);
+  // console.log(jsonString);
+  // console.log('AFTER');
+  // console.table(returedObject);
+};
+
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  const lol = { name: 'xd', id: 10, createdAt: new Date() };
-
-  const serialized = JSON.parse(JSON.stringify(lol));
-  serialized.createdAt = new Date(serialized.createdAt);
-
-  console.log(lol, 'SOURCE');
-  console.log(serialized, 'JSON SERIALIZED');
+  cookies();
 
   const end = performance.now();
 

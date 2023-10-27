@@ -1,11 +1,12 @@
 import { Icons } from '@/components/Svgs/icons';
 import Image from 'next/image';
 import { getProductsFromDB } from '@/lib/dbCalls/filter';
-import ShopFilterPagination from '@/components/UI/ShopFilterPagination';
+import ShopFilterPagination from '@/components/ShopFilter/ShopFilterPagination';
 import { makeValidURL } from '@/lib/util';
 import Star from '@/components/UI/Star';
 import { FilteredProductItem } from '@/lib/dbCalls/filter';
 import Link from 'next/link';
+import FilterProductsStatusText from '@/components/ShopFilter/FilterProductsStatusText';
 
 export const revalidate = 0;
 
@@ -18,19 +19,28 @@ const ShopPage = async ({
 
   if (productItems === undefined) return null;
 
+  const pageNum = Number.parseInt(searchParams.page as string) || 1;
   const totalProducts = productItems?.at(0)?.totalCount || 0;
 
   return (
-    <div>
-      <div className="grid grid-cols-3 gap-x-5 gap-y-9">
-        {productItems.map((product, i) => {
-          return <ProductListing key={i} product={product} />;
-        })}
+    <>
+      <div className="col-start-1 row-start-1">
+        <FilterProductsStatusText
+          page={pageNum}
+          totalProducts={totalProducts}
+        />
       </div>
-      <div className="pt-16">
-        <ShopFilterPagination totalProducts={totalProducts} />
+      <div className="col-span-2">
+        <div className="grid grid-cols-3 gap-x-5 gap-y-9">
+          {productItems.map((product, i) => {
+            return <ProductListing key={i} product={product} />;
+          })}
+        </div>
+        <div className="pt-16">
+          <ShopFilterPagination totalProducts={totalProducts} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -17,7 +17,6 @@ const initialState: ShopFilterState = {
   styles: new Set(),
   price_range: defaultPriceRange,
   page: 1,
-  totalProducts: 0,
 };
 
 export const useShopFilterStore = create<ShopFilterState & ShopFilterAction>()(
