@@ -88,29 +88,27 @@ export const FilterSidebar = () => {
       <div className="w-max max-w-[18.5rem]">
         <div className="rounded-main border border-primary-100 px-6 pb-8 pt-8">
           <div className="flex items-center justify-between">
-            <h2 className="font-plus-jakarta-sans text-xl font-bold capitalize">
-              Filters
-            </h2>
+            <h2 className="font-inter text-xl font-bold capitalize">Filters</h2>
             <Sliders size={20} className="text-primary-400" />
           </div>
           <VerticalDivider />
-          <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
+          <h3 className="font-plus-jakarta-sans mb-4 font-bold capitalize">
             Clothing
           </h3>
           <ClothingCheckbox />
 
           <VerticalDivider />
-          <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
+          <h3 className="font-plus-jakarta-sans mb-4 font-bold capitalize">
             Price
           </h3>
           <DoubleRangeSlider />
           <VerticalDivider />
-          <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
+          <h3 className="font-plus-jakarta-sans mb-4 font-bold capitalize">
             Size
           </h3>
           <SizesCheckbox />
           <VerticalDivider />
-          <h3 className="mb-4 font-plus-jakarta-sans font-bold capitalize">
+          <h3 className="font-plus-jakarta-sans mb-4 font-bold capitalize">
             Dress Style
           </h3>
           <DressStyleCheckbox />

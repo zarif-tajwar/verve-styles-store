@@ -5,7 +5,7 @@ import * as Tabs from '@radix-ui/react-tabs';
 import ProductReviews from './ProductReviews';
 import { Review } from '@/lib/types/product-page';
 import WIP from '../UI/WIP';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useQueryState, parseAsStringEnum } from 'next-usequerystate';
 
 const ProductDetails = () => (
@@ -32,7 +32,11 @@ const TabOptions = [
 const values = TabOptions.map((o) => o.value);
 const defaultValue = values.at(0)!;
 
-const ProductDetailsReviewFaqTab = ({ reviews }: { reviews: Review[] }) => {
+const ProductDetailsReviewFaqTab = ({
+  ReviewsComp,
+}: {
+  ReviewsComp: React.ReactNode;
+}) => {
   const [tabValue, setTabValue] = useQueryState(
     'tab',
     parseAsStringEnum(values),
@@ -77,7 +81,7 @@ const ProductDetailsReviewFaqTab = ({ reviews }: { reviews: Review[] }) => {
         <ProductDetails />
       </Tabs.TabsContent>
       <Tabs.TabsContent value={'review'} key={'review'}>
-        <ProductReviews reviews={reviews} />
+        {ReviewsComp}
       </Tabs.TabsContent>
       <Tabs.TabsContent value={'faq'} key={'faq'}>
         <ProductFAQs />

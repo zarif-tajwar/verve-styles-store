@@ -1,37 +1,69 @@
 import { Button } from '@/components/UI/Button';
 import CartQuantityCounter from '@/components/Cart/CartQuantityCounter';
 import Divider from '@/components/UI/Divider';
-import { cn, priceFormat } from '@/lib/util';
-import {
-  ArrowRight,
-  MoveRight,
-  Tag,
-  Trash2,
-  Truck,
-  TruckIcon,
-} from 'lucide-react';
+import { cn, genRandomInt, priceFormat } from '@/lib/util';
+import { MoveRight, Tag } from 'lucide-react';
 import React from 'react';
+import { db } from '@/lib/db';
+import { cookies } from 'next/headers';
+import { cartItems } from '@/lib/db/schema/cartItems';
+import { eq } from 'drizzle-orm';
+import { productEntries } from '@/lib/db/schema/productEntries';
+import { products } from '@/lib/db/schema/products';
+import { sizes } from '@/lib/db/schema/sizes';
+import { CartItemProps } from '@/lib/types/cart';
+import CartItem from '@/components/Cart/CartItem';
 
-const CartPage = () => {
-  const productItems = [...Array(3).keys()];
+const CartPage = async () => {
+  const cartId = Number(cookies().get('cartId')?.value);
+
+  if (Number.isNaN(cartId)) {
+    return (
+      <div className="container-main py-20">
+        <p>No items in the cart!</p>
+      </div>
+    );
+  }
+
+  const cartItemsData: CartItemProps[] = await db
+    .select({
+      name: products.name,
+      price: products.price,
+      sizeName: sizes.name,
+      cartItemId: cartItems.id,
+      quantity: cartItems.quantity,
+    })
+    .from(cartItems)
+    .innerJoin(productEntries, eq(productEntries.id, cartItems.productEntryId))
+    .innerJoin(products, eq(products.id, productEntries.productID))
+    .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
+    .where(eq(cartItems.cartId, cartId));
+
+  if (cartItemsData.length < 1) {
+    return (
+      <div className="container-main py-20">
+        <p>No items in the cart!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container-main py-20">
       <h1 className="mb-6 font-integral-cf text-4xl">My Cart</h1>
       <div className="flex grid-cols-5 flex-col gap-5 lg:grid">
-        <div className="col-span-3 rounded-main p-6 ring-1 ring-primary-100">
-          {productItems.map((_, i) => {
+        <div className="col-span-3 h-max rounded-main p-6 ring-1 ring-primary-100">
+          {cartItemsData.map((cartItem, i) => {
             return (
               <React.Fragment key={i}>
-                <CartItem />
-                {i < productItems.length - 1 && <Divider className="my-6" />}
+                <CartItem cartItem={cartItem} />
+                {i < cartItemsData.length - 1 && <Divider className="my-6" />}
               </React.Fragment>
             );
           })}
         </div>
-        <div className="@container sticky top-20 col-span-2 h-max rounded-main p-6 ring-1 ring-primary-100">
+        <div className="sticky top-20 col-span-2 h-max rounded-main p-6 ring-1 ring-primary-100 @container">
           <h2 className="mb-6 font-inter text-2xl capitalize">Order Summary</h2>
-          <div className="@2xl:grid block grid-cols-[1fr_auto_1.2fr] justify-between gap-6">
+          <div className="block grid-cols-[1fr_auto_1.2fr] justify-between gap-6 @2xl:grid">
             <div className="space-y-5">
               <p className="flex items-center justify-between">
                 <span className="text-lg text-primary-400">Subtotal</span>
@@ -42,14 +74,16 @@ const CartPage = () => {
               <p className="flex items-center justify-between">
                 <span className="text-lg text-primary-400">Discount</span>
                 <span className="text-xl font-semibold text-green-500">
-                  {priceFormat(-113)}
+                  {priceFormat(genRandomInt(10, 120) * -1)}
                 </span>
               </p>
               <p className="flex items-center justify-between">
                 <span className="flex items-center gap-2 text-lg text-primary-400">
-                  <TruckIcon size={20} /> Delivery Charge
+                  Delivery Charge
                 </span>
-                <span className="text-xl font-semibold">{priceFormat(15)}</span>
+                <span className="text-xl font-semibold">
+                  {priceFormat(genRandomInt(10, 50) * -1)}
+                </span>
               </p>
               <p className="mb-6 flex items-center justify-between">
                 <span className="text-xl font-medium">Total</span>
@@ -58,9 +92,9 @@ const CartPage = () => {
                 </span>
               </p>
             </div>
-            <Divider className="@2xl:hidden mb-5 mt-10 block" />
-            <Divider className="@2xl:block mx-2 hidden" horizontal />
-            <div className="@lg:flex block flex-col justify-center">
+            <Divider className="mb-5 mt-10 block @2xl:hidden" />
+            <Divider className="mx-2 hidden @2xl:block" horizontal />
+            <div className="block flex-col justify-center @lg:flex">
               <div className="mb-6 flex h-12 w-full gap-3">
                 <div className="relative flex-grow">
                   <input
@@ -94,36 +128,3 @@ const CartPage = () => {
   );
 };
 export default CartPage;
-
-const CartItem = () => {
-  return (
-    <div className="flex w-full gap-4">
-      <div className="h-32 w-32 rounded-xl bg-primary-100"></div>
-      <div className="flex min-h-full flex-grow flex-col">
-        <p className="text-xl font-semibold">Gradient Graphic T-Shirt</p>
-        <div className="mb-auto">
-          <span className="text-sm font-medium">
-            Size:{' '}
-            <span className="font-normal text-primary-400">Small, XL</span>
-          </span>
-        </div>
-        <span className="text-xl font-bold">{priceFormat(237)}</span>
-      </div>
-      <div className="flex min-h-full flex-col items-end justify-between">
-        <button>
-          <span className="inline-flex h-5 items-center justify-center text-red-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="full"
-              viewBox="0 0 448 512"
-              fill="currentColor"
-            >
-              <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
-            </svg>
-          </span>
-        </button>
-        <CartQuantityCounter />
-      </div>
-    </div>
-  );
-};

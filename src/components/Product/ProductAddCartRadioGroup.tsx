@@ -7,6 +7,9 @@ import { MinusIcon, MinusSquare, PlusIcon } from 'lucide-react';
 import { Button, buttonVariants } from '../UI/Button';
 import { useRef } from 'react';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
+import { cookies } from 'next/headers';
+import { z } from 'zod';
+import { addProductToCart } from '@/app/_actions/cart';
 
 type sizeOptions = {
   sizeName: string;
@@ -22,11 +25,29 @@ const ProductAddCartRadioGroup = ({
 }) => {
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        const start = performance.now();
         const formEl = new FormData(e.currentTarget);
         const data = Object.fromEntries(formEl.entries());
+
         console.log(data);
+
+        const quantity = Number(data.quantity);
+        const sizeId = Number(data.size);
+
+        console.log(quantity, sizeId);
+
+        if (Number.isNaN(quantity) || Number.isNaN(sizeId)) {
+          console.error('Inavlid Input');
+          return;
+        }
+
+        const cartItem = await addProductToCart(productId, sizeId, quantity);
+
+        console.log(cartItem);
+        const end = performance.now();
+        console.log(end - start);
       }}
     >
       <label

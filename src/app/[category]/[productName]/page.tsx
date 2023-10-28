@@ -1,4 +1,3 @@
-import ProductDetailsReviewFaq from '@/components/Product/ProductDetailsReviewFaq';
 import ProductAdd from '@/components/Product/ProductAdd';
 import Star from '@/components/UI/Star';
 import { db } from '@/lib/db';
@@ -10,6 +9,8 @@ import { and, eq, getTableColumns, sql } from 'drizzle-orm';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
+import ProductReviews from '@/components/Product/ProductReviews';
 
 export async function generateStaticParams() {
   const slugs = await db
@@ -136,9 +137,12 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
       </section>
       <section className="mt-20">
         <Suspense fallback={<div>Loading...</div>}>
-          <ProductDetailsReviewFaq
-            productId={productId}
-            searchParams={searchParams}
+          <ProductDetailsReviewFaqTab
+            ReviewsComp={
+              <Suspense fallback={<p>Loading Reviews...</p>}>
+                <ProductReviews productId={productId} />
+              </Suspense>
+            }
           />
         </Suspense>
       </section>

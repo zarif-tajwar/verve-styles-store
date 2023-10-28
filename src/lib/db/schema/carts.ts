@@ -15,8 +15,7 @@ export const carts = pgTable(
     id: serial('id').primaryKey(),
     userId: integer('user_id')
       .references(() => users.id)
-      .unique()
-      .notNull(),
+      .unique(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },
@@ -26,12 +25,8 @@ export const carts = pgTable(
   }),
 );
 
-export const cartRelations = relations(carts, ({ one, many }) => ({
+export const cartRelations = relations(carts, ({ many }) => ({
   cartItems: many(cartItems),
-  // users: one(users, {
-  //   fields: [carts.userId],
-  //   references: [users.id],
-  // }),
 }));
 
 export type CartsInsert = InferInsertModel<typeof carts>;

@@ -1,10 +1,35 @@
-import { Check } from 'lucide-react';
 import ProductReviewMenu from './ProductReviewMenu';
 import Star from '../UI/Star';
 import { Review } from '@/lib/types/product-page';
 import { Verified } from '../Svgs/icons';
+import { db } from '@/lib/db';
+import { users } from '@/lib/db/schema/users';
+import { userReviews } from '@/lib/db/schema/userReviews';
+import { desc, eq, sql } from 'drizzle-orm';
+import { orderLine } from '@/lib/db/schema/orderLine';
+import { productEntries } from '@/lib/db/schema/productEntries';
+import { orders } from '@/lib/db/schema/orders';
+import { wait } from '@/lib/util';
 
-const ProductReviews = ({ reviews }: { reviews: Review[] }) => {
+const ProductReviews = async ({ productId }: { productId: number }) => {
+  const reviews = await db
+    .select({
+      userFirstName: users.firstName,
+      userLastName: users.lastName,
+      rating: userReviews.rating,
+      postDate: userReviews.createdAt,
+      review: userReviews.comment,
+      totalReviews: sql<number>`COUNT(*) OVER()`.as('total_reviews'),
+    })
+    .from(userReviews)
+    .innerJoin(orderLine, eq(orderLine.id, userReviews.orderLineId))
+    .innerJoin(productEntries, eq(productEntries.id, orderLine.productEntryId))
+    .innerJoin(orders, eq(orders.id, orderLine.orderId))
+    .innerJoin(users, eq(users.id, orders.userId))
+    .where(eq(productEntries.productID, productId))
+    .orderBy(desc(userReviews.createdAt))
+    .limit(9);
+
   return (
     <div>
       <div className="mb-6 flex items-start justify-between">
