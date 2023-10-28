@@ -1,12 +1,12 @@
 import { db } from '@/lib/db';
-import ProductReviews from '../Product/ProductReviews';
+import ProductReviews from './ProductReviews';
 import { users } from '@/lib/db/schema/users';
 import { userReviews } from '@/lib/db/schema/userReviews';
 import { orderLine } from '@/lib/db/schema/orderLine';
 import { productEntries } from '@/lib/db/schema/productEntries';
 import { desc, eq, sql } from 'drizzle-orm';
 import { orders } from '@/lib/db/schema/orders';
-import ProductDetailsReviewFaqTab from '../Product/ProductDetailsReviewFaqTab';
+import ProductDetailsReviewFaqTab from './ProductDetailsReviewFaqTab';
 import { Suspense } from 'react';
 
 const ProductDetailsReviewFaq = async ({
@@ -36,10 +36,7 @@ const ProductDetailsReviewFaq = async ({
 
   return (
     <div>
-      <ProductDetailsReviewFaqTab
-        reviews={reviews}
-        searchParams={searchParams}
-      />
+      <ProductDetailsReviewFaqTab reviews={reviews} />
     </div>
   );
 };

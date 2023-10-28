@@ -1,4 +1,4 @@
-import ProductDetailsReviewFaq from '@/components/HomePage/ProductDetailsReviewFaq';
+import ProductDetailsReviewFaq from '@/components/Product/ProductDetailsReviewFaq';
 import ProductAdd from '@/components/Product/ProductAdd';
 import Star from '@/components/UI/Star';
 import { db } from '@/lib/db';
