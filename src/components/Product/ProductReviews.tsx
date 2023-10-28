@@ -7,14 +7,14 @@ import { Verified } from '../Svgs/icons';
 const ProductReviews = ({ reviews }: { reviews: Review[] }) => {
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="mb-6 flex items-start justify-between">
+        <div className="flex items-end gap-2">
           <h2 className="font-inter text-2xl font-bold capitalize leading-none">
             All Reviews
           </h2>
           <span
             aria-label={`${reviews?.at(0)?.totalReviews} product reviews`}
-            className="flex items-center text-sm leading-none text-primary-300"
+            className="flex -translate-y-0.5 items-center text-sm leading-none text-primary-300"
           >
             ({reviews?.at(0)?.totalReviews})
           </span>

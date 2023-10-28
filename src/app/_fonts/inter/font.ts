@@ -1,7 +1,7 @@
-import { Inter } from 'next/font/google';
+import LocalFont from 'next/font/local';
 
-const font = Inter({
-  subsets: ['latin'],
+const font = LocalFont({
+  src: 'Inter-variable.woff2',
   variable: '--font-inter',
 });
 

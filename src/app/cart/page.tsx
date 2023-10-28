@@ -1,6 +1,6 @@
 import { Button } from '@/components/UI/Button';
 import CartQuantityCounter from '@/components/Cart/CartQuantityCounter';
-import HorizontalDivider from '@/components/UI/Divider';
+import Divider from '@/components/UI/Divider';
 import { cn, priceFormat } from '@/lib/util';
 import {
   ArrowRight,
@@ -19,23 +19,19 @@ const CartPage = () => {
     <div className="container-main py-20">
       <h1 className="mb-6 font-integral-cf text-4xl">My Cart</h1>
       <div className="flex grid-cols-5 flex-col gap-5 lg:grid">
-        <div className="col-span-3 rounded-main p-6 shadow-light-drop ring-1 ring-primary-100">
+        <div className="col-span-3 rounded-main p-6 ring-1 ring-primary-100">
           {productItems.map((_, i) => {
             return (
               <React.Fragment key={i}>
                 <CartItem />
-                {i < productItems.length - 1 && (
-                  <HorizontalDivider className="my-6" />
-                )}
+                {i < productItems.length - 1 && <Divider className="my-6" />}
               </React.Fragment>
             );
           })}
         </div>
-        <div className="sticky top-20 col-span-2 h-max rounded-main p-6 shadow-light-drop ring-1 ring-primary-100">
-          <div>
-            <h2 className="mb-6 font-inter text-2xl capitalize">
-              Order Summary
-            </h2>
+        <div className="@container sticky top-20 col-span-2 h-max rounded-main p-6 ring-1 ring-primary-100">
+          <h2 className="mb-6 font-inter text-2xl capitalize">Order Summary</h2>
+          <div className="@2xl:grid block grid-cols-[1fr_auto_1.2fr] justify-between gap-6">
             <div className="space-y-5">
               <p className="flex items-center justify-between">
                 <span className="text-lg text-primary-400">Subtotal</span>
@@ -55,15 +51,16 @@ const CartPage = () => {
                 </span>
                 <span className="text-xl font-semibold">{priceFormat(15)}</span>
               </p>
+              <p className="mb-6 flex items-center justify-between">
+                <span className="text-xl font-medium">Total</span>
+                <span className="text-2xl font-semibold">
+                  {priceFormat(476)}
+                </span>
+              </p>
             </div>
-          </div>
-          <HorizontalDivider className="my-5" />
-          <div>
-            <p className="mb-6 flex items-center justify-between">
-              <span className="text-xl font-medium">Total</span>
-              <span className="text-2xl font-semibold">{priceFormat(476)}</span>
-            </p>
-            <div>
+            <Divider className="@2xl:hidden mb-5 mt-10 block" />
+            <Divider className="@2xl:block mx-2 hidden" horizontal />
+            <div className="@lg:flex block flex-col justify-center">
               <div className="mb-6 flex h-12 w-full gap-3">
                 <div className="relative flex-grow">
                   <input

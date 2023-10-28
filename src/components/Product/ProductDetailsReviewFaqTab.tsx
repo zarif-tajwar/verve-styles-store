@@ -1,11 +1,12 @@
 'use client';
 
-import { cn } from '@/lib/util';
+import { cn, isValueInArray } from '@/lib/util';
 import * as Tabs from '@radix-ui/react-tabs';
 import ProductReviews from './ProductReviews';
 import { Review } from '@/lib/types/product-page';
 import WIP from '../UI/WIP';
-import useQueryParams from '@/lib/hooks/useQueryParams';
+import { useEffect } from 'react';
+import { useQueryState, parseAsStringEnum } from 'next-usequerystate';
 
 const ProductDetails = () => (
   <div>
@@ -28,32 +29,25 @@ const TabOptions = [
   { value: 'faq', label: 'FAQs' },
 ];
 
-const ProductDetailsReviewFaqTab = ({
-  reviews,
-  searchParams,
-}: {
-  reviews: Review[];
-  searchParams: SearchParamsServer;
-}) => {
-  const { queryParams, setQueryParams } = useQueryParams<{ tab: string }>();
+const values = TabOptions.map((o) => o.value);
+const defaultValue = values.at(0)!;
 
-  // const valueFromQueryParams =
-  //   queryParams.get('tab') || TabOptions.at(0)?.value;
-  const valueFromQueryParams = searchParams.tab;
+const ProductDetailsReviewFaqTab = ({ reviews }: { reviews: Review[] }) => {
+  const [tabValue, setTabValue] = useQueryState(
+    'tab',
+    parseAsStringEnum(values),
+  );
 
-  const tabValue =
-    Array.isArray(valueFromQueryParams) || valueFromQueryParams === undefined
-      ? TabOptions.at(0)?.value
-      : valueFromQueryParams;
+  useEffect(() => {
+    if (!isValueInArray(tabValue, values)) {
+      setTabValue(null);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Tabs.Root
-      defaultValue={tabValue}
-      onValueChange={(v) =>
-        setQueryParams({
-          tab: v === TabOptions.at(0)?.value ? undefined : v,
-        })
-      }
+      value={tabValue || defaultValue}
+      onValueChange={(v) => setTabValue(v === defaultValue ? null : v)}
     >
       <Tabs.List className="relative mb-8 grid w-full grid-cols-3 items-center justify-between">
         {TabOptions.map((tabOption) => (

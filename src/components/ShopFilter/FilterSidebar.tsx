@@ -1,7 +1,6 @@
 'use client';
 
 import { useShopFilterStore } from '@/lib/store/shop-filter';
-import { Icons } from '../Svgs/icons';
 import ClothingCheckbox from './ClothingCheckbox';
 import DoubleRangeSlider from './DoubleRangeSlider';
 import DressStyleCheckbox from './DressStyleCheckbox';
@@ -27,7 +26,7 @@ export const FilterSidebar = () => {
 
   useEffect(
     () => {
-      if (queryParams.size <= 0) return;
+      if (queryParams.size === 0) return;
 
       const searchParamsEntries = Object.fromEntries(queryParams.entries());
 
@@ -87,7 +86,7 @@ export const FilterSidebar = () => {
   return (
     <div className="sticky top-20 h-max">
       <div className="w-max max-w-[18.5rem]">
-        <div className="rounded-main border border-primary-100 px-6 pb-8 pt-8 shadow-light-drop">
+        <div className="rounded-main border border-primary-100 px-6 pb-8 pt-8">
           <div className="flex items-center justify-between">
             <h2 className="font-plus-jakarta-sans text-xl font-bold capitalize">
               Filters

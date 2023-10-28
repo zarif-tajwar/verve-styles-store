@@ -12,8 +12,8 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
       <div
         className={cn(
           'bg-primary-100',
-          !horizontal && 'h-px w-full',
-          horizontal && 'h-full w-px',
+          !horizontal && 'h-px min-w-max',
+          horizontal && 'min-h-max w-px',
           className,
         )}
         {...props}

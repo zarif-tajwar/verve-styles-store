@@ -323,7 +323,7 @@ export const CheckMini = ({ ...props }: SvgIconProps) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className={cn('h-5 w-5', props.className)}
+      className={cn('h-4 w-4', props.className)}
       {...props}
     >
       <path

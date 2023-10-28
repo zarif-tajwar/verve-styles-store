@@ -47,10 +47,6 @@ const CartQuantityCounter = ({
         setQuantity(min);
       }
 
-      if (Number.isNaN(quantity)) {
-        setQuantity(initial);
-      }
-
       if (quantity > max) {
         setQuantity(max);
       }
@@ -59,7 +55,7 @@ const CartQuantityCounter = ({
     return () => {
       clearInterval(interval);
     };
-  }, [quantity]);
+  }, [quantity, max, min]);
 
   return (
     <div
@@ -71,7 +67,7 @@ const CartQuantityCounter = ({
       <button
         className={cn(
           'flex h-full w-full items-center justify-center rounded-full',
-          'transition-all duration-200 hover:bg-primary-100',
+          'transition-all duration-200 hover:bg-primary-100 active:bg-primary-200',
         )}
         onClick={(e) => {
           e.preventDefault();
@@ -92,7 +88,7 @@ const CartQuantityCounter = ({
       <button
         className={cn(
           'flex h-full w-full items-center justify-center rounded-full',
-          'transition-all duration-200 hover:bg-primary-100',
+          'transition-all duration-200 hover:bg-primary-100 active:bg-primary-200',
         )}
         onClick={(e) => {
           e.preventDefault();

@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import IntegralCF from './_fonts/integral-cf/font';
 import Inter from './_fonts/inter/font';
 import Navbar from '@/components/Navbar/Navbar';
-import PlusJakartaSans from './_fonts/plus-jakarta-sans/font';
 import Footer from '@/components/Footer/Footer';
 
 export const metadata: Metadata = {
@@ -19,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${IntegralCF.variable} ${Inter.variable} ${PlusJakartaSans.variable} bg-primary-0 font-inter text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
+        className={`${IntegralCF.variable} ${Inter.variable} bg-primary-0 font-inter text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
       >
         <Navbar />
         {children}

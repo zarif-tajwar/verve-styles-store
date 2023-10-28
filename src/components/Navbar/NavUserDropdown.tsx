@@ -23,7 +23,7 @@ const NavUserDropdown = () => {
           align="end"
           sideOffset={4}
           className={cn(
-            'w-36 origin-top-right rounded-lg bg-primary-0 p-2 text-sm font-medium shadow-drop',
+            'w-36 origin-top-right rounded-lg bg-primary-0 p-2 text-sm font-medium shadow-light-drop ring-1 ring-primary-50',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
         >

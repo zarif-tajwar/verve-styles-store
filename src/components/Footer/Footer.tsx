@@ -13,8 +13,10 @@ const Footer = () => {
       <div className="bg-offwhite pb-20 pt-36">
         <div className="container-main divide-y divide-black/10">
           <nav className="mb-12 grid grid-cols-[repeat(5,auto)] justify-between gap-x-8 gap-y-16">
-            <div className="">
-              <Logo className="mb-1" />
+            <div>
+              <Link href={'/'}>
+                <Logo className="mb-1" />
+              </Link>
               <p className="mb-9 max-w-[16rem] text-sm leading-[1.6] text-black/60">
                 We have clothes that suits your style and which you’re proud to
                 wear. From women to men.
