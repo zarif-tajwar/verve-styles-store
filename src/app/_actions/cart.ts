@@ -4,7 +4,7 @@ import { cartItems } from '@/lib/db/schema/cartItems';
 import { carts } from '@/lib/db/schema/carts';
 import { productEntries } from '@/lib/db/schema/productEntries';
 import { products } from '@/lib/db/schema/products';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, gt } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -13,21 +13,25 @@ export const addProductToCart = async (
   sizeId: number,
   quantity: number,
 ) => {
-  let cartId = Number.parseInt(cookies().get('cartId')?.value || '0');
-
-  if (!cartId) {
-    cartId = (await createCart()) as number;
-    cookies().set('cartId', cartId.toString());
-  }
-
-  if (!cartId) return;
+  let cartId: number | undefined = Number(cookies().get('cartId')?.value);
 
   const cartItem = await db.transaction(async (tx) => {
+    if (!cartId) {
+      let [cart] = await tx.insert(carts).values({}).returning();
+      cartId = cart?.id;
+    }
+
+    if (cartId === undefined) {
+      tx.rollback();
+      return;
+    } else {
+      cookies().set('cartId', cartId.toString());
+    }
+
     const [product] = await tx
       .selectDistinct({
         name: products.name,
         productEntryId: productEntries.id,
-        availableQuantity: productEntries.quantity,
       })
       .from(products)
       .innerJoin(productEntries, eq(productEntries.productID, products.id))
@@ -35,15 +39,16 @@ export const addProductToCart = async (
         and(
           eq(productEntries.productID, productId),
           eq(productEntries.sizeID, sizeId),
+          gt(productEntries.quantity, quantity),
         ),
       );
 
-    if (!product || product.availableQuantity < quantity) {
+    if (product === undefined) {
       tx.rollback();
       return;
     }
 
-    return await tx
+    const insertedCartItem = await tx
       .insert(cartItems)
       .values({
         cartId,
@@ -62,9 +67,11 @@ export const addProductToCart = async (
         ),
       })
       .returning();
+
+    return insertedCartItem;
   });
 
-  revalidatePath('/cart');
+  revalidatePath('/cart', 'page');
 
   return cartItem;
 };
@@ -78,5 +85,5 @@ export const deleteCartItem = async (cartItemId: number) => {
   await db.transaction(async (tx) => {
     await tx.delete(cartItems).where(eq(cartItems.id, cartItemId));
   });
-  revalidatePath('/cart');
+  revalidatePath('/cart', 'page');
 };

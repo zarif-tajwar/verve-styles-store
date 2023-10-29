@@ -14,14 +14,18 @@ type CartStoreAction = {
   ) => void;
   deleteCartItem: (cartItemId: CartItemState['cartItemId']) => void;
   insertCartItems: (cartItems: CartItemState[]) => void;
+  getCartItem: (
+    cartItemId: CartItemState['cartItemId'],
+  ) => CartItemState | undefined;
+  clearCart: () => void;
 };
 
 type CartStore = {
   cartItems: CartItemState[];
 };
 
-export const useShopFilterStore = create<CartStore & CartStoreAction>()(
-  (set) => ({
+export const useCartItemsStore = create<CartStore & CartStoreAction>()(
+  (set, get) => ({
     cartItems: [],
     updateQuantity: (cartItemId, quantity) => {
       set((state) => ({
@@ -42,6 +46,13 @@ export const useShopFilterStore = create<CartStore & CartStoreAction>()(
     },
     insertCartItems: (cartItems) => {
       set({ cartItems });
+    },
+    getCartItem: (cartItemId) => {
+      const cartItems = get().cartItems;
+      return cartItems.find((cartItem) => cartItem.cartItemId === cartItemId);
+    },
+    clearCart: () => {
+      set({ cartItems: [] });
     },
   }),
 );

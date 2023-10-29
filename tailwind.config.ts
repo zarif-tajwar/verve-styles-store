@@ -13,10 +13,6 @@ const config: Config = {
       fontFamily: {
         'integral-cf': ['var(--font-integral-cf)', ...fontFamily.sans],
         inter: ['var(--font-inter)', ...fontFamily.sans],
-        // 'plus-jakarta-sans': [
-        //   'var(--font-plus-jakarta-sans)',
-        //   ...fontFamily.sans,
-        // ],
       },
       colors: {
         offwhite: '#F0F0F0',

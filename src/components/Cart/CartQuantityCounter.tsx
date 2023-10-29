@@ -8,7 +8,7 @@ type CartQuantityCounterProps = {
   initial?: number;
   min?: number;
   max?: number;
-  onChange?: () => void;
+  onChange?: (quantity: number) => void;
   className?: string;
   inputName?: string;
 };
@@ -39,23 +39,27 @@ const CartQuantityCounter = ({
     }
 
     setQuantity(newQuantityCopy);
+
+    if (onChange) {
+      onChange(newQuantityCopy);
+    }
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (quantity < min) {
-        setQuantity(min);
-      }
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (quantity < min) {
+  //       handleChange(min);
+  //     }
 
-      if (quantity > max) {
-        setQuantity(max);
-      }
-    }, 500);
+  //     if (quantity > max) {
+  //       handleChange(max);
+  //     }
+  //   }, 500);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [quantity, max, min]);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [quantity, max, min]);
 
   return (
     <div

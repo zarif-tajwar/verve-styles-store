@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${IntegralCF.variable} ${Inter.variable} bg-primary-0 font-inter text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
+        className={`${IntegralCF.variable} ${Inter.variable} bg-primary-0 font-inter font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
       >
         <Navbar />
         {children}

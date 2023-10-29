@@ -12,23 +12,23 @@ import { Suspense } from 'react';
 import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
 import ProductReviews from '@/components/Product/ProductReviews';
 
-export async function generateStaticParams() {
-  const slugs = await db
-    .select({
-      name: products.name,
-      id: products.id,
-      category: clothing.name,
-    })
-    .from(products)
-    .innerJoin(clothing, eq(products.clothingID, clothing.id));
+// export async function generateStaticParams() {
+//   const slugs = await db
+//     .select({
+//       name: products.name,
+//       id: products.id,
+//       category: clothing.name,
+//     })
+//     .from(products)
+//     .innerJoin(clothing, eq(products.clothingID, clothing.id));
 
-  return slugs.map((slug) => ({
-    category: makeValidURL(slug.category),
-    productName: `${makeValidURL(slug.name)}-${slug.id}`,
-  }));
-}
+//   return slugs.map((slug) => ({
+//     category: makeValidURL(slug.category),
+//     productName: `${makeValidURL(slug.name)}-${slug.id}`,
+//   }));
+// }
 
-export const dynamicParams = false;
+// export const dynamicParams = false;
 
 interface PageProps {
   params: { category: string; productName: string };
