@@ -1,15 +1,13 @@
 'use client';
 
-import { capitalize, cn } from '@/lib/util';
-import { sizesOptions as lol } from '@/lib/validation/constants';
+import { capitalize } from '@/lib/util';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import { MinusIcon, MinusSquare, PlusIcon } from 'lucide-react';
 import { Button, buttonVariants } from '../UI/Button';
-import { useRef } from 'react';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
-import { cookies } from 'next/headers';
-import { z } from 'zod';
 import { addProductToCart } from '@/app/_actions/cart';
+import { useQueryClient } from '@tanstack/react-query';
+import { getQueryKey } from '@trpc/react-query';
+import { trpc } from '@/app/_trpc/client';
 
 type sizeOptions = {
   sizeName: string;
@@ -23,6 +21,8 @@ const ProductAddCartRadioGroup = ({
   sizeOptions: sizeOptions;
   productId: number;
 }) => {
+  const queryClient = useQueryClient();
+  const cartQueryKey = getQueryKey(trpc.getCartItems);
   return (
     <form
       onSubmit={async (e) => {
@@ -48,6 +48,9 @@ const ProductAddCartRadioGroup = ({
         console.log(cartItem);
         const end = performance.now();
         console.log(end - start);
+        await queryClient.invalidateQueries({
+          queryKey: cartQueryKey,
+        });
       }}
     >
       <label

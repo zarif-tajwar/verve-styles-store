@@ -15,10 +15,6 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@tanstack/react-query": "^4.32.6",
-    "@trpc/client": "^10.37.1",
-    "@trpc/react-query": "^10.37.1",
-    "@trpc/server": "^10.37.1",
     "@heroicons/react": "^2.0.18",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -29,6 +25,10 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@tanstack/react-query": "^4.32.6",
+    "@trpc/client": "^10.37.1",
+    "@trpc/react-query": "^10.37.1",
+    "@trpc/server": "^10.37.1",
     "@types/node": "20.5.8",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
@@ -41,6 +41,7 @@
     "eslint": "8.48.0",
     "eslint-config-next": "14.0.0",
     "framer-motion": "^10.16.4",
+    "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.274.0",
     "next": "14.0.0",
     "next-usequerystate": "^1.9.1",
@@ -61,6 +62,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
+    "@types/lodash.debounce": "^4.0.8",
     "@types/pg": "^8.10.2",
     "drizzle-kit": "^0.19.13",
     "esbuild-register": "^3.5.0",

@@ -49,7 +49,7 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
     .select({ ...productColumns, averageRating: productRating.averageRating })
     .from(products)
     .innerJoin(clothing, eq(products.clothingID, clothing.id))
-    .innerJoin(productRating, eq(products.id, productRating.productId))
+    .leftJoin(productRating, eq(products.id, productRating.productId))
     .where(and(eq(clothing.name, params.category), eq(products.id, productId)))
     .limit(1);
 
