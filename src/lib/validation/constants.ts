@@ -57,3 +57,5 @@ export const URL_QUERY_SEPERATORS = {
 } as const;
 
 export const FILTER_PRODUCTS_PER_PAGE = 9;
+
+export const CART_QUANTITY_CHANGE_DELAY = 500;

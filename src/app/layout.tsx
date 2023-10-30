@@ -4,6 +4,7 @@ import IntegralCF from './_fonts/integral-cf/font';
 import Inter from './_fonts/inter/font';
 import Navbar from '@/components/Navbar/Navbar';
 import Footer from '@/components/Footer/Footer';
+import Provider from './_trpc/provider';
 
 export const metadata: Metadata = {
   title: 'Clothy - Shop',
@@ -20,9 +21,11 @@ export default function RootLayout({
       <body
         className={`${IntegralCF.variable} ${Inter.variable} bg-primary-0 font-inter font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
       >
-        <Navbar />
-        {children}
-        <Footer />
+        <Provider>
+          <Navbar />
+          {children}
+          <Footer />
+        </Provider>
       </body>
     </html>
   );

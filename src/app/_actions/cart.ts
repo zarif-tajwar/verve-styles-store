@@ -87,3 +87,5 @@ export const deleteCartItem = async (cartItemId: number) => {
   });
   revalidatePath('/cart', 'page');
 };
+
+// export const updateCartItemQuantity

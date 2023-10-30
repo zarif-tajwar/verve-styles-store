@@ -18,7 +18,7 @@ const Cart = ({ cartItemsData }: { cartItemsData: CartItemProps[] }) => {
     return () => {
       clearCart();
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

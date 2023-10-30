@@ -5,6 +5,9 @@ import { deleteCartItem } from '@/app/_actions/cart';
 import CartQuantityCounter from './CartQuantityCounter';
 import { CartItemProps } from '@/lib/types/cart';
 import { useCartItemsStore } from '@/lib/store/cart-store';
+import { useEffect } from 'react';
+import { trpc } from '@/app/_trpc/client';
+import { CART_QUANTITY_CHANGE_DELAY } from '@/lib/validation/constants';
 
 const CartItemClient = ({ cartItem }: { cartItem: CartItemProps }) => {
   const getCartItem = useCartItemsStore((store) => store.getCartItem);
@@ -12,6 +15,8 @@ const CartItemClient = ({ cartItem }: { cartItem: CartItemProps }) => {
   const deleteCartItemState = useCartItemsStore(
     (store) => store.deleteCartItem,
   );
+  const updateQuantityServer = trpc.updateCartQuantity.useMutation({});
+  const deleteCartItemServer = trpc.deleteCartItem.useMutation({});
 
   const cartItemState = getCartItem(cartItem.cartItemId);
   const cartItemData = cartItemState ? cartItemState : cartItem;
@@ -20,6 +25,22 @@ const CartItemClient = ({ cartItem }: { cartItem: CartItemProps }) => {
     Number.parseFloat(cartItemData.price || '0') * cartItemData.quantity,
   );
 
+  useEffect(() => {
+    if (cartItem.quantity === cartItemState?.quantity) {
+      return;
+    }
+    const timeout = setTimeout(() => {
+      const updateQuantity = updateQuantityServer
+        .mutateAsync({
+          cartItemId: cartItemData.cartItemId,
+          newQuantity: cartItemData.quantity,
+        })
+        .then((res) => console.log(res));
+    }, CART_QUANTITY_CHANGE_DELAY);
+
+    return () => clearTimeout(timeout);
+  }, [cartItemState]);
+
   return (
     <>
       <span className="block text-xl font-bold">{totalPrice}</span>
@@ -27,7 +48,9 @@ const CartItemClient = ({ cartItem }: { cartItem: CartItemProps }) => {
         <button
           onClick={async (e) => {
             e.preventDefault();
-            await deleteCartItem(cartItem.cartItemId);
+            await deleteCartItemServer.mutateAsync({
+              cartItemId: cartItemData.cartItemId,
+            });
             deleteCartItemState(cartItem.cartItemId);
           }}
           className="inline-flex h-5 items-center justify-center text-red-500"
@@ -44,7 +67,9 @@ const CartItemClient = ({ cartItem }: { cartItem: CartItemProps }) => {
       </div>
       <CartQuantityCounter
         initial={cartItem.quantity}
-        onChange={(quantity) => updateQuantity(cartItem.cartItemId, quantity)}
+        onChange={(quantity) => {
+          updateQuantity(cartItem.cartItemId, quantity);
+        }}
       />
     </>
   );
