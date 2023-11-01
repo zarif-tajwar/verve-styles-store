@@ -24,6 +24,8 @@ const OrderSummary = ({
   const deliveryCharge = 25;
   const total = subtotal + deliveryCharge - discount;
 
+  console.log(cartItemsState, 'STATE');
+
   return (
     <div className="sticky top-20 col-span-2 h-max rounded-main p-6 ring-1 ring-primary-100 @container">
       <h2 className="mb-6 font-inter text-2xl capitalize">Order Summary</h2>

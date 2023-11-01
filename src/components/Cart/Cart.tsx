@@ -14,7 +14,8 @@ const Cart = ({
 }: {
   initialData: Awaited<ReturnType<(typeof serverClient)['getCartItems']>>;
 }) => {
-  const { insertCartItems, clearCart } = useCartItemsStore();
+  const insertCartItems = useCartItemsStore((state) => state.insertCartItems);
+  const clearCart = useCartItemsStore((state) => state.clearCart);
   const cartItemsQuery = trpc.getCartItems.useQuery(undefined, {
     initialData,
     refetchOnMount: false,
@@ -34,15 +35,31 @@ const Cart = ({
       clearCart();
     },
   });
-  const cartItemsData = cartItemsQuery.data;
 
-  console.log(cartItemsData);
+  const data = cartItemsQuery.data;
+
+  const cartItemsData = useMemo(() => data, [data]);
+
+  console.log('PARENT RENDERED');
 
   useEffect(() => {
     if (cartItemsData && cartItemsData.length > 0) {
       insertCartItems(cartItemsData);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const CartComp = useMemo(() => {
+    if (cartItemsData && cartItemsData.length > 0)
+      return cartItemsData.map((cartItem, i) => {
+        return (
+          <React.Fragment key={i}>
+            <CartItem cartItem={cartItem} />
+            {i < cartItemsData.length - 1 && <Divider className="my-6" />}
+          </React.Fragment>
+        );
+      });
+    else return null;
+  }, [cartItemsData]);
 
   return (
     <main className="container-main py-20">
@@ -64,21 +81,13 @@ const Cart = ({
           Clear Cart
         </Button>
       </div>
+
       {cartItemsData && cartItemsData.length > 0 ? (
         <>
           <h1 className="mb-6 font-integral-cf text-4xl">My Cart</h1>
           <div className="flex grid-cols-5 flex-col gap-5 lg:grid">
             <div className="col-span-3 h-max rounded-main p-6 ring-1 ring-primary-100">
-              {cartItemsData.map((cartItem, i) => {
-                return (
-                  <React.Fragment key={i}>
-                    <CartItem cartItem={cartItem} />
-                    {i < cartItemsData.length - 1 && (
-                      <Divider className="my-6" />
-                    )}
-                  </React.Fragment>
-                );
-              })}
+              {CartComp}
             </div>
             <OrderSummary cartItemsData={cartItemsData} />
           </div>

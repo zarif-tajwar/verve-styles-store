@@ -8,39 +8,60 @@ import { trpc } from '@/app/_trpc/client';
 import useDebounce from '@/lib/hooks/useDebounce';
 import { useQueryClient } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
+import { memo, useCallback, useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
-const CartItemClient = ({ cartItem }: { cartItem: CartItemProps }) => {
-  const { getCartItem, updateQuantity, deleteCartItem } = useCartItemsStore();
+const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
+  const cartItemState = useCartItemsStore(
+    useShallow((state) =>
+      state.cartItems.find(
+        (cartItemState) => cartItemState.cartItemId === cartItem.cartItemId,
+      ),
+    ),
+  );
+  const updateQuantity = useCartItemsStore((state) => state.updateQuantity);
+  const deleteCartItem = useCartItemsStore((state) => state.deleteCartItem);
 
-  const updateQuantityServer = trpc.updateCartQuantity.useMutation({});
+  const cartItemData = cartItemState ? cartItemState : cartItem;
 
-  const debouncedUpdateQuantity = useDebounce((newQuantity: number) => {
-    updateQuantityServer.mutateAsync({
-      cartItemId: cartItemData.cartItemId,
+  const cartItemId = cartItemData.cartItemId;
+
+  const updateQuantityServerTrpc = trpc.updateCartQuantity.useMutation({});
+
+  const deleteCartItemServerTrpc = trpc.deleteCartItem.useMutation({});
+
+  const updateQuantityServer = async (newQuantity: number) => {
+    await updateQuantityServerTrpc.mutateAsync({
+      cartItemId: cartItemId,
       newQuantity,
     });
+  };
+
+  const deleteCartItemServer = async () => {
+    await deleteCartItemServerTrpc.mutateAsync({
+      cartItemId: cartItemId,
+    });
+  };
+
+  const debouncedUpdateQuantity = useDebounce((newQuantity: number) => {
+    updateQuantityServer(newQuantity);
+    console.log(newQuantity);
   }, 500);
 
   const queryClient = useQueryClient();
-
-  const deleteCartItemServer = trpc.deleteCartItem.useMutation({});
-
-  const cartItemState = getCartItem(cartItem.cartItemId);
-
-  const cartItemData = cartItemState ? cartItemState : cartItem;
 
   const totalPrice = priceFormat(
     Number.parseFloat(cartItemData.price || '0') * cartItemData.quantity,
   );
 
-  const queryKey = getQueryKey(trpc.getCartItems);
+  const queryKey = useMemo(() => getQueryKey(trpc.getCartItems), []);
 
-  const handleQuantityChange = async (newQuanity: number) => {
-    updateQuantity(cartItem.cartItemId, newQuanity);
-    debouncedUpdateQuantity(newQuanity);
+  const handleQuantityChange = async (newQuantity: number) => {
+    updateQuantity(cartItem.cartItemId, newQuantity);
+    debouncedUpdateQuantity(newQuantity);
   };
 
-  console.log(cartItem.name);
+  console.log(`${cartItem.name}: RENDERED`);
 
   return (
     <div className="flex w-full gap-4">
@@ -60,9 +81,7 @@ const CartItemClient = ({ cartItem }: { cartItem: CartItemProps }) => {
           <button
             onClick={async (e) => {
               e.preventDefault();
-              await deleteCartItemServer.mutateAsync({
-                cartItemId: cartItemData.cartItemId,
-              });
+              await deleteCartItemServer();
               deleteCartItem(cartItem.cartItemId);
               await queryClient.refetchQueries({
                 queryKey,
@@ -87,6 +106,8 @@ const CartItemClient = ({ cartItem }: { cartItem: CartItemProps }) => {
       </div>
     </div>
   );
-};
+});
 
-export default CartItemClient;
+CartItem.displayName = 'CartItem';
+
+export default CartItem;

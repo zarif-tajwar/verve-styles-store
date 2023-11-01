@@ -48,7 +48,7 @@ const ProductAddCartRadioGroup = ({
         console.log(cartItem);
         const end = performance.now();
         console.log(end - start);
-        await queryClient.invalidateQueries({
+        await queryClient.refetchQueries({
           queryKey: cartQueryKey,
         });
       }}
