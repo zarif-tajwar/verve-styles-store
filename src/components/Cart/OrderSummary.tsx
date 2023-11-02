@@ -28,7 +28,7 @@ const OrderSummary = ({
 
   return (
     <div className="sticky top-20 col-span-2 h-max rounded-main p-6 ring-1 ring-primary-100 @container">
-      <h2 className="mb-6 font-inter text-2xl capitalize">Order Summary</h2>
+      <h2 className="font-geist mb-6 text-2xl capitalize">Order Summary</h2>
       <div className="block grid-cols-[1fr_auto_1.2fr] justify-between gap-6 @2xl:grid">
         <div className="space-y-5">
           <p className="flex items-center justify-between">

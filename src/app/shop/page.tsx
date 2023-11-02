@@ -1,4 +1,3 @@
-import { Icons } from '@/components/Svgs/icons';
 import Image from 'next/image';
 import { getProductsFromDB } from '@/lib/dbCalls/filter';
 import ShopFilterPagination from '@/components/ShopFilter/ShopFilterPagination';
@@ -67,7 +66,7 @@ const ProductListing = ({ product }: { product: FilteredProductItem }) => {
           />
         </div>
         <div>
-          <h3 className="mb-2 font-plus-jakarta-sans text-xl font-bold capitalize">
+          <h3 className="mb-2 text-xl font-medium capitalize">
             {product.name}
           </h3>
         </div>
@@ -77,7 +76,7 @@ const ProductListing = ({ product }: { product: FilteredProductItem }) => {
             <span className="text-black">{ratingStr}/</span>5.0
           </p>
         </div>
-        <p className="text-2xl font-bold">
+        <p className="text-2xl font-semibold">
           {new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',

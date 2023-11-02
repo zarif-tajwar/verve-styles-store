@@ -38,7 +38,7 @@ const SelectMain = () => {
           variant={'ghost'}
           size={'md'}
           roundness={'lg'}
-          className="group origin-top-right select-none font-medium text-primary-900 duration-200 data-[state=open]:scale-90 data-[state=open]:bg-primary-50 data-[state=open]:text-primary-300"
+          className="group origin-top-right select-none text-primary-900 duration-200 data-[state=open]:scale-90 data-[state=open]:bg-primary-50 data-[state=open]:text-primary-300"
         >
           <Select.Value />
           <Select.Icon className="h-4 w-4 transition-all duration-100 ease-linear group-data-[state=open]:-rotate-180">

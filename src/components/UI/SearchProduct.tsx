@@ -10,7 +10,7 @@ const SearchProduct = () => {
         type="text"
         placeholder="Search for products..."
         className={clsx(
-          'peer w-full rounded-full bg-primary-50 py-3 pl-[3.25rem] pr-6 font-medium text-primary-400 outline-none transition-all duration-200',
+          'peer w-full rounded-full bg-primary-50 py-3 pl-[3.25rem] pr-6 font-normal text-primary-400 outline-none transition-all duration-200',
           'placeholder:text-primary-300',
           'focus-visible:ring-2 focus-visible:ring-primary-400',
         )}

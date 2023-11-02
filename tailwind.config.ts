@@ -12,7 +12,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         'integral-cf': ['var(--font-integral-cf)', ...fontFamily.sans],
-        inter: ['var(--font-inter)', ...fontFamily.sans],
+        geist: ['var(--font-geist-sans)', ...fontFamily.sans],
       },
       colors: {
         offwhite: '#F0F0F0',

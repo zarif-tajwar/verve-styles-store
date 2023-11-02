@@ -76,7 +76,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
             </span>
           </span>
         </div>
-        <span className="block text-xl font-bold">{totalPrice}</span>
+        <span className="block text-xl font-semibold">{totalPrice}</span>
         <div className="flex h-full items-start justify-end">
           <button
             onClick={async (e) => {
