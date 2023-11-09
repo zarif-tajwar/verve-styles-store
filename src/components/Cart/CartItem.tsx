@@ -195,7 +195,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
               mode="wait"
             >
               <motion.div layout={'position'} className="mb-auto">
-                {!toggleDelete && (
+                {!toggleDelete ? (
                   <motion.button
                     className={cn(
                       buttonVariants({
@@ -215,9 +215,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                     <Trash size={16} />
                     <span>Delete</span>
                   </motion.button>
-                )}
-
-                {toggleDelete && (
+                ) : (
                   <motion.button
                     className={cn(
                       buttonVariants({
