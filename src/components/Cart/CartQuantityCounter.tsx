@@ -10,6 +10,7 @@ type CartQuantityCounterProps = {
   max?: number;
   onChange?: (quantity: number) => void;
   className?: string;
+  btnClassName?: string;
   inputName?: string;
 };
 
@@ -19,6 +20,7 @@ const CartQuantityCounter = ({
   max = 10,
   onChange,
   className,
+  btnClassName,
   inputName,
 }: CartQuantityCounterProps) => {
   const [quantity, setQuantity] = useState(initial);
@@ -72,6 +74,7 @@ const CartQuantityCounter = ({
         className={cn(
           'flex h-full w-full items-center justify-center rounded-full',
           'transition-all duration-200 hover:bg-primary-100 active:bg-primary-200',
+          btnClassName,
         )}
         onClick={(e) => {
           e.preventDefault();
@@ -93,6 +96,7 @@ const CartQuantityCounter = ({
         className={cn(
           'flex h-full w-full items-center justify-center rounded-full',
           'transition-all duration-200 hover:bg-primary-100 active:bg-primary-200',
+          btnClassName,
         )}
         onClick={(e) => {
           e.preventDefault();
