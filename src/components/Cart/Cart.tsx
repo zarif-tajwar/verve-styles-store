@@ -125,12 +125,16 @@ const Cart = ({
         <>
           <h1 className="mb-6 font-integral-cf text-4xl">My Cart</h1>
           <div className="flex grid-cols-5 flex-col gap-5 lg:grid">
-            <motion.div
-              layout
-              className="col-span-3 flex h-max flex-col rounded-main px-6 ring-1 ring-primary-100"
-            >
-              <LayoutGroup>{CartComp}</LayoutGroup>
-            </motion.div>
+            <LayoutGroup>
+              <motion.div
+                layout
+                transition={{ duration: 0.2 }}
+                style={{ borderRadius: 20 }}
+                className="col-span-3 flex h-max flex-col px-6 ring-1 ring-primary-100"
+              >
+                {CartComp}
+              </motion.div>
+            </LayoutGroup>
             <OrderSummary cartItemsData={cartItemsData} />
           </div>
         </>

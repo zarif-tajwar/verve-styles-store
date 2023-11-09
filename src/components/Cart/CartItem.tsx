@@ -87,7 +87,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
 
   const deleteVariants: Variants = {
     hidden: {
-      transform: 'translateX(-60%)',
+      transform: 'translateX(-40%)',
       opacity: 0,
       pointerEvents: 'none',
     },
@@ -100,7 +100,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
 
   const restoreVariants: Variants = {
     hidden: {
-      transform: 'translateX(40%)',
+      transform: 'translateX(30%)',
       opacity: '0%',
       pointerEvents: 'none',
     },
@@ -112,7 +112,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   };
 
   return (
-    <AnimatePresence key={'cartItemContainer'} initial={false} mode="popLayout">
+    <AnimatePresence key={'cartItemContainer'} initial={false}>
       <MotionConfig
         transition={{
           duration: 0.2,
@@ -189,12 +189,12 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
           /> */}
           </motion.div>
           <div className="flex min-h-full flex-col items-end justify-end">
-            <AnimatePresence
-              key={'cartItemDeleteBtns'}
-              initial={false}
-              mode="wait"
-            >
-              <motion.div layout={'position'} className="mb-auto">
+            <motion.div layout={'position'} className="mb-auto flex">
+              <AnimatePresence
+                key={'cartItemDeleteBtns'}
+                initial={false}
+                mode="wait"
+              >
                 {!toggleDelete ? (
                   <motion.button
                     className={cn(
@@ -202,7 +202,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                         size: 'sm',
                         variant: 'ghost',
                       }),
-                      'relative h-7 gap-1 bg-transparent px-2 text-sm font-medium tracking-wide text-red-500 ring-1 ring-red-400 transition-none',
+                      'relative h-7 min-w-max bg-transparent px-2 text-sm font-medium tracking-wide text-red-500 ring-1 ring-red-400 transition-none duration-0',
                       'hover:bg-red-500 hover:text-neutral-50',
                     )}
                     onClick={() => setToggleDelete(true)}
@@ -222,7 +222,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                         size: 'sm',
                         variant: 'secondary',
                       }),
-                      'relative h-7 gap-1 px-2 text-sm tracking-wide transition-none',
+                      'relative h-7 min-w-max px-2 text-sm tracking-wide transition-none',
                     )}
                     onClick={() => setToggleDelete(false)}
                     initial={'hidden'}
@@ -231,12 +231,19 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                     key={'undo'}
                     variants={restoreVariants}
                   >
-                    <History size={16} />
+                    <motion.span
+                      initial={{ rotate: 270 }}
+                      animate={{ rotate: 0 }}
+                      key={'undoIcon'}
+                      transition={{ duration: 1, type: 'spring', bounce: 0.4 }}
+                    >
+                      <History size={16} />
+                    </motion.span>
                     <span>Undo in 3</span>
                   </motion.button>
                 )}
-              </motion.div>
-            </AnimatePresence>
+              </AnimatePresence>
+            </motion.div>
             <motion.div layout={'preserve-aspect'}>
               <motion.div
                 animate={
@@ -266,7 +273,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                   <CartQuantityCounter
                     initial={cartItem.quantity}
                     onChange={handleQuantityChange}
-                    className="max-h-[2.5rem]"
+                    className="max-h-[2.5rem] min-w-[8.25rem]"
                   />
                 </motion.div>
               </motion.div>
