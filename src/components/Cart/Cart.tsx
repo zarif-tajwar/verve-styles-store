@@ -8,6 +8,7 @@ import { trpc } from '@/app/_trpc/client';
 import { useCartItemsStore } from '@/lib/store/cart-store';
 import { serverClient } from '@/app/_trpc/serverClient';
 import { Button } from '../UI/Button';
+import { LayoutGroup, motion } from 'framer-motion';
 
 const Cart = ({
   initialData,
@@ -38,6 +39,8 @@ const Cart = ({
 
   const data = cartItemsQuery.data;
 
+  const lol_str = 'lko';
+
   const cartItemsData = useMemo(() => data, [data]);
 
   console.log('PARENT RENDERED');
@@ -51,12 +54,7 @@ const Cart = ({
   const CartComp = useMemo(() => {
     if (cartItemsData && cartItemsData.length > 0)
       return cartItemsData.map((cartItem, i) => {
-        return (
-          <React.Fragment key={i}>
-            <CartItem cartItem={cartItem} />
-            {i < cartItemsData.length - 1 && <Divider className="my-6" />}
-          </React.Fragment>
-        );
+        return <CartItem key={i} cartItem={cartItem} />;
       });
     else return null;
   }, [cartItemsData]);
@@ -86,9 +84,12 @@ const Cart = ({
         <>
           <h1 className="mb-6 font-integral-cf text-4xl">My Cart</h1>
           <div className="flex grid-cols-5 flex-col gap-5 lg:grid">
-            <div className="col-span-3 h-max rounded-main p-6 ring-1 ring-primary-100">
-              {CartComp}
-            </div>
+            <motion.div
+              layout
+              className="col-span-3 flex h-max flex-col rounded-main px-6 ring-1 ring-primary-100"
+            >
+              <LayoutGroup>{CartComp}</LayoutGroup>
+            </motion.div>
             <OrderSummary cartItemsData={cartItemsData} />
           </div>
         </>

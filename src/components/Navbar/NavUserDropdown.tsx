@@ -23,11 +23,11 @@ const NavUserDropdown = () => {
           align="end"
           sideOffset={4}
           className={cn(
-            'w-36 origin-top-right rounded-lg bg-primary-0 p-2 text-sm font-medium shadow-light-drop ring-1 ring-primary-50',
+            'w-36 origin-top-right rounded-lg bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
         >
-          <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md text-primary-500 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
+          <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
             <Link
               href={'/login'}
               className="inline-flex w-full items-center gap-2.5 p-2"
@@ -36,7 +36,7 @@ const NavUserDropdown = () => {
               <span>Login</span>
             </Link>
           </DropdownMenu.DropdownMenuItem>
-          <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md text-primary-500 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
+          <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
             <Link
               href={'/sign-up'}
               className="inline-flex w-full items-center gap-2.5 p-2"
