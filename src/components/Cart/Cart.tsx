@@ -10,6 +10,44 @@ import { serverClient } from '@/app/_trpc/serverClient';
 import { Button } from '../UI/Button';
 import { LayoutGroup, motion } from 'framer-motion';
 
+const staticCartItems = [
+  {
+    name: 'Oriental Concrete Towels',
+    price: '7448.00',
+    sizeName: '2xl',
+    cartItemId: 123365,
+    quantity: 10,
+  },
+  {
+    name: 'Rustic Granite Chair',
+    price: '6595.00',
+    sizeName: '2xl',
+    cartItemId: 123364,
+    quantity: 10,
+  },
+  {
+    name: 'Handcrafted Metal Keyboard',
+    price: '5590.00',
+    sizeName: '2xl',
+    cartItemId: 123363,
+    quantity: 5,
+  },
+  {
+    name: 'Unbranded Rubber Car',
+    price: '8486.00',
+    sizeName: 'small',
+    cartItemId: 123362,
+    quantity: 6,
+  },
+  {
+    name: 'Ergonomic Granite Computer',
+    price: '8449.00',
+    sizeName: 'large',
+    cartItemId: 123361,
+    quantity: 6,
+  },
+];
+
 const Cart = ({
   initialData,
 }: {
@@ -41,7 +79,8 @@ const Cart = ({
 
   const lol_str = 'lko';
 
-  const cartItemsData = useMemo(() => data, [data]);
+  const cartItemsData = staticCartItems;
+  // const cartItemsData = useMemo(() => data, [data]);
 
   console.log('PARENT RENDERED');
 
@@ -50,6 +89,8 @@ const Cart = ({
       insertCartItems(cartItemsData);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  console.log(cartItemsData);
 
   const CartComp = useMemo(() => {
     if (cartItemsData && cartItemsData.length > 0)

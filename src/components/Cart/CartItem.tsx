@@ -72,7 +72,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
 
   const handleQuantityChange = async (newQuantity: number) => {
     updateQuantity(cartItem.cartItemId, newQuantity);
-    debouncedUpdateQuantity(newQuantity);
+    // debouncedUpdateQuantity(newQuantity);
   };
 
   const handleCartItemDelete = async () => {
@@ -85,69 +85,43 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
 
   console.log(`${cartItem.name}: RENDERED`);
 
-  const deleteVariant: Variants = {
-    initial: { transform: 'translateX(100%)', opacity: 0 },
-    enter: { transform: 'translateX(0%)', opacity: 1 },
-    leave: { transform: 'translateX(-100%)', opacity: 0 },
-  };
-
-  const commonVariants: Variants = {
-    show: {
-      y: '0%',
-      opacity: 1,
-      visibility: 'visible',
-      pointerEvents: 'auto',
-      display: 'inline-block',
-    },
-    hide: {
-      y: '-100%',
+  const deleteVariants: Variants = {
+    hidden: {
+      transform: 'translateX(-30%)',
       opacity: 0,
       pointerEvents: 'none',
-      transitionEnd: {
-        visibility: 'hidden',
-      },
     },
-  };
-
-  const productNameVariant: Variants = {
-    show: {
-      scale: 1,
+    visible: {
+      transform: 'translateX(0%)',
       opacity: 1,
-    },
-    minimize: {
-      scale: 0.8,
-      opacity: 0.6,
+      pointerEvents: 'auto',
     },
   };
 
-  const productImageVariant: Variants = {
-    show: {
-      width: '8rem',
-      height: '8rem',
-      opacity: 1,
+  const restoreVariants: Variants = {
+    hidden: {
+      transform: 'translateX(30%)',
+      opacity: '0%',
+      pointerEvents: 'none',
     },
-    minimize: {
-      width: '4rem',
-      height: '4rem',
-      opacity: 0.6,
+    visible: {
+      transform: 'translateX(0%)',
+      opacity: '100%',
+      pointerEvents: 'auto',
     },
-  };
-
-  const containerVariants: Variants = {
-    show: {
-      height: 'auto',
-    },
-    hide: { height: '100px' },
   };
 
   return (
-    <AnimatePresence initial={false} mode="popLayout">
+    <AnimatePresence key={'cartItemContainer'} initial={false} mode="popLayout">
       <MotionConfig
         transition={{
           duration: 0.2,
         }}
       >
-        <div className="group relative flex w-full justify-between py-6">
+        <motion.div
+          layout
+          className="group relative flex w-full justify-between py-6"
+        >
           <motion.div
             layout
             className={cn(
@@ -159,8 +133,8 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
             <motion.div
               layout
               className={cn(
-                'aspect-square w-[16%] max-w-[8rem] origin-top-left bg-primary-100',
-                toggleDelete && 'w-[8%]',
+                'aspect-square w-[20%] max-w-[8rem] origin-top-left bg-primary-100',
+                toggleDelete && 'w-[10%]',
               )}
               style={{
                 borderRadius: 12,
@@ -214,69 +188,60 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
             }
           /> */}
           </motion.div>
-          <div className="flex min-h-full flex-col items-end justify-between">
-            <motion.div
-              layout={'position'}
-              className="flex items-start gap-1 pr-px"
+          <div className="flex min-h-full flex-col items-end justify-end">
+            <AnimatePresence
+              key={'cartItemDeleteBtns'}
+              initial={false}
+              mode="wait"
             >
-              <div className="relative h-[8px] w-[220px]">
-                {/* <button
-                  onClick={async (e) => {
-                    console.log('lol');
-                    setToggleDelete(true);
-                  }}
-                  className="inline-flex hidden h-5 items-center justify-center text-red-400"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="20"
-                    viewBox="0 0 448 512"
-                    fill="currentColor"
+              <motion.div layout={'position'} className="mb-auto">
+                {!toggleDelete && (
+                  <motion.button
+                    // layout={'position'}
+                    className={cn(
+                      buttonVariants({
+                        size: 'sm',
+                        variant: 'ghost',
+                      }),
+                      'relative h-7 gap-1 bg-transparent px-2 text-sm font-medium tracking-wide text-red-500 ring-1 ring-red-400',
+                      // 'hover:bg-transparent',
+                      'hover:bg-red-500 hover:text-neutral-50',
+                    )}
+                    onClick={() => setToggleDelete(true)}
+                    initial={'hidden'}
+                    animate={'visible'}
+                    exit={'hidden'}
+                    key={'delete'}
+                    variants={deleteVariants}
                   >
-                    <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
-                  </svg>
-                </button> */}
-                <motion.button
-                  className={cn(
-                    buttonVariants({
-                      size: 'sm',
-                      variant: 'ghost',
-                    }),
-                    'absolute right-0 top-0 h-7 gap-1 bg-transparent px-2 text-sm font-medium tracking-wide text-red-500 ring-1 ring-red-400 hover:bg-red-500 hover:text-neutral-50',
-                  )}
-                  onClick={() => setToggleDelete(true)}
-                  animate={
-                    toggleDelete
-                      ? { x: '-150%', opacity: 0, pointerEvents: 'none' }
-                      : { x: 0, opacity: 1, pointerEvents: 'auto' }
-                  }
-                  key={'delete'}
-                >
-                  {/* <History size={16} /> */}
-                  <Trash size={16} />
-                  <span>Delete</span>
-                </motion.button>
-                <motion.button
-                  className={cn(
-                    buttonVariants({
-                      size: 'sm',
-                      variant: 'secondary',
-                    }),
-                    'absolute right-0 top-0 h-7 gap-1 px-2 text-sm tracking-wide',
-                  )}
-                  onClick={() => setToggleDelete(false)}
-                  animate={
-                    !toggleDelete
-                      ? { x: '10%', opacity: 0, pointerEvents: 'none' }
-                      : { x: 0, opacity: 1, pointerEvents: 'auto' }
-                  }
-                  key={'undo'}
-                >
-                  <History size={16} />
-                  <span>Undo in 3</span>
-                </motion.button>
-              </div>
-            </motion.div>
+                    <Trash size={16} />
+                    <span>Delete</span>
+                  </motion.button>
+                )}
+
+                {toggleDelete && (
+                  <motion.button
+                    // layout={'position'}
+                    className={cn(
+                      buttonVariants({
+                        size: 'sm',
+                        variant: 'secondary',
+                      }),
+                      'relative h-7 gap-1 px-2 text-sm tracking-wide',
+                    )}
+                    onClick={() => setToggleDelete(false)}
+                    initial={'hidden'}
+                    animate={'visible'}
+                    exit={'hidden'}
+                    key={'undo'}
+                    variants={restoreVariants}
+                  >
+                    <History size={16} />
+                    <span>Undo in 3</span>
+                  </motion.button>
+                )}
+              </motion.div>
+            </AnimatePresence>
             <motion.div layout={'preserve-aspect'}>
               <motion.div
                 animate={
@@ -290,17 +255,20 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                 }
               >
                 <motion.div
+                  className="origin-top-left"
                   animate={
                     toggleDelete
                       ? {
-                          scale: 0.6,
-                          y: '-60%',
+                          // scale: 0,
+                          // y: '-60%',
                           opacity: 0,
+                          transform: 'translateX(-50%) scale(0.5)',
                         }
                       : {
-                          scale: 1,
-                          y: '0%',
+                          // scale: 1,
+                          // y: '0%',
                           opacity: 1,
+                          transform: 'translateX(0%) scale(1)',
                         }
                   }
                 >
@@ -313,7 +281,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
               </motion.div>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </MotionConfig>
     </AnimatePresence>
   );
