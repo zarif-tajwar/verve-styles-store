@@ -87,7 +87,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
 
   const deleteVariants: Variants = {
     hidden: {
-      transform: 'translateX(-30%)',
+      transform: 'translateX(-60%)',
       opacity: 0,
       pointerEvents: 'none',
     },
@@ -100,7 +100,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
 
   const restoreVariants: Variants = {
     hidden: {
-      transform: 'translateX(30%)',
+      transform: 'translateX(40%)',
       opacity: '0%',
       pointerEvents: 'none',
     },
@@ -197,14 +197,12 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
               <motion.div layout={'position'} className="mb-auto">
                 {!toggleDelete && (
                   <motion.button
-                    // layout={'position'}
                     className={cn(
                       buttonVariants({
                         size: 'sm',
                         variant: 'ghost',
                       }),
-                      'relative h-7 gap-1 bg-transparent px-2 text-sm font-medium tracking-wide text-red-500 ring-1 ring-red-400',
-                      // 'hover:bg-transparent',
+                      'relative h-7 gap-1 bg-transparent px-2 text-sm font-medium tracking-wide text-red-500 ring-1 ring-red-400 transition-none',
                       'hover:bg-red-500 hover:text-neutral-50',
                     )}
                     onClick={() => setToggleDelete(true)}
@@ -221,13 +219,12 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
 
                 {toggleDelete && (
                   <motion.button
-                    // layout={'position'}
                     className={cn(
                       buttonVariants({
                         size: 'sm',
                         variant: 'secondary',
                       }),
-                      'relative h-7 gap-1 px-2 text-sm tracking-wide',
+                      'relative h-7 gap-1 px-2 text-sm tracking-wide transition-none',
                     )}
                     onClick={() => setToggleDelete(false)}
                     initial={'hidden'}
@@ -259,14 +256,10 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                   animate={
                     toggleDelete
                       ? {
-                          // scale: 0,
-                          // y: '-60%',
                           opacity: 0,
                           transform: 'translateX(-50%) scale(0.5)',
                         }
                       : {
-                          // scale: 1,
-                          // y: '0%',
                           opacity: 1,
                           transform: 'translateX(0%) scale(1)',
                         }
