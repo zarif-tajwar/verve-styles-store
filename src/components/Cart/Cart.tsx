@@ -162,8 +162,8 @@ const Cart = ({
           <div className="flex grid-cols-5 flex-col gap-5 lg:grid">
             <LayoutGroup>
               <motion.div
-                layout
-                transition={{ duration: 1 }}
+                // layout
+                // transition={{ duration: 1 }}
                 style={{ borderRadius: 20 }}
                 className="col-span-3 flex h-max flex-col px-6 ring-1 ring-primary-100"
               >
