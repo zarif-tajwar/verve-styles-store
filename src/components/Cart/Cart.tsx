@@ -46,6 +46,41 @@ const staticCartItems = [
     cartItemId: 123361,
     quantity: 6,
   },
+  {
+    name: 'Oriental Concrete Towels',
+    price: '7448.00',
+    sizeName: '2xl',
+    cartItemId: 123365,
+    quantity: 10,
+  },
+  {
+    name: 'Rustic Granite Chair',
+    price: '6595.00',
+    sizeName: '2xl',
+    cartItemId: 123364,
+    quantity: 10,
+  },
+  {
+    name: 'Handcrafted Metal Keyboard',
+    price: '5590.00',
+    sizeName: '2xl',
+    cartItemId: 123363,
+    quantity: 5,
+  },
+  {
+    name: 'Unbranded Rubber Car',
+    price: '8486.00',
+    sizeName: 'small',
+    cartItemId: 123362,
+    quantity: 6,
+  },
+  {
+    name: 'Ergonomic Granite Computer',
+    price: '8449.00',
+    sizeName: 'large',
+    cartItemId: 123361,
+    quantity: 6,
+  },
 ];
 
 const Cart = ({
@@ -79,8 +114,8 @@ const Cart = ({
 
   const lol_str = 'lko';
 
-  const cartItemsData = staticCartItems;
-  // const cartItemsData = useMemo(() => data, [data]);
+  // const cartItemsData = staticCartItems;
+  const cartItemsData = useMemo(() => data, [data]);
 
   console.log('PARENT RENDERED');
 
@@ -94,8 +129,8 @@ const Cart = ({
 
   const CartComp = useMemo(() => {
     if (cartItemsData && cartItemsData.length > 0)
-      return cartItemsData.map((cartItem, i) => {
-        return <CartItem key={i} cartItem={cartItem} />;
+      return cartItemsData.map((cartItem) => {
+        return <CartItem key={cartItem.cartItemId} cartItem={cartItem} />;
       });
     else return null;
   }, [cartItemsData]);
@@ -128,7 +163,7 @@ const Cart = ({
             <LayoutGroup>
               <motion.div
                 layout
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 1 }}
                 style={{ borderRadius: 20 }}
                 className="col-span-3 flex h-max flex-col px-6 ring-1 ring-primary-100"
               >

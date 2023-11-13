@@ -8,7 +8,7 @@ import { trpc } from '@/app/_trpc/client';
 import useDebounce from '@/lib/hooks/useDebounce';
 import { useQueryClient } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
-import { MouseEvent, memo, useMemo, useState } from 'react';
+import { MouseEvent, memo, useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   AnimatePresence,
@@ -20,6 +20,7 @@ import {
 import Divider from '../UI/Divider';
 import { Button, buttonVariants } from '../UI/Button';
 import { History, Trash } from 'lucide-react';
+import { useCountDown } from '@/lib/hooks/useCountdown';
 
 const MotionDivider = motion(Divider);
 
@@ -35,6 +36,8 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   const deleteCartItem = useCartItemsStore((state) => state.deleteCartItem);
 
   const [toggleDelete, setToggleDelete] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [countdown, startCountdown, _, resetCountdown] = useCountDown(5);
 
   const cartItemData = cartItemState ? cartItemState : cartItem;
 
@@ -78,9 +81,9 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   const handleCartItemDelete = async () => {
     await deleteCartItemServer();
     deleteCartItem(cartItem.cartItemId);
-    await queryClient.refetchQueries({
-      queryKey,
-    });
+    // await queryClient.refetchQueries({
+    //   queryKey,
+    // });
   };
 
   console.log(`${cartItem.name}: RENDERED`);
@@ -111,74 +114,91 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
     },
   };
 
+  useEffect(() => {
+    if (countdown === 0) {
+      setConfirmDelete(true);
+      handleCartItemDelete();
+    }
+  }, [countdown]);
+
   return (
-    <AnimatePresence key={'cartItemContainer'} initial={false}>
-      <MotionConfig
-        transition={{
-          duration: 0.2,
-        }}
-      >
-        <motion.div
-          layout
-          className="group relative flex w-full justify-between py-6"
-        >
+    <MotionConfig
+      transition={{
+        duration: 0.2,
+      }}
+    >
+      <AnimatePresence key={'cartItemContainer'} mode="wait" initial={false}>
+        {!confirmDelete && (
           <motion.div
-            layout
-            className={cn(
-              'relative flex w-full items-start gap-4',
-              toggleDelete && 'gap-2',
-            )}
-            animate={toggleDelete ? { opacity: 0.3 } : { opacity: 1 }}
+            exit={{
+              opacity: 0,
+              height: '0px',
+            }}
+            animate={{ opacity: 1, height: 'auto' }}
+            key={'cartItemMainContainer'}
+            className="group relative"
           >
             <motion.div
               layout
-              className={cn(
-                'aspect-square w-[20%] max-w-[8rem] origin-top-left bg-primary-100',
-                toggleDelete && 'w-[10%]',
-              )}
-              style={{
-                borderRadius: 12,
-              }}
-            />
-            <motion.div layout className="flex min-h-full justify-between">
+              className={cn('relative flex w-full justify-between py-6')}
+            >
               <motion.div
                 layout
-                className="relative flex min-h-full flex-col items-start justify-start gap-1"
+                className={cn(
+                  'relative flex w-full items-start gap-4',
+                  toggleDelete && 'gap-2',
+                )}
+                animate={toggleDelete ? { opacity: 0.3 } : { opacity: 1 }}
               >
-                <motion.p
-                  className={cn(
-                    'origin-top-left text-xl font-medium',
-                    toggleDelete && 'text-base',
-                  )}
-                  layout
-                >
-                  {cartItem.name}
-                </motion.p>
                 <motion.div
                   layout
-                  className="flex flex-grow items-start justify-start gap-2"
-                >
-                  <motion.span
+                  className={cn(
+                    'aspect-square w-[20%] max-w-[8rem] origin-top-left bg-primary-100',
+                    toggleDelete && 'w-[10%]',
+                  )}
+                  style={{
+                    borderRadius: 12,
+                  }}
+                />
+                <motion.div layout className="flex min-h-full justify-between">
+                  <motion.div
                     layout
-                    className={cn(
-                      'absolute bottom-0 left-0 inline-block origin-top-left text-xl font-medium',
-                      toggleDelete && 'static text-base',
-                    )}
+                    className="relative flex min-h-full flex-col items-start justify-start gap-1"
                   >
-                    {totalPrice}
-                  </motion.span>
-                  <motion.span
-                    layout
-                    className="inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-normal tracking-wide text-primary-400 ring-1 ring-primary-100"
-                  >
-                    {cartItem.sizeName.length > 3
-                      ? capitalize(cartItem.sizeName)
-                      : cartItem.sizeName.toUpperCase()}
-                  </motion.span>
+                    <motion.p
+                      className={cn(
+                        'origin-top-left text-xl font-medium',
+                        toggleDelete && 'text-base',
+                      )}
+                      layout
+                    >
+                      {cartItem.name}
+                    </motion.p>
+                    <motion.div
+                      layout
+                      className="flex flex-grow items-start justify-start gap-2"
+                    >
+                      <motion.span
+                        layout
+                        className={cn(
+                          'absolute bottom-0 left-0 inline-block origin-top-left text-xl font-medium',
+                          toggleDelete && 'static text-base',
+                        )}
+                      >
+                        {totalPrice}
+                      </motion.span>
+                      <motion.span
+                        layout
+                        className="inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-normal tracking-wide text-primary-400 ring-1 ring-primary-100"
+                      >
+                        {cartItem.sizeName.length > 3
+                          ? capitalize(cartItem.sizeName)
+                          : cartItem.sizeName.toUpperCase()}
+                      </motion.span>
+                    </motion.div>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            </motion.div>
-            {/* <MotionDivider
+                {/* <MotionDivider
             layout
             animate={
               toggleDelete ? { scaleX: 0, height: 0 } : { scaleX: 1, height: 1 }
@@ -187,101 +207,127 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
               'absolute bottom-0 left-0 w-full origin-left group-last-of-type:hidden'
             }
           /> */}
-          </motion.div>
-          <div className="flex min-h-full flex-col items-end justify-end">
-            <motion.div layout={'position'} className="mb-auto flex">
-              <AnimatePresence
-                key={'cartItemDeleteBtns'}
-                initial={false}
-                mode="wait"
-              >
-                {!toggleDelete ? (
-                  <motion.button
-                    className={cn(
-                      buttonVariants({
-                        size: 'sm',
-                        variant: 'ghost',
-                      }),
-                      'relative h-7 min-w-max bg-transparent px-2 text-sm font-medium tracking-wide text-red-500 ring-1 ring-red-400 transition-none duration-0',
-                      'hover:bg-red-500 hover:text-neutral-50',
-                    )}
-                    onClick={() => setToggleDelete(true)}
-                    initial={'hidden'}
-                    animate={'visible'}
-                    exit={'hidden'}
-                    key={'delete'}
-                    variants={deleteVariants}
-                  >
-                    <Trash size={16} />
-                    <span>Delete</span>
-                  </motion.button>
-                ) : (
-                  <motion.button
-                    className={cn(
-                      buttonVariants({
-                        size: 'sm',
-                        variant: 'secondary',
-                      }),
-                      'relative h-7 min-w-max px-2 text-sm tracking-wide transition-none',
-                    )}
-                    onClick={() => setToggleDelete(false)}
-                    initial={'hidden'}
-                    animate={'visible'}
-                    exit={'hidden'}
-                    key={'undo'}
-                    variants={restoreVariants}
-                  >
-                    <motion.span
-                      initial={{ rotate: 270 }}
-                      animate={{ rotate: 0 }}
-                      key={'undoIcon'}
-                      transition={{ duration: 1, type: 'spring', bounce: 0.4 }}
-                    >
-                      <History size={16} />
-                    </motion.span>
-                    <span>Undo in 3</span>
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </motion.div>
-            <motion.div layout={'preserve-aspect'}>
+              </motion.div>
               <motion.div
-                animate={
-                  toggleDelete
-                    ? {
-                        height: 0,
-                      }
-                    : {
-                        height: 'auto',
-                      }
-                }
+                layout
+                className="flex min-h-full flex-col items-end justify-end"
               >
-                <motion.div
-                  className="origin-top-left"
-                  animate={
-                    toggleDelete
-                      ? {
-                          opacity: 0,
-                          transform: 'translateX(-50%) scale(0.5)',
-                        }
-                      : {
-                          opacity: 1,
-                          transform: 'translateX(0%) scale(1)',
-                        }
-                  }
-                >
-                  <CartQuantityCounter
-                    initial={cartItem.quantity}
-                    onChange={handleQuantityChange}
-                    className="max-h-[2.5rem] min-w-[8.25rem]"
-                  />
+                <motion.div layout={'position'} className="mb-auto flex">
+                  <AnimatePresence
+                    key={'cartItemDeleteBtns'}
+                    initial={false}
+                    mode="wait"
+                  >
+                    {!toggleDelete ? (
+                      <motion.button
+                        className={cn(
+                          buttonVariants({
+                            size: 'sm',
+                            variant: 'ghost',
+                          }),
+                          'relative h-7 min-w-max bg-transparent px-2 text-sm font-medium tracking-wide text-red-500 ring-1 ring-red-400 transition-none duration-0',
+                          'hover:bg-red-500 hover:text-neutral-50',
+                        )}
+                        onClick={() => {
+                          setToggleDelete(true);
+                          startCountdown();
+                        }}
+                        initial={'hidden'}
+                        animate={'visible'}
+                        exit={'hidden'}
+                        key={'delete'}
+                        variants={deleteVariants}
+                        disabled={toggleDelete || confirmDelete}
+                      >
+                        <Trash size={16} />
+                        <span>Delete</span>
+                      </motion.button>
+                    ) : (
+                      <motion.button
+                        className={cn(
+                          buttonVariants({
+                            size: 'sm',
+                            variant: 'secondary',
+                          }),
+                          'relative h-7 min-w-max px-2 text-sm tracking-wide transition-none',
+                        )}
+                        onClick={() => {
+                          setToggleDelete(false);
+                          resetCountdown();
+                        }}
+                        initial={'hidden'}
+                        animate={'visible'}
+                        exit={'hidden'}
+                        key={'undo'}
+                        variants={restoreVariants}
+                        disabled={!toggleDelete || confirmDelete}
+                      >
+                        <motion.span
+                          initial={{ rotate: 270 }}
+                          animate={{ rotate: 0 }}
+                          key={'undoIcon'}
+                          transition={{
+                            duration: 1,
+                            type: 'spring',
+                            bounce: 0.4,
+                          }}
+                        >
+                          <History size={16} />
+                        </motion.span>
+                        <span className="inline-flex items-center justify-between">
+                          <span>Undo</span>
+                          <span className="inline-flex h-4 w-4 items-center justify-center font-semibold">
+                            {countdown}
+                          </span>
+                        </span>
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+                <motion.div layout={'preserve-aspect'}>
+                  <motion.div
+                    animate={
+                      toggleDelete
+                        ? {
+                            height: 0,
+                          }
+                        : {
+                            height: 'auto',
+                          }
+                    }
+                  >
+                    <motion.div
+                      className="origin-top-left"
+                      animate={
+                        toggleDelete
+                          ? {
+                              opacity: 0,
+                              transform: 'translateX(-50%) scale(0.5)',
+                            }
+                          : {
+                              opacity: 1,
+                              transform: 'translateX(0%) scale(1)',
+                            }
+                      }
+                    >
+                      <CartQuantityCounter
+                        initial={cartItem.quantity}
+                        onChange={handleQuantityChange}
+                        className="max-h-[2.5rem] min-w-[8.25rem]"
+                      />
+                    </motion.div>
+                  </motion.div>
                 </motion.div>
               </motion.div>
             </motion.div>
-          </div>
-        </motion.div>
-      </MotionConfig>
-    </AnimatePresence>
+            <MotionDivider
+              layout
+              className="absolute w-full group-last-of-type:hidden"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </MotionConfig>
   );
 });
 
