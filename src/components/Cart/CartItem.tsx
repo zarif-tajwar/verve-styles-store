@@ -6,7 +6,7 @@ import { CartItemProps } from '@/lib/types/cart';
 import { useCartItemsStore } from '@/lib/store/cart-store';
 import { trpc } from '@/app/_trpc/client';
 import useDebounce from '@/lib/hooks/useDebounce';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
 import { MouseEvent, memo, useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -21,6 +21,11 @@ import Divider from '../UI/Divider';
 import { Button, buttonVariants } from '../UI/Button';
 import { History, Trash } from 'lucide-react';
 import { useCountDown } from '@/lib/hooks/useCountdown';
+import {
+  deleteCartItemServer,
+  updateCartItemQuantityServer,
+} from '@/lib/actions/cart';
+import { CartItemsInsert } from '@/lib/db/schema/cartItems';
 
 const MotionDivider = motion(Divider);
 
@@ -37,53 +42,41 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
 
   const [toggleDelete, setToggleDelete] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [countdown, startCountdown, _, resetCountdown] = useCountDown(5);
+  const [countdown, startCountdown, _, resetCountdown] = useCountDown(4);
 
   const cartItemData = cartItemState ? cartItemState : cartItem;
 
-  const cartItemId = cartItemData.cartItemId;
+  const { mutateAsync: deleteMutation } = useMutation({
+    mutationFn: deleteCartItemServer,
+  });
 
-  const updateQuantityServerTrpc = trpc.updateCartQuantity.useMutation({});
+  const { mutateAsync: updateMutation } = useMutation({
+    mutationFn: updateCartItemQuantityServer,
+  });
 
-  const deleteCartItemServerTrpc = trpc.deleteCartItem.useMutation({});
-
-  const updateQuantityServer = async (newQuantity: number) => {
-    await updateQuantityServerTrpc.mutateAsync({
-      cartItemId: cartItemId,
-      newQuantity,
-    });
-  };
-
-  const deleteCartItemServer = async () => {
-    await deleteCartItemServerTrpc.mutateAsync({
-      cartItemId: cartItemId,
-    });
-  };
-
-  const debouncedUpdateQuantity = useDebounce((newQuantity: number) => {
-    updateQuantityServer(newQuantity);
-    console.log(newQuantity);
-  }, 500);
-
-  const queryClient = useQueryClient();
+  const debouncedUpdateQuantity = useDebounce(
+    (newQuantity: CartItemsInsert['quantity']) => {
+      updateMutation({
+        cartItemId: cartItem.cartItemId,
+        newQuantity,
+      });
+      console.log(newQuantity);
+    },
+    500,
+  );
 
   const totalPrice = priceFormat(
     Number.parseFloat(cartItemData.price || '0') * cartItemData.quantity,
   );
 
-  const queryKey = useMemo(() => getQueryKey(trpc.getCartItems), []);
-
   const handleQuantityChange = async (newQuantity: number) => {
     updateQuantity(cartItem.cartItemId, newQuantity);
-    // debouncedUpdateQuantity(newQuantity);
+    await debouncedUpdateQuantity(newQuantity);
   };
 
   const handleCartItemDelete = async () => {
-    await deleteCartItemServer();
+    await deleteMutation(cartItem.cartItemId);
     deleteCartItem(cartItem.cartItemId);
-    // await queryClient.refetchQueries({
-    //   queryKey,
-    // });
   };
 
   console.log(`${cartItem.name}: RENDERED`);
@@ -198,15 +191,6 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                     </motion.div>
                   </motion.div>
                 </motion.div>
-                {/* <MotionDivider
-            layout
-            animate={
-              toggleDelete ? { scaleX: 0, height: 0 } : { scaleX: 1, height: 1 }
-            }
-            className={
-              'absolute bottom-0 left-0 w-full origin-left group-last-of-type:hidden'
-            }
-          /> */}
               </motion.div>
               <motion.div
                 layout

@@ -4,10 +4,9 @@ import { capitalize } from '@/lib/util';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { Button, buttonVariants } from '../UI/Button';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
-import { addProductToCart } from '@/app/_actions/cart';
-import { useQueryClient } from '@tanstack/react-query';
-import { getQueryKey } from '@trpc/react-query';
-import { trpc } from '@/app/_trpc/client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { addCartItemServer } from '@/lib/actions/cart';
+import * as queryKeys from '@/lib/constants/query-keys';
 
 type sizeOptions = {
   sizeName: string;
@@ -22,7 +21,15 @@ const ProductAddCartRadioGroup = ({
   productId: number;
 }) => {
   const queryClient = useQueryClient();
-  const cartQueryKey = getQueryKey(trpc.getCartItems);
+  // const cartQueryKey = getQueryKey(trpc.getCartItems);
+  const { mutateAsync: addCartItemMutation } = useMutation({
+    mutationFn: addCartItemServer,
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: queryKeys.CART_ITEM_DATA,
+      });
+    },
+  });
   return (
     <form
       onSubmit={async (e) => {
@@ -43,14 +50,15 @@ const ProductAddCartRadioGroup = ({
           return;
         }
 
-        const cartItem = await addProductToCart(productId, sizeId, quantity);
+        const cartItem = await addCartItemMutation({
+          productId,
+          quantity,
+          sizeId,
+        });
 
         console.log(cartItem);
         const end = performance.now();
         console.log(end - start);
-        await queryClient.refetchQueries({
-          queryKey: cartQueryKey,
-        });
       }}
     >
       <label

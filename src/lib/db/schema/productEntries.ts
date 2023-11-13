@@ -52,4 +52,4 @@ export const productEntryRelations = relations(
   }),
 );
 
-export type ProductEntry = InferInsertModel<typeof productEntries>;
+export type ProductEntryInsert = InferInsertModel<typeof productEntries>;

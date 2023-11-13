@@ -9,6 +9,10 @@ import { useCartItemsStore } from '@/lib/store/cart-store';
 import { serverClient } from '@/app/_trpc/serverClient';
 import { Button } from '../UI/Button';
 import { LayoutGroup, motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { getCartItemsServer } from '@/lib/actions/cart';
+import { wait } from '@/lib/util';
+import * as queryKeys from '@/lib/constants/query-keys';
 
 const staticCartItems = [
   {
@@ -83,53 +87,40 @@ const staticCartItems = [
   },
 ];
 
-const Cart = ({
-  initialData,
-}: {
-  initialData: Awaited<ReturnType<(typeof serverClient)['getCartItems']>>;
-}) => {
-  const insertCartItems = useCartItemsStore((state) => state.insertCartItems);
-  const clearCart = useCartItemsStore((state) => state.clearCart);
-  const cartItemsQuery = trpc.getCartItems.useQuery(undefined, {
-    initialData,
+const Cart = () => {
+  const insertCartItemsClient = useCartItemsStore(
+    (state) => state.insertCartItems,
+  );
+  const clearCartClient = useCartItemsStore((state) => state.clearCart);
+
+  const { data, error, isFetched } = useQuery({
+    queryKey: queryKeys.CART_ITEM_DATA,
+    queryFn: async () => {
+      const data = await getCartItemsServer();
+      // console.log(data);
+      if (!data || data.length < 1) return undefined;
+      clearCartClient();
+      insertCartItemsClient(data);
+      return data;
+    },
     refetchOnMount: false,
-    refetchOnReconnect: false,
-  });
-  const generateRandomCartItems = trpc.generateCartItems.useMutation({
-    onSettled: async () => {
-      const refetched = await cartItemsQuery.refetch();
-      clearCart();
-      const data = refetched.data;
-      if (data) insertCartItems(data);
-    },
-  });
-  const clearCartServer = trpc.clearCartItems.useMutation({
-    onSettled: async () => {
-      await cartItemsQuery.refetch();
-      clearCart();
-    },
   });
 
-  const data = cartItemsQuery.data;
+  console.log(data, 'REACT QUERY');
 
-  const lol_str = 'lko';
-
-  // const cartItemsData = staticCartItems;
-  const cartItemsData = useMemo(() => data, [data]);
+  const cartItemsData = data;
 
   console.log('PARENT RENDERED');
 
-  useEffect(() => {
-    if (cartItemsData && cartItemsData.length > 0) {
-      insertCartItems(cartItemsData);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  console.log(cartItemsData);
+  // useEffect(() => {
+  //   if (cartItemsData && cartItemsData.length > 0) {
+  //     insertCartItems(cartItemsData);
+  //   }
+  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const CartComp = useMemo(() => {
     if (cartItemsData && cartItemsData.length > 0)
-      return cartItemsData.map((cartItem) => {
+      return cartItemsData.map((cartItem, i) => {
         return <CartItem key={cartItem.cartItemId} cartItem={cartItem} />;
       });
     else return null;
@@ -140,17 +131,17 @@ const Cart = ({
       <div className="mx-auto mb-10 grid w-max grid-cols-2 justify-center gap-4 rounded-main p-4 ring-1 ring-primary-100">
         <p className="col-span-2">Temporary Buttons for Testing</p>
         <Button
-          onClick={async () => {
-            await generateRandomCartItems.mutateAsync(5);
-          }}
+        // onClick={async () => {
+        //   await generateRandomCartItems.mutateAsync(5);
+        // }}
         >
           Add 5 Random Products
         </Button>
         <Button
           variant={'outline'}
-          onClick={async () => {
-            await clearCartServer.mutateAsync();
-          }}
+          // onClick={async () => {
+          //   await clearCartServer.mutateAsync();
+          // }}
         >
           Clear Cart
         </Button>

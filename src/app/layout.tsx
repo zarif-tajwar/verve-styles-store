@@ -1,11 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import IntegralCF from './_fonts/integral-cf/font';
-import Inter from './_fonts/inter/font';
 import Geist from './_fonts/geist/font';
 import Navbar from '@/components/Navbar/Navbar';
 import Footer from '@/components/Footer/Footer';
-import Provider from './_trpc/provider';
+import Provider from '@/lib/provider/provider';
 
 export const metadata: Metadata = {
   title: 'Clothy - Shop',
@@ -20,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${IntegralCF.variable} ${Geist.variable} font-geist bg-primary-0 font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
+        className={`${IntegralCF.variable} ${Geist.variable} bg-primary-0 font-geist font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
       >
         <Provider>
           <Navbar />
