@@ -1,88 +1,31 @@
-import Image from 'next/image';
-import { getProductsFromDB } from '@/lib/dbCalls/filter';
-import ShopFilterPagination from '@/components/ShopFilter/ShopFilterPagination';
-import { makeValidURL } from '@/lib/util';
-import Star from '@/components/UI/Star';
-import { FilteredProductItem } from '@/lib/dbCalls/filter';
-import Link from 'next/link';
-import FilterProductsStatusText from '@/components/ShopFilter/FilterProductsStatusText';
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from '@tanstack/react-query';
+import { getShopProductsServer } from '@/lib/actions/shop';
 
-export const revalidate = 0;
+import * as queryKeys from '@/lib/constants/query-keys';
+import Shop from '@/components/ShopFilter/Shop';
 
 const ShopPage = async ({
   searchParams,
 }: {
   searchParams: SearchParamsServer;
 }) => {
-  const productItems = await getProductsFromDB(searchParams);
-
-  if (productItems === undefined) return null;
-
-  const pageNum = Number.parseInt(searchParams.page as string) || 1;
-  const totalProducts = productItems?.at(0)?.totalCount || 0;
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.SHOP_FILTER_PRODUCTS,
+    queryFn: async () => {
+      return await getShopProductsServer(searchParams);
+    },
+  });
 
   return (
-    <>
-      <div className="col-start-1 row-start-1">
-        <FilterProductsStatusText
-          page={pageNum}
-          totalProducts={totalProducts}
-        />
-      </div>
-      <div className="col-span-2">
-        <div className="grid grid-cols-3 gap-x-5 gap-y-9">
-          {productItems.map((product, i) => {
-            return <ProductListing key={i} product={product} />;
-          })}
-        </div>
-        <div className="pt-16">
-          <ShopFilterPagination totalProducts={totalProducts} />
-        </div>
-      </div>
-    </>
+    // <HydrationBoundary state={dehydrate(queryClient)}>
+    <Shop />
+    // </HydrationBoundary>
   );
 };
 
 export default ShopPage;
-
-const ProductListing = ({ product }: { product: FilteredProductItem }) => {
-  const ratingStr = product.averageRating || '0.0';
-  const ratingFloat = Number.parseFloat(ratingStr);
-
-  return (
-    <Link
-      href={`/${makeValidURL(product.categoryName!)}/${makeValidURL(
-        product.name,
-      )}-${product.id}`}
-    >
-      <div>
-        <div className="mb-4 aspect-square w-full overflow-hidden rounded-main">
-          <Image
-            src={'/products/black-striped-tshirt.png'}
-            alt="product"
-            width={300}
-            height={300}
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <div>
-          <h3 className="mb-2 text-xl font-medium capitalize">
-            {product.name}
-          </h3>
-        </div>
-        <div className="mb-2 flex gap-3">
-          <Star rating={ratingFloat} size="sm" />
-          <p className="text-sm font-medium text-black/60">
-            <span className="text-black">{ratingStr}/</span>5.0
-          </p>
-        </div>
-        <p className="text-2xl font-semibold">
-          {new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          }).format(Number.parseFloat(product.price))}
-        </p>
-      </div>
-    </Link>
-  );
-};

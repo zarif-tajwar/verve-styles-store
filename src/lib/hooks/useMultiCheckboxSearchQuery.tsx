@@ -6,6 +6,9 @@ import { URL_QUERY_SEPERATORS } from '../validation/constants';
 import { useShopFilterStore } from '../store/shop-filter';
 import { ShopFilterState } from '../types/ShopFilter';
 import { quickSortByReference } from '../util';
+import { QueryClient } from '@tanstack/react-query';
+import * as queryKeys from '@/lib/constants/query-keys';
+import { useQueryState } from 'next-usequerystate';
 
 interface Props {
   searchQueryKey: keyof Pick<ShopFilterState, 'sizes' | 'clothing' | 'styles'>;
@@ -16,8 +19,13 @@ export const useMultiCheckboxSearchQuery = ({
   searchQueryKey,
   options,
 }: Props) => {
-  const checkedOptions = useShopFilterStore((store) => store[searchQueryKey]);
+  // const checkedOptions = useShopFilterStore((store) => store[searchQueryKey]);
   const updateFilterState = useShopFilterStore((store) => store.update);
+  const qc = new QueryClient();
+  const [queryState, setQueryState] = useQueryState(searchQueryKey);
+  const checkedOptions = new Set(
+    queryState?.split(URL_QUERY_SEPERATORS.multipleOption) ?? [],
+  );
 
   const { setQueryParams } =
     useQueryParams<Record<typeof searchQueryKey | 'page', string>>();
@@ -44,20 +52,27 @@ export const useMultiCheckboxSearchQuery = ({
       checkedOptionsCopy.delete(value);
     }
 
-    updateFilterState({
-      [searchQueryKey]: checkedOptionsCopy,
-      page: 1,
+    // updateFilterState({
+    //   [searchQueryKey]: checkedOptionsCopy,
+    //   page: 1,
+    // });
+
+    setQueryState(
+      [...checkedOptionsCopy].join(URL_QUERY_SEPERATORS.multipleOption),
+    );
+    qc.refetchQueries({
+      queryKey: queryKeys.SHOP_FILTER_PRODUCTS,
     });
 
-    setQueryParams(
-      {
-        [searchQueryKey]: stringifyParamsArray(
-          quickSortByReference([...checkedOptionsCopy], options),
-        ),
-        page: undefined,
-      },
-      scroll,
-    );
+    // setQueryParams(
+    //   {
+    //     [searchQueryKey]: stringifyParamsArray(
+    //       quickSortByReference([...checkedOptionsCopy], options),
+    //     ),
+    //     page: undefined,
+    //   },
+    //   scroll,
+    // );
   };
 
   return { checkedOptions, handleCheck };

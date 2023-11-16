@@ -1,15 +1,18 @@
+'use server';
+
 import { SQL, and, between, desc, eq, inArray, sql } from 'drizzle-orm';
-import { ClothingSelect, clothing } from '../db/schema/clothing';
-import { ProductSelect, products } from '../db/schema/products';
-import { FilterSearchQueryValuesSchema } from '../validation/schemas';
-import { dressStyles } from '../db/schema/dressStyles';
-import { productEntries } from '../db/schema/productEntries';
-import { sizes } from '../db/schema/sizes';
-import { db } from '../db';
+import { ClothingSelect, clothing } from '@/lib/db/schema/clothing';
+import { ProductSelect, products } from '@/lib/db/schema/products';
+import { FilterSearchQueryValuesSchema } from '@/lib/validation/schemas';
+import { dressStyles } from '@/lib/db/schema/dressStyles';
+import { productEntries } from '@/lib/db/schema/productEntries';
+import { sizes } from '@/lib/db/schema/sizes';
+import { db } from '@/lib/db';
 import { PgColumn, PgDialect } from 'drizzle-orm/pg-core';
-import { FILTER_PRODUCTS_PER_PAGE } from '../validation/constants';
-import { productRating } from '../db/schema/productRating';
-import { productSalesCount } from '../db/schema/productSalesCount';
+import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
+import { productRating } from '@/lib/db/schema/productRating';
+import { productSalesCount } from '@/lib/db/schema/productSalesCount';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export type FilteredProductItem = {
   id: ProductSelect['id'];
@@ -21,12 +24,14 @@ export type FilteredProductItem = {
   totalSales?: number | null;
 };
 
-export const getProductsFromDB = async (
+export const getShopProductsServer = async (
   inputSearchParams: SearchParamsServer,
-): Promise<FilteredProductItem[] | undefined> => {
+): Promise<FilteredProductItem[]> => {
+  //   noStore();
+
   const parsed = FilterSearchQueryValuesSchema.safeParse(inputSearchParams);
 
-  if (!parsed.success) return;
+  if (!parsed.success) return [];
 
   const { data } = parsed;
 
@@ -39,7 +44,6 @@ export const getProductsFromDB = async (
       name: products.name,
       price: products.price,
       categoryName: clothing.name,
-      // categoryID: clothing.id,
       averageRating: productRating.averageRating,
       totalCount: sql<number>`COUNT(*) OVER()`,
       ...(data.sort_by === 'most popular'
