@@ -7,7 +7,6 @@ import { useCartItemsStore } from '@/lib/store/cart-store';
 import { trpc } from '@/app/_trpc/client';
 import useDebounce from '@/lib/hooks/useDebounce';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { getQueryKey } from '@trpc/react-query';
 import { MouseEvent, memo, useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
