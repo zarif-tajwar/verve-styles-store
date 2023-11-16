@@ -82,15 +82,7 @@ const staticCartItems = [
 ];
 
 const CartPage = async () => {
-  // const queryClient = new QueryClient({
-  //   defaultOptions: {
-  //     queries: {
-  //       refetchOnMount: false,
-  //       refetchOnWindowFocus: false,
-  //       refetchOnReconnect: false,
-  //     },
-  //   },
-  // });
+  // const queryClient = new QueryClient();
   // await queryClient.prefetchQuery({
   //   queryKey: queryKeys.CART_ITEM_DATA,
   //   queryFn: getCartItemsServer,

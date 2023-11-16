@@ -1,16 +1,17 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import OrderSummary from '@/components/Cart/OrderSummary';
-import Divider from '@/components/UI/Divider';
 import CartItem from '@/components/Cart/CartItem';
-import { trpc } from '@/app/_trpc/client';
 import { useCartItemsStore } from '@/lib/store/cart-store';
-import { serverClient } from '@/app/_trpc/serverClient';
 import { Button } from '../UI/Button';
 import { LayoutGroup, motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { getCartItemsServer } from '@/lib/actions/cart';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  clearCartItems,
+  generateCartItems,
+  getCartItemsServer,
+} from '@/lib/actions/cart';
 import { wait } from '@/lib/util';
 import * as queryKeys from '@/lib/constants/query-keys';
 
@@ -93,17 +94,31 @@ const Cart = () => {
   );
   const clearCartClient = useCartItemsStore((state) => state.clearCart);
 
-  const { data, error, isFetched } = useQuery({
+  const { data, error, isFetched, refetch } = useQuery({
     queryKey: queryKeys.CART_ITEM_DATA,
     queryFn: async () => {
       const data = await getCartItemsServer();
       // console.log(data);
-      if (!data || data.length < 1) return undefined;
+      if (!data || data.length < 1) return [];
       clearCartClient();
       insertCartItemsClient(data);
-      return data;
+      return data ?? [];
     },
     refetchOnMount: false,
+  });
+
+  const { mutateAsync: generateCartItemsMutate } = useMutation({
+    mutationFn: generateCartItems,
+    onSuccess: () => {
+      refetch();
+    },
+  });
+  const { mutateAsync: clearCartItemsMutate } = useMutation({
+    mutationFn: clearCartItems,
+    onSuccess: () => {
+      console.log('Delete Successful');
+      refetch();
+    },
   });
 
   console.log(data, 'REACT QUERY');
@@ -111,12 +126,6 @@ const Cart = () => {
   const cartItemsData = data;
 
   console.log('PARENT RENDERED');
-
-  // useEffect(() => {
-  //   if (cartItemsData && cartItemsData.length > 0) {
-  //     insertCartItems(cartItemsData);
-  //   }
-  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const CartComp = useMemo(() => {
     if (cartItemsData && cartItemsData.length > 0)
@@ -131,17 +140,17 @@ const Cart = () => {
       <div className="mx-auto mb-10 grid w-max grid-cols-2 justify-center gap-4 rounded-main p-4 ring-1 ring-primary-100">
         <p className="col-span-2">Temporary Buttons for Testing</p>
         <Button
-        // onClick={async () => {
-        //   await generateRandomCartItems.mutateAsync(5);
-        // }}
+          onClick={async () => {
+            await generateCartItemsMutate({ num: 5 });
+          }}
         >
           Add 5 Random Products
         </Button>
         <Button
           variant={'outline'}
-          // onClick={async () => {
-          //   await clearCartServer.mutateAsync();
-          // }}
+          onClick={async () => {
+            await clearCartItemsMutate();
+          }}
         >
           Clear Cart
         </Button>

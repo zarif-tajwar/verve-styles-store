@@ -1,10 +1,10 @@
 import WIP from '@/components/UI/WIP';
 
-const LoginPage = () => {
+const SignInPage = () => {
   return (
     <div>
       <WIP />
     </div>
   );
 };
-export default LoginPage;
+export default SignInPage;

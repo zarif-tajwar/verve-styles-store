@@ -13,8 +13,9 @@ import {
   productEntries,
   ProductEntryInsert,
 } from '../db/schema/productEntries';
-import { and, eq, gt, sql } from 'drizzle-orm';
+import { and, eq, gt, gte, sql } from 'drizzle-orm';
 import { carts } from '../db/schema/carts';
+import { genRandomInt } from '../util';
 
 export const getCartItemsServer = async () => {
   const cartId = Number(cookies().get('cartId')?.value);
@@ -141,4 +142,51 @@ export const addCartItemServer = async ({
   });
 
   return cartItem;
+};
+
+export const generateCartItems = async ({ num }: { num: number }) => {
+  let cartId: number | undefined = Number(cookies().get('cartId')?.value);
+
+  if (!cartId) {
+    let [cart] = await db.insert(carts).values({}).returning();
+    cartId = cart?.id;
+  }
+
+  if (cartId === undefined) {
+    return;
+  } else {
+    cookies().set('cartId', cartId.toString());
+  }
+
+  const productEntryIds = await db
+    .select({ id: productEntries.id })
+    .from(productEntries)
+    .where(gte(productEntries.quantity, 10));
+
+  const generatedCartItems: CartItemsInsert[] = [...Array(num).keys()].map(
+    () => ({
+      cartId: cartId!,
+      productEntryId: productEntryIds.at(
+        genRandomInt(0, productEntryIds.length - 1),
+      )!.id!,
+      quantity: genRandomInt(1, 10),
+    }),
+  );
+
+  return await db.transaction(async (tx) => {
+    return await tx.insert(cartItems).values(generatedCartItems).returning();
+  });
+};
+
+export const clearCartItems = async () => {
+  const cartId = Number(cookies().get('cartId')?.value);
+
+  if (Number.isNaN(cartId)) return undefined;
+
+  return await db.transaction(async (tx) => {
+    return await tx
+      .delete(cartItems)
+      .where(eq(cartItems.cartId, cartId))
+      .returning();
+  });
 };

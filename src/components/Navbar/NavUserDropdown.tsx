@@ -29,7 +29,7 @@ const NavUserDropdown = () => {
         >
           <DropdownMenu.DropdownMenuItem className="data-[highlighted]:border-0] rounded-md text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
             <Link
-              href={'/login'}
+              href={'/sign-in'}
               className="inline-flex w-full items-center gap-2.5 p-2"
             >
               <LogIn size={18} />
