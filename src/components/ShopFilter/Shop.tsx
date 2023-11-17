@@ -8,89 +8,52 @@ import Link from 'next/link';
 import Star from '../UI/Star';
 import ShopFilterPagination from './ShopFilterPagination';
 import { useQuery } from '@tanstack/react-query';
-import * as queryKeys from '@/lib/constants/query-keys';
-import { useSearchParams } from 'next/navigation';
-import {
-  parseAsString,
-  useQueryState,
-  useQueryStates,
-} from 'next-usequerystate';
-import useQueryParams from '@/lib/hooks/useQueryParams';
-import {
-  ParamsState,
-  StateSchema,
-  useShopFilter,
-} from '@/lib/hooks/useShopFilter';
-import { useEffect } from 'react';
-import { shopFilterKeys } from '@/lib/validation/schemas';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '@/lib/constants/query-keys';
 
-const Shop = () =>
-  // { initialData }: { initialData: FilteredProductItem[] }
-  {
-    // const productItems = useShopFilter(
-    //   (store) => store.productItems,
-    // initialData,
-    // );
-    // const isLoading = useShopFilter((store) => store.isLoading);
-    // console.log('PRODUCT LISTING PARENT RENDERED');
-    // console.log(productItems, 'PRODUCT ITEMS');
-    // console.log(queryState, 'CLOTHING');
-    // console.log(isRefetching, 'IS REFETCHING');
+const Shop = () => {
+  const paramsStateSerialized = useShopFilter(
+    (store) => store.paramsStateSerialized,
+  );
 
-    const stateSchema = Object.fromEntries(
-      shopFilterKeys.map((key) => [key, parseAsString]),
-    ) as StateSchema;
+  const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, paramsStateSerialized];
 
-    const [paramsState, _]: [ParamsState, any] = useQueryStates(stateSchema);
+  const { data: productItems, isLoading } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      // await wait(1000);
+      const data = await getShopProductsServer(paramsStateSerialized);
+      return data || [];
+    },
+  });
 
-    const paramsStateSerialized = Object.fromEntries(
-      Object.entries(paramsState).filter(
-        ([_, val]) => val !== null && val !== '',
-      ),
-    ) as SearchParamsServer;
+  const totalProducts = productItems?.at(0)?.totalCount;
 
-    const queryKey = [queryKeys.SHOP_FILTER_PRODUCTS];
+  console.log('SHOP PARENT GRID RENDERED');
 
-    // const queryKey = dynamicQueryFromObj(
-    //   queryKeys.SHOP_FILTER_PRODUCTS,
-    //   paramsStateSerialized,
-    // );
+  if (isLoading) {
+    return <div>Loading....</div>;
+  }
 
-    console.log(JSON.stringify(queryKey), 'CLIENT QUERYKEY');
-
-    const { data: productItems, isLoading } = useQuery({
-      queryKey,
-      queryFn: async () => {
-        // await wait(1000);
-        const data = await getShopProductsServer(paramsStateSerialized);
-        return data || [];
-      },
-      // initialData: initialData || [],
-    });
-
-    if (isLoading) {
-      return <div>Loading....</div>;
-    }
-
-    return (
-      <>
-        <div className="col-start-1 row-start-1">
-          <FilterProductsStatusText />
+  return (
+    <>
+      <div className="col-start-1 row-start-1">
+        <FilterProductsStatusText totalProducts={totalProducts} />
+      </div>
+      <div className="col-span-2">
+        <div className="grid grid-cols-3 gap-x-5 gap-y-9">
+          {productItems?.map((product, i) => {
+            return <ProductListing key={i} product={product} />;
+          })}
         </div>
-        <div className="col-span-2">
-          <div className="grid grid-cols-3 gap-x-5 gap-y-9">
-            {productItems?.map((product, i) => {
-              return <ProductListing key={i} product={product} />;
-            })}
-          </div>
-          <div className="pt-16">
-            <ShopFilterPagination />
-            {/* <button onClick={() => refetch()}>Temp Button</button> */}
-          </div>
+        <div className="pt-16">
+          <ShopFilterPagination totalProducts={totalProducts} />
+          {/* <button onClick={() => refetch()}>Temp Button</button> */}
         </div>
-      </>
-    );
-  };
+      </div>
+    </>
+  );
+};
 export default Shop;
 
 const ProductListing = ({ product }: { product: FilteredProductItem }) => {

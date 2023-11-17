@@ -1,12 +1,7 @@
 'use client';
 
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { useMultiCheckboxSearchQuery } from '@/lib/hooks/useMultiCheckboxSearchQuery';
-import {
-  URL_QUERY_SEPERATORS,
-  clothingColumnNames,
-  clothingItemsOptions,
-} from '@/lib/validation/constants';
+import { clothingItemsOptions } from '@/lib/validation/constants';
 import { buttonVariants } from '../UI/Button';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
 

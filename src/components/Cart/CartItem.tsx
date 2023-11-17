@@ -59,7 +59,6 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
         cartItemId: cartItem.cartItemId,
         newQuantity,
       });
-      console.log(newQuantity);
     },
     500,
   );
@@ -77,8 +76,6 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
     await deleteMutation(cartItem.cartItemId);
     deleteCartItem(cartItem.cartItemId);
   };
-
-  console.log(`${cartItem.name}: RENDERED`);
 
   const deleteVariants: Variants = {
     hidden: {

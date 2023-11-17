@@ -12,3 +12,5 @@ export type PriceRange = [number, number];
 export type ShopFilterQueryParams = Partial<
   Record<keyof ShopFilterState, string>
 >;
+
+export type TotalProducts = number | undefined;

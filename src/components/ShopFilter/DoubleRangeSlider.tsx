@@ -22,6 +22,8 @@ const DoubleRangeSlider = () => {
     useState(currentRange);
   const [min, max] = currentRangeImmediate;
 
+  console.log('RANGE RENDERED');
+
   return (
     <div>
       <Slider.Root

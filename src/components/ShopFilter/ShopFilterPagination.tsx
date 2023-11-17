@@ -9,16 +9,24 @@ import { zParsePageNumber } from '@/lib/validation/schemas';
 import { useEffect } from 'react';
 import { Button } from '../UI/Button';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { TotalProducts } from '@/lib/types/ShopFilter';
 
-const ShopFilterPagination = () => {
-  const pageNumberHandler = useShopFilter((store) => store.pageNumberHandler);
-  const { currentPage, handlePageChange, totalPages } = pageNumberHandler();
+const ShopFilterPagination = ({
+  totalProducts,
+}: {
+  totalProducts: TotalProducts;
+}) => {
+  const totalPages = Math.ceil((totalProducts ?? 0) / FILTER_PRODUCTS_PER_PAGE);
+  const currentPage = useShopFilter((store) => store.currentPage);
+  const handlePageChange = useShopFilter((store) => store.handlePageChange);
 
   const { active, range } = usePagination({
     total: totalPages,
     initialPage: 1,
     page: currentPage,
   });
+
+  console.log('PAGINATION STATUS RENDERED');
 
   if (totalPages < 2) return null;
 
@@ -29,7 +37,7 @@ const ShopFilterPagination = () => {
           <div className="flex gap-2">
             <Button
               onClick={() => {
-                handlePageChange(currentPage - 1);
+                handlePageChange(currentPage - 1, totalPages);
               }}
               size={'square'}
               variant={'ghost'}
@@ -86,7 +94,7 @@ const ShopFilterPagination = () => {
                     width: `max(2.5rem, ${value.toString().length + 2}ch)`,
                   }}
                   onClick={() => {
-                    handlePageChange(value);
+                    handlePageChange(value, totalPages);
                   }}
                 >
                   {value}
@@ -95,7 +103,7 @@ const ShopFilterPagination = () => {
             })}
             <Button
               onClick={() => {
-                handlePageChange(currentPage + 1);
+                handlePageChange(currentPage + 1, totalPages);
               }}
               size={'square'}
               variant={'ghost'}

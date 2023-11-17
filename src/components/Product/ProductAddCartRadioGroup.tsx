@@ -38,12 +38,8 @@ const ProductAddCartRadioGroup = ({
         const formEl = new FormData(e.currentTarget);
         const data = Object.fromEntries(formEl.entries());
 
-        console.log(data);
-
         const quantity = Number(data.quantity);
         const sizeId = Number(data.size);
-
-        console.log(quantity, sizeId);
 
         if (Number.isNaN(quantity) || Number.isNaN(sizeId)) {
           console.error('Inavlid Input');

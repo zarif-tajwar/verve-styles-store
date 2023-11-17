@@ -98,7 +98,6 @@ const Cart = () => {
     queryKey: queryKeys.CART_ITEM_DATA,
     queryFn: async () => {
       const data = await getCartItemsServer();
-      // console.log(data);
       if (!data || data.length < 1) return [];
       clearCartClient();
       insertCartItemsClient(data);
@@ -116,16 +115,11 @@ const Cart = () => {
   const { mutateAsync: clearCartItemsMutate } = useMutation({
     mutationFn: clearCartItems,
     onSuccess: () => {
-      console.log('Delete Successful');
       refetch();
     },
   });
 
-  console.log(data, 'REACT QUERY');
-
   const cartItemsData = data;
-
-  console.log('PARENT RENDERED');
 
   const CartComp = useMemo(() => {
     if (cartItemsData && cartItemsData.length > 0)

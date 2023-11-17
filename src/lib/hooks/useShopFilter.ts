@@ -8,14 +8,12 @@ import {
   SetValues,
 } from 'next-usequerystate';
 import { shopFilterKeys } from '@/lib/validation/schemas';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { FilteredProductItem, getShopProductsServer } from '../actions/shop';
-import * as queryKeys from '@/lib/constants/query-keys';
+import { FilteredProductItem } from '@/lib/actions/shop';
 import {
   FILTER_PRODUCTS_PER_PAGE,
   URL_QUERY_SEPERATORS,
-} from '../validation/constants';
-import { dynamicQueryFromObj } from '../validation/query-keys';
+} from '@/lib/validation/constants';
+import { useCallback } from 'react';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
@@ -25,19 +23,9 @@ export type ParamsState = Values<StateSchema>;
 
 type SetParamsState = SetValues<StateSchema>;
 
-type ProductItems = FilteredProductItem[] | undefined;
-
-type RemoveParams<Fn extends (...args: any) => any, Params extends string[]> = (
-  ...args: Parameters<Fn> extends [infer P, ...infer Rest]
-    ? { [K in Exclude<keyof P, Params[number]>]: P[K] } & Rest
-    : never
-) => ReturnType<Fn>;
-
 type Store = {
   paramsState: Values<StateSchema>;
   setParamsState: SetParamsState;
-  productItems: ProductItems;
-  isLoading: boolean;
   multipleOptionCheck: (
     values: string[],
     paramKey: ParamKey,
@@ -59,20 +47,12 @@ type Store = {
     currentRange: number[];
     handleValueChange: (newRange: number[]) => void;
   };
-  pageNumberHandler: () => {
-    totalPages: number;
-    currentPage: number;
-    handlePageChange: (pageNum: number) => void;
-  };
-  totalPages: number;
+  handlePageChange: (pageNum: number, totalPages: number) => void;
   currentPage: number;
-  totalProducts: number | undefined;
+  paramsStateSerialized: SearchParamsServer;
 };
 
-export const useShopFilter = <T>(
-  callback: (store: Store) => T,
-  initialData?: FilteredProductItem[],
-) => {
+export const useShopFilter = <T>(callback: (store: Store) => T) => {
   const stateSchema = Object.fromEntries(
     shopFilterKeys.map((key) => [key, parseAsString]),
   ) as StateSchema;
@@ -86,29 +66,6 @@ export const useShopFilter = <T>(
     ),
   ) as SearchParamsServer;
 
-  const queryKey = [queryKeys.SHOP_FILTER_PRODUCTS];
-
-  // const queryKey = dynamicQueryFromObj(
-  //   queryKeys.SHOP_FILTER_PRODUCTS,
-  //   paramsStateSerialized,
-  // );
-
-  console.log(JSON.stringify(queryKey), 'CLIENT QUERYKEY');
-
-  const { data: productItems, isLoading } = useQuery({
-    queryKey,
-    queryFn: async () => {
-      // await wait(1000);
-      const data = await getShopProductsServer(paramsStateSerialized);
-      return data || [];
-    },
-    // initialData: initialData || [],
-  });
-
-  const totalProducts = productItems?.at(0)?.totalCount;
-  const totalPages = Math.ceil(
-    (productItems?.at(0)?.totalCount ?? 0) / FILTER_PRODUCTS_PER_PAGE,
-  );
   const currentPage = Number(paramsState.page || 1);
 
   const multipleOptionCheck = (values: string[], paramKey: ParamKey) => {
@@ -184,34 +141,28 @@ export const useShopFilter = <T>(
     return { currentRange, handleValueChange };
   };
 
-  const pageNumberHandler = () => {
-    const handlePageChange = (pageNum: number) => {
-      if (pageNum < 1 || pageNum === currentPage || pageNum > totalPages)
-        return;
-      setParamsState(
-        { page: pageNum.toString() },
-        {
-          scroll: true,
-        },
-      );
-    };
-
-    return { totalPages, currentPage, handlePageChange };
+  const handlePageChange = (pageNum: number, totalPages: number) => {
+    if (pageNum < 1 || pageNum === currentPage || pageNum > totalPages) return;
+    setParamsState(
+      { page: pageNum.toString() },
+      {
+        scroll: true,
+      },
+    );
   };
 
   const store: Store = {
     paramsState,
     setParamsState,
-    productItems,
-    isLoading,
     multipleOptionCheck,
     rangeSlider,
     singleOptionCheck,
-    pageNumberHandler,
-    totalPages,
+    handlePageChange,
     currentPage,
-    totalProducts,
+    paramsStateSerialized,
   };
 
-  return callback(store);
+  const returnCallBack = callback(store);
+
+  return returnCallBack;
 };
