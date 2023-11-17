@@ -5,12 +5,17 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import { useMultiCheckboxSearchQuery } from '../../lib/hooks/useMultiCheckboxSearchQuery';
 import { sizesColumnNames, sizesOptions } from '@/lib/validation/constants';
 import { buttonVariants } from '../UI/Button';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
 const SizesCheckbox = () => {
-  const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
-    options: sizesColumnNames,
-    searchQueryKey: 'sizes',
-  });
+  const multipleOptionCheck = useShopFilter(
+    (store) => store.multipleOptionCheck,
+  );
+
+  const { checkedOptions, handleCheck } = multipleOptionCheck(
+    sizesOptions.map((x) => x.value),
+    'sizes',
+  );
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -21,6 +26,7 @@ const SizesCheckbox = () => {
           value={option.value}
           checked={checkedOptions.has(option.value)}
           onCheckedChange={(checked) => {
+            if (checked === 'indeterminate') return;
             handleCheck(checked, option.value);
           }}
           className={buttonVariants({

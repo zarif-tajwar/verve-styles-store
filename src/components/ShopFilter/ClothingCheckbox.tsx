@@ -8,49 +8,19 @@ import {
   clothingItemsOptions,
 } from '@/lib/validation/constants';
 import { buttonVariants } from '../UI/Button';
-import { QueryClient, useQueryClient } from '@tanstack/react-query';
-import { useQueryState } from 'next-usequerystate';
-import * as queryKeys from '@/lib/constants/query-keys';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
 const ClothingCheckbox = () => {
-  // const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
-  //   options: clothingColumnNames,
-  //   searchQueryKey: 'clothing',
-  // });
-  // const [queryState, setQueryState] = useQueryState('clothing');
-  const qc = useQueryClient();
-  const {
-    paramsState: { clothing: queryState },
-    setParamsState,
-  } = useShopFilter();
-  const checkedOptions = new Set(
-    queryState ? queryState.split(URL_QUERY_SEPERATORS.multipleOption) : [],
+  const multipleOptionCheck = useShopFilter(
+    (store) => store.multipleOptionCheck,
   );
 
-  const handleCheck = (checked: Checkbox.CheckedState, value: string) => {
-    let checkedOptionsCopy = new Set(checkedOptions);
+  const { checkedOptions, handleCheck } = multipleOptionCheck(
+    clothingItemsOptions.map((x) => x.value),
+    'clothing',
+  );
 
-    if (checked) {
-      if (checkedOptionsCopy.size + 1 === clothingItemsOptions.length) {
-        checkedOptionsCopy.clear();
-      } else {
-        checkedOptionsCopy.add(value);
-      }
-    }
-
-    if (!checked) {
-      checkedOptionsCopy.delete(value);
-    }
-
-    const newQueryValue = [...checkedOptionsCopy].join(
-      URL_QUERY_SEPERATORS.multipleOption,
-    );
-
-    setParamsState({
-      clothing: newQueryValue !== '' ? newQueryValue : null,
-    });
-  };
+  console.log('CLOTHING RENDERED');
 
   return (
     <div className="grid grid-cols-2 gap-2.5 text-sm font-normal">
@@ -73,6 +43,7 @@ const ClothingCheckbox = () => {
           })}
           checked={checkedOptions.has(option.value)}
           onCheckedChange={(checked) => {
+            if (checked === 'indeterminate') return;
             handleCheck(checked, option.value);
           }}
         >

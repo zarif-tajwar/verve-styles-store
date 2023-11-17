@@ -8,55 +8,19 @@ import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { zParsePageNumber } from '@/lib/validation/schemas';
 import { useEffect } from 'react';
 import { Button } from '../UI/Button';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
-const ShopFilterPagination = ({
-  totalProducts,
-}: {
-  totalProducts?: number;
-}) => {
-  const totalPages = Math.ceil((totalProducts ?? 0) / FILTER_PRODUCTS_PER_PAGE);
-
-  const [page, updateFilterState] = useShopFilterStore((store) => [
-    store.page,
-    store.update,
-  ]);
-
-  const { queryParams, setQueryParams } = useQueryParams<{ page: string }>();
+const ShopFilterPagination = () => {
+  const pageNumberHandler = useShopFilter((store) => store.pageNumberHandler);
+  const { currentPage, handlePageChange, totalPages } = pageNumberHandler();
 
   const { active, range } = usePagination({
     total: totalPages,
     initialPage: 1,
-    page: page,
+    page: currentPage,
   });
 
-  useEffect(() => {
-    const pageFromUrl = queryParams.get('page');
-
-    if (pageFromUrl === null) return;
-
-    const parsedPageFromUrl = zParsePageNumber().safeParse(pageFromUrl);
-
-    if (!parsedPageFromUrl.success) return;
-
-    const data = parsedPageFromUrl.data;
-
-    if (data === undefined) return;
-
-    if (data > totalPages) {
-      setQueryParams({ page: undefined });
-    } else {
-      updateFilterState({ page: data });
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   if (totalPages < 2) return null;
-
-  const setPage = (pageNum: number) => {
-    if (pageNum < 1 || pageNum === page || pageNum > totalPages) return;
-    updateFilterState({ page: pageNum });
-    setQueryParams({ page: pageNum === 1 ? undefined : pageNum.toString() });
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  };
 
   return (
     <div className="">
@@ -65,13 +29,14 @@ const ShopFilterPagination = ({
           <div className="flex gap-2">
             <Button
               onClick={() => {
-                setPage(page - 1);
+                handlePageChange(currentPage - 1);
               }}
               size={'square'}
               variant={'ghost'}
               roundness={'lg'}
               className={cn(
-                page === 1 && 'cursor-default opacity-20 hover:bg-transparent',
+                currentPage === 1 &&
+                  'cursor-default opacity-20 hover:bg-transparent',
                 'hover:bg-primary-100',
               )}
             >
@@ -121,7 +86,7 @@ const ShopFilterPagination = ({
                     width: `max(2.5rem, ${value.toString().length + 2}ch)`,
                   }}
                   onClick={() => {
-                    setPage(value);
+                    handlePageChange(value);
                   }}
                 >
                   {value}
@@ -130,13 +95,13 @@ const ShopFilterPagination = ({
             })}
             <Button
               onClick={() => {
-                setPage(page + 1);
+                handlePageChange(currentPage + 1);
               }}
               size={'square'}
               variant={'ghost'}
               roundness={'lg'}
               className={cn(
-                page === totalPages &&
+                currentPage === totalPages &&
                   'cursor-default opacity-20 hover:bg-transparent',
                 'hover:bg-primary-100',
               )}

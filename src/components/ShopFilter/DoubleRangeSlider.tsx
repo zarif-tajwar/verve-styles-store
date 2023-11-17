@@ -9,37 +9,30 @@ import {
 import { useShopFilterStore } from '@/lib/store/shop-filter';
 import { PriceRange } from '@/lib/types/ShopFilter';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { useState } from 'react';
 
 const DoubleRangeSlider = () => {
-  const { setQueryParams } = useQueryParams<{
-    price_range: string;
-    page: undefined;
-  }>();
-  const priceRangeValues = useShopFilterStore((store) => store.price_range);
-  const updateFilterState = useShopFilterStore((store) => store.update);
+  const rangeSlider = useShopFilter((store) => store.rangeSlider);
+
+  const { currentRange, handleValueChange } = rangeSlider(
+    defaultPriceRange,
+    'price_range',
+  );
+  const [currentRangeImmediate, setCurrentRangeImmediate] =
+    useState(currentRange);
+  const [min, max] = currentRangeImmediate;
 
   return (
     <div>
       <Slider.Root
         className="relative mb-2 flex h-5 w-full touch-none select-none items-center"
-        value={priceRangeValues}
+        value={currentRangeImmediate}
         min={defaultPriceRange[0]}
         max={defaultPriceRange[1]}
         step={1}
-        onValueChange={(values) =>
-          updateFilterState({ price_range: values as PriceRange, page: 1 })
-        }
+        onValueChange={(values) => setCurrentRangeImmediate(values)}
         onValueCommit={(values) => {
-          let priceRangeToString = values.join(URL_QUERY_SEPERATORS.range);
-
-          if (
-            values[0] === defaultPriceRange[0] &&
-            values[1] === defaultPriceRange[1]
-          ) {
-            priceRangeToString = '';
-          }
-
-          setQueryParams({ page: undefined, price_range: priceRangeToString });
+          handleValueChange(values);
         }}
       >
         <Slider.Track className="relative h-1.5 grow cursor-pointer rounded-full bg-primary-50">
@@ -60,14 +53,14 @@ const DoubleRangeSlider = () => {
             style: 'currency',
             currency: 'USD',
             maximumFractionDigits: 0,
-          }).format(priceRangeValues[0])}
+          }).format(min!)}
         </p>
         <p>
           {new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
             maximumFractionDigits: 0,
-          }).format(priceRangeValues[1])}
+          }).format(max!)}
         </p>
       </div>
     </div>

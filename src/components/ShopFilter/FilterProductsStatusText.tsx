@@ -1,17 +1,15 @@
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 
-const FilterProductsStatusText = ({
-  page,
-  totalProducts,
-}: {
-  page: number;
-  totalProducts: number;
-}) => {
-  if (totalProducts < 1) return null;
+const FilterProductsStatusText = () => {
+  const totalProducts = useShopFilter((store) => store.totalProducts);
+  const currentPage = useShopFilter((store) => store.currentPage);
+
+  if (!totalProducts || totalProducts < 1) return null;
 
   const range = [
-    (page - 1) * FILTER_PRODUCTS_PER_PAGE + 1,
-    Math.min(page * FILTER_PRODUCTS_PER_PAGE, totalProducts),
+    (currentPage - 1) * FILTER_PRODUCTS_PER_PAGE + 1,
+    Math.min(currentPage * FILTER_PRODUCTS_PER_PAGE, totalProducts),
   ];
 
   return (

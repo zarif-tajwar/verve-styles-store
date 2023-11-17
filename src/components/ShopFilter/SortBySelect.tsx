@@ -12,6 +12,7 @@ import {
 import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
 import { Button } from '../UI/Button';
 import { ChevronDown } from 'lucide-react';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
 const SortBySelect = () => {
   return (
@@ -26,13 +27,18 @@ const SortBySelect = () => {
 export default SortBySelect;
 
 const SelectMain = () => {
-  const { selectValue, handleValueChange } = useSelectSearchQuery({
-    defaultOptionValue: defaultSortOptionValue,
-    searchQueryKey: 'sort_by',
-  });
+  const singleOptionCheck = useShopFilter((store) => store.singleOptionCheck);
+
+  const { currentOptionValue, handleValueChange } = singleOptionCheck(
+    defaultSortOptionValue,
+    'sort_by',
+  );
 
   return (
-    <Select.Root value={selectValue} onValueChange={handleValueChange}>
+    <Select.Root
+      value={currentOptionValue || defaultSortOptionValue}
+      onValueChange={handleValueChange}
+    >
       <Select.Trigger asChild>
         <Button
           variant={'ghost'}

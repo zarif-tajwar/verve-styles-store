@@ -10,66 +10,87 @@ import ShopFilterPagination from './ShopFilterPagination';
 import { useQuery } from '@tanstack/react-query';
 import * as queryKeys from '@/lib/constants/query-keys';
 import { useSearchParams } from 'next/navigation';
-import { useQueryState } from 'next-usequerystate';
+import {
+  parseAsString,
+  useQueryState,
+  useQueryStates,
+} from 'next-usequerystate';
 import useQueryParams from '@/lib/hooks/useQueryParams';
-import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import {
+  ParamsState,
+  StateSchema,
+  useShopFilter,
+} from '@/lib/hooks/useShopFilter';
+import { useEffect } from 'react';
+import { shopFilterKeys } from '@/lib/validation/schemas';
 
-const Shop = () => {
-  // const [queryState, setQueryState] = useQueryState('clothing');
-  const { productItems, isLoading } = useShopFilter();
+const Shop = () =>
+  // { initialData }: { initialData: FilteredProductItem[] }
+  {
+    // const productItems = useShopFilter(
+    //   (store) => store.productItems,
+    // initialData,
+    // );
+    // const isLoading = useShopFilter((store) => store.isLoading);
+    // console.log('PRODUCT LISTING PARENT RENDERED');
+    // console.log(productItems, 'PRODUCT ITEMS');
+    // console.log(queryState, 'CLOTHING');
+    // console.log(isRefetching, 'IS REFETCHING');
 
-  // const {
-  //   data: productItems,
-  //   isRefetching,
-  //   refetch,
-  // } = useQuery({
-  //   queryKey: [...queryKeys.SHOP_FILTER_PRODUCTS, queryState],
-  //   queryFn: async () => {
-  //     console.log(queryState, 'INSIDE FETCHING FUNCTION');
-  //     const data = await getShopProductsServer({
-  //       clothing: queryState ?? undefined,
-  //     });
-  //     return data;
-  //   },
-  // });
+    const stateSchema = Object.fromEntries(
+      shopFilterKeys.map((key) => [key, parseAsString]),
+    ) as StateSchema;
 
-  // const lol = useShopFilter(store=>store.)
+    const [paramsState, _]: [ParamsState, any] = useQueryStates(stateSchema);
 
-  console.log('PRODUCT LISTING PARENT RENDERED');
-  console.log(productItems, 'PRODUCT ITEMS');
-  // console.log(queryState, 'CLOTHING');
-  // console.log(isRefetching, 'IS REFETCHING');
+    const paramsStateSerialized = Object.fromEntries(
+      Object.entries(paramsState).filter(
+        ([_, val]) => val !== null && val !== '',
+      ),
+    ) as SearchParamsServer;
 
-  const pageNum = 1;
-  // const pageNum = Number.parseInt(searchParamsSerialized.page as string) || 1;
-  const totalProducts = productItems?.at(0)?.totalCount || 0;
+    const queryKey = [queryKeys.SHOP_FILTER_PRODUCTS];
 
-  if (isLoading) {
-    return <div>Loading....</div>;
-  }
+    // const queryKey = dynamicQueryFromObj(
+    //   queryKeys.SHOP_FILTER_PRODUCTS,
+    //   paramsStateSerialized,
+    // );
 
-  return (
-    <>
-      <div className="col-start-1 row-start-1">
-        <FilterProductsStatusText
-          page={pageNum}
-          totalProducts={totalProducts}
-        />
-      </div>
-      <div className="col-span-2">
-        <div className="grid grid-cols-3 gap-x-5 gap-y-9">
-          {productItems?.map((product, i) => {
-            return <ProductListing key={i} product={product} />;
-          })}
+    console.log(JSON.stringify(queryKey), 'CLIENT QUERYKEY');
+
+    const { data: productItems, isLoading } = useQuery({
+      queryKey,
+      queryFn: async () => {
+        // await wait(1000);
+        const data = await getShopProductsServer(paramsStateSerialized);
+        return data || [];
+      },
+      // initialData: initialData || [],
+    });
+
+    if (isLoading) {
+      return <div>Loading....</div>;
+    }
+
+    return (
+      <>
+        <div className="col-start-1 row-start-1">
+          <FilterProductsStatusText />
         </div>
-        <div className="pt-16">
-          <ShopFilterPagination totalProducts={totalProducts} />
-          {/* <button onClick={() => refetch()}>Temp Button</button> */}
+        <div className="col-span-2">
+          <div className="grid grid-cols-3 gap-x-5 gap-y-9">
+            {productItems?.map((product, i) => {
+              return <ProductListing key={i} product={product} />;
+            })}
+          </div>
+          <div className="pt-16">
+            <ShopFilterPagination />
+            {/* <button onClick={() => refetch()}>Temp Button</button> */}
+          </div>
         </div>
-      </div>
-    </>
-  );
-};
+      </>
+    );
+  };
 export default Shop;
 
 const ProductListing = ({ product }: { product: FilteredProductItem }) => {
