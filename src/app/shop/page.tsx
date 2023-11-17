@@ -13,13 +13,13 @@ const ShopPage = async ({
 }: {
   searchParams: SearchParamsServer;
 }) => {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.SHOP_FILTER_PRODUCTS,
-    queryFn: async () => {
-      return await getShopProductsServer(searchParams);
-    },
-  });
+  // const queryClient = new QueryClient();
+  // await queryClient.prefetchQuery({
+  //   queryKey: queryKeys.SHOP_FILTER_PRODUCTS,
+  //   queryFn: async () => {
+  //     return await getShopProductsServer(searchParams);
+  //   },
+  // });
 
   return (
     // <HydrationBoundary state={dehydrate(queryClient)}>

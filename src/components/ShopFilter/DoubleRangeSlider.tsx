@@ -8,6 +8,7 @@ import {
 } from '@/lib/validation/constants';
 import { useShopFilterStore } from '@/lib/store/shop-filter';
 import { PriceRange } from '@/lib/types/ShopFilter';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
 const DoubleRangeSlider = () => {
   const { setQueryParams } = useQueryParams<{

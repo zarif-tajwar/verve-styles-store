@@ -12,33 +12,41 @@ import * as queryKeys from '@/lib/constants/query-keys';
 import { useSearchParams } from 'next/navigation';
 import { useQueryState } from 'next-usequerystate';
 import useQueryParams from '@/lib/hooks/useQueryParams';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
 const Shop = () => {
-  const [queryState, setQueryState] = useQueryState('clothing');
+  // const [queryState, setQueryState] = useQueryState('clothing');
+  const { productItems, isLoading } = useShopFilter();
 
-  const {
-    data: productItems,
-    isRefetching,
-    refetch,
-  } = useQuery({
-    queryKey: queryKeys.SHOP_FILTER_PRODUCTS,
-    queryFn: async () => {
-      //   setQueryState('lol');
-      await wait(1000);
-      const data = [];
-      //   const data = await getShopProductsServer({});
-      return data;
-    },
-  });
+  // const {
+  //   data: productItems,
+  //   isRefetching,
+  //   refetch,
+  // } = useQuery({
+  //   queryKey: [...queryKeys.SHOP_FILTER_PRODUCTS, queryState],
+  //   queryFn: async () => {
+  //     console.log(queryState, 'INSIDE FETCHING FUNCTION');
+  //     const data = await getShopProductsServer({
+  //       clothing: queryState ?? undefined,
+  //     });
+  //     return data;
+  //   },
+  // });
+
+  // const lol = useShopFilter(store=>store.)
 
   console.log('PRODUCT LISTING PARENT RENDERED');
   console.log(productItems, 'PRODUCT ITEMS');
-  //   console.log(queryState, 'CLOTHING');
-  console.log(isRefetching, 'IS REFETCHING');
+  // console.log(queryState, 'CLOTHING');
+  // console.log(isRefetching, 'IS REFETCHING');
 
   const pageNum = 1;
-  //   const pageNum = Number.parseInt(searchParamsSerialized.page as string) || 1;
+  // const pageNum = Number.parseInt(searchParamsSerialized.page as string) || 1;
   const totalProducts = productItems?.at(0)?.totalCount || 0;
+
+  if (isLoading) {
+    return <div>Loading....</div>;
+  }
 
   return (
     <>
@@ -56,7 +64,7 @@ const Shop = () => {
         </div>
         <div className="pt-16">
           <ShopFilterPagination totalProducts={totalProducts} />
-          <button onClick={() => refetch()}>Temp Button</button>
+          {/* <button onClick={() => refetch()}>Temp Button</button> */}
         </div>
       </div>
     </>

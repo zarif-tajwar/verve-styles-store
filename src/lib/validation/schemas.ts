@@ -50,11 +50,11 @@ export const zParsePriceRangeSearchQuery = () =>
       )
         return undefined;
       if (
-        priceRange[0] < defaultPriceRange[0] ||
-        priceRange[1] > defaultPriceRange[1]
+        priceRange[0]! < defaultPriceRange[0] ||
+        priceRange[1]! > defaultPriceRange[1]
       )
         return undefined;
-      if (priceRange[0] > priceRange[1]) return undefined;
+      if (priceRange[0]! > priceRange[1]!) return undefined;
       return priceRange;
     })
     .pipe(z.number().array().length(2).nullish());
@@ -94,40 +94,49 @@ export type FilterSearchQueryValuesType = z.infer<
   typeof FilterSearchQueryValuesSchema
 >;
 
-export const FilteredSearchQueryValuesToSearchParams = (
-  parsedSearchQueryValues: FilterSearchQueryValuesType,
-  currentSearchParamsInstance: URLSearchParams | string,
-) => {
-  const newSearchQuery = new URLSearchParams(
-    currentSearchParamsInstance.toString(),
-  );
+export const shopFilterKeys = [
+  'sizes',
+  'styles',
+  'clothing',
+  'price_range',
+  'sort_by',
+  'page',
+] as const;
 
-  const parsedSearchQueryValueEntries = Object.entries(parsedSearchQueryValues);
+// export const FilteredSearchQueryValuesToSearchParams = (
+//   parsedSearchQueryValues: FilterSearchQueryValuesType,
+//   currentSearchParamsInstance: URLSearchParams | string,
+// ) => {
+//   const newSearchQuery = new URLSearchParams(
+//     currentSearchParamsInstance.toString(),
+//   );
 
-  for (let i = 0; i < parsedSearchQueryValueEntries.length; i++) {
-    let [key, value] = parsedSearchQueryValueEntries[i];
+//   const parsedSearchQueryValueEntries = Object.entries(parsedSearchQueryValues);
 
-    if (value === undefined) continue;
+//   for (let i = 0; i < parsedSearchQueryValueEntries.length; i++) {
+//     let [key, value] = parsedSearchQueryValueEntries[i];
 
-    if (isValueInArray(key, ['clothing', 'sizes', 'styles'])) {
-      const forceArr = value as string[];
-      newSearchQuery.set(
-        key,
-        forceArr.join(URL_QUERY_SEPERATORS.multipleOption),
-      );
-      continue;
-    }
+//     if (value === undefined) continue;
 
-    if (key === 'price_range') {
-      const forceArr = value as number[];
-      newSearchQuery.set(key, forceArr.join(URL_QUERY_SEPERATORS.range));
-      continue;
-    }
+//     if (isValueInArray(key, ['clothing', 'sizes', 'styles'])) {
+//       const forceArr = value as string[];
+//       newSearchQuery.set(
+//         key,
+//         forceArr.join(URL_QUERY_SEPERATORS.multipleOption),
+//       );
+//       continue;
+//     }
 
-    if (key === 'sort_by') {
-      newSearchQuery.set(key, value as string);
-      continue;
-    }
-  }
-  return newSearchQuery;
-};
+//     if (key === 'price_range') {
+//       const forceArr = value as number[];
+//       newSearchQuery.set(key, forceArr.join(URL_QUERY_SEPERATORS.range));
+//       continue;
+//     }
+
+//     if (key === 'sort_by') {
+//       newSearchQuery.set(key, value as string);
+//       continue;
+//     }
+//   }
+//   return newSearchQuery;
+// };

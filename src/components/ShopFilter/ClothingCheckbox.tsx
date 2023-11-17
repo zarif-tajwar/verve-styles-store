@@ -11,17 +11,22 @@ import { buttonVariants } from '../UI/Button';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { useQueryState } from 'next-usequerystate';
 import * as queryKeys from '@/lib/constants/query-keys';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
 const ClothingCheckbox = () => {
   // const { checkedOptions, handleCheck } = useMultiCheckboxSearchQuery({
   //   options: clothingColumnNames,
   //   searchQueryKey: 'clothing',
   // });
-  const [queryState, setQueryState] = useQueryState('clothing');
+  // const [queryState, setQueryState] = useQueryState('clothing');
+  const qc = useQueryClient();
+  const {
+    paramsState: { clothing: queryState },
+    setParamsState,
+  } = useShopFilter();
   const checkedOptions = new Set(
     queryState ? queryState.split(URL_QUERY_SEPERATORS.multipleOption) : [],
   );
-  const qc = useQueryClient();
 
   const handleCheck = (checked: Checkbox.CheckedState, value: string) => {
     let checkedOptionsCopy = new Set(checkedOptions);
@@ -42,13 +47,9 @@ const ClothingCheckbox = () => {
       URL_QUERY_SEPERATORS.multipleOption,
     );
 
-    setQueryState(newQueryValue || null, {
-      // shallow: false,
-      // history: 'push',
+    setParamsState({
+      clothing: newQueryValue !== '' ? newQueryValue : null,
     });
-    // qc.refetchQueries({
-    //   queryKey: queryKeys.SHOP_FILTER_PRODUCTS,
-    // });
   };
 
   return (
