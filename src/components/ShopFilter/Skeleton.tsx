@@ -19,7 +19,7 @@ export const ProductListingSkeleton = () => {
           <span className="block">5.0</span>
         </p>
       </div>
-      <span className="block h-[2rem] w-[8ch] origin-right rounded-md bg-primary-100 text-2xl font-semibold"></span>
+      <span className="block h-[2rem] w-[7.5ch] origin-right rounded-md bg-primary-100 text-2xl font-semibold"></span>
     </div>
   );
 };

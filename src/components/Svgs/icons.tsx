@@ -367,6 +367,8 @@ export const StarIcon = ({ ...props }: SvgIconProps) => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
+      width={24}
+      height={24}
       className={cn('h-6 w-6', props.className)}
       {...props}
     >

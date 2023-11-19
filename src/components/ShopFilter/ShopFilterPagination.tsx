@@ -28,7 +28,7 @@ const ShopFilterPagination = ({
 
   return (
     <div className="flex w-full items-center justify-center">
-      <div className="overflow-hidden rounded-xl bg-primary-50 px-3.5 py-2.5 text-sm font-medium">
+      <div className="rounded-xl bg-primary-50 px-3.5 py-2.5 text-sm font-medium shadow-light-drop">
         <div className="flex gap-2">
           <Button
             onClick={() => {
