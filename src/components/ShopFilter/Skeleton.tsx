@@ -3,7 +3,7 @@ import Star from '../UI/Star';
 
 export const ProductListingSkeleton = () => {
   return (
-    <div className="z-10 w-full origin-right">
+    <div className="z-10 w-full origin-right opacity-50">
       {/* IMAGE */}
       <span className="relative z-0 mb-4 flex aspect-square min-w-full origin-right items-center justify-center overflow-hidden rounded-main bg-primary-100">
         <Loader className="animate-spin text-primary-200" size={48} />

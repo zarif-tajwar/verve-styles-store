@@ -7,6 +7,7 @@ import { getShopProductsServer } from '@/lib/actions/shop';
 
 import Shop from '@/components/ShopFilter/Shop';
 import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '@/lib/constants/query-keys';
+import { Suspense } from 'react';
 
 const ShopPage = async ({
   searchParams,
@@ -25,7 +26,9 @@ const ShopPage = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Shop />
+      <Suspense>
+        <Shop />
+      </Suspense>
     </HydrationBoundary>
   );
 };

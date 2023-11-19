@@ -146,7 +146,7 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
     setParamsState(
       { page: pageNum.toString() },
       {
-        scroll: false,
+        scroll: true,
       },
     );
   };
