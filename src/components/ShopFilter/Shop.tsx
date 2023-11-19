@@ -10,14 +10,13 @@ import ProductListing from './ProductListing';
 import { ProductListingSkeleton } from './Skeleton';
 import { wait } from '@/lib/util';
 import { Button } from '../UI/Button';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 const Shop = () => {
   const paramsStateSerialized = useShopFilter(
     (store) => store.paramsStateSerialized,
   );
   const [testLoading, setTestLoading] = useState(false);
-  const containerRef = useRef(null);
 
   const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, paramsStateSerialized];
 
@@ -46,7 +45,7 @@ const Shop = () => {
       <div className="col-start-1 row-start-1">
         <FilterProductsStatusText totalProducts={totalProducts} />
       </div>
-      <div ref={containerRef} className="relative col-span-2 h-max">
+      <div className="relative col-span-2 h-max">
         {!(isLoading || testLoading) && (
           <div
             key={'products'}
@@ -70,10 +69,7 @@ const Shop = () => {
           </div>
         )}
         <div className="sticky bottom-4 z-50 pt-16">
-          <ShopFilterPagination
-            parentRef={containerRef}
-            totalProducts={totalProducts}
-          />
+          <ShopFilterPagination totalProducts={totalProducts} />
         </div>
       </div>
     </>

@@ -6,33 +6,15 @@ import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { Button } from '../UI/Button';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import { TotalProducts } from '@/lib/types/ShopFilter';
-import { MutableRefObject, useEffect, useRef } from 'react';
-import { useScroll, useTransform, motion } from 'framer-motion';
 
 const ShopFilterPagination = ({
   totalProducts,
-  parentRef,
 }: {
   totalProducts: TotalProducts;
-  parentRef: MutableRefObject<null>;
 }) => {
   const totalPages = Math.ceil((totalProducts || 0) / FILTER_PRODUCTS_PER_PAGE);
   const currentPage = useShopFilter((store) => store.currentPage);
   const handlePageChange = useShopFilter((store) => store.handlePageChange);
-
-  const paginationRef = useRef(null);
-
-  const { scrollY, scrollYProgress } = useScroll({
-    axis: 'y',
-    // container: parentRef,
-    target: parentRef,
-    layoutEffect: false,
-  });
-  const bgColor = useTransform(
-    scrollYProgress,
-    [0, 0.8, 1],
-    ['#ffffff', '#ffffff', '#f0f0f0'],
-  );
 
   const { active, range } = usePagination({
     total: totalPages,
@@ -42,26 +24,11 @@ const ShopFilterPagination = ({
 
   console.log('PAGINATION STATUS RENDERED');
 
-  useEffect(() => {
-    return () => {
-      scrollYProgress.on('change', (val) => {
-        console.log(val, 'PAGINATION SCROLL Y');
-        console.log(bgColor.get());
-      });
-    };
-  }, [scrollYProgress, bgColor]);
-
   // if (totalPages < 2) return null;
 
   return (
-    <div
-      ref={paginationRef}
-      className="flex w-full items-center justify-center"
-    >
-      <motion.div
-        style={{ backgroundColor: bgColor }}
-        className="overflow-hidden rounded-xl px-3.5 py-2.5 text-sm font-medium"
-      >
+    <div className="flex w-full items-center justify-center">
+      <div className="overflow-hidden rounded-xl bg-primary-50 px-3.5 py-2.5 text-sm font-medium">
         <div className="flex gap-2">
           <Button
             onClick={() => {
@@ -160,7 +127,7 @@ const ShopFilterPagination = ({
             </svg>
           </Button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
