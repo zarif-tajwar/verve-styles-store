@@ -2,18 +2,17 @@
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Button } from '../UI/Button';
-import { Gift, LogIn, UserCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/util';
 
 const NavUserDropdown = () => {
   return (
-    <DropdownMenu.Root modal={false}>
+    <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <Button
           size={'square'}
           variant={'ghost'}
-          className="text-primary-500 ring-offset-0 data-[state=open]:scale-90 data-[state=open]:bg-primary-50"
+          className="text-primary-500 ring-offset-0 data-[state=open]:scale-75 data-[state=open]:bg-primary-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -34,11 +33,11 @@ const NavUserDropdown = () => {
           align="end"
           sideOffset={4}
           className={cn(
-            'w-44 origin-top-right rounded-lg bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
+            'w-44 origin-top-right rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
         >
-          <DropdownMenu.DropdownMenuItem className="rounded-md text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
+          <DropdownMenu.DropdownMenuItem className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0">
             <Link
               href={'/sign-in'}
               className="inline-flex w-full items-center gap-2.5 px-2 py-3"
@@ -64,7 +63,7 @@ const NavUserDropdown = () => {
               <span>Login</span>
             </Link>
           </DropdownMenu.DropdownMenuItem>
-          <DropdownMenu.DropdownMenuItem className="rounded-md text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0">
+          <DropdownMenu.DropdownMenuItem className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0">
             <Link
               href={'/sign-up'}
               className="inline-flex w-full items-center gap-2.5 px-2 py-3"
@@ -91,4 +90,5 @@ const NavUserDropdown = () => {
     </DropdownMenu.Root>
   );
 };
+
 export default NavUserDropdown;

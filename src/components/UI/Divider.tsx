@@ -10,6 +10,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
   ({ className, horizontal, ...props }, ref) => {
     return (
       <div
+        aria-hidden={true}
         className={cn(
           'bg-primary-100',
           !horizontal && 'h-px min-w-max',

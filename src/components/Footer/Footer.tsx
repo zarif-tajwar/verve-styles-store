@@ -7,7 +7,7 @@ import { cn } from '@/lib/util';
 const Footer = () => {
   return (
     <footer className="relative mt-44">
-      <div className="absolute top-0 z-50 w-full -translate-y-1/2">
+      <div className="absolute top-0 z-auto w-full -translate-y-1/2">
         <NewsLetterSubscription />
       </div>
       <div className="bg-offwhite pb-20 pt-36">

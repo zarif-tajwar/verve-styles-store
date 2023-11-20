@@ -9,7 +9,6 @@ import {
   sortOptions,
 } from '@/lib/validation/constants';
 
-import { useSelectSearchQuery } from '@/lib/hooks/useSelectSearchQuery';
 import { Button } from '../UI/Button';
 import { ChevronDown } from 'lucide-react';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
