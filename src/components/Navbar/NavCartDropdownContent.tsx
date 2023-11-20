@@ -1,0 +1,140 @@
+'use client';
+import { getCartItemsServer } from '@/lib/actions/cart';
+import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { useQuery } from '@tanstack/react-query';
+import * as ScrollArea from '@radix-ui/react-scroll-area';
+import { capitalize, cn, priceFormat } from '@/lib/util';
+import Divider from '../UI/Divider';
+import { Button } from '../UI/Button';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+const NavCartDropdownContent = () => {
+  const path = usePathname();
+
+  const { data: cartItems } = useQuery({
+    queryKey: CART_ITEM_DATA_QUERY_KEY,
+    queryFn: async () => {
+      const data = await getCartItemsServer();
+      return data ?? [];
+    },
+    refetchOnMount: false,
+  });
+
+  if (cartItems === undefined) return null;
+
+  const subtotal = cartItems.reduce(
+    (acc, curr) => acc + Number.parseFloat(curr.price) * curr.quantity,
+    0,
+  );
+
+  if (path === '/cart') {
+    return null;
+  }
+
+  console.log(path);
+
+  return (
+    <DropdownMenu.Content
+      align="end"
+      sideOffset={4}
+      className={cn(
+        'origin-top-right rounded-xl bg-primary-0 text-sm font-normal shadow-drop',
+        'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
+      )}
+    >
+      <ScrollArea.Root className="h-[20rem] min-w-[24rem] rounded-lg px-4 pt-4">
+        <ScrollArea.Viewport className="h-full w-full rounded-t-lg">
+          {cartItems.map((cartItem, i) => {
+            return (
+              <div
+                key={cartItem.cartItemId}
+                className="border-0 outline-none ring-0"
+              >
+                <div
+                  className={cn(
+                    'relative grid min-h-[4rem] grid-cols-3 gap-4',
+                    i === cartItems.length - 1 && 'pb-4',
+                  )}
+                >
+                  {/* IMAGE */}
+                  <div className="row-span-2 aspect-square rounded-lg bg-primary-50"></div>
+                  <div className="col-span-2 flex flex-col items-start justify-start gap-1.5">
+                    {/* PRODUCT NAME */}
+                    <span className="block text-base font-medium">
+                      {cartItem.name}
+                    </span>
+                    {/* ATTRIBUTES */}
+                    <span className="inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-normal tracking-wide text-primary-400 ring-1 ring-primary-100">
+                      {cartItem.sizeName.length > 3
+                        ? capitalize(cartItem.sizeName)
+                        : cartItem.sizeName.toUpperCase()}
+                    </span>
+                  </div>
+                  {/* QUANTITY */}
+                  <span className="inline-flex items-end">
+                    Quantity: {cartItem.quantity}
+                  </span>
+                  {/* TOTAL PRICE */}
+                  <span className="inline-flex items-end font-medium text-primary-500">
+                    {priceFormat(
+                      Number.parseFloat(cartItem.price || '0') *
+                        cartItem.quantity,
+                    )}
+                  </span>
+                </div>
+                {i < cartItems.length - 1 && (
+                  <Divider className="my-4 w-full bg-primary-50" />
+                )}
+              </div>
+            );
+          })}
+        </ScrollArea.Viewport>
+        <ScrollArea.Scrollbar
+          className="flex w-2.5 touch-none select-none rounded-b-lg rounded-r-lg bg-primary-50 p-0.5 transition-colors duration-[160ms] ease-out hover:bg-primary-100"
+          orientation="vertical"
+        >
+          <ScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-primary-200 before:absolute before:left-1/2 before:top-1/2 before:h-full before:min-h-[44px] before:w-full before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']" />
+        </ScrollArea.Scrollbar>
+      </ScrollArea.Root>
+      <DropdownMenu.Group
+        className={cn(
+          'rounded-b-xl rounded-bl-xl bg-primary-900 px-4 py-3',
+          // 'grid grid-cols-2 items-start justify-start',
+          'flex items-center justify-between',
+        )}
+      >
+        <Button
+          roundness={'lg'}
+          variant={'inverse'}
+          asChild
+          className="w-max gap-2 focus-visible:ring-0 focus-visible:ring-offset-0"
+        >
+          <DropdownMenu.DropdownMenuItem asChild>
+            <Link href={'/cart'}>
+              Go To Cart
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="h-5 w-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Link>
+          </DropdownMenu.DropdownMenuItem>
+        </Button>
+        <div className="flex flex-col items-end justify-between gap-1 text-primary-0">
+          <span>Subtotal</span>
+          <span className="text-base">{priceFormat(subtotal)}</span>
+        </div>
+      </DropdownMenu.Group>
+    </DropdownMenu.Content>
+  );
+};
+export default NavCartDropdownContent;

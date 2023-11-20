@@ -7,7 +7,14 @@ import { useCartItemsStore } from '@/lib/store/cart-store';
 import { trpc } from '@/app/_trpc/client';
 import useDebounce from '@/lib/hooks/useDebounce';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { MouseEvent, memo, useEffect, useMemo, useState } from 'react';
+import {
+  MouseEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   AnimatePresence,
@@ -44,6 +51,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   const [countdown, startCountdown, _, resetCountdown] = useCountDown(4);
 
   const cartItemData = cartItemState ? cartItemState : cartItem;
+  const cartItemId = cartItemData.cartItemId;
 
   const { mutateAsync: deleteMutation } = useMutation({
     mutationFn: deleteCartItemServer,
@@ -56,7 +64,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   const debouncedUpdateQuantity = useDebounce(
     (newQuantity: CartItemsInsert['quantity']) => {
       updateMutation({
-        cartItemId: cartItem.cartItemId,
+        cartItemId: cartItemId,
         newQuantity,
       });
     },
@@ -68,14 +76,14 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   );
 
   const handleQuantityChange = async (newQuantity: number) => {
-    updateQuantity(cartItem.cartItemId, newQuantity);
+    updateQuantity(cartItemId, newQuantity);
     await debouncedUpdateQuantity(newQuantity);
   };
 
-  const handleCartItemDelete = async () => {
-    await deleteMutation(cartItem.cartItemId);
-    deleteCartItem(cartItem.cartItemId);
-  };
+  const handleCartItemDelete = useCallback(async () => {
+    await deleteMutation(cartItemId);
+    deleteCartItem(cartItemId);
+  }, [cartItemId, deleteCartItem, deleteMutation]);
 
   const deleteVariants: Variants = {
     hidden: {
@@ -108,7 +116,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
       setConfirmDelete(true);
       handleCartItemDelete();
     }
-  }, [countdown]);
+  }, [countdown, handleCartItemDelete]);
 
   return (
     <MotionConfig

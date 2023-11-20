@@ -13,7 +13,7 @@ import {
   getCartItemsServer,
 } from '@/lib/actions/cart';
 import { wait } from '@/lib/util';
-import * as queryKeys from '@/lib/constants/query-keys';
+import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 
 const staticCartItems = [
   {
@@ -95,7 +95,7 @@ const Cart = () => {
   const clearCartClient = useCartItemsStore((state) => state.clearCart);
 
   const { data, error, isFetched, refetch } = useQuery({
-    queryKey: queryKeys.CART_ITEM_DATA,
+    queryKey: CART_ITEM_DATA_QUERY_KEY,
     queryFn: async () => {
       const data = await getCartItemsServer();
       if (!data || data.length < 1) return [];

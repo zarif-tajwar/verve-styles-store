@@ -6,7 +6,7 @@ import { Button, buttonVariants } from '../UI/Button';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addCartItemServer } from '@/lib/actions/cart';
-import * as queryKeys from '@/lib/constants/query-keys';
+import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 
 type sizeOptions = {
   sizeName: string;
@@ -26,7 +26,7 @@ const ProductAddCartRadioGroup = ({
     mutationFn: addCartItemServer,
     onSuccess: () => {
       queryClient.refetchQueries({
-        queryKey: queryKeys.CART_ITEM_DATA,
+        queryKey: CART_ITEM_DATA_QUERY_KEY,
       });
     },
   });
