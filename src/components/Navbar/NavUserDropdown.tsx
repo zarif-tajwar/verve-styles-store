@@ -12,7 +12,7 @@ const NavUserDropdown = () => {
         <Button
           size={'square'}
           variant={'ghost'}
-          className="text-primary-500 ring-offset-0 data-[state=open]:scale-75 data-[state=open]:bg-primary-50"
+          className="text-primary-500 ring-offset-0 data-[state=open]:bg-primary-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

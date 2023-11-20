@@ -6,7 +6,7 @@ import CartItem from '@/components/Cart/CartItem';
 import { useCartItemsStore } from '@/lib/store/cart-store';
 import { Button } from '../UI/Button';
 import { LayoutGroup, motion } from 'framer-motion';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   clearCartItems,
   generateCartItems,
@@ -93,8 +93,9 @@ const Cart = () => {
     (state) => state.insertCartItems,
   );
   const clearCartClient = useCartItemsStore((state) => state.clearCart);
+  const queryClient = useQueryClient();
 
-  const { data, error, isFetched, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: CART_ITEM_DATA_QUERY_KEY,
     queryFn: async () => {
       const data = await getCartItemsServer();
@@ -109,13 +110,17 @@ const Cart = () => {
   const { mutateAsync: generateCartItemsMutate } = useMutation({
     mutationFn: generateCartItems,
     onSuccess: () => {
-      refetch();
+      queryClient.refetchQueries({
+        queryKey: CART_ITEM_DATA_QUERY_KEY,
+      });
     },
   });
   const { mutateAsync: clearCartItemsMutate } = useMutation({
     mutationFn: clearCartItems,
     onSuccess: () => {
-      refetch();
+      queryClient.refetchQueries({
+        queryKey: CART_ITEM_DATA_QUERY_KEY,
+      });
     },
   });
 

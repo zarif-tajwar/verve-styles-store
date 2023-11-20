@@ -32,6 +32,7 @@ import {
   updateCartItemQuantityServer,
 } from '@/lib/actions/cart';
 import { CartItemsInsert } from '@/lib/db/schema/cartItems';
+import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 
 const MotionDivider = motion(Divider);
 
@@ -53,6 +54,8 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   const cartItemData = cartItemState ? cartItemState : cartItem;
   const cartItemId = cartItemData.cartItemId;
 
+  const queryClient = useQueryClient();
+
   const { mutateAsync: deleteMutation } = useMutation({
     mutationFn: deleteCartItemServer,
   });
@@ -62,10 +65,13 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   });
 
   const debouncedUpdateQuantity = useDebounce(
-    (newQuantity: CartItemsInsert['quantity']) => {
-      updateMutation({
+    async (newQuantity: CartItemsInsert['quantity']) => {
+      await updateMutation({
         cartItemId: cartItemId,
         newQuantity,
+      });
+      queryClient.refetchQueries({
+        queryKey: CART_ITEM_DATA_QUERY_KEY,
       });
     },
     500,
@@ -83,7 +89,10 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   const handleCartItemDelete = useCallback(async () => {
     await deleteMutation(cartItemId);
     deleteCartItem(cartItemId);
-  }, [cartItemId, deleteCartItem, deleteMutation]);
+    queryClient.refetchQueries({
+      queryKey: CART_ITEM_DATA_QUERY_KEY,
+    });
+  }, [cartItemId, deleteCartItem, deleteMutation, queryClient]);
 
   const deleteVariants: Variants = {
     hidden: {
