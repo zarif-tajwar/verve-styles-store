@@ -1,0 +1,1 @@
+ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_cart_id_product_entry_id_unique" UNIQUE("cart_id","product_entry_id");

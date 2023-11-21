@@ -11,4 +11,44 @@
   h2 {
     @apply font-integral-cf text-5xl font-bold uppercase;
   }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  :root {
+    --primary-0: #ffffff;
+    --primary-50: #f0f0f0;
+    --primary-100: #e6e6e6;
+    --primary-200: #c6c6c6;
+    --primary-300: #a4a4a4;
+    --primary-400: #606060;
+    --primary-500: #303030;
+    --primary-900: #080808;
+  }
+}
+
+.slice-half {
+  -webkit-mask: linear-gradient(
+    to left,
+    transparent 0%,
+    transparent 50%,
+    black 50%,
+    black 100%
+  );
+  mask: linear-gradient(
+    to left,
+    transparent 0%,
+    transparent 50%,
+    black 50%,
+    black 100%
+  );
 }

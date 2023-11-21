@@ -29,6 +29,97 @@
       "when": 1695088348267,
       "tag": "0003_wandering_sandman",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1697137860978,
+      "tag": "0004_dizzy_onslaught",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1697138184573,
+      "tag": "0005_real_crusher_hogan",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1697526261375,
+      "tag": "0006_fantastic_romulus",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1697645253059,
+      "tag": "0007_crazy_violations",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1697648130976,
+      "tag": "0008_great_inhumans",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1697684706363,
+      "tag": "0009_nervous_blonde_phantom",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1697692647743,
+      "tag": "0010_special_triton",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1697692846332,
+      "tag": "0011_certain_dark_beast",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1697693614776,
+      "tag": "0012_salty_demogoblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1697808261484,
+      "tag": "0013_lethal_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "5",
+      "when": 1697808330105,
+      "tag": "0014_secret_speedball",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "5",
+      "when": 1697817278867,
+      "tag": "0015_peaceful_marrow",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1698499045975,
+      "tag": "0016_milky_leopardon",
+      "breakpoints": true
     }
   ]
 }

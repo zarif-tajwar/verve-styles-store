@@ -3,16 +3,20 @@ import {
   integer,
   pgTable,
   primaryKey,
+  serial,
   timestamp,
+  unique,
   varchar,
 } from 'drizzle-orm/pg-core';
 import { products } from './products';
 import { sizes } from './sizes';
 import { InferInsertModel, relations } from 'drizzle-orm';
+import { orderLine } from './orderLine';
 
 export const productEntries = pgTable(
   'product_entries',
   {
+    id: serial('id'),
     productID: integer('product_id')
       .references(() => products.id)
       .notNull(),
@@ -25,21 +29,27 @@ export const productEntries = pgTable(
     updatedAt: timestamp('updated_at').defaultNow(),
   },
   (table) => ({
-    pk: primaryKey(table.productID, table.sizeID),
+    pk: primaryKey(table.id),
+    unq: unique('unq').on(table.productID, table.sizeID),
+    IdIdx: index('id_idx').on(table.id),
     productIdIdx: index('product_id_idx').on(table.productID),
     sizeIdIdx: index('size_id_idx').on(table.sizeID),
   }),
 );
 
-export const productEntryRelations = relations(productEntries, ({ one }) => ({
-  product: one(products, {
-    fields: [productEntries.productID],
-    references: [products.id],
+export const productEntryRelations = relations(
+  productEntries,
+  ({ one, many }) => ({
+    product: one(products, {
+      fields: [productEntries.productID],
+      references: [products.id],
+    }),
+    size: one(sizes, {
+      fields: [productEntries.sizeID],
+      references: [sizes.id],
+    }),
+    orderLine: many(orderLine),
   }),
-  size: one(sizes, {
-    fields: [productEntries.sizeID],
-    references: [sizes.id],
-  }),
-}));
+);
 
-export type ProductEntry = InferInsertModel<typeof productEntries>;
+export type ProductEntryInsert = InferInsertModel<typeof productEntries>;

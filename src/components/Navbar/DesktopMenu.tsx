@@ -1,6 +1,8 @@
 import SearchProduct from '../UI/SearchProduct';
-import { Icons } from '../Svgs/icons';
 import Link from 'next/link';
+import ShopLink from './ShopLink';
+import NavUserDropdown from './NavUserDropdown';
+import NavCartDropdown from './NavCartDropdown';
 
 const DesktopMenu = () => {
   return (
@@ -10,38 +12,42 @@ const DesktopMenu = () => {
         <SearchProduct />
       </div>
       <div className="-mx-2 flex items-center">
-        <button className="px-2 py-2">
-          <Icons.cart />
-        </button>
-        <button className="px-2 py-2">
-          <Icons.user />
-        </button>
+        <NavCartDropdown />
+        <NavUserDropdown />
       </div>
     </div>
   );
 };
 export default DesktopMenu;
 
-const navLinksList = [
-  { title: 'Shop', href: '/shop' },
-  { title: 'On Sale', href: '/' },
-  { title: 'New Arrivals', href: '/' },
-  { title: 'Brands', href: '/' },
-];
-
 const NavLinks = () => (
   <div className="-mx-3">
     <ul className="flex items-center">
-      {navLinksList.map((link) => (
-        <li key={link.title} className="inline-block">
-          <Link
-            href={link.href}
-            className="px-3 py-2 text-black/70 transition-colors hover:text-black"
-          >
-            {link.title}
-          </Link>
-        </li>
-      ))}
+      <ShopLink />
+      <li className="inline-block">
+        <Link
+          className="px-3 py-2 text-black/70 transition-colors hover:text-black"
+          href={'/'}
+        >
+          On Sale
+        </Link>
+      </li>
+      <li className="inline-block">
+        <Link
+          className="px-3 py-2 text-black/70 transition-colors hover:text-black"
+          href={'/'}
+        >
+          New Arrivals
+        </Link>
+      </li>
+      <li className="inline-block">
+        <Link
+          className="px-3 py-2 text-black/70 transition-colors hover:text-black"
+          href={'/categories'}
+        >
+          Categories
+        </Link>
+      </li>
     </ul>
   </div>
 );
