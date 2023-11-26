@@ -4,16 +4,17 @@ import { cn } from '@/lib/util';
 import { dressStylesOptions } from '@/lib/validation/constants';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { buttonVariants } from '../UI/Button';
-import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { useMultiCheckboxQueryState } from '@/lib/hooks/shop-filter-hooks';
+import { useMemo } from 'react';
 
 const DressStyleCheckbox = () => {
-  const multipleOptionCheck = useShopFilter(
-    (store) => store.multipleOptionCheck,
+  const allOptionValues = useMemo(
+    () => dressStylesOptions.map((option) => option.value),
+    [],
   );
-
-  const { checkedOptions, handleCheck } = multipleOptionCheck(
-    dressStylesOptions.map((x) => x.value),
+  const { checkedOptions, handleChange } = useMultiCheckboxQueryState(
     'styles',
+    allOptionValues,
   );
 
   console.log('STYLE RENDERED');
@@ -36,7 +37,7 @@ const DressStyleCheckbox = () => {
             checked={checkedOptions.has(option.value)}
             onCheckedChange={(checked) => {
               if (checked === 'indeterminate') return;
-              handleCheck(checked, option.value);
+              handleChange(checked, option.value);
             }}
           >
             <div>{option.label}</div>

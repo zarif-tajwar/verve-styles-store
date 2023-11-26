@@ -4,18 +4,15 @@ import FilterProductsStatusText from './FilterProductsStatusText';
 import { getShopProductsServer } from '@/lib/actions/shop';
 import ShopFilterPagination from './ShopFilterPagination';
 import { useQuery } from '@tanstack/react-query';
-import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { useReadOnlyShopFilterParams } from '@/lib/hooks/shop-filter-hooks';
 import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '@/lib/constants/query-keys';
 import ProductListing from './ProductListing';
 import { ProductListingSkeleton } from './Skeleton';
-import { wait } from '@/lib/util';
 import { Button } from '../UI/Button';
 import { useState } from 'react';
 
 const Shop = () => {
-  const paramsStateSerialized = useShopFilter(
-    (store) => store.paramsStateSerialized,
-  );
+  const paramsStateSerialized = useReadOnlyShopFilterParams();
   const [testLoading, setTestLoading] = useState(false);
 
   const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, paramsStateSerialized];
@@ -37,7 +34,6 @@ const Shop = () => {
     <>
       <div className="absolute -top-28 left-1/2 mx-auto flex w-max min-w-[19rem] -translate-x-1/2 grid-cols-2 flex-col justify-center gap-4 rounded-main p-4 ring-1 ring-primary-100">
         <p className="col-span-2">Temporary Buttons for Testing</p>
-        {/* <Button>Add Delay</Button> */}
         <Button variant={'outline'} onClick={() => setTestLoading((x) => !x)}>
           {testLoading ? 'Stop Loading' : 'Trigger Loading'}
         </Button>

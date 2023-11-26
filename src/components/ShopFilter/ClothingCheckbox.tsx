@@ -3,16 +3,17 @@
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { clothingItemsOptions } from '@/lib/validation/constants';
 import { buttonVariants } from '../UI/Button';
-import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { useMultiCheckboxQueryState } from '@/lib/hooks/shop-filter-hooks';
+import { useMemo } from 'react';
 
 const ClothingCheckbox = () => {
-  const multipleOptionCheck = useShopFilter(
-    (store) => store.multipleOptionCheck,
+  const allOptionValues = useMemo(
+    () => clothingItemsOptions.map((option) => option.value),
+    [],
   );
-
-  const { checkedOptions, handleCheck } = multipleOptionCheck(
-    clothingItemsOptions.map((x) => x.value),
+  const { checkedOptions, handleChange } = useMultiCheckboxQueryState(
     'clothing',
+    allOptionValues,
   );
 
   console.log('CLOTHING RENDERED');
@@ -24,11 +25,6 @@ const ClothingCheckbox = () => {
           key={option.value}
           name={option.label}
           value={option.value}
-          title={
-            checkedOptions.size < 1
-              ? `Select ${option.label}`
-              : `Also select ${option.label}`
-          }
           className={buttonVariants({
             align: 'left',
             variant: 'secondary',
@@ -39,7 +35,7 @@ const ClothingCheckbox = () => {
           checked={checkedOptions.has(option.value)}
           onCheckedChange={(checked) => {
             if (checked === 'indeterminate') return;
-            handleCheck(checked, option.value);
+            handleChange(checked, option.value);
           }}
         >
           <option.icon className="h-[18px]" />

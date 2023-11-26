@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import * as Select from '@radix-ui/react-select';
 import { cn } from '@/lib/util';
 import { CheckMini } from '../Svgs/icons';
@@ -11,7 +11,7 @@ import {
 
 import { Button } from '../UI/Button';
 import { ChevronDown } from 'lucide-react';
-import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { useSelectQueryState } from '@/lib/hooks/shop-filter-hooks';
 
 const SortBySelect = () => {
   return (
@@ -26,20 +26,17 @@ const SortBySelect = () => {
 export default SortBySelect;
 
 const SelectMain = () => {
-  const singleOptionCheck = useShopFilter((store) => store.singleOptionCheck);
-
-  const { currentOptionValue, handleValueChange } = singleOptionCheck(
-    defaultSortOptionValue,
+  const allOptionValues = useMemo(() => sortOptions.map((x) => x.value), []);
+  const { value, handleChange } = useSelectQueryState(
     'sort_by',
+    allOptionValues,
+    defaultSortOptionValue,
   );
 
   console.log('SORT RENDERED');
 
   return (
-    <Select.Root
-      value={currentOptionValue || defaultSortOptionValue}
-      onValueChange={handleValueChange}
-    >
+    <Select.Root value={value} onValueChange={handleChange}>
       <Select.Trigger asChild>
         <Button
           variant={'ghost'}

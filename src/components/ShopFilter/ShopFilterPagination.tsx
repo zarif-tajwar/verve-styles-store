@@ -4,7 +4,7 @@ import { usePagination } from '@/lib/hooks/mantine/usePagination';
 import { cn } from '@/lib/util';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { Button } from '../UI/Button';
-import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { usePaginationQueryState } from '@/lib/hooks/shop-filter-hooks';
 import { TotalProducts } from '@/lib/types/ShopFilter';
 
 const ShopFilterPagination = ({
@@ -13,8 +13,8 @@ const ShopFilterPagination = ({
   totalProducts: TotalProducts;
 }) => {
   const totalPages = Math.ceil((totalProducts || 0) / FILTER_PRODUCTS_PER_PAGE);
-  const currentPage = useShopFilter((store) => store.currentPage);
-  const handlePageChange = useShopFilter((store) => store.handlePageChange);
+
+  const { value: currentPage, handleChange } = usePaginationQueryState();
 
   const { active, range } = usePagination({
     total: totalPages,
@@ -24,15 +24,13 @@ const ShopFilterPagination = ({
 
   console.log('PAGINATION STATUS RENDERED');
 
-  // if (totalPages < 2) return null;
-
   return (
     <div className="flex w-full items-center justify-center">
       <div className="rounded-xl bg-primary-50 px-3.5 py-2.5 text-sm font-medium shadow-light-drop">
         <div className="flex gap-2">
           <Button
             onClick={() => {
-              handlePageChange(currentPage - 1, totalPages);
+              handleChange(currentPage - 1, totalPages);
             }}
             size={'square'}
             variant={'ghost'}
@@ -89,7 +87,7 @@ const ShopFilterPagination = ({
                   width: `max(2.5rem, ${value.toString().length + 2}ch)`,
                 }}
                 onClick={() => {
-                  handlePageChange(value, totalPages);
+                  handleChange(value, totalPages);
                 }}
               >
                 {value}
@@ -98,7 +96,7 @@ const ShopFilterPagination = ({
           })}
           <Button
             onClick={() => {
-              handlePageChange(currentPage + 1, totalPages);
+              handleChange(currentPage + 1, totalPages);
             }}
             size={'square'}
             variant={'ghost'}
