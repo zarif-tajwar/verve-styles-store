@@ -12,6 +12,7 @@ import {
 import { shopFilterKeys } from '@/lib/validation/schemas';
 import { URL_QUERY_SEPERATORS } from '@/lib/validation/constants';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
@@ -59,7 +60,6 @@ export const useSelectQueryState = (
 
 export const useMultiCheckboxQueryState = (key: string, values: string[]) => {
   const [queryState, setQueryState] = useQueryState(key);
-  // const [_, setPagination] = useQueryState('page');
 
   const totalValuesLength = values.length;
 
@@ -98,8 +98,6 @@ export const useMultiCheckboxQueryState = (key: string, values: string[]) => {
       );
 
       setQueryState(newQueryValue !== '' ? newQueryValue : null);
-
-      // setPagination('1');
     },
     [checkedOptions, setQueryState, totalValuesLength],
   );

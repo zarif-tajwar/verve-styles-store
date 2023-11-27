@@ -19,7 +19,7 @@ const NavUserDropdown = () => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="h-6 w-6"
+            className="h-[1.4375rem] w-[1.4375rem]"
           >
             <path
               fillRule="evenodd"

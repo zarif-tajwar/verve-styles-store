@@ -8,9 +8,9 @@ const MessageComp = ({
   message: string;
 }) => {
   return (
-    <div className="flex max-w-[13rem] flex-col items-start justify-start gap-2 p-4 text-primary-500">
+    <div className="flex min-w-[16rem] flex-col items-start justify-start gap-2 p-4 text-primary-500">
       {Icon}
-      <span className="block text-base">{message}</span>
+      <span className="block max-w-[12rem] text-base">{message}</span>
     </div>
   );
 };

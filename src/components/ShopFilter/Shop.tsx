@@ -10,6 +10,7 @@ import ProductListing from './ProductListing';
 import { ProductListingSkeleton } from './Skeleton';
 import { Button } from '../UI/Button';
 import { useState } from 'react';
+import { wait } from '@/lib/util';
 
 const Shop = () => {
   const paramsStateSerialized = useReadOnlyShopFilterParams();
@@ -17,13 +18,13 @@ const Shop = () => {
 
   const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, paramsStateSerialized];
 
-  const { data: productItems, isLoading } = useQuery({
+  const { data: productItems, isFetching } = useQuery({
     queryKey,
     queryFn: async () => {
-      // await wait(300);
       const data = await getShopProductsServer(paramsStateSerialized);
       return data || [];
     },
+    placeholderData: (previousValue) => previousValue,
   });
 
   const totalProducts = productItems?.at(0)?.totalCount;
@@ -42,7 +43,7 @@ const Shop = () => {
         <FilterProductsStatusText totalProducts={totalProducts} />
       </div>
       <div className="relative col-span-2 h-max">
-        {!(isLoading || testLoading) && (
+        {!(isFetching || testLoading) && (
           <div
             key={'products'}
             className="relative z-0 grid grid-cols-3 gap-x-5 gap-y-9"
@@ -54,7 +55,7 @@ const Shop = () => {
             })}
           </div>
         )}
-        {(isLoading || testLoading) && (
+        {(isFetching || testLoading) && (
           <div
             key={'skeleton'}
             className="z-50 grid w-full animate-pulse grid-cols-3 gap-x-5 gap-y-9"

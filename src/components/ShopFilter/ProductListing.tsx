@@ -24,10 +24,11 @@ const ProductListing = ({
           <Image
             src={'/products/black-striped-tshirt.png'}
             alt="product"
-            width={300}
-            height={300}
+            width={384}
+            height={576}
             className="h-full w-full object-cover"
           />
+          {/* <div className="h-full w-full bg-primary-50"></div> */}
         </div>
         <div>
           <h3 className="mb-2 text-xl font-medium capitalize">
