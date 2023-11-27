@@ -34,6 +34,7 @@ const Footer = () => {
                         'hover:bg-black/70 hover:text-white hover:ring-black/70',
                         'focus-visible:ring-2 focus-visible:ring-black/70',
                       )}
+                      aria-label={`Go to ${link.title}`}
                     >
                       <link.icon className="h-full w-full" />
                     </Link>

@@ -1,23 +1,8 @@
-'use client';
-
 import { FilteredProductItem } from '@/lib/actions/shop';
 import { makeValidURL } from '@/lib/util';
 import Image from 'next/image';
 import Link from 'next/link';
 import Star from '../UI/Star';
-import { Variants, motion } from 'framer-motion';
-
-const variants: Variants = {
-  initial: { opacity: 0, y: 10 },
-
-  animate: (custom: number) => ({
-    opacity: 1,
-
-    y: 0,
-    transition: { duration: 0.2, delay: custom * 0.1 },
-  }),
-  // exit: {opacity: 0, }
-};
 
 const ProductListing = ({
   product,
@@ -51,7 +36,7 @@ const ProductListing = ({
         </div>
         <div className="mb-2 flex gap-3">
           <Star rating={ratingFloat} size="sm" />
-          <p className="flex text-sm font-medium text-primary-300">
+          <p className="flex text-sm font-medium text-primary-400">
             <span className="block w-[3ch] text-primary-500">{ratingStr}/</span>
             <span className="block">5.0</span>
           </p>

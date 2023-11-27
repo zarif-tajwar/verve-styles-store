@@ -22,6 +22,7 @@ const NavCartDropdown = () => {
           size={'square'}
           variant={'ghost'}
           className="text-primary-500 ring-offset-0 data-[state=open]:bg-primary-50"
+          aria-label="Trigger Cart Dropdown Menu"
         >
           {/* 'CLOSED STATE' */}
           <span className="relative z-10 justify-center">

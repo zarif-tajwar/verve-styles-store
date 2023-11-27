@@ -50,6 +50,7 @@ const ShopFilterPagination = ({
                 'cursor-default opacity-20 hover:bg-transparent',
               'hover:bg-primary-100',
             )}
+            aria-label="Go to the previous page"
           >
             <svg
               width="7"
@@ -88,6 +89,7 @@ const ShopFilterPagination = ({
                 size={'square'}
                 variant={active === value ? 'default' : 'ghost'}
                 roundness={'lg'}
+                aria-label={`Go to page number ${value}`}
                 className={cn(
                   'tracking-wider transition-none',
                   active === value && 'cursor-default hover:bg-primary-900',
@@ -116,6 +118,7 @@ const ShopFilterPagination = ({
                 'cursor-default opacity-20 hover:bg-transparent',
               'hover:bg-primary-100',
             )}
+            aria-label="Go to the next page"
           >
             <svg
               width="7"
