@@ -9,6 +9,7 @@ import {
 } from 'next-usequerystate';
 import { shopFilterKeys } from '@/lib/validation/schemas';
 import { URL_QUERY_SEPERATORS } from '@/lib/validation/constants';
+import { quickSortByReference } from '../util';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
@@ -86,12 +87,13 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
         checkedOptionsCopy.delete(value);
       }
 
-      const newQueryValue = [...checkedOptionsCopy].join(
-        URL_QUERY_SEPERATORS.multipleOption,
-      );
+      const newQueryValueSorted = quickSortByReference(
+        Array.from(checkedOptionsCopy),
+        values,
+      ).join(URL_QUERY_SEPERATORS.multipleOption);
 
       setParamsState({
-        [paramKey]: newQueryValue !== '' ? newQueryValue : null,
+        [paramKey]: newQueryValueSorted !== '' ? newQueryValueSorted : null,
         page: null,
       });
     };
