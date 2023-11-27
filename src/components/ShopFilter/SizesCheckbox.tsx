@@ -4,17 +4,16 @@ import { cn } from '@/lib/util';
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { sizesOptions } from '@/lib/validation/constants';
 import { buttonVariants } from '../UI/Button';
-import { useMultiCheckboxQueryState } from '@/lib/hooks/shop-filter-hooks';
-import { useMemo } from 'react';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
 const SizesCheckbox = () => {
-  const allOptionValues = useMemo(
-    () => sizesOptions.map((option) => option.value),
-    [],
+  const multipleOptionCheck = useShopFilter(
+    (store) => store.multipleOptionCheck,
   );
-  const { checkedOptions, handleChange } = useMultiCheckboxQueryState(
+
+  const { checkedOptions, handleCheck } = multipleOptionCheck(
+    sizesOptions.map((x) => x.value),
     'sizes',
-    allOptionValues,
   );
 
   console.log('SIZES RENDERED');
@@ -29,7 +28,7 @@ const SizesCheckbox = () => {
           checked={checkedOptions.has(option.value)}
           onCheckedChange={(checked) => {
             if (checked === 'indeterminate') return;
-            handleChange(checked, option.value);
+            handleCheck(checked, option.value);
           }}
           className={buttonVariants({
             align: 'left',

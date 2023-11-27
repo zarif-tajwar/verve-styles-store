@@ -1,19 +1,26 @@
 'use client';
 
 import * as Slider from '@radix-ui/react-slider';
-import { defaultPriceRange } from '@/lib/validation/constants';
-import { useDoubleRangeSliderQueryState } from '@/lib/hooks/shop-filter-hooks';
+import useQueryParams from '@/lib/hooks/useQueryParams';
+import {
+  URL_QUERY_SEPERATORS,
+  defaultPriceRange,
+} from '@/lib/validation/constants';
+import { useShopFilterStore } from '@/lib/store/shop-filter';
+import { PriceRange } from '@/lib/types/ShopFilter';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import { useState } from 'react';
 
 const DoubleRangeSlider = () => {
-  const { rangeValue, handleChange } = useDoubleRangeSliderQueryState(
-    'price_range',
+  const rangeSlider = useShopFilter((store) => store.rangeSlider);
+
+  const { currentRange, handleValueChange } = rangeSlider(
     defaultPriceRange,
+    'price_range',
   );
-
-  const [immediateRangeValue, setImmediateRangeValue] = useState(rangeValue);
-
-  const [min, max] = immediateRangeValue;
+  const [currentRangeImmediate, setCurrentRangeImmediate] =
+    useState(currentRange);
+  const [min, max] = currentRangeImmediate;
 
   console.log('RANGE RENDERED');
 
@@ -21,13 +28,13 @@ const DoubleRangeSlider = () => {
     <div>
       <Slider.Root
         className="relative mb-2 flex h-5 w-full touch-none select-none items-center"
-        value={immediateRangeValue}
+        value={currentRangeImmediate}
         min={defaultPriceRange[0]}
         max={defaultPriceRange[1]}
         step={1}
-        onValueChange={(values) => setImmediateRangeValue(values)}
+        onValueChange={(values) => setCurrentRangeImmediate(values)}
         onValueCommit={(values) => {
-          handleChange(values);
+          handleValueChange(values);
         }}
       >
         <Slider.Track className="relative h-1.5 grow cursor-pointer rounded-full bg-primary-50">

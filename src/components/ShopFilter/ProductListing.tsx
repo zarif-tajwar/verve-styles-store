@@ -1,3 +1,5 @@
+'use client';
+
 import { FilteredProductItem } from '@/lib/actions/shop';
 import { makeValidURL } from '@/lib/util';
 import Image from 'next/image';
@@ -24,11 +26,10 @@ const ProductListing = ({
           <Image
             src={'/products/black-striped-tshirt.png'}
             alt="product"
-            width={384}
-            height={576}
+            width={300}
+            height={300}
             className="h-full w-full object-cover"
           />
-          {/* <div className="h-full w-full bg-primary-50"></div> */}
         </div>
         <div>
           <h3 className="mb-2 text-xl font-medium capitalize">
@@ -37,7 +38,7 @@ const ProductListing = ({
         </div>
         <div className="mb-2 flex gap-3">
           <Star rating={ratingFloat} size="sm" />
-          <p className="flex text-sm font-medium text-primary-400">
+          <p className="flex text-sm font-medium text-primary-300">
             <span className="block w-[3ch] text-primary-500">{ratingStr}/</span>
             <span className="block">5.0</span>
           </p>

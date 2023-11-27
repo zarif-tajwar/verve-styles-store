@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import * as Select from '@radix-ui/react-select';
 import { cn } from '@/lib/util';
 import { CheckMini } from '../Svgs/icons';
@@ -11,7 +11,7 @@ import {
 
 import { Button } from '../UI/Button';
 import { ChevronDown } from 'lucide-react';
-import { useSelectQueryState } from '@/lib/hooks/shop-filter-hooks';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 
 const SortBySelect = () => {
   return (
@@ -26,24 +26,26 @@ const SortBySelect = () => {
 export default SortBySelect;
 
 const SelectMain = () => {
-  const allOptionValues = useMemo(() => sortOptions.map((x) => x.value), []);
-  const { value, handleChange } = useSelectQueryState(
-    'sort_by',
-    allOptionValues,
+  const singleOptionCheck = useShopFilter((store) => store.singleOptionCheck);
+
+  const { currentOptionValue, handleValueChange } = singleOptionCheck(
     defaultSortOptionValue,
+    'sort_by',
   );
 
   console.log('SORT RENDERED');
 
   return (
-    <Select.Root value={value} onValueChange={handleChange}>
+    <Select.Root
+      value={currentOptionValue || defaultSortOptionValue}
+      onValueChange={handleValueChange}
+    >
       <Select.Trigger asChild>
         <Button
           variant={'ghost'}
           size={'md'}
           roundness={'lg'}
           className="group h-11 origin-top-right select-none text-primary-900 duration-200 data-[state=open]:scale-90 data-[state=open]:bg-primary-50 data-[state=open]:text-primary-300"
-          aria-label="Select sorting method"
         >
           <Select.Value />
           <Select.Icon className="h-4 w-4 transition-all duration-100 ease-linear group-data-[state=open]:-rotate-180">

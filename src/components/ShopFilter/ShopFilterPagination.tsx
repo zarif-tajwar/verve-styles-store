@@ -4,10 +4,8 @@ import { usePagination } from '@/lib/hooks/mantine/usePagination';
 import { cn } from '@/lib/util';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { Button } from '../UI/Button';
-import { usePaginationQueryState } from '@/lib/hooks/shop-filter-hooks';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import { TotalProducts } from '@/lib/types/ShopFilter';
-import { useEffect } from 'react';
-import { subscribeToQueryUpdates } from 'next-usequerystate';
 
 const ShopFilterPagination = ({
   totalProducts,
@@ -15,8 +13,8 @@ const ShopFilterPagination = ({
   totalProducts: TotalProducts;
 }) => {
   const totalPages = Math.ceil((totalProducts || 0) / FILTER_PRODUCTS_PER_PAGE);
-
-  const { value: currentPage, handleChange } = usePaginationQueryState();
+  const currentPage = useShopFilter((store) => store.currentPage);
+  const handlePageChange = useShopFilter((store) => store.handlePageChange);
 
   const { active, range } = usePagination({
     total: totalPages,
@@ -24,15 +22,9 @@ const ShopFilterPagination = ({
     page: currentPage,
   });
 
-  useEffect(() => {
-    const subscription = subscribeToQueryUpdates(({ search, source }) => {
-      console.log(search.toString(), 'SEARCH SUB');
-      console.log(source.toString(), 'SOURCE SUB');
-    });
-    return subscription;
-  }, []);
-
   console.log('PAGINATION STATUS RENDERED');
+
+  // if (totalPages < 2) return null;
 
   return (
     <div className="flex w-full items-center justify-center">
@@ -40,7 +32,7 @@ const ShopFilterPagination = ({
         <div className="flex gap-2">
           <Button
             onClick={() => {
-              handleChange(currentPage - 1, totalPages);
+              handlePageChange(currentPage - 1, totalPages);
             }}
             size={'square'}
             variant={'ghost'}
@@ -50,7 +42,6 @@ const ShopFilterPagination = ({
                 'cursor-default opacity-20 hover:bg-transparent',
               'hover:bg-primary-100',
             )}
-            aria-label="Go to the previous page"
           >
             <svg
               width="7"
@@ -89,7 +80,6 @@ const ShopFilterPagination = ({
                 size={'square'}
                 variant={active === value ? 'default' : 'ghost'}
                 roundness={'lg'}
-                aria-label={`Go to page number ${value}`}
                 className={cn(
                   'tracking-wider transition-none',
                   active === value && 'cursor-default hover:bg-primary-900',
@@ -99,7 +89,7 @@ const ShopFilterPagination = ({
                   width: `max(2.5rem, ${value.toString().length + 2}ch)`,
                 }}
                 onClick={() => {
-                  handleChange(value, totalPages);
+                  handlePageChange(value, totalPages);
                 }}
               >
                 {value}
@@ -108,7 +98,7 @@ const ShopFilterPagination = ({
           })}
           <Button
             onClick={() => {
-              handleChange(currentPage + 1, totalPages);
+              handlePageChange(currentPage + 1, totalPages);
             }}
             size={'square'}
             variant={'ghost'}
@@ -118,7 +108,6 @@ const ShopFilterPagination = ({
                 'cursor-default opacity-20 hover:bg-transparent',
               'hover:bg-primary-100',
             )}
-            aria-label="Go to the next page"
           >
             <svg
               width="7"

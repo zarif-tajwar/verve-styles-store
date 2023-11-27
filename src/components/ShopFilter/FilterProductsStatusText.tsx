@@ -1,4 +1,4 @@
-import { usePaginationQueryState } from '@/lib/hooks/shop-filter-hooks';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import { TotalProducts } from '@/lib/types/ShopFilter';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 
@@ -7,7 +7,7 @@ const FilterProductsStatusText = ({
 }: {
   totalProducts: TotalProducts;
 }) => {
-  const { value: currentPage } = usePaginationQueryState();
+  const currentPage = useShopFilter((store) => store.currentPage);
 
   if (!totalProducts || totalProducts < 1) return null;
 
@@ -16,7 +16,7 @@ const FilterProductsStatusText = ({
     Math.min(currentPage * FILTER_PRODUCTS_PER_PAGE, totalProducts),
   ];
 
-  console.log('SHOP STATUS RENDERED');
+  console.log('PRODUCT PAGE STATUS RENDERED');
 
   return (
     <p className="flex-grow pb-2 text-black/60">
