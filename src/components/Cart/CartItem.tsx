@@ -4,27 +4,13 @@ import { capitalize, cn, priceFormat } from '@/lib/util';
 import CartQuantityCounter from './CartQuantityCounter';
 import { CartItemProps } from '@/lib/types/cart';
 import { useCartItemsStore } from '@/lib/store/cart-store';
-import { trpc } from '@/app/_trpc/client';
 import useDebounce from '@/lib/hooks/useDebounce';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  MouseEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import {
-  AnimatePresence,
-  MotionConfig,
-  Variants,
-  motion,
-  useMotionValue,
-} from 'framer-motion';
+import { AnimatePresence, MotionConfig, Variants, motion } from 'framer-motion';
 import Divider from '../UI/Divider';
-import { Button, buttonVariants } from '../UI/Button';
+import { buttonVariants } from '../UI/Button';
 import { History, Trash } from 'lucide-react';
 import { useCountDown } from '@/lib/hooks/useCountdown';
 import {

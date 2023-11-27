@@ -6,6 +6,8 @@ import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { Button } from '../UI/Button';
 import { usePaginationQueryState } from '@/lib/hooks/shop-filter-hooks';
 import { TotalProducts } from '@/lib/types/ShopFilter';
+import { useEffect } from 'react';
+import { subscribeToQueryUpdates } from 'next-usequerystate';
 
 const ShopFilterPagination = ({
   totalProducts,
@@ -21,6 +23,14 @@ const ShopFilterPagination = ({
     initialPage: 1,
     page: currentPage,
   });
+
+  useEffect(() => {
+    const subscription = subscribeToQueryUpdates(({ search, source }) => {
+      console.log(search.toString(), 'SEARCH SUB');
+      console.log(source.toString(), 'SOURCE SUB');
+    });
+    return subscription;
+  }, []);
 
   console.log('PAGINATION STATUS RENDERED');
 

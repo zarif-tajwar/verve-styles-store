@@ -11,7 +11,7 @@ import {
 } from 'next-usequerystate';
 import { shopFilterKeys } from '@/lib/validation/schemas';
 import { URL_QUERY_SEPERATORS } from '@/lib/validation/constants';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
@@ -177,35 +177,19 @@ export const useDoubleRangeSliderQueryState = (
 };
 
 export const usePaginationQueryState = () => {
-  const [{ page, price_range, sizes, sort_by, styles }, setQueryState] =
-    useQueryStates({
-      page: parseAsString,
-      sort_by: parseAsString,
-      sizes: parseAsString,
-      styles: parseAsString,
-      price_range: parseAsString,
-    });
-  const value = Number(page || 1);
+  const [queryState, setQueryState] = useQueryState('page');
+
+  const value = Number(queryState || 1);
 
   const handleChange = useCallback(
     (pageNum: number, totalPages: number) => {
       if (pageNum < 1 || pageNum === value || pageNum > totalPages) return;
-      setQueryState(
-        { page: pageNum.toString() },
-        {
-          scroll: true,
-        },
-      );
+      setQueryState(pageNum.toString(), {
+        scroll: true,
+      });
     },
     [value, setQueryState],
   );
-
-  useEffect(() => {
-    if (page !== '1') {
-      setQueryState({ page: '1' });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [price_range, sizes, sort_by, styles]);
 
   return { value, handleChange };
 };
