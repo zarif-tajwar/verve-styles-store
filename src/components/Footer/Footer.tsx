@@ -44,9 +44,9 @@ const Footer = () => {
             </div>
             {footerLinks.map((item, i) => (
               <div key={i}>
-                <h4 className="mb-6 font-medium uppercase tracking-widest text-black">
+                <h3 className="mb-6 font-medium uppercase tracking-widest text-black">
                   {item.heading}
-                </h4>
+                </h3>
                 <ul className="space-y-3 text-sm text-black/60">
                   {item.links.map((link, j) => (
                     <li key={j}>

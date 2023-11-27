@@ -134,9 +134,12 @@ const NavCartDropdownContent = () => {
               roundness={'lg'}
               variant={'inverse'}
               asChild
-              className="w-max gap-2 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="w-max gap-2"
             >
-              <DropdownMenu.DropdownMenuItem asChild>
+              <DropdownMenu.DropdownMenuItem
+                className="border-none outline-none"
+                asChild
+              >
                 <Link href={'/cart'}>
                   Go To Cart
                   <svg

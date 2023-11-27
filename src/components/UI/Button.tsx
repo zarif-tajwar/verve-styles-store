@@ -14,7 +14,8 @@ const buttonVariants = cva(
         secondary:
           'bg-primary-50 hover:bg-primary-100 text-primary-400 focus-visible:ring-offset-0',
         ghost: 'hover:bg-primary-50 text-primary-400',
-        inverse: 'bg-primary-0 text-primary-900 hover:bg-primary-50',
+        inverse:
+          'bg-primary-0 text-primary-900 hover:bg-primary-50 focus-visible:ring-offset-primary-900 focus-visible:ring-primary-50',
         // destructive:
         //   'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         // link: 'text-primary underline-offset-4 hover:underline',

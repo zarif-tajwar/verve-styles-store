@@ -50,6 +50,8 @@ const CustomerReviews = () => {
               className="rotate-180"
               disabled={currCard === 0}
               onClick={goLeft}
+              aria-hidden={currCard === 0}
+              aria-label="Go right"
             >
               <ArrowRight />
             </Button>
@@ -57,6 +59,8 @@ const CustomerReviews = () => {
               variant={'outline'}
               size={'square'}
               disabled={currCard > Reviews.length - 1 - cardsPerSlide}
+              aria-hidden={currCard > Reviews.length - 1 - cardsPerSlide}
+              aria-label="Go left"
               onClick={goRight}
             >
               <ArrowRight />
@@ -83,6 +87,9 @@ const CustomerReviews = () => {
                 }}
               >
                 {Reviews.map((review, i) => {
+                  const isNotHighlighted = !(
+                    i >= currCard && i < currCard + cardsPerSlide
+                  );
                   return (
                     <motion.div
                       animate={{
@@ -93,15 +100,13 @@ const CustomerReviews = () => {
                             delay: 0.25,
                           },
                         },
-                        opacity:
-                          i >= currCard && i < currCard + cardsPerSlide
-                            ? 1
-                            : 0.4,
+                        opacity: isNotHighlighted ? 0.4 : 1,
                       }}
                       key={i}
                       className={cn(
                         'relative z-50 h-full w-max bg-primary-0 pr-5',
                       )}
+                      aria-disabled={isNotHighlighted}
                     >
                       <ReviewCard
                         review={review}
