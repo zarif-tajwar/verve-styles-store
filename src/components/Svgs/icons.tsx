@@ -1,8 +1,6 @@
 import { cn } from '@/lib/util';
 import { Check } from 'lucide-react';
-import { SVGProps } from 'react';
-
-interface SvgIconProps extends SVGProps<SVGSVGElement> {}
+import { SvgIconProps } from '@/lib/types/common';
 
 export const Email = ({ ...props }: SvgIconProps) => {
   return (
@@ -317,19 +315,39 @@ export const Search = ({ ...props }: SvgIconProps) => {
   );
 };
 
-export const CheckMini = ({ ...props }: SvgIconProps) => {
+export const CheckMini = ({ className, ...props }: SvgIconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className={cn('h-4 w-4', props.className)}
+      className={cn('h-4 w-4', className)}
       {...props}
     >
       <path
         fillRule="evenodd"
         d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
         clipRule="evenodd"
+      />
+    </svg>
+  );
+};
+
+export const CheckIcon = ({ className, ...props }: SvgIconProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className={cn('h-6 w-6', className)}
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4.5 12.75l6 6 9-13.5"
       />
     </svg>
   );
@@ -395,6 +413,42 @@ export const UserIcon = ({ ...props }: SvgIconProps) => {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+      />
+    </svg>
+  );
+};
+
+export const BagCartIcon = ({ className, ...props }: SvgIconProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={cn('h-6 w-6', className)}
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        d="M7.5 6v.75H5.513c-.96 0-1.764.724-1.865 1.679l-1.263 12A1.875 1.875 0 004.25 22.5h15.5a1.875 1.875 0 001.865-2.071l-1.263-12a1.875 1.875 0 00-1.865-1.679H16.5V6a4.5 4.5 0 10-9 0zM12 3a3 3 0 00-3 3v.75h6V6a3 3 0 00-3-3zm-3 8.25a3 3 0 106 0v-.75a.75.75 0 011.5 0v.75a4.5 4.5 0 11-9 0v-.75a.75.75 0 011.5 0v.75z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+};
+
+export const BagCartIconMini = ({ className, ...props }: SvgIconProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      className={cn('h-5 w-5', className)}
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        d="M6 5v1H4.667a1.75 1.75 0 00-1.743 1.598l-.826 9.5A1.75 1.75 0 003.84 19H16.16a1.75 1.75 0 001.743-1.902l-.826-9.5A1.75 1.75 0 0015.333 6H14V5a4 4 0 00-8 0zm4-2.5A2.5 2.5 0 007.5 5v1h5V5A2.5 2.5 0 0010 2.5zM7.5 10a2.5 2.5 0 005 0V8.75a.75.75 0 011.5 0V10a4 4 0 01-8 0V8.75a.75.75 0 011.5 0V10z"
+        clipRule="evenodd"
       />
     </svg>
   );

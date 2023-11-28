@@ -89,13 +89,12 @@ export const addCartItemServer = async ({
     if (!cartId) {
       let [cart] = await tx.insert(carts).values({}).returning();
       cartId = cart?.id;
-    }
-
-    if (cartId === undefined) {
-      tx.rollback();
-      return;
-    } else {
-      cookies().set('cartId', cartId.toString());
+      if (cartId === undefined) {
+        tx.rollback();
+        return;
+      } else {
+        cookies().set('cartId', cartId.toString());
+      }
     }
 
     const [product] = await tx

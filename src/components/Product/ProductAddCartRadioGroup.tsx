@@ -1,12 +1,20 @@
 'use client';
 
-import { capitalize } from '@/lib/util';
+import { capitalize, cn, wait } from '@/lib/util';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { Button, buttonVariants } from '../UI/Button';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addCartItemServer } from '@/lib/actions/cart';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
+import Spinner from '../UI/Spinner';
+import {
+  BagCartIcon,
+  BagCartIconMini,
+  CheckIcon,
+  CheckMini,
+} from '../Svgs/icons';
+import { Check } from 'lucide-react';
 
 type sizeOptions = {
   sizeName: string;
@@ -22,7 +30,13 @@ const ProductAddCartRadioGroup = ({
 }) => {
   const queryClient = useQueryClient();
   // const cartQueryKey = getQueryKey(trpc.getCartItems);
-  const { mutateAsync: addCartItemMutation } = useMutation({
+  const {
+    mutateAsync: addCartItemMutation,
+    isPending,
+    isSuccess,
+    isIdle,
+    isError,
+  } = useMutation({
     mutationFn: addCartItemServer,
     onSuccess: () => {
       queryClient.refetchQueries({
@@ -30,6 +44,9 @@ const ProductAddCartRadioGroup = ({
       });
     },
   });
+
+  const disableAddToCartButton = isPending;
+
   return (
     <form
       onSubmit={async (e) => {
@@ -94,9 +111,32 @@ const ProductAddCartRadioGroup = ({
         <CartQuantityCounter className="h-full w-full max-w-none" />
         <Button
           // onClick={(e) => e.preventDefault()}
-          className={'col-span-2 w-full'}
+          size={'md'}
+          className={cn(
+            'col-span-2 w-full transition-colors duration-200 disabled:opacity-100',
+            isSuccess && 'cursor-default bg-emerald-500 hover:bg-emerald-500',
+          )}
+          disabled={disableAddToCartButton}
+          aria-disabled={disableAddToCartButton}
         >
-          Add to Cart
+          <span className="inline-flex items-center justify-center gap-2">
+            {isIdle && (
+              <>
+                <BagCartIconMini className="-ml-5 mr-1 inline-block -translate-y-0.5" />
+                <span>Add to Cart</span>
+              </>
+            )}
+            {isPending && <Spinner size={24} className="text-primary-50" />}
+            {isSuccess && (
+              <>
+                <Check
+                  strokeWidth={2.5}
+                  className="-ml-5 inline-block h-5 w-5"
+                />
+                <span>Added to cart</span>
+              </>
+            )}
+          </span>
         </Button>
       </div>
     </form>
