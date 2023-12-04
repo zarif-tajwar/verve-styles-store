@@ -6,7 +6,7 @@ const NewsLetterSubscription = () => {
   return (
     <div className="container-main">
       <div className="flex items-center justify-between gap-8 rounded-main bg-black px-16 py-9">
-        <p className="max-w-[35rem] font-integral-cf text-[2.5rem] font-bold uppercase leading-[1.125] text-white">
+        <p className="max-w-[35rem] font-integral-cf text-[2.5rem] font-bold uppercase leading-[1.125] text-white selection:bg-primary-50 selection:text-primary-900">
           Stay upto date about our latest offers
         </p>
         <form className="grid w-full max-w-[22.5rem] grid-cols-1 grid-rows-2 gap-4">

@@ -40,14 +40,14 @@ const CustomerReviews = () => {
 
   return (
     <section className="mt-20 overflow-x-hidden" id="reviews">
-      <div>
-        <div className="container-main flex items-end justify-between">
+      <div className="container-main">
+        <div className="flex w-full items-end justify-between">
           <h2>Our Happy Customers</h2>
           <div className="flex items-center gap-2">
             <Button
               variant={'outline'}
               size={'square'}
-              className="rotate-180"
+              className="rotate-180 select-none"
               disabled={currCard === 0}
               onClick={goLeft}
               aria-hidden={currCard === 0}
@@ -62,62 +62,55 @@ const CustomerReviews = () => {
               aria-hidden={currCard > Reviews.length - 1 - cardsPerSlide}
               aria-label="Go left"
               onClick={goRight}
+              className="select-none"
             >
               <ArrowRight />
             </Button>
           </div>
         </div>
         <div className="mt-10">
-          <div className="container-main">
-            <AnimatePresence initial={false}>
-              <motion.div
-                className="relative grid w-max cursor-grab touch-none select-none bg-primary-0"
-                style={{
-                  gridTemplateColumns: `repeat(${Reviews.length}, 1fr)`,
-                }}
-                onViewportEnter={() => {
-                  setIsVisible(true);
-                }}
-                onViewportLeave={() => {
-                  setIsVisible(false);
-                }}
-                onPanStart={(_, info) => {
-                  if (info.delta.x > 0) goLeft();
-                  if (info.delta.x < 0) goRight();
-                }}
-              >
-                {Reviews.map((review, i) => {
-                  const isNotHighlighted = !(
-                    i >= currCard && i < currCard + cardsPerSlide
-                  );
-                  return (
-                    <motion.div
-                      animate={{
-                        x: `${currCard * -100}%`,
-                        transition: {
-                          duration: 0.5,
-                          filter: {
-                            delay: 0.25,
-                          },
-                        },
-                        opacity: isNotHighlighted ? 0.4 : 1,
-                      }}
-                      key={i}
-                      className={cn(
-                        'relative z-50 h-full w-max bg-primary-0 pr-5',
-                      )}
-                      aria-disabled={isNotHighlighted}
-                    >
-                      <ReviewCard
-                        review={review}
-                        className="h-full w-full max-w-[25rem]"
-                      />
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          <AnimatePresence initial={false}>
+            <motion.div
+              className="relative h-[17rem] w-full cursor-grab touch-none select-none gap-y-5 bg-primary-0"
+              // style={{
+              //   gridTemplateColumns: `repeat(${Reviews.length}, 1fr)`,
+              // }}
+              onViewportEnter={() => {
+                setIsVisible(true);
+              }}
+              onViewportLeave={() => {
+                setIsVisible(false);
+              }}
+              onPanStart={(_, info) => {
+                if (info.delta.x > 0) goLeft();
+                if (info.delta.x < 0) goRight();
+              }}
+            >
+              {Reviews.map((review, i) => {
+                const isNotHighlighted = !(
+                  i >= currCard && i < currCard + cardsPerSlide
+                );
+                return (
+                  <motion.div
+                    animate={{
+                      x: `calc(${(i - currCard) * 100}% + ${
+                        (i - currCard) * 1.25
+                      }rem)`,
+                      opacity: isNotHighlighted ? 0.4 : 1,
+                    }}
+                    transition={{ type: 'spring', bounce: 0.2 }}
+                    key={i}
+                    className={cn(
+                      'absolute z-50 h-full w-[32.34%] bg-primary-0',
+                    )}
+                    aria-disabled={isNotHighlighted}
+                  >
+                    <ReviewCard review={review} className="h-full w-full" />
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>
@@ -197,7 +190,7 @@ const ReviewCard = ({ review, className, ...props }: ReviewCardProps) => {
         <p className="font-bold">{review.name}</p>
         <Verified />
       </div>
-      <blockquote className="mt-2 leading-relaxed text-primary-400">
+      <blockquote className="mt-2 line-clamp-5 leading-relaxed text-primary-400">
         {review.quote}
       </blockquote>
     </div>
