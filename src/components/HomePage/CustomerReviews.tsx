@@ -43,7 +43,7 @@ const CustomerReviews = () => {
       <div className="container-main">
         <div className="flex w-full items-end justify-between">
           <h2>Our Happy Customers</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex select-none items-center gap-2">
             <Button
               variant={'outline'}
               size={'square'}
@@ -163,6 +163,11 @@ const Reviews: Review[] = [
     name: 'James L.',
     quote:
       "As someone who's always on the lookout for unique fashion pieces, I'm thrilled to have stumbled upon Shop.co. The selection of clothes is not only diverse but also on-point with the latest trends.",
+  },
+  {
+    name: 'Alex K.',
+    quote:
+      'Finding clothes that align with my personal style used to be a challenge until I discovered Shop.co. The range of options they offer is truly remarkable, catering to a variety of tastes and occasions',
   },
   {
     name: 'Alex K.',
