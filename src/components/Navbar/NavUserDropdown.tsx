@@ -4,6 +4,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Button } from '../UI/Button';
 import Link from 'next/link';
 import { cn } from '@/lib/util';
+import { Gift, LogIn, User, User2 } from 'lucide-react';
 
 const NavUserDropdown = () => {
   return (
@@ -43,24 +44,7 @@ const NavUserDropdown = () => {
               href={'/sign-in'}
               className="inline-flex w-full items-center gap-2.5 px-2 py-3"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-5 w-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z"
-                  clipRule="evenodd"
-                />
-                <path
-                  fillRule="evenodd"
-                  d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z"
-                  clipRule="evenodd"
-                />
-              </svg>
-
+              <LogIn className="h-5 w-5" />
               <span>Login</span>
             </Link>
           </DropdownMenu.DropdownMenuItem>
@@ -69,7 +53,16 @@ const NavUserDropdown = () => {
               href={'/sign-up'}
               className="inline-flex w-full items-center gap-2.5 px-2 py-3"
             >
-              <svg
+              <Gift className="h-5 w-5" />
+              <span>Sign Up</span>
+            </Link>
+          </DropdownMenu.DropdownMenuItem>
+          <DropdownMenu.DropdownMenuItem className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0">
+            <Link
+              href={'/my-account'}
+              className="inline-flex w-full items-center gap-2.5 px-2 py-3"
+            >
+              {/* <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
@@ -81,9 +74,10 @@ const NavUserDropdown = () => {
                   clipRule="evenodd"
                 />
                 <path d="M9.25 10.5H3v4.75A2.75 2.75 0 005.75 18h3.5v-7.5zM10.75 18v-7.5H17v4.75A2.75 2.75 0 0114.25 18h-3.5z" />
-              </svg>
+              </svg> */}
+              <User2 className="h-5 w-5" />
 
-              <span>Sign Up</span>
+              <span>My Account</span>
             </Link>
           </DropdownMenu.DropdownMenuItem>
         </DropdownMenu.Content>
