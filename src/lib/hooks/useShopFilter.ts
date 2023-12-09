@@ -10,6 +10,7 @@ import {
 import { shopFilterKeys } from '@/lib/validation/schemas';
 import { URL_QUERY_SEPERATORS } from '@/lib/validation/constants';
 import { quickSortByReference } from '../util';
+import { type SearchParamsServer } from '@/lib/types/common';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
