@@ -12,6 +12,9 @@ const authConfig = {
       return session;
     },
   },
+  pages: {
+    signIn: '/sign-in',
+  },
 } satisfies NextAuthConfig;
 
 export const { auth, handlers, signOut, signIn } = NextAuth(authConfig);

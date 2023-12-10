@@ -474,3 +474,71 @@ export const CartIcon = ({ ...props }: SvgIconProps) => (
     <circle cx="9" cy="20" r="2"></circle>
   </svg>
 );
+
+export const GoogleIcon = ({ className, ...props }: SvgIconProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 89.97 91.8"
+      className={cn('h-6 w-6', className)}
+      {...props}
+    >
+      <g>
+        <g>
+          <path
+            d="m89.97,47c0-3.1-.3-6.3-.8-9.3h-43.3v17.7h24.8c-1,5.7-4.3,10.7-9.2,13.9l14.8,11.5c8.7-8.1,13.7-19.9,13.7-33.8h0Z"
+            fill="#4280ef"
+            strokeWidth="0"
+          />
+          <path
+            d="m45.88,91.8c12.4,0,22.8-4.1,30.4-11.1l-14.8-11.4c-4.1,2.8-9.4,4.4-15.6,4.4-12,0-22.1-8.1-25.8-18.9l-15.2,11.7c7.8,15.5,23.6,25.3,41,25.3Z"
+            fill="#34a353"
+            strokeWidth="0"
+          />
+          <path
+            d="m20.07,54.7c-1.9-5.7-1.9-11.9,0-17.6l-15.2-11.8c-6.5,13-6.5,28.3,0,41.2l15.2-11.8Z"
+            fill="#f6b704"
+            strokeWidth="0"
+          />
+          <path
+            d="m45.88,18.2c6.5-.1,12.9,2.4,17.6,6.9l13.1-13.2C68.28,4.1,57.28-.1,45.88,0,28.47,0,12.67,9.8,4.88,25.3l15.2,11.8c3.7-10.9,13.8-18.9,25.8-18.9Z"
+            fill="#e54335"
+            strokeWidth="0"
+          />
+        </g>
+      </g>
+    </svg>
+  );
+};
+
+export const FacebookIcon = ({ className, ...props }: SvgIconProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 40 40"
+      className={cn('h-6 w-6', className)}
+      {...props}
+    >
+      <linearGradient
+        id="a"
+        x1="-277.375"
+        x2="-277.375"
+        y1="406.6018"
+        y2="407.5726"
+        gradientTransform="matrix(40 0 0 -39.7778 11115.001 16212.334)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop offset="0" stop-color="#0062e0" />
+        <stop offset="1" stop-color="#19afff" />
+      </linearGradient>
+      <path
+        fill="url(#a)"
+        d="M16.7 39.8C7.2 38.1 0 29.9 0 20 0 9 9 0 20 0s20 9 20 20c0 9.9-7.2 18.1-16.7 19.8l-1.1-.9h-4.4l-1.1.9z"
+      />
+      <path
+        fill="#fff"
+        d="m27.8 25.6.9-5.6h-5.3v-3.9c0-1.6.6-2.8 3-2.8H29V8.2c-1.4-.2-3-.4-4.4-.4-4.6 0-7.8 2.8-7.8 7.8V20h-5v5.6h5v14.1c1.1.2 2.2.3 3.3.3 1.1 0 2.2-.1 3.3-.3V25.6h4.4z"
+      />
+    </svg>
+  );
+};

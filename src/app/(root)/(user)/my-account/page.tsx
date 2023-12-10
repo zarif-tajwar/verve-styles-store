@@ -27,4 +27,5 @@ const AccountPage = async () => {
     </div>
   );
 };
+
 export default AccountPage;
