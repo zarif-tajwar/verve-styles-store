@@ -254,6 +254,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                             type: 'spring',
                             bounce: 0.4,
                           }}
+                          className="will-change-transform"
                         >
                           <History size={16} />
                         </motion.span>

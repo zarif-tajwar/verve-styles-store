@@ -10,6 +10,7 @@ import * as usersSchema from './schema/users';
 import * as userReviewsSchema from './schema/userReviews';
 import * as ordersSchema from './schema/orders';
 import * as orderLineSchema from './schema/orderLine';
+import * as authSchema from './schema/auth';
 import { Pool } from 'pg';
 import 'dotenv/config';
 
@@ -31,6 +32,7 @@ export const db = drizzle(connection, {
     ...userReviewsSchema,
     ...ordersSchema,
     ...orderLineSchema,
+    ...authSchema,
   },
   // logger: true,
 });
