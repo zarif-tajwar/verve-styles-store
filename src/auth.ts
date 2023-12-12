@@ -1,10 +1,11 @@
 import NextAuth, { type NextAuthConfig } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from './lib/db';
 
 const authConfig = {
-  providers: [GoogleProvider({})],
+  providers: [GoogleProvider({}), FacebookProvider({})],
   adapter: DrizzleAdapter(db),
   callbacks: {
     session: async ({ session, user }) => {
@@ -15,6 +16,7 @@ const authConfig = {
   pages: {
     signIn: '/sign-in',
   },
+  trustHost: true,
 } satisfies NextAuthConfig;
 
 export const { auth, handlers, signOut, signIn } = NextAuth(authConfig);

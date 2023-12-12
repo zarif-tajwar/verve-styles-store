@@ -44,7 +44,7 @@
     "geist": "^1.2.0",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.294.0",
-    "next": "14.0.3",
+    "next": "14.0.4",
     "next-auth": "5.0.0-beta.4",
     "next-usequerystate": "^1.13.1",
     "nextjs-toploader": "^1.6.4",
