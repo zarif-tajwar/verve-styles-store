@@ -70,3 +70,15 @@ export const priceFormat = (priceInNumber: number) => {
     maximumFractionDigits: 2,
   }).format(priceInNumber);
 };
+
+export const getStrIndexPositions = (str: string, subStr: string): number[] => {
+  let positions: number[] = [];
+  let index = str.indexOf(subStr);
+
+  while (index !== -1) {
+    positions.push(index);
+    index = str.indexOf(subStr, index + 1);
+  }
+
+  return positions;
+};

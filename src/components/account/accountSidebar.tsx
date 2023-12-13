@@ -1,14 +1,17 @@
+'use client';
+
 import { BookUser, FileClock, KeyRound, UserRoundCog } from 'lucide-react';
 import { Button } from '../UI/Button';
-import { AddressIcon } from '../Svgs/icons';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/util';
 
 const sidebarAreas = [
   {
     heading: 'Information',
     links: [
-      { icon: BookUser, text: 'Addresses', href: '/my-account/addresses' },
       { icon: FileClock, text: 'Orders', href: '/my-account/orders' },
+      { icon: BookUser, text: 'Addresses', href: '/my-account/addresses' },
     ],
   },
   {
@@ -17,7 +20,7 @@ const sidebarAreas = [
       {
         icon: KeyRound,
         text: 'Email & Accounts',
-        href: '/my-account/addresses',
+        href: '/my-account/login-options',
       },
       {
         icon: UserRoundCog,
@@ -29,8 +32,9 @@ const sidebarAreas = [
 ];
 
 const AccountSidebar = () => {
+  const pathname = usePathname();
   return (
-    <aside className="min-h-[30rem] min-w-[14rem] rounded-xl px-4 py-6 ring-1 ring-primary-50">
+    <aside className="min-h-[30rem] min-w-[14rem] rounded-main px-4 py-6 ring-1 ring-primary-50">
       <div className="flex flex-col gap-8">
         {sidebarAreas.map((area) => {
           return (
@@ -44,9 +48,15 @@ const AccountSidebar = () => {
                     <Button
                       key={link.text}
                       variant={'ghost'}
+                      // variant={}
+
                       roundness={'lg'}
                       align={'left'}
-                      className="gap-2"
+                      className={cn(
+                        'gap-2',
+                        pathname.includes(link.href) &&
+                          'bg-primary-500 text-primary-0 hover:bg-primary-500 hover:text-primary-0',
+                      )}
                       asChild
                     >
                       <Link href={link.href}>

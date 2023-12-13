@@ -60,7 +60,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 asChild
               >
                 <Link
-                  href={'/my-account'}
+                  href={'/my-account/orders'}
                   className="inline-flex w-full items-center gap-2.5 px-2 py-3"
                 >
                   <FileClock className="h-5 w-5" />
