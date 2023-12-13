@@ -5,7 +5,7 @@ import { Search } from '../Svgs/icons';
 
 const SearchProduct = () => {
   return (
-    <div className="relative">
+    <search className="relative">
       <input
         type="text"
         placeholder="Search for products..."
@@ -16,7 +16,7 @@ const SearchProduct = () => {
         )}
       />
       <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-300 transition-colors duration-200 peer-focus-visible:text-primary-400" />
-    </div>
+    </search>
   );
 };
 export default SearchProduct;

@@ -14,7 +14,7 @@ const authConfig = {
     },
   },
   pages: {
-    signIn: '/sign-in',
+    signIn: '/auth/sign-in',
   },
   trustHost: true,
 } satisfies NextAuthConfig;

@@ -46,7 +46,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
               asChild
             >
               <Link
-                href={'/sign-in'}
+                href={'/auth/sign-in'}
                 className="inline-flex w-full items-center gap-2.5 px-2 py-3"
               >
                 <LogIn className="h-5 w-5" />
