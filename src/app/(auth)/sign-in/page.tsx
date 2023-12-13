@@ -6,14 +6,14 @@ import { redirect } from 'next/navigation';
 
 const SignInPage = async () => {
   const session = await auth();
-  if (session) redirect('/shop');
+  // if (session) redirect('/shop');
 
   return (
-    <div className="flex h-[100vh] w-screen items-center justify-center bg-primary-50 p-8 sm:bg-primary-100">
-      <main className="max-h-[50rem] w-full max-w-6xl rounded-main sm:h-full sm:bg-primary-0 sm:p-6 sm:pr-12 lg:py-2 lg:pl-2 lg:pr-6">
+    <div className="flex h-[100vh] w-screen items-center justify-center bg-primary-50 p-8 sm:bg-primary-50">
+      <main className="max-h-[50rem] w-full max-w-6xl rounded-main shadow-light-drop sm:h-full sm:bg-primary-0 sm:p-6 sm:pr-12 lg:py-2 lg:pl-2 lg:pr-6">
         <div className="relative h-full grid-cols-[2fr_1fr] sm:grid lg:grid-cols-[0.8fr_1fr] lg:gap-6 xl:grid-cols-2">
           {/* Login Visual */}
-          <div className="relative hidden overflow-hidden rounded-2xl sm:block sm:landscape:hidden lg:landscape:block">
+          <div className="relative hidden overflow-hidden rounded-2xl lg:block">
             <Image
               src={'/sign-in-image-2.jpg'}
               // fill

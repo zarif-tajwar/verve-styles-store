@@ -86,7 +86,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 <button
                   className="inline-flex w-full items-center gap-2.5 px-2 py-3"
                   onClick={async () => {
-                    await signOutAction();
+                    await signOutAction({ redirectTo: '/shop' });
                   }}
                 >
                   <LogOut className="h-5 w-5" />
