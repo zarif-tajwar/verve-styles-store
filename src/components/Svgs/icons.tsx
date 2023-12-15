@@ -543,6 +543,24 @@ export const FacebookIcon = ({ className, ...props }: SvgIconProps) => {
   );
 };
 
+export const YahooIcon = ({ className, ...props }: SvgIconProps) => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      {...props}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0 6.2166H4.57726L7.24258 13.0648L9.94256 6.2166H14.3988L7.68851 22.4286H3.20332L5.04027 18.1327L0.000141746 6.2166H0ZM19.5882 11.6885H14.5969L19.0269 1L24 1.00021L19.5882 11.6885ZM15.9043 12.7115C17.4358 12.7115 18.6772 13.9584 18.6772 15.4962C18.6772 17.0341 17.4358 18.2809 15.9043 18.2809C14.373 18.2809 13.1318 17.0341 13.1318 15.4962C13.1318 13.9584 14.3733 12.7115 15.9043 12.7115Z"
+        fill="#5F01D1"
+      />
+    </svg>
+  );
+};
+
 export const AddressIcon = ({ className, ...props }: SvgIconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

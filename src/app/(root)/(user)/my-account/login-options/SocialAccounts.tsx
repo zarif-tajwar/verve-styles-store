@@ -1,21 +1,42 @@
-import { GoogleIcon, FacebookIcon } from '@/components/Svgs/icons';
+import { auth } from '@/auth';
+import { GoogleIcon, FacebookIcon, YahooIcon } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
+import { db } from '@/lib/db';
+import { accounts } from '@/lib/db/schema/auth';
 import { cn, wait } from '@/lib/util';
+import { and, eq } from 'drizzle-orm';
 import { Check, Link as LinkIcon } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import ConnectAccountButton from './ConnectAccountButton';
+import { SvgIconProps } from '@/lib/types/common';
+import { BuiltInProviderType } from '@auth/core/providers';
+import { Session } from 'next-auth/types';
 
-const providers = [
-  { label: 'Google', icon: GoogleIcon },
-  { label: 'facebook', icon: FacebookIcon },
+type Providers = {
+  label: string;
+  icon: typeof GoogleIcon;
+  provider: BuiltInProviderType;
+}[];
+
+const providers: Providers = [
+  { label: 'Google', icon: GoogleIcon, provider: 'google' },
+  { label: 'facebook', icon: FacebookIcon, provider: 'facebook' },
 ];
 
-const SocialAccounts = async () => {
-  await wait(700);
+const SocialAccounts = async ({ session }: { session: Session }) => {
+  const linkedSocialProviders = await db
+    .select({
+      provider: accounts.provider,
+    })
+    .from(accounts)
+    .where(and(eq(accounts.userId, session.user.id)));
 
   return (
-    <div className="mt-8 grid w-full grid-cols-2 gap-16">
+    <div className="grid w-full grid-cols-2 gap-16">
       {providers.map((provider) => {
-        const isLoggedIn = provider.label === 'Google';
-
+        const isLoggedIn = linkedSocialProviders.some(
+          (linked) => linked.provider === provider.provider,
+        );
         return (
           <div
             key={provider.label}
@@ -38,7 +59,6 @@ const SocialAccounts = async () => {
                   'gap-2 font-semibold',
                   'text-emerald-500 ring-emerald-500',
                   'cursor-default hover:bg-transparent hover:ring-emerald-500',
-                  // 'bg-emerald-500',
                 )}
                 variant={'outline'}
               >
@@ -46,14 +66,7 @@ const SocialAccounts = async () => {
                 Linked
               </Button>
             ) : (
-              <Button
-                className={cn(
-                  'min-w-[96px] justify-start gap-2 pl-4 font-medium',
-                )}
-              >
-                <LinkIcon className="h-4 w-4" />
-                Link
-              </Button>
+              <ConnectAccountButton provider={provider.provider} />
             )}
           </div>
         );
