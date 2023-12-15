@@ -1,4 +1,10 @@
+import WIP from '@/components/UI/WIP';
+
 const AddressesPage = () => {
-  return <div>Addresses</div>;
+  return (
+    <div>
+      <WIP />
+    </div>
+  );
 };
 export default AddressesPage;

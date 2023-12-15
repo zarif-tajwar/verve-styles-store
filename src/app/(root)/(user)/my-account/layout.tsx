@@ -9,10 +9,12 @@ const labels = new Map([
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="container-main flex gap-8 pt-12">
-      <AccountSidebar />
-      <div>
+      <div className="pt-4">
+        <AccountSidebar />
+      </div>
+      <div className="flex-grow">
         <Breadcumb customLabels={labels} />
-        {children}
+        <div className="w-full pt-4">{children}</div>
       </div>
     </div>
   );

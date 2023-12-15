@@ -1,4 +1,10 @@
+import WIP from '@/components/UI/WIP';
+
 const PreferencesPage = () => {
-  return <div>Preferences</div>;
+  return (
+    <div>
+      <WIP />
+    </div>
+  );
 };
 export default PreferencesPage;

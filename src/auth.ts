@@ -4,9 +4,11 @@ import FacebookProvider from 'next-auth/providers/facebook';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from './lib/db';
 
+export const authAdapter = DrizzleAdapter(db);
+
 const authConfig = {
   providers: [GoogleProvider({}), FacebookProvider({})],
-  adapter: DrizzleAdapter(db),
+  adapter: authAdapter,
   callbacks: {
     session: async ({ session, user }) => {
       session.user.id = user.id;
