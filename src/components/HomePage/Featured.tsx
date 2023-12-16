@@ -39,7 +39,9 @@ const MotionVariantsItem: Variants = {
 const FeaturedItem = ({ title }: { title: string }) => {
   return (
     <div className="py-16 text-center">
-      <h2 className="mb-14">{title}</h2>
+      <h2 className="mb-14 font-integral-cf text-5xl font-bold uppercase">
+        {title}
+      </h2>
       <motion.div
         className="mb-9 grid grid-cols-4 gap-5"
         variants={MotionVariantsParent}

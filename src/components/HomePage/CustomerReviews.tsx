@@ -42,7 +42,9 @@ const CustomerReviews = () => {
     <section className="mt-20 overflow-x-hidden" id="reviews">
       <div className="container-main">
         <div className="flex w-full items-end justify-between">
-          <h2>Our Happy Customers</h2>
+          <h2 className="font-integral-cf text-5xl font-bold uppercase">
+            Our Happy Customers
+          </h2>
           <div className="flex select-none items-center gap-2">
             <Button
               variant={'outline'}

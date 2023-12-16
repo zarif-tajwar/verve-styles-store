@@ -48,7 +48,7 @@ const SocialAccounts = async ({ session }: { session: Session }) => {
                 <span className="text-lg/none">{provider.label}</span>
                 {isLoggedIn && (
                   <span className="text-sm/none font-medium text-primary-400">
-                    zariftjwr@gmail.com
+                    placeholder@email.com
                   </span>
                 )}
               </div>

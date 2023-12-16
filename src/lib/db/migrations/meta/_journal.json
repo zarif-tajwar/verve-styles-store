@@ -127,6 +127,13 @@
       "when": 1702182336242,
       "tag": "0017_skinny_rhodey",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1702736742349,
+      "tag": "0018_lazy_namorita",
+      "breakpoints": true
     }
   ]
 }

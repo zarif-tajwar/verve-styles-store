@@ -7,12 +7,13 @@ import {
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccount } from '@auth/core/adapters';
 
-export const authUsers = pgTable('user', {
+export const user = pgTable('user', {
   id: text('id').notNull().primaryKey(),
   name: text('name'),
-  email: text('email').notNull(),
+  email: text('email'),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
+  role: text('role'),
 });
 
 export const accounts = pgTable(
@@ -20,7 +21,7 @@ export const accounts = pgTable(
   {
     userId: text('userId')
       .notNull()
-      .references(() => authUsers.id, { onDelete: 'cascade' }),
+      .references(() => user.id, { onDelete: 'cascade' }),
     type: text('type').$type<AdapterAccount['type']>().notNull(),
     provider: text('provider').notNull(),
     providerAccountId: text('providerAccountId').notNull(),
@@ -41,7 +42,7 @@ export const sessions = pgTable('session', {
   sessionToken: text('sessionToken').notNull().primaryKey(),
   userId: text('userId')
     .notNull()
-    .references(() => authUsers.id, { onDelete: 'cascade' }),
+    .references(() => user.id, { onDelete: 'cascade' }),
   expires: timestamp('expires', { mode: 'date' }).notNull(),
 });
 
