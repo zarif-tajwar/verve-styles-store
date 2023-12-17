@@ -2,7 +2,12 @@ import { redirect } from 'next/navigation';
 import LogoutButton from './LogoutButton';
 
 const AccountPage = async () => {
-  const session : any = {}
+  const session = {
+    user: {
+      name: 'John Doe',
+      email: 'placeholder@gmail.com',
+    },
+  };
 
   // if (!session?.user) {
   //   redirect('/api/auth/signin?callbackUrl=/my-account');
@@ -16,8 +21,7 @@ const AccountPage = async () => {
           <div>Email</div>
           <div>{session?.user.email}</div>
         </div>
-        <LogoutButton
-        />
+        <LogoutButton />
       </main>
     </div>
   );

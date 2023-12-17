@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Logo from '../UI/Logo';
 import DesktopMenu from './DesktopMenu';
+import { UserButton } from '@clerk/nextjs';
 
 const Navbar = () => {
   return (

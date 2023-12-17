@@ -55,7 +55,7 @@ const AccountSidebar = () => {
                       className={cn(
                         'gap-2',
                         pathname.includes(link.href) &&
-                          'bg-primary-500 text-primary-0 hover:bg-primary-500 hover:text-primary-0',
+                          'bg-primary-50 font-medium',
                       )}
                       asChild
                     >

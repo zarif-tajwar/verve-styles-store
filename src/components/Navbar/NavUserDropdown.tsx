@@ -4,10 +4,21 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Button } from '../UI/Button';
 import Link from 'next/link';
 import { cn } from '@/lib/util';
-import { FileClock, LogIn, LogOut, User2 } from 'lucide-react';
-import { signOutAction } from '@/lib/actions/auth';
+import { FileClock, GiftIcon, LogIn, LogOut, User2 } from 'lucide-react';
+import {
+  SignInButton,
+  SignInWithMetamaskButton,
+  UserButton,
+  useClerk,
+  useAuth,
+  SignUpButton,
+  SignOutButton,
+  auth,
+  useUser,
+} from '@clerk/nextjs';
 
-const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+const NavUserDropdown = () => {
+  const { isSignedIn, isLoaded } = useUser();
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -36,27 +47,41 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
           align="end"
           sideOffset={4}
           className={cn(
-            'w-44 origin-top-right rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
+            'flex min-w-[13rem] origin-top-right flex-col rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
         >
-          {!isLoggedIn ? (
-            <DropdownMenu.DropdownMenuItem
-              className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0"
-              asChild
-            >
-              <Link
-                href={'/auth/sign-in'}
-                className="inline-flex w-full items-center gap-2.5 px-2 py-3"
-              >
-                <LogIn className="h-5 w-5" />
-                <span>Login</span>
-              </Link>
-            </DropdownMenu.DropdownMenuItem>
+          {!isSignedIn ? (
+            <>
+              <SignInButton>
+                <DropdownMenu.DropdownMenuItem
+                  className={cn(
+                    'rounded-lg text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0',
+                    'inline-flex w-full items-center gap-2.5 px-2 py-3',
+                    'cursor-pointer',
+                  )}
+                >
+                  <LogIn className="h-5 w-5" />
+                  <span>Login</span>
+                </DropdownMenu.DropdownMenuItem>
+              </SignInButton>
+              <SignUpButton>
+                <DropdownMenu.DropdownMenuItem
+                  className={cn(
+                    'rounded-lg text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0',
+                    'inline-flex w-full items-center gap-2.5 px-2 py-3',
+                    'cursor-pointer',
+                  )}
+                >
+                  <GiftIcon className="h-5 w-5" />
+                  <span>Sign up</span>
+                </DropdownMenu.DropdownMenuItem>
+              </SignUpButton>
+            </>
           ) : (
             <>
               <DropdownMenu.DropdownMenuItem
-                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0"
+                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0"
                 asChild
               >
                 <Link
@@ -68,7 +93,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 </Link>
               </DropdownMenu.DropdownMenuItem>
               <DropdownMenu.DropdownMenuItem
-                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0"
+                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0"
                 asChild
               >
                 <Link
@@ -80,19 +105,28 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 </Link>
               </DropdownMenu.DropdownMenuItem>
               <DropdownMenu.DropdownMenuItem
-                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0"
+                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0"
                 asChild
               >
-                <button
+                <Link
+                  href={'/my-profile'}
                   className="inline-flex w-full items-center gap-2.5 px-2 py-3"
-                  onClick={async () => {
-                    await signOutAction({ redirectTo: '/shop' });
-                  }}
+                >
+                  <User2 className="h-5 w-5" />
+                  <span>My Account (clerk)</span>
+                </Link>
+              </DropdownMenu.DropdownMenuItem>
+              <SignOutButton>
+                <DropdownMenu.DropdownMenuItem
+                  className={cn(
+                    'rounded-lg text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0',
+                    'inline-flex w-full cursor-pointer items-center gap-2.5 px-2 py-3',
+                  )}
                 >
                   <LogOut className="h-5 w-5" />
                   <span>Logout</span>
-                </button>
-              </DropdownMenu.DropdownMenuItem>
+                </DropdownMenu.DropdownMenuItem>
+              </SignOutButton>
             </>
           )}
         </DropdownMenu.Content>

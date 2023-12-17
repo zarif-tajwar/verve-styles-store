@@ -2,6 +2,9 @@ import '@/app/globals.css';
 import type { Metadata } from 'next';
 import IntegralCF from './_fonts/integral-cf/font';
 import Geist from './_fonts/geist/font';
+import Provider from '@/lib/provider/provider';
+import { ClerkProvider } from '@clerk/nextjs';
+import CustomizedClerkProvider from '@/lib/provider/clerk-provider';
 
 export const metadata: Metadata = {
   title: 'Clothy - Shop',
@@ -15,11 +18,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`${IntegralCF.variable} ${Geist.variable} bg-primary-0 font-geist font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
-      >
-        {children}
-      </body>
+      <CustomizedClerkProvider>
+        <body
+          className={`${IntegralCF.variable} ${Geist.variable} bg-primary-0 font-geist font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
+        >
+          <Provider>{children}</Provider>
+        </body>
+      </CustomizedClerkProvider>
     </html>
   );
 }
