@@ -1,4 +1,3 @@
-import { auth } from '@/auth';
 import { GoogleIcon, FacebookIcon, YahooIcon } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
 import { db } from '@/lib/db';
@@ -9,13 +8,11 @@ import { Check, Link as LinkIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import ConnectAccountButton from './ConnectAccountButton';
 import { SvgIconProps } from '@/lib/types/common';
-import { BuiltInProviderType } from '@auth/core/providers';
-import { Session } from 'next-auth/types';
 
 type Providers = {
   label: string;
   icon: typeof GoogleIcon;
-  provider: BuiltInProviderType;
+  provider: string;
 }[];
 
 const providers: Providers = [
@@ -23,13 +20,17 @@ const providers: Providers = [
   { label: 'facebook', icon: FacebookIcon, provider: 'facebook' },
 ];
 
-const SocialAccounts = async ({ session }: { session: Session }) => {
-  const linkedSocialProviders = await db
-    .select({
-      provider: accounts.provider,
-    })
-    .from(accounts)
-    .where(and(eq(accounts.userId, session.user.id)));
+const SocialAccounts = async () => {
+  const linkedSocialProviders = [
+    { provider: 'google' },
+    { provider: 'facebook' },
+  ];
+  // const linkedSocialProviders = await db
+  //   .select({
+  //     provider: accounts.provider,
+  //   })
+  //   .from(accounts)
+  //   .where(and(eq(accounts.userId, session.user.id)));
 
   return (
     <div className="grid w-full grid-cols-2 gap-16">
@@ -66,7 +67,7 @@ const SocialAccounts = async ({ session }: { session: Session }) => {
                 Linked
               </Button>
             ) : (
-              <ConnectAccountButton provider={provider.provider} />
+              <ConnectAccountButton />
             )}
           </div>
         );

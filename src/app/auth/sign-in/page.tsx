@@ -1,11 +1,9 @@
 import { FacebookIcon, GoogleIcon } from '@/components/Svgs/icons';
 import Image from 'next/image';
 import SignInButton from './SignInButton';
-import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
 const SignInPage = async () => {
-  const session = await auth();
   // if (session) redirect('/shop');
 
   return (

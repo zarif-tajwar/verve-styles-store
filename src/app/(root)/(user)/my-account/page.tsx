@@ -1,9 +1,8 @@
-import { auth, signOut } from '@/auth';
 import { redirect } from 'next/navigation';
 import LogoutButton from './LogoutButton';
 
 const AccountPage = async () => {
-  const session = await auth();
+  const session : any = {}
 
   // if (!session?.user) {
   //   redirect('/api/auth/signin?callbackUrl=/my-account');
@@ -18,10 +17,6 @@ const AccountPage = async () => {
           <div>{session?.user.email}</div>
         </div>
         <LogoutButton
-          handleLogout={async () => {
-            'use server';
-            await signOut({ redirectTo: '/shop' });
-          }}
         />
       </main>
     </div>

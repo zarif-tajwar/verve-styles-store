@@ -4,12 +4,12 @@ import { Button } from '@/components/UI/Button';
 const LogoutButton = ({
   handleLogout,
 }: {
-  handleLogout: () => Promise<void>;
+  handleLogout?: () => Promise<void>;
 }) => {
   return (
     <Button
       onClick={async () => {
-        await handleLogout();
+        await handleLogout?.();
       }}
     >
       Logout

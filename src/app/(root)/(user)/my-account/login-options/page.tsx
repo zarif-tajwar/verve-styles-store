@@ -2,14 +2,9 @@ import { cn } from '@/lib/util';
 import SocialAccounts from './SocialAccounts';
 import { Suspense } from 'react';
 import LoadingState from './LoadingState';
-import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
 const LoginOptions = async () => {
-  const session = await auth();
-  if (!session) {
-    redirect('/auth/sign-in');
-  }
 
   return (
     <div className="w-full">
@@ -24,7 +19,7 @@ const LoginOptions = async () => {
       <div className={cn('mt-8 min-h-[32rem] rounded-main')}>
         <h2 className="mb-16 text-xl font-semibold">Social Accounts</h2>
         <Suspense fallback={<LoadingState />}>
-          <SocialAccounts session={session} />
+          <SocialAccounts />
         </Suspense>
       </div>
     </div>
