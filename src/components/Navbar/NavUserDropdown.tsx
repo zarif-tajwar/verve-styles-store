@@ -42,7 +42,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         >
           {!isLoggedIn ? (
             <DropdownMenu.DropdownMenuItem
-              className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0"
+              className="rounded-lg font-medium text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-500 data-[highlighted]:outline-0"
               asChild
             >
               <Link
@@ -56,7 +56,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
           ) : (
             <>
               <DropdownMenu.DropdownMenuItem
-                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0"
+                className="rounded-lg font-medium text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-500 data-[highlighted]:outline-0"
                 asChild
               >
                 <Link
@@ -68,7 +68,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 </Link>
               </DropdownMenu.DropdownMenuItem>
               <DropdownMenu.DropdownMenuItem
-                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0"
+                className="rounded-lg font-medium text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-500 data-[highlighted]:outline-0"
                 asChild
               >
                 <Link
@@ -80,7 +80,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 </Link>
               </DropdownMenu.DropdownMenuItem>
               <DropdownMenu.DropdownMenuItem
-                className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0"
+                className="rounded-lg font-medium text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-500 data-[highlighted]:outline-0"
                 asChild
               >
                 <button
