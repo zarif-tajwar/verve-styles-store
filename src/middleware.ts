@@ -1,7 +1,13 @@
 import { authMiddleware } from '@clerk/nextjs';
 
 export default authMiddleware({
-  publicRoutes: ['/'],
+  publicRoutes: [
+    '/',
+    '/shop',
+    '/categories',
+    '/cart',
+    '/:category/:productName*',
+  ],
 });
 
 export const config = {

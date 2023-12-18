@@ -8,6 +8,7 @@ import { Check, Link as LinkIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import ConnectAccountButton from './ConnectAccountButton';
 import { SvgIconProps } from '@/lib/types/common';
+import { auth, currentUser } from '@clerk/nextjs';
 
 type Providers = {
   label: string;
@@ -21,22 +22,21 @@ const providers: Providers = [
 ];
 
 const SocialAccounts = async () => {
-  const linkedSocialProviders = [
-    { provider: 'google' },
-    { provider: 'facebook' },
-  ];
-  // const linkedSocialProviders = await db
-  //   .select({
-  //     provider: accounts.provider,
-  //   })
-  //   .from(accounts)
-  //   .where(and(eq(accounts.userId, session.user.id)));
+  const user = await currentUser();
+
+  const externalProviders = user?.externalAccounts;
+
+  const linkedProviders =
+    externalProviders?.map((externalProvider) => ({
+      provider: externalProvider.verification?.strategy.replace('oauth_', ''),
+      email: externalProvider.emailAddress,
+    })) || [];
 
   return (
     <div className="grid w-full grid-cols-2 gap-16">
       {providers.map((provider) => {
-        const isLoggedIn = linkedSocialProviders.some(
-          (linked) => linked.provider === provider.provider,
+        const linkedProvider = linkedProviders.find(
+          (linkedProvider) => linkedProvider.provider === provider.provider,
         );
         return (
           <div
@@ -47,14 +47,14 @@ const SocialAccounts = async () => {
               <provider.icon />
               <div className="flex flex-col gap-2">
                 <span className="text-lg/none">{provider.label}</span>
-                {isLoggedIn && (
+                {linkedProvider?.email && (
                   <span className="text-sm/none font-medium text-primary-400">
-                    placeholder@email.com
+                    {linkedProvider.email}
                   </span>
                 )}
               </div>
             </div>
-            {isLoggedIn ? (
+            {linkedProvider ? (
               <Button
                 className={cn(
                   'gap-2 font-semibold',

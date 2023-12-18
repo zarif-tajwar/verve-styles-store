@@ -1,5 +1,5 @@
 import Spinner from '@/components/UI/Spinner';
-import { ClerkLoading, SignUp } from '@clerk/nextjs';
+import { ClerkLoading, SignUp, ClerkLoaded } from '@clerk/nextjs';
 
 const SignupPage = () => {
   return (
@@ -9,10 +9,13 @@ const SignupPage = () => {
           <ClerkLoading>
             <Spinner variant={2} className="h-12 w-12" />
           </ClerkLoading>
-          <SignUp />
+          <ClerkLoaded>
+            <SignUp />
+          </ClerkLoaded>
         </div>
       </main>
     </div>
   );
 };
+
 export default SignupPage;

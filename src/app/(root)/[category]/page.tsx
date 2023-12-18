@@ -1,3 +1,4 @@
+import WIP from '@/components/UI/WIP';
 import { db } from '@/lib/db';
 import { clothing } from '@/lib/db/schema/clothing';
 import { makeValidURL } from '@/lib/util';
@@ -22,8 +23,8 @@ interface PageProps {
 
 const CategoryPage = async ({ params }: PageProps) => {
   return (
-    <div>
-      <div>Params: {params.category}</div>
+    <div className="flex items-center justify-center">
+      <WIP />
     </div>
   );
 };
