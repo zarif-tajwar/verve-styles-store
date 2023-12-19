@@ -3,14 +3,21 @@
 import { Button } from '@/components/UI/Button';
 import { signInAction } from '@/lib/actions/auth';
 import { BuiltInProviderType } from '@auth/core/providers';
-import React from 'react';
+import { ArrowRight } from 'lucide-react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 const SignInButton = ({
-  children,
   provider,
+  icon,
+  text,
+  loading,
+  setLoading,
 }: {
-  children: React.ReactNode;
   provider?: BuiltInProviderType;
+  icon: React.ReactNode;
+  text: string;
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }) => {
   return (
     <Button
@@ -19,9 +26,14 @@ const SignInButton = ({
         await signInAction(provider || 'google', { redirectTo: '/shop' });
       }}
       variant={'outline'}
-      className="w-full max-w-[26.75rem] gap-3 py-5 text-sm sm:text-base lg:gap-4 lg:py-7 lg:text-lg"
+      className="group w-full justify-start gap-4 px-5"
+      roundness={'xl'}
     >
-      {children}
+      {icon}
+      <span>{text}</span>
+      <span className="flex flex-grow -translate-x-2 justify-end opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100">
+        <ArrowRight className="h-5 w-5 text-primary-300" />
+      </span>
     </Button>
   );
 };

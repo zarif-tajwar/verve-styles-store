@@ -61,7 +61,7 @@ const authConfig = {
       // inserts email and name into provider account.
       // these extra database calls wouldn't be necessary if auth js supported custom logic
       // or provided the oauth profile object while creating an account
-      await db.transaction(async (tx) => {
+      db.transaction(async (tx) => {
         const extraInfo = (
           await tx
             .select({
