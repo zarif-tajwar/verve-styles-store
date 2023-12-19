@@ -54,7 +54,8 @@ const AccountSidebar = () => {
                       align={'left'}
                       className={cn(
                         'gap-2',
-                        pathname.includes(link.href) && 'font-medium',
+                        pathname.includes(link.href) &&
+                          'bg-primary-50 font-medium',
                       )}
                       asChild
                     >

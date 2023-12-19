@@ -36,7 +36,7 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
           align="end"
           sideOffset={4}
           className={cn(
-            'w-44 origin-top-right rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
+            'flex min-w-[13rem] origin-top-right flex-col rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
         >

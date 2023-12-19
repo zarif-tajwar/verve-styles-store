@@ -4,16 +4,19 @@ import {
   text,
   primaryKey,
   integer,
+  pgEnum,
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccount } from '@auth/core/adapters';
 
 export const user = pgTable('user', {
   id: text('id').notNull().primaryKey(),
   name: text('name'),
-  email: text('email'),
+  email: text('email').notNull(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
-  role: text('role'),
+  role: text('role', {
+    enum: ['ADMIN', 'STAFF', 'USER'],
+  }).notNull(),
 });
 
 export const accounts = pgTable(
@@ -26,6 +29,8 @@ export const accounts = pgTable(
     provider: text('provider').notNull(),
     providerAccountId: text('providerAccountId').notNull(),
     refresh_token: text('refresh_token'),
+    name: text('name'),
+    email: text('email'),
     access_token: text('access_token'),
     expires_at: integer('expires_at'),
     token_type: text('token_type'),
@@ -34,7 +39,10 @@ export const accounts = pgTable(
     session_state: text('session_state'),
   },
   (account) => ({
-    compoundKey: primaryKey(account.provider, account.providerAccountId),
+    cpk: primaryKey({
+      name: 'account_provider_id',
+      columns: [account.provider, account.providerAccountId],
+    }),
   }),
 );
 
@@ -54,6 +62,11 @@ export const verificationTokens = pgTable(
     expires: timestamp('expires', { mode: 'date' }).notNull(),
   },
   (vt) => ({
-    compoundKey: primaryKey(vt.identifier, vt.token),
+    cpk: primaryKey({
+      name: 'verification_identifier_token',
+      columns: [vt.identifier, vt.token],
+    }),
   }),
 );
+
+export type UserSelect = typeof user.$inferSelect;

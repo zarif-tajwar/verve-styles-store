@@ -134,6 +134,34 @@
       "when": 1702736742349,
       "tag": "0018_lazy_namorita",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1702916207796,
+      "tag": "0019_strange_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1702916875197,
+      "tag": "0020_tearful_onslaught",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1702917052168,
+      "tag": "0021_nosy_mystique",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "5",
+      "when": 1702966337350,
+      "tag": "0022_daffy_iron_man",
+      "breakpoints": true
     }
   ]
 }

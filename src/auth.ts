@@ -5,18 +5,30 @@ import FacebookProvider, {
 } from 'next-auth/providers/facebook';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from './lib/db';
+import { pgDrizzleAdapter } from './PgDrizzleAdapter';
+import { UserSelect } from '@/lib/db/schema/auth';
+import 'dotenv/config';
 
-export const authAdapter = DrizzleAdapter(db);
+// export const authAdapter = DrizzleAdapter(db);
+export const authAdapter = pgDrizzleAdapter(db);
+
+const getRole = (email: string): UserSelect['role'] => {
+  if (email === process.env.ADMIN_EMAIL) return 'ADMIN';
+  if (email === process.env.STAFF_EMAIL) return 'STAFF';
+  return 'USER';
+};
 
 const authConfig = {
   providers: [
     GoogleProvider({
       profile: (profile: GoogleProfile) => {
+        console.log(profile, 'GOOGLE PROFILE');
         return {
           id: profile.sub,
           name: profile.name,
           image: profile.picture,
-          role: profile.role ?? 'user',
+          email: profile.email,
+          role: getRole(profile.email),
         };
       },
     }),
@@ -26,7 +38,8 @@ const authConfig = {
           id: profile.id,
           name: profile.name,
           image: profile.picture.data.url,
-          role: profile.role ?? 'user',
+          email: profile.email,
+          role: getRole(profile.email),
         };
       },
     }),
@@ -34,7 +47,9 @@ const authConfig = {
   adapter: authAdapter,
   callbacks: {
     session: async ({ session, user }) => {
+      const dbUser = user as UserSelect;
       session.user.id = user.id;
+      session.user.role = dbUser.role;
       return session;
     },
   },
