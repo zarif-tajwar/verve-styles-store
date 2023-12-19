@@ -1,16 +1,12 @@
 import NextAuth, { type NextAuthConfig } from 'next-auth';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
-import FacebookProvider, {
-  FacebookProfile,
-} from 'next-auth/providers/facebook';
-import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import { db } from './lib/db';
-import { pgDrizzleAdapter } from './PgDrizzleAdapter';
+import FacebookProvider from 'next-auth/providers/facebook';
+import { temporaryAdapter } from './temporaryAdapter';
 import { UserSelect } from '@/lib/db/schema/auth';
 import 'dotenv/config';
 
 // export const authAdapter = DrizzleAdapter(db);
-export const authAdapter = pgDrizzleAdapter(db);
+export const authAdapter = temporaryAdapter();
 
 const getRole = (email: string): UserSelect['role'] => {
   if (email === process.env.ADMIN_EMAIL) return 'ADMIN';
@@ -22,7 +18,6 @@ const authConfig = {
   providers: [
     GoogleProvider({
       profile: (profile: GoogleProfile) => {
-        console.log(profile, 'GOOGLE PROFILE');
         return {
           id: profile.sub,
           name: profile.name,

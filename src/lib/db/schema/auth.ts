@@ -70,3 +70,7 @@ export const verificationTokens = pgTable(
 );
 
 export type UserSelect = typeof user.$inferSelect;
+export type UserInsert = typeof user.$inferSelect;
+
+export type SessionSelect = typeof sessions.$inferSelect;
+export type SessionInsert = typeof sessions.$inferInsert;

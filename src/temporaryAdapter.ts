@@ -1,52 +1,58 @@
 import { and, eq } from 'drizzle-orm';
-import { pgTable as defaultPgTableFn, PgDatabase } from 'drizzle-orm/pg-core';
 import * as Schema from '@/lib/db/schema/auth';
 
-import type { Adapter, AdapterAccount } from '@auth/core/adapters';
+import type {
+  Adapter,
+  AdapterAccount,
+  AdapterSession,
+  AdapterUser,
+} from '@auth/core/adapters';
+import { db } from './lib/db';
+import { Awaitable } from '@auth/core/types';
 
-export function pgDrizzleAdapter(
-  client: InstanceType<typeof PgDatabase>,
-): Adapter {
-  const { user: users, accounts, sessions, verificationTokens } = Schema;
+export function temporaryAdapter(): Adapter {
+  const client = db;
+  const { user, accounts, sessions, verificationTokens } = Schema;
 
   return {
     async createUser(data) {
-      return await client
-        .insert(users)
-        .values({ ...data, id: crypto.randomUUID() })
+      const typedData = data as Omit<Schema.UserInsert, 'id'>;
+      return (await client
+        .insert(user)
+        .values({ ...typedData, id: crypto.randomUUID() })
         .returning()
-        .then((res) => res[0] ?? null);
+        .then((res) => res[0] ?? null)) as Awaitable<AdapterUser>;
     },
     async getUser(data) {
       return await client
         .select()
-        .from(users)
-        .where(eq(users.id, data))
+        .from(user)
+        .where(eq(user.id, data))
         .then((res) => res[0] ?? null);
     },
     async getUserByEmail(data) {
       return await client
         .select()
-        .from(users)
-        .where(eq(users.email, data))
+        .from(user)
+        .where(eq(user.email, data))
         .then((res) => res[0] ?? null);
     },
     async createSession(data) {
-      return await client
+      return (await client
         .insert(sessions)
         .values(data)
         .returning()
-        .then((res) => res[0]);
+        .then((res) => res[0])) as Awaitable<AdapterSession>;
     },
     async getSessionAndUser(data) {
       return await client
         .select({
           session: sessions,
-          user: users,
+          user: user,
         })
         .from(sessions)
         .where(eq(sessions.sessionToken, data))
-        .innerJoin(users, eq(users.id, sessions.userId))
+        .innerJoin(user, eq(user.id, sessions.userId))
         .then((res) => res[0] ?? null);
     },
     async updateUser(data) {
@@ -54,12 +60,12 @@ export function pgDrizzleAdapter(
         throw new Error('No user id.');
       }
 
-      return await client
-        .update(users)
+      return (await client
+        .update(user)
         .set(data)
-        .where(eq(users.id, data.id))
+        .where(eq(user.id, data.id))
         .returning()
-        .then((res) => res[0]);
+        .then((res) => res[0])) as Awaitable<AdapterUser>;
     },
     async updateSession(data) {
       return await client
@@ -80,13 +86,13 @@ export function pgDrizzleAdapter(
       // However, the return type is expecting `undefined`.
       const account = {
         ...updatedAccount,
-        access_token: updatedAccount.access_token ?? undefined,
-        token_type: updatedAccount.token_type ?? undefined,
-        id_token: updatedAccount.id_token ?? undefined,
-        refresh_token: updatedAccount.refresh_token ?? undefined,
-        scope: updatedAccount.scope ?? undefined,
-        expires_at: updatedAccount.expires_at ?? undefined,
-        session_state: updatedAccount.session_state ?? undefined,
+        access_token: updatedAccount?.access_token ?? undefined,
+        token_type: updatedAccount?.token_type ?? undefined,
+        id_token: updatedAccount?.id_token ?? undefined,
+        refresh_token: updatedAccount?.refresh_token ?? undefined,
+        scope: updatedAccount?.scope ?? undefined,
+        expires_at: updatedAccount?.expires_at ?? undefined,
+        session_state: updatedAccount?.session_state ?? undefined,
       } as AdapterAccount;
 
       return account;
@@ -102,7 +108,7 @@ export function pgDrizzleAdapter(
               eq(accounts.provider, account.provider),
             ),
           )
-          .leftJoin(users, eq(accounts.userId, users.id))
+          .leftJoin(user, eq(accounts.userId, user.id))
           .then((res) => res[0])) ?? null;
 
       if (!dbAccount) {
@@ -143,26 +149,26 @@ export function pgDrizzleAdapter(
         throw new Error('No verification token found.');
       }
     },
-    async deleteUser(id) {
-      await client
-        .delete(users)
-        .where(eq(users.id, id))
-        .returning()
-        .then((res) => res[0] ?? null);
-    },
-    async unlinkAccount(account) {
-      const { type, provider, providerAccountId, userId } = await client
-        .delete(accounts)
-        .where(
-          and(
-            eq(accounts.providerAccountId, account.providerAccountId),
-            eq(accounts.provider, account.provider),
-          ),
-        )
-        .returning()
-        .then((res) => res[0] ?? null);
+    // async deleteUser(id) {
+    //   await client
+    //     .delete(user)
+    //     .where(eq(user.id, id))
+    //     .returning()
+    //     .then((res) => res[0] ?? null);
+    // },
+    // async unlinkAccount(account) {
+    //   const { type, provider, providerAccountId, userId } = await client
+    //     .delete(accounts)
+    //     .where(
+    //       and(
+    //         eq(accounts.providerAccountId, account.providerAccountId),
+    //         eq(accounts.provider, account.provider),
+    //       ),
+    //     )
+    //     .returning()
+    //     .then((res) => res[0] ?? null);
 
-      return { provider, type, providerAccountId, userId };
-    },
+    //   return { provider, type, providerAccountId, userId };
+    // },
   };
 }
