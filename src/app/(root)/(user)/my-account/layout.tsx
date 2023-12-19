@@ -8,7 +8,7 @@ const labels = new Map([
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="container-main flex gap-8 pt-12">
+    <div className="container-main flex gap-12 pt-12">
       <div className="pt-4">
         <AccountSidebar />
       </div>

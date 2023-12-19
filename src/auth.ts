@@ -2,8 +2,12 @@ import NextAuth, { type NextAuthConfig } from 'next-auth';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
 import { temporaryAdapter } from './temporaryAdapter';
-import { UserSelect } from '@/lib/db/schema/auth';
+import { UserSelect, accounts } from '@/lib/db/schema/auth';
 import 'dotenv/config';
+import { wait } from './lib/util';
+import { db } from './lib/db';
+import { eq } from 'drizzle-orm';
+import { redirect } from 'next/navigation';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
@@ -51,6 +55,37 @@ const authConfig = {
   pages: {
     signIn: '/auth/sign-in',
     signOut: '/auth/sign-out',
+  },
+  events: {
+    linkAccount: async ({ profile, account }) => {
+      // inserts email and name into provider account.
+      // these extra database calls wouldn't be necessary if auth js supported custom logic
+      // or provided the oauth profile object while creating an account
+      await db.transaction(async (tx) => {
+        const extraInfo = (
+          await tx
+            .select({
+              name: accounts.name,
+              email: accounts.email,
+            })
+            .from(accounts)
+            .where(eq(accounts.providerAccountId, account.providerAccountId))
+        )[0];
+
+        if (extraInfo && extraInfo.email && extraInfo.name) {
+          await tx.rollback();
+          return;
+        }
+
+        await tx
+          .update(accounts)
+          .set({
+            email: profile.email,
+            name: profile.name,
+          })
+          .where(eq(accounts.providerAccountId, account.providerAccountId));
+      });
+    },
   },
   trustHost: true,
 } satisfies NextAuthConfig;

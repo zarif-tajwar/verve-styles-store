@@ -27,6 +27,8 @@ const SocialAccounts = async ({ session }: { session: Session }) => {
   const linkedSocialProviders = await db
     .select({
       provider: accounts.provider,
+      email: accounts.email,
+      name: accounts.name,
     })
     .from(accounts)
     .where(and(eq(accounts.userId, session.user.id)));
@@ -34,7 +36,7 @@ const SocialAccounts = async ({ session }: { session: Session }) => {
   return (
     <div className="grid w-full grid-cols-2 gap-16">
       {providers.map((provider) => {
-        const isLoggedIn = linkedSocialProviders.some(
+        const linkedSocialProvider = linkedSocialProviders.find(
           (linked) => linked.provider === provider.provider,
         );
         return (
@@ -46,14 +48,14 @@ const SocialAccounts = async ({ session }: { session: Session }) => {
               <provider.icon />
               <div className="flex flex-col gap-2">
                 <span className="text-lg/none">{provider.label}</span>
-                {isLoggedIn && (
+                {linkedSocialProvider?.email && (
                   <span className="text-sm/none font-medium text-primary-400">
-                    placeholder@email.com
+                    {linkedSocialProvider.email}
                   </span>
                 )}
               </div>
             </div>
-            {isLoggedIn ? (
+            {linkedSocialProvider ? (
               <Button
                 className={cn(
                   'gap-2 font-semibold',
