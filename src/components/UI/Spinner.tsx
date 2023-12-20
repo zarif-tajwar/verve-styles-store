@@ -1,9 +1,14 @@
 import { cn } from '@/lib/util';
-import { Loader, LucideProps } from 'lucide-react';
+import { Loader, Loader2, LucideProps } from 'lucide-react';
 
-const Spinner = ({ className, ...props }: LucideProps) => {
+const Spinner = ({
+  className,
+  variant = 2,
+  ...props
+}: LucideProps & { variant?: 1 | 2 }) => {
+  const Comp = variant === 1 ? Loader2 : Loader;
   return (
-    <Loader
+    <Comp
       {...props}
       className={cn('animate-spin text-primary-200', className)}
     />

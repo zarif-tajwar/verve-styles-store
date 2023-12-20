@@ -5,12 +5,13 @@ import SignInButton from './SignInButton';
 import { useState } from 'react';
 
 const SignInFormWrapper = () => {
-  const [loading, setLoading] = useState(false);
+  const [isFormActive, setIsFormActive] = useState(false);
   return (
     <div className="flex w-full flex-col gap-4">
       <SignInButton
-        loading={loading}
-        setLoading={setLoading}
+        provider="google"
+        isFormActive={isFormActive}
+        setIsFormActive={setIsFormActive}
         icon={
           <GoogleIcon
             width={20}
@@ -22,8 +23,8 @@ const SignInFormWrapper = () => {
       />
 
       <SignInButton
-        loading={loading}
-        setLoading={setLoading}
+        isFormActive={isFormActive}
+        setIsFormActive={setIsFormActive}
         provider="facebook"
         icon={
           <FacebookIcon
