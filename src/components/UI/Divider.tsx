@@ -10,7 +10,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
   ({ className, horizontal, ...props }, ref) => {
     return (
       <div
-        aria-hidden
+        role="separator"
         className={cn(
           'bg-primary-100',
           !horizontal && 'h-px min-w-max',
@@ -19,6 +19,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
         )}
         {...props}
         ref={ref}
+        aria-orientation={horizontal ? 'horizontal' : 'vertical'}
       />
     );
   },

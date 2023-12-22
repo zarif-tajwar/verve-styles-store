@@ -6,8 +6,23 @@ import Link from 'next/link';
 import { cn } from '@/lib/util';
 import { FileClock, LogIn, LogOut, User2 } from 'lucide-react';
 import { signOutAction } from '@/lib/actions/auth';
+import React from 'react';
+import Divider from '../UI/Divider';
 
-const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+
+const navDropdownItemClasses = cn(
+  'rounded-lg font-medium text-primary-400',
+  'data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0',
+  'inline-flex w-full items-center gap-2.5 px-2 py-3',
+);
+
+const NavUserDropdown = () => {
+  const session = useSession();
+  const isLoggedIn = session.status === 'authenticated';
+  const user = session.data?.user;
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -36,63 +51,91 @@ const NavUserDropdown = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
           align="end"
           sideOffset={4}
           className={cn(
-            'flex min-w-[13rem] origin-top-right flex-col rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
+            'min-w-[13rem] origin-top-right rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
         >
-          {!isLoggedIn ? (
+          {!isLoggedIn || !user ? (
             <DropdownMenu.DropdownMenuItem
-              className="rounded-lg font-medium text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-500 data-[highlighted]:outline-0"
+              className={navDropdownItemClasses}
               asChild
             >
-              <Link
-                href={'/auth/sign-in'}
-                className="inline-flex w-full items-center gap-2.5 px-2 py-3"
-              >
+              <Link href={'/auth/sign-in'}>
                 <LogIn className="h-5 w-5" />
                 <span>Login</span>
               </Link>
             </DropdownMenu.DropdownMenuItem>
           ) : (
             <>
-              <DropdownMenu.DropdownMenuItem
-                className="rounded-lg font-medium text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-500 data-[highlighted]:outline-0"
-                asChild
-              >
-                <Link
-                  href={'/my-account/orders'}
-                  className="inline-flex w-full items-center gap-2.5 px-2 py-3"
+              <DropdownMenu.Group>
+                <div className="grid grid-cols-[auto_1fr] gap-2.5 py-2 pl-0.5 pr-2 outline-none">
+                  {/* PROFILE IMAGE */}
+                  <div className="relative aspect-square w-9 overflow-hidden rounded-full">
+                    {user.name && user.email && user.image ? (
+                      <Image
+                        src={user.image}
+                        fill
+                        alt={`Profile picture of ${user.name ?? user.email}`}
+                        className="h-full w-full object-cover saturate-0"
+                      />
+                    ) : (
+                      <span className="bg-primary-50 uppercase">
+                        {user.name?.at(0)}
+                      </span>
+                    )}
+                  </div>
+                  {/* PROFILE INFO */}
+                  <div className="flex flex-col gap-1 leading-none">
+                    {user.name && (
+                      <span className="font-medium text-primary-400">
+                        {user.name}
+                      </span>
+                    )}
+                    {user.email && (
+                      <Link
+                        href={'/my-account/login-options'}
+                        className="border-b border-transparent text-xs text-primary-300 hover:border-primary-200"
+                      >
+                        {user.email}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </DropdownMenu.Group>
+              <Divider className="my-2 bg-primary-50" />
+              <DropdownMenu.Group className="flex flex-col">
+                <DropdownMenu.DropdownMenuItem
+                  className={navDropdownItemClasses}
+                  asChild
                 >
-                  <FileClock className="h-5 w-5" />
-                  <span>Orders</span>
-                </Link>
-              </DropdownMenu.DropdownMenuItem>
-              <DropdownMenu.DropdownMenuItem
-                className="rounded-lg font-medium text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-500 data-[highlighted]:outline-0"
-                asChild
-              >
-                <Link
-                  href={'/my-account'}
-                  className="inline-flex w-full items-center gap-2.5 px-2 py-3"
+                  <Link href={'/my-account/orders'}>
+                    <FileClock className="h-5 w-5" />
+                    <span>Orders</span>
+                  </Link>
+                </DropdownMenu.DropdownMenuItem>
+                <DropdownMenu.DropdownMenuItem
+                  className={navDropdownItemClasses}
+                  asChild
                 >
-                  <User2 className="h-5 w-5" />
-                  <span>My Account</span>
-                </Link>
-              </DropdownMenu.DropdownMenuItem>
-              <DropdownMenu.DropdownMenuItem
-                className="rounded-lg font-medium text-primary-400 data-[highlighted]:bg-primary-50 data-[highlighted]:text-primary-500 data-[highlighted]:outline-0"
-                asChild
-              >
-                <button
-                  className="inline-flex w-full items-center gap-2.5 px-2 py-3"
-                  onClick={async () => {
-                    await signOutAction({ redirectTo: '/shop' });
-                  }}
+                  <Link href={'/my-account'}>
+                    <User2 className="h-5 w-5" />
+                    <span>My Account</span>
+                  </Link>
+                </DropdownMenu.DropdownMenuItem>
+                <DropdownMenu.DropdownMenuItem
+                  className={navDropdownItemClasses}
+                  asChild
                 >
-                  <LogOut className="h-5 w-5" />
-                  <span>Logout</span>
-                </button>
-              </DropdownMenu.DropdownMenuItem>
+                  <button
+                    onClick={async () => {
+                      await signOutAction({ redirectTo: '/shop' });
+                    }}
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span>Logout</span>
+                  </button>
+                </DropdownMenu.DropdownMenuItem>
+              </DropdownMenu.Group>
             </>
           )}
         </DropdownMenu.Content>

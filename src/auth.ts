@@ -8,6 +8,7 @@ import { wait } from './lib/util';
 import { db } from './lib/db';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
@@ -55,6 +56,7 @@ const authConfig = {
   pages: {
     signIn: '/auth/sign-in',
     signOut: '/auth/sign-out',
+    error: '/auth/error',
   },
   events: {
     linkAccount: async ({ profile, account }) => {
