@@ -6,7 +6,7 @@ import {
   useQueryStates,
   Values,
   SetValues,
-} from 'next-usequerystate';
+} from 'nuqs';
 import { shopFilterKeys } from '@/lib/validation/schemas';
 import { URL_QUERY_SEPERATORS } from '@/lib/validation/constants';
 import { quickSortByReference } from '../util';

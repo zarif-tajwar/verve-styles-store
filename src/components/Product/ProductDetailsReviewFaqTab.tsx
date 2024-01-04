@@ -6,7 +6,7 @@ import ProductReviews from './ProductReviews';
 import { Review } from '@/lib/types/product-page';
 import WIP from '../UI/WIP';
 import React, { useEffect } from 'react';
-import { useQueryState, parseAsStringEnum } from 'next-usequerystate';
+import { useQueryState, parseAsStringEnum } from 'nuqs';
 
 const ProductDetails = () => (
   <div>

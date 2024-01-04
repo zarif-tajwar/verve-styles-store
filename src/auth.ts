@@ -9,6 +9,7 @@ import { db } from './lib/db';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
+import { DrizzleAdapter } from '@auth/drizzle-adapter';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
