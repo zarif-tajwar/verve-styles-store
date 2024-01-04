@@ -94,7 +94,7 @@ const NavUserDropdown = () => {
                     {user.email && (
                       <Link
                         href={'/my-account/login-options'}
-                        className="border-b border-transparent text-xs text-primary-300 hover:border-primary-200"
+                        className="w-max border-b border-transparent text-xs text-primary-300 hover:border-primary-200"
                       >
                         {user.email}
                       </Link>
