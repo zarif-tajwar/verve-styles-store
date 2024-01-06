@@ -141,12 +141,7 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
 
   const handlePageChange = (pageNum: number, totalPages: number) => {
     if (pageNum < 1 || pageNum === currentPage || pageNum > totalPages) return;
-    setParamsState(
-      { page: pageNum.toString() },
-      {
-        scroll: true,
-      },
-    );
+    setParamsState({ page: pageNum.toString() });
   };
 
   const store: Store = {
