@@ -83,7 +83,12 @@ const CustomerReviews = () => {
               align: 'center',
               startIndex: 1,
               dragFree: true,
-              slidesToScroll: 3,
+              slidesToScroll: 1,
+              breakpoints: {
+                '(min-width: 768px)': {
+                  slidesToScroll: 3,
+                },
+              },
             }}
             setApi={setApi}
             ref={carouselRef}
@@ -91,7 +96,10 @@ const CustomerReviews = () => {
             <CarouselContent className="-ml-5 cursor-grab">
               {Reviews.map((review, i) => {
                 return (
-                  <CarouselItem key={i} className="basis-1/3 pl-5">
+                  <CarouselItem
+                    key={i}
+                    className="pl-5 sm:basis-1/2 lg:basis-1/3"
+                  >
                     <ReviewCard review={review} className="h-full w-full" />
                   </CarouselItem>
                 );

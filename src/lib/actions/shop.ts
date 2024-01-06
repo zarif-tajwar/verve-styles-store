@@ -12,7 +12,9 @@ import { PgColumn, PgDialect } from 'drizzle-orm/pg-core';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { productRating } from '@/lib/db/schema/productRating';
 import { productSalesCount } from '@/lib/db/schema/productSalesCount';
+import { SearchParamsServer } from '@/lib/types/common';
 import { unstable_noStore as noStore } from 'next/cache';
+import { user } from '../db/schema/auth';
 
 export type FilteredProductItem = {
   id: ProductSelect['id'];
@@ -52,7 +54,8 @@ export const getShopProductsServer = async (
     })
     .from(products)
     .innerJoin(clothing, eq(clothing.id, products.clothingID))
-    .leftJoin(productRating, eq(productRating.productId, products.id));
+    .leftJoin(productRating, eq(productRating.productId, products.id))
+    .$dynamic();
 
   if (data.clothing !== undefined) {
     conditionals.push(inArray(clothing.name, data.clothing));
