@@ -82,3 +82,6 @@ export const getStrIndexPositions = (str: string, subStr: string): number[] => {
 
   return positions;
 };
+
+export const parseIntWithUndefined = (str: string) =>
+  Number.parseInt(str || '') || undefined;

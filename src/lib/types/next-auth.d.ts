@@ -7,7 +7,7 @@ declare module 'next-auth' {
     user: {
       id: string;
       role: UserSelect['role'];
-      cartId: CartsSelect['id'];
+      cartId?: CartsSelect['id'];
     } & DefaultSession['user'];
   }
 

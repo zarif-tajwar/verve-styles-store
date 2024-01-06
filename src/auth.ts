@@ -2,14 +2,15 @@ import NextAuth, { type NextAuthConfig } from 'next-auth';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
 import { temporaryAdapter } from './temporaryAdapter';
-import { UserSelect, accounts } from '@/lib/db/schema/auth';
+import { UserSelect, accounts, user as userTable } from '@/lib/db/schema/auth';
 import 'dotenv/config';
-import { wait } from './lib/util';
+import { parseIntWithUndefined, wait } from './lib/util';
 import { db } from './lib/db';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
+import { carts } from './lib/db/schema/carts';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
@@ -51,6 +52,18 @@ const authConfig = {
       const dbUser = user as UserSelect;
       session.user.id = user.id;
       session.user.role = dbUser.role;
+
+      const cartId = (
+        await db
+          .select({ cartId: carts.id })
+          .from(carts)
+          .where(eq(carts.userId, user.id))
+      )?.at(0)?.cartId;
+
+      session.user.cartId = cartId;
+
+      console.log(session.user.cartId);
+
       return session;
     },
   },
@@ -60,6 +73,70 @@ const authConfig = {
     error: '/auth/error',
   },
   events: {
+    signIn: async ({ user }) => {
+      let cartIdFromCookies = parseIntWithUndefined(
+        cookies().get('cartId')?.value || '',
+      );
+      await db.transaction(async (tx) => {
+        let userCartId: number | undefined = undefined;
+        const userCartIdDbCall = tx
+          .select({ cartId: carts.id })
+          .from(carts)
+          .innerJoin(userTable, eq(userTable.id, carts.userId))
+          .where(eq(userTable.id, user.id));
+
+        if (cartIdFromCookies) {
+          const validateCookieCart = tx
+            .select()
+            .from(carts)
+            .where(eq(carts.id, cartIdFromCookies));
+
+          const res = await Promise.allSettled([
+            userCartIdDbCall,
+            validateCookieCart,
+          ]);
+          if (res[0].status === 'fulfilled') {
+            userCartId = res[0].value?.at(0)?.cartId;
+          }
+          if (res[1].status === 'fulfilled') {
+            const validatedCookieCart = res[1].value?.at(0);
+            if (!validatedCookieCart) {
+              cartIdFromCookies = undefined;
+            }
+            if (
+              validatedCookieCart?.userId &&
+              validatedCookieCart.userId !== user.id
+            ) {
+              cartIdFromCookies = undefined;
+            }
+          }
+        } else {
+          userCartId = (await userCartIdDbCall)?.at(0)?.cartId;
+        }
+
+        if (userCartId && userCartId === cartIdFromCookies) {
+          cookies().delete('cartId');
+          tx.rollback();
+          return;
+        }
+
+        if (cartIdFromCookies && userCartId !== cartIdFromCookies) {
+          if (userCartId)
+            await tx.delete(carts).where(eq(carts.id, userCartId));
+
+          await tx
+            .update(carts)
+            .set({ userId: user.id })
+            .where(eq(carts.id, cartIdFromCookies));
+        }
+
+        if (!cartIdFromCookies && !userCartId) {
+          await tx.insert(carts).values({ userId: user.id });
+        }
+
+        if (cookies().has('cartId')) cookies().delete('cartId');
+      });
+    },
     linkAccount: async ({ profile, account }) => {
       // inserts email and name into provider account.
       // these extra database calls wouldn't be necessary if auth js supported custom logic
