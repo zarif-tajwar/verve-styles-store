@@ -37,7 +37,7 @@ export const orderLine = pgTable(
   }),
 );
 
-export const orderLineRelations = relations(orderLine, ({ one, many }) => ({
+export const orderLineRelations = relations(orderLine, ({ one }) => ({
   orders: one(orders, {
     fields: [orderLine.orderId],
     references: [orders.id],

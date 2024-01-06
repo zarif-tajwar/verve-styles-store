@@ -33,7 +33,7 @@ export const userReviews = pgTable(
   }),
 );
 
-export const userReviewsRelations = relations(userReviews, ({ one, many }) => ({
+export const userReviewsRelations = relations(userReviews, ({ one }) => ({
   orderLineId: one(orderLine, {
     fields: [userReviews.orderLineId],
     references: [orderLine.id],

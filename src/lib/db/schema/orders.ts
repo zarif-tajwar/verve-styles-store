@@ -4,8 +4,9 @@ import {
   pgTable,
   serial,
   timestamp,
+  text,
 } from 'drizzle-orm/pg-core';
-import { users } from './users';
+import { user } from './auth';
 import { relations } from 'drizzle-orm';
 import { orderLine } from './orderLine';
 
@@ -13,8 +14,8 @@ export const orders = pgTable(
   'orders',
   {
     id: serial('id').primaryKey(),
-    userId: integer('user_id')
-      .references(() => users.id)
+    userId: text('user_id')
+      .references(() => user.id)
       .notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
@@ -26,9 +27,9 @@ export const orders = pgTable(
 );
 
 export const orderRelations = relations(orders, ({ one, many }) => ({
-  users: one(users, {
+  users: one(user, {
     fields: [orders.userId],
-    references: [users.id],
+    references: [user.id],
   }),
   orderLine: many(orderLine),
 }));

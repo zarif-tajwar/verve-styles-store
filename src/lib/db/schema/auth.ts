@@ -7,6 +7,9 @@ import {
   pgEnum,
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccount } from '@auth/core/adapters';
+import { relations } from 'drizzle-orm';
+import { orders } from './orders';
+import { carts } from './carts';
 
 export const user = pgTable('user', {
   id: text('id').notNull().primaryKey(),
@@ -18,6 +21,14 @@ export const user = pgTable('user', {
     enum: ['ADMIN', 'STAFF', 'USER'],
   }).notNull(),
 });
+
+export const userRelations = relations(user, ({ one, many }) => ({
+  orders: many(orders),
+  carts: one(carts, {
+    fields: [user.id],
+    references: [carts.userId],
+  }),
+}));
 
 export const accounts = pgTable(
   'account',
