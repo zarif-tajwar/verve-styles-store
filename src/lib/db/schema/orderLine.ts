@@ -15,7 +15,7 @@ export const orderLine = pgTable(
   {
     id: serial('id').primaryKey(),
     orderId: integer('order_id')
-      .references(() => orders.id)
+      .references(() => orders.id, { onDelete: 'cascade' })
       .notNull(),
     productEntryId: integer('product_entry_id')
       .references(() => productEntries.id)

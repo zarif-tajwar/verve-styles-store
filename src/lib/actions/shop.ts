@@ -21,7 +21,7 @@ export type FilteredProductItem = {
   name: ProductSelect['name'];
   price: ProductSelect['price'];
   categoryName: ClothingSelect['name'] | null;
-  averageRating: typeof productRating.averageRating._.data | null;
+  // averageRating: typeof productRating.averageRating._.data | null;
   totalCount: number;
   totalSales?: number | null;
 };
@@ -46,15 +46,15 @@ export const getShopProductsServer = async (
       name: products.name,
       price: products.price,
       categoryName: clothing.name,
-      averageRating: productRating.averageRating,
+      // averageRating: productRating.averageRating,
       totalCount: sql<number>`COUNT(*) OVER()`,
-      ...(data.sort_by === 'most popular'
-        ? { totalSales: productSalesCount.totalSales }
-        : {}),
+      // ...(data.sort_by === 'most popular'
+      //   ? { totalSales: productSalesCount.totalSales }
+      //   : {}),
     })
     .from(products)
     .innerJoin(clothing, eq(clothing.id, products.clothingID))
-    .leftJoin(productRating, eq(productRating.productId, products.id))
+    // .leftJoin(productRating, eq(productRating.productId, products.id))
     .$dynamic();
 
   if (data.clothing !== undefined) {
@@ -85,16 +85,16 @@ export const getShopProductsServer = async (
     }
   }
 
-  if (data.sort_by === 'most popular') {
-    query.leftJoin(
-      productSalesCount,
-      eq(productSalesCount.productId, products.id),
-    );
-    sortingMethods.push(
-      sql`${productSalesCount.totalSales} desc nulls last`,
-      products.id,
-    );
-  }
+  // if (data.sort_by === 'most popular') {
+  //   query.leftJoin(
+  //     productSalesCount,
+  //     eq(productSalesCount.productId, products.id),
+  //   );
+  //   sortingMethods.push(
+  //     sql`${productSalesCount.totalSales} desc nulls last`,
+  //     products.id,
+  //   );
+  // }
 
   if (data.sort_by !== undefined) {
     if (data.sort_by === 'price low to high') {

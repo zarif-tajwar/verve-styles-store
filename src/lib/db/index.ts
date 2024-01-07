@@ -6,11 +6,11 @@ import * as productsSchema from './schema/products';
 import * as productEntriesSchema from './schema/productEntries';
 import * as cartsSchema from './schema/carts';
 import * as cartItemsSchema from './schema/cartItems';
-import * as usersSchema from './schema/users';
 import * as userReviewsSchema from './schema/userReviews';
 import * as ordersSchema from './schema/orders';
 import * as orderLineSchema from './schema/orderLine';
 import * as authSchema from './schema/auth';
+import * as dummyUserSchema from './schema/dummyUser';
 import { Pool } from 'pg';
 import 'dotenv/config';
 
@@ -28,11 +28,11 @@ export const db = drizzle(connection, {
     ...productEntriesSchema,
     ...cartsSchema,
     ...cartItemsSchema,
-    ...usersSchema,
     ...userReviewsSchema,
     ...ordersSchema,
     ...orderLineSchema,
     ...authSchema,
+    ...dummyUserSchema,
   },
   // logger: true,
 });

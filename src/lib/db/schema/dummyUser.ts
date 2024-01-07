@@ -16,3 +16,6 @@ export const dummyUser = pgTable('dummy_user', {
 export const dummyUserRelations = relations(dummyUser, ({ many }) => ({
   orders: many(orders),
 }));
+
+export type DummyUserSelect = typeof dummyUser.$inferSelect;
+export type DummyUserInsert = typeof dummyUser.$inferInsert;
