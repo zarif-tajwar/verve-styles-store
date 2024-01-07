@@ -15,7 +15,7 @@ export const cartItems = pgTable(
   {
     id: serial('id').primaryKey(),
     cartId: integer('cart_id')
-      .references(() => carts.id)
+      .references(() => carts.id, { onDelete: 'cascade' })
       .notNull(),
     productEntryId: integer('product_entry_id')
       .references(() => productEntries.id)

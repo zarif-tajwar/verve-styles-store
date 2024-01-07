@@ -15,7 +15,7 @@ export const carts = pgTable(
   {
     id: serial('id').primaryKey(),
     userId: text('user_id')
-      .references(() => user.id)
+      .references(() => user.id, { onDelete: 'cascade' })
       .unique(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),

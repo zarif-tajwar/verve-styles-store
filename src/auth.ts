@@ -11,6 +11,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { carts } from './lib/db/schema/carts';
+import { handleCartOnSignIn } from './lib/server/cart';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
@@ -74,68 +75,7 @@ const authConfig = {
   },
   events: {
     signIn: async ({ user }) => {
-      let cartIdFromCookies = parseIntWithUndefined(
-        cookies().get('cartId')?.value || '',
-      );
-      await db.transaction(async (tx) => {
-        let userCartId: number | undefined = undefined;
-        const userCartIdDbCall = tx
-          .select({ cartId: carts.id })
-          .from(carts)
-          .innerJoin(userTable, eq(userTable.id, carts.userId))
-          .where(eq(userTable.id, user.id));
-
-        if (cartIdFromCookies) {
-          const validateCookieCart = tx
-            .select()
-            .from(carts)
-            .where(eq(carts.id, cartIdFromCookies));
-
-          const res = await Promise.allSettled([
-            userCartIdDbCall,
-            validateCookieCart,
-          ]);
-          if (res[0].status === 'fulfilled') {
-            userCartId = res[0].value?.at(0)?.cartId;
-          }
-          if (res[1].status === 'fulfilled') {
-            const validatedCookieCart = res[1].value?.at(0);
-            if (!validatedCookieCart) {
-              cartIdFromCookies = undefined;
-            }
-            if (
-              validatedCookieCart?.userId &&
-              validatedCookieCart.userId !== user.id
-            ) {
-              cartIdFromCookies = undefined;
-            }
-          }
-        } else {
-          userCartId = (await userCartIdDbCall)?.at(0)?.cartId;
-        }
-
-        if (userCartId && userCartId === cartIdFromCookies) {
-          cookies().delete('cartId');
-          tx.rollback();
-          return;
-        }
-
-        if (cartIdFromCookies && userCartId !== cartIdFromCookies) {
-          if (userCartId)
-            await tx.delete(carts).where(eq(carts.id, userCartId));
-
-          await tx
-            .update(carts)
-            .set({ userId: user.id })
-            .where(eq(carts.id, cartIdFromCookies));
-        }
-
-        if (!cartIdFromCookies && !userCartId) {
-          await tx.insert(carts).values({ userId: user.id });
-        }
-
-        if (cookies().has('cartId')) cookies().delete('cartId');
-      });
+      await handleCartOnSignIn(user);
     },
     linkAccount: async ({ profile, account }) => {
       // inserts email and name into provider account.
