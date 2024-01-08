@@ -11,6 +11,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
 import ProductReviews from '@/components/Product/ProductReviews';
+import { SearchParamsServer } from '@/lib/types/common';
 
 // export async function generateStaticParams() {
 //   const slugs = await db

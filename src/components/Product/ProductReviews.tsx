@@ -10,11 +10,12 @@ import { orderLine } from '@/lib/db/schema/orderLine';
 import { productEntries } from '@/lib/db/schema/productEntries';
 import { orders } from '@/lib/db/schema/orders';
 import { wait } from '@/lib/util';
+import { dummyUser } from '@/lib/db/schema/dummyUser';
 
 const ProductReviews = async ({ productId }: { productId: number }) => {
   const reviews = await db
     .select({
-      reviewerName: user.name,
+      reviewerName: dummyUser.name,
       rating: userReviews.rating,
       postDate: userReviews.createdAt,
       review: userReviews.comment,
@@ -24,7 +25,7 @@ const ProductReviews = async ({ productId }: { productId: number }) => {
     .innerJoin(orderLine, eq(orderLine.id, userReviews.orderLineId))
     .innerJoin(productEntries, eq(productEntries.id, orderLine.productEntryId))
     .innerJoin(orders, eq(orders.id, orderLine.orderId))
-    .innerJoin(user, eq(user.id, orders.userId))
+    .innerJoin(dummyUser, eq(dummyUser.id, orders.dummyUserId))
     .where(eq(productEntries.productID, productId))
     .orderBy(desc(userReviews.createdAt))
     .limit(9);

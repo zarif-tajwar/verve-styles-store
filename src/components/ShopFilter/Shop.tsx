@@ -1,7 +1,7 @@
 'use client';
 
 import FilterProductsStatusText from './FilterProductsStatusText';
-import { getShopProductsServer } from '@/lib/actions/shop';
+import { getShopProductsAction } from '@/lib/actions/shop';
 import ShopFilterPagination from './ShopFilterPagination';
 import { useQuery } from '@tanstack/react-query';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
@@ -23,7 +23,7 @@ const Shop = () => {
     queryKey,
     queryFn: async () => {
       // await wait(300);
-      const data = await getShopProductsServer(paramsStateSerialized);
+      const data = await getShopProductsAction(paramsStateSerialized);
       return data || [];
     },
     placeholderData: (prevData) => prevData,

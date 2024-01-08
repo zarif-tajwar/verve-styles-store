@@ -5,6 +5,7 @@ import {
   eq,
   getTableColumns,
   inArray,
+  isNull,
   lt,
   sql,
 } from 'drizzle-orm';
@@ -33,6 +34,7 @@ import {
   DummyUserSelect,
   dummyUser,
 } from './schema/dummyUser';
+import { productRating } from './schema/productRating';
 
 async function populateSizes() {
   await db
@@ -445,35 +447,40 @@ const makeRandomDummyOrders = async (n: number) => {
   });
 };
 
-const postFakeReviews = async () => {
-  const orderLines = await db
+const postFakeReviews = async (n: number = 1000) => {
+  const allOrderLines = await db
     .select({ id: orderLine.id, date: orderLine.updatedAt })
-    .from(orderLine);
+    .from(orderLine)
+    .leftJoin(userReviews, eq(orderLine.id, userReviews.orderLineId))
+    .where(isNull(userReviews.orderLineId));
 
-  const generatedReviews: UserReviewsInsert[] = orderLines.map((orderLine) => ({
-    orderLineId: orderLine.id,
-    createdAt: orderLine.date,
-    updatedAt: orderLine.date,
-    rating: (genRandomInt(6, 10) / 2).toString(),
-    comment: faker.lorem.paragraph(5),
-  }));
+  const selectedOrderLines: typeof allOrderLines = [];
 
-  const promises: Promise<unknown>[] = [];
-
-  for (let i = 0; i < generatedReviews.length; i += 1000) {
-    promises.push(
-      db
-        .insert(userReviews)
-        .values(
-          generatedReviews.slice(
-            i,
-            Math.min(i + 1000, generatedReviews.length - 1),
-          ),
-        ),
+  for (let i = 0; i < n; i++) {
+    const selectedOrderLine = allOrderLines.at(
+      genRandomInt(0, allOrderLines.length - 1),
     );
+    if (
+      selectedOrderLine?.id &&
+      !selectedOrderLines.find((x) => x.id === selectedOrderLine.id)
+    ) {
+      selectedOrderLines.push(selectedOrderLine);
+    }
   }
 
-  await Promise.all(promises);
+  const generatedReviews: UserReviewsInsert[] = selectedOrderLines.map(
+    (orderLine) => ({
+      orderLineId: orderLine.id,
+      createdAt: orderLine.date,
+      updatedAt: orderLine.date,
+      rating: (genRandomInt(6, 10) / 2).toString(),
+      comment: faker.lorem.paragraph(5),
+    }),
+  );
+
+  await db.transaction(async (tx) => {
+    await tx.insert(userReviews).values(generatedReviews).onConflictDoNothing();
+  });
 };
 
 async function execute() {
@@ -481,10 +488,7 @@ async function execute() {
 
   const start = performance.now();
 
-  // await populateDummyUsers(1000);
-  await makeRandomDummyOrders(20000);
-  // await db.delete(orderLine);
-  // await db.delete(orders);
+  // await db.refreshMaterializedView(productRating);
 
   const end = performance.now();
 
