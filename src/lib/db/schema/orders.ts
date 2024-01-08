@@ -11,6 +11,7 @@ import { user } from './auth';
 import { relations } from 'drizzle-orm';
 import { orderLine } from './orderLine';
 import { dummyUser } from './dummyUser';
+import { orderDetails } from './orderDetails';
 
 export const orders = pgTable(
   'orders',
@@ -37,4 +38,8 @@ export const orderRelations = relations(orders, ({ one, many }) => ({
     references: [dummyUser.id],
   }),
   orderLine: many(orderLine),
+  orderDetails: one(orderDetails, {
+    fields: [orders.id],
+    references: [orderDetails.orderId],
+  }),
 }));

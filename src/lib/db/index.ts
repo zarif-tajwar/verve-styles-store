@@ -8,6 +8,7 @@ import * as cartsSchema from './schema/carts';
 import * as cartItemsSchema from './schema/cartItems';
 import * as userReviewsSchema from './schema/userReviews';
 import * as ordersSchema from './schema/orders';
+import * as orderDetailsSchema from './schema/orderDetails';
 import * as orderLineSchema from './schema/orderLine';
 import * as authSchema from './schema/auth';
 import * as dummyUserSchema from './schema/dummyUser';
@@ -30,6 +31,7 @@ export const db = drizzle(connection, {
     ...cartItemsSchema,
     ...userReviewsSchema,
     ...ordersSchema,
+    ...orderDetailsSchema,
     ...orderLineSchema,
     ...authSchema,
     ...dummyUserSchema,
