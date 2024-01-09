@@ -35,6 +35,11 @@ import {
   dummyUser,
 } from './schema/dummyUser';
 import { productRating } from './schema/productRating';
+import {
+  OrderDetailsInsert,
+  orderDetails,
+  orderStatus,
+} from './schema/orderDetails';
 
 async function populateSizes() {
   await db
@@ -483,12 +488,79 @@ const postFakeReviews = async (n: number = 1000) => {
   });
 };
 
+const populateOrderStatusText = async () => {
+  await db
+    .insert(orderStatus)
+    .values([
+      { text: 'processing' },
+      { text: 'confirmed' },
+      { text: 'out for delivery' },
+      { text: 'delivered' },
+      { text: 'cancelled' },
+      { text: 'returned' },
+    ]);
+};
+
+const populateOrderDates = async () => {
+  const allOrders = await db.select().from(orders);
+
+  const updatedOrdersData = allOrders.map((order) => ({
+    id: order.id,
+    date: faker.date.past({ years: 3 }),
+  }));
+
+  const promises: Promise<unknown>[] = [];
+
+  for (let order of updatedOrdersData) {
+    const orderPromise = db
+      .update(orders)
+      .set({ createdAt: order.date, updatedAt: new Date() })
+      .where(eq(orders.id, order.id));
+
+    promises.push(orderPromise);
+  }
+
+  await Promise.all(promises);
+};
+
+const populateOrderDetails = async () => {
+  const allOrders = await db.select().from(orders);
+
+  const orderDetailsInsertData: OrderDetailsInsert[] = [];
+  const orderDetailsInsertPromise: Promise<unknown>[] = [];
+
+  for (let order of allOrders) {
+    if (!order.createdAt) continue;
+
+    const deliveryDate = new Date(order.createdAt);
+    deliveryDate.setDate(order.createdAt.getDate() + 2);
+
+    const deliveredAt = new Date(deliveryDate);
+    deliveredAt.setHours(deliveredAt.getHours() - genRandomInt(1, 6));
+
+    const orderDetailsInsert: OrderDetailsInsert = {
+      orderId: order.id,
+      placedAt: order.createdAt,
+      deliveryDate,
+      deliveredAt,
+      statusId: 4,
+      updatedAt: new Date(),
+    };
+
+    orderDetailsInsertPromise.push(
+      db.insert(orderDetails).values(orderDetailsInsert).onConflictDoNothing(),
+    );
+  }
+
+  await Promise.all(orderDetailsInsertPromise);
+};
+
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  // await db.refreshMaterializedView(productRating);
+  await populateOrderDetails();
 
   const end = performance.now();
 

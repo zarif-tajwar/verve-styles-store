@@ -10,7 +10,7 @@ import { relations } from 'drizzle-orm';
 
 export const orderStatus = pgTable('order_status', {
   id: serial('id').primaryKey(),
-  text: varchar('text'),
+  text: varchar('text').notNull(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
@@ -23,6 +23,8 @@ export const orderDetails = pgTable('order_details', {
     .primaryKey()
     .references(() => orders.id),
   placedAt: timestamp('placed_at').defaultNow(),
+  deliveryDate: timestamp('delivery_date'),
+  deliveredAt: timestamp('deliveredAt'),
   updatedAt: timestamp('updated_at').defaultNow(),
   statusId: integer('status_id').references(() => orderStatus.id),
 });
@@ -33,3 +35,7 @@ export const orderDetailsRelations = relations(orderDetails, ({ one }) => ({
     references: [orderStatus.id],
   }),
 }));
+
+export type OrderDetailsInsert = typeof orderDetails.$inferInsert;
+
+export type OrderDetailsSelect = typeof orderDetails.$inferSelect;
