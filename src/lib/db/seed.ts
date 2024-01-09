@@ -26,7 +26,7 @@ import { FilterSearchQueryValuesSchema } from '../validation/schemas';
 import { genRandomInt, wait } from '../util';
 import { CartsInsert, CartsSelect, carts } from './schema/carts';
 import { CartItemsInsert, cartItems } from './schema/cartItems';
-import { orders } from './schema/orders';
+import { OrderInsert, orders } from './schema/orders';
 import { OrderLinesInsert, orderLine } from './schema/orderLine';
 import { UserReviewsInsert, userReviews } from './schema/userReviews';
 import {
@@ -40,6 +40,7 @@ import {
   orderDetails,
   orderStatus,
 } from './schema/orderDetails';
+import { getOrdersServer } from '../server/user';
 
 async function populateSizes() {
   await db
@@ -379,12 +380,17 @@ const makeRandomDummyOrders = async (n: number) => {
   }
 
   await db.transaction(async (tx1) => {
+    const newOrdersData: Partial<OrderInsert>[] = chosenUserIds.map((id) => ({
+      dummyUserId: id,
+    }));
     const newOrders = await tx1
       .insert(orders)
-      .values(chosenUserIds.map((id) => ({ dummyUserId: id })))
+      .values(newOrdersData)
       .returning();
 
     for (let chosenRandomUserId of chosenUserIds) {
+      const date = faker.date.past({ years: 3 });
+
       const newOrder = newOrders.find(
         (order) => order.dummyUserId === chosenRandomUserId,
       );
@@ -416,8 +422,6 @@ const makeRandomDummyOrders = async (n: number) => {
           tx1.rollback();
           continue;
         }
-
-        const date = faker.date.past({ years: 1 });
 
         if (randomQuantity > randomProductEntry.stockQuantity) {
           tx1.rollback();
@@ -526,7 +530,6 @@ const populateOrderDates = async () => {
 const populateOrderDetails = async () => {
   const allOrders = await db.select().from(orders);
 
-  const orderDetailsInsertData: OrderDetailsInsert[] = [];
   const orderDetailsInsertPromise: Promise<unknown>[] = [];
 
   for (let order of allOrders) {
@@ -560,7 +563,7 @@ async function execute() {
 
   const start = performance.now();
 
-  await populateOrderDetails();
+  await getOrdersServer('c6fdljqz2hha29dj4ziilnwa', true);
 
   const end = performance.now();
 

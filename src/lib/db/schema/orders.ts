@@ -43,3 +43,7 @@ export const orderRelations = relations(orders, ({ one, many }) => ({
     references: [orderDetails.orderId],
   }),
 }));
+
+export type OrderInsert = typeof orders.$inferInsert;
+
+export type OrderSelect = typeof orders.$inferSelect;
