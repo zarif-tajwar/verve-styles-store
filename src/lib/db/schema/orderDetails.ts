@@ -26,7 +26,9 @@ export const orderDetails = pgTable('order_details', {
   deliveryDate: timestamp('delivery_date'),
   deliveredAt: timestamp('deliveredAt'),
   updatedAt: timestamp('updated_at').defaultNow(),
-  statusId: integer('status_id').references(() => orderStatus.id),
+  statusId: integer('status_id')
+    .notNull()
+    .references(() => orderStatus.id),
 });
 
 export const orderDetailsRelations = relations(orderDetails, ({ one }) => ({

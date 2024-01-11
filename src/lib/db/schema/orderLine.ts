@@ -25,6 +25,10 @@ export const orderLine = pgTable(
       precision: 6,
       scale: 2,
     }).notNull(),
+    discount: numeric('discount', {
+      precision: 3,
+      scale: 1,
+    }).default('0'),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },

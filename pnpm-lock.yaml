@@ -80,6 +80,9 @@ dependencies:
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
+  core-js:
+    specifier: ^3.35.0
+    version: 3.35.0
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -131,6 +134,9 @@ dependencies:
   nuqs:
     specifier: ^1.14.0
     version: 1.14.0(next@14.0.4)
+  object.groupby:
+    specifier: ^1.0.1
+    version: 1.0.1
   pg:
     specifier: ^8.11.3
     version: 8.11.3
@@ -181,12 +187,18 @@ devDependencies:
   '@faker-js/faker':
     specifier: ^8.3.1
     version: 8.3.1
+  '@types/core-js':
+    specifier: ^2.5.8
+    version: 2.5.8
   '@types/lodash.debounce':
     specifier: ^4.0.9
     version: 4.0.9
   '@types/nprogress':
     specifier: ^0.2.3
     version: 0.2.3
+  '@types/object.groupby':
+    specifier: ^1.0.3
+    version: 1.0.3
   '@types/pg':
     specifier: ^8.10.9
     version: 8.10.9
@@ -2541,6 +2553,10 @@ packages:
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
     dev: false
 
+  /@types/core-js@2.5.8:
+    resolution: {integrity: sha512-VgnAj6tIAhJhZdJ8/IpxdatM8G4OD3VWGlp6xIxUGENZlpbob9Ty4VVdC1FIEp0aK6DBscDDjyzy5FB60TuNqg==}
+    dev: true
+
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -2575,6 +2591,10 @@ packages:
 
   /@types/nprogress@0.2.3:
     resolution: {integrity: sha512-k7kRA033QNtC+gLc4VPlfnue58CM1iQLgn1IMAU8VPHGOj7oIHPp9UlhedEnD/Gl8evoCjwkZjlBORtZ3JByUA==}
+
+  /@types/object.groupby@1.0.3:
+    resolution: {integrity: sha512-C9QFoqjAaotcb9TIwYz55M5Psit4fP+j05Ro0sO/jeCtaFBJgE8ioqaob2Q82XhAWuNPlm6wtTFvbYa1Hpr11g==}
+    dev: true
 
   /@types/pg@8.10.9:
     resolution: {integrity: sha512-UksbANNE/f8w0wOMxVKKIrLCbEMV+oM1uKejmwXr39olg4xqcfBDbXxObJAt6XxHbDa4XTKOlUEcEltXDX+XLQ==}
@@ -3489,6 +3509,11 @@ packages:
     dependencies:
       is-what: 4.1.16
     dev: true
+
+  /core-js@3.35.0:
+    resolution: {integrity: sha512-ntakECeqg81KqMueeGJ79Q5ZgQNR+6eaE8sxGCx62zMbAIj65q+uYvatToew3m6eAGdU4gNZwpZ34NMe4GYswg==}
+    requiresBuild: true
+    dev: false
 
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}

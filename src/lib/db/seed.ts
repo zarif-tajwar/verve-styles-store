@@ -40,7 +40,9 @@ import {
   orderDetails,
   orderStatus,
 } from './schema/orderDetails';
-import { getOrdersServer } from '../server/user';
+import { generateRandomCompletedOrders, getOrdersServer } from '../server/user';
+import { user } from './schema/auth';
+import groupBy from 'object.groupby';
 
 async function populateSizes() {
   await db
@@ -563,7 +565,45 @@ async function execute() {
 
   const start = performance.now();
 
-  await getOrdersServer('c6fdljqz2hha29dj4ziilnwa', true);
+  // await generateRandomCompletedOrders('c6fdljqz2hha29dj4ziilnwa', true);
+  const userId = '2a82464d-7aa5-4018-b032-c6ae3b63f131';
+
+  const lol = await db
+    .select({
+      status: orderStatus.text,
+      orderDate: orderDetails.placedAt,
+      ...getTableColumns(orderLine),
+      // totalPrice:
+      //   sql<number>`SUM(${orderLine.pricePerUnit}*${orderLine.quantity})`.as(
+      //     'total_price',
+      //   ),
+    })
+    .from(orders)
+    .innerJoin(orderDetails, eq(orderDetails.orderId, orders.id))
+    .innerJoin(orderStatus, eq(orderStatus.id, orderDetails.statusId))
+    .innerJoin(orderLine, eq(orderLine.orderId, orders.id))
+    .innerJoin(user, eq(user.id, orders.userId))
+    .where(eq(user.id, userId));
+
+  const xd = groupBy(lol, ({ orderId }) => orderId);
+
+  const groupByCommonKey = <
+    T extends Array<Record<string, unknown>>,
+    K extends keyof T[number],
+  >(
+    array: T,
+    key: K,
+  ) => {
+    return array;
+  };
+
+  const f = groupByCommonKey(lol, 'orderId');
+
+  const hg = Object.entries(xd);
+
+  // console.log(lol);
+  // console.log(xd);
+  console.log(hg);
 
   const end = performance.now();
 

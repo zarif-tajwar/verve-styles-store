@@ -1,70 +1,78 @@
+import { auth } from '@/auth';
 import { Button } from '@/components/UI/Button';
 import Divider from '@/components/UI/Divider';
 import { getOrdersServer } from '@/lib/server/user';
 import { capitalize, cn } from '@/lib/util';
+import { Session } from 'next-auth';
 import React from 'react';
+import OrderItemsListing from './OrderItemsListing';
 
 const orders = [...Array(10).keys()];
 
-const OrdersListing = async () => {
-  const orders = await getOrdersServer('c6fdljqz2hha29dj4ziilnwa', true);
+const OrdersListing = async ({ session }: { session: Session }) => {
+  const orders = await getOrdersServer(session.user.id, false);
 
   return (
-    <div className="rounded-main px-8 py-4 ring-1 ring-primary-50">
-      <ul className="grid grid-cols-1 gap-3">
+    <div className="rounded-main">
+      <ul className="grid grid-cols-1 gap-6 rounded-xl">
         {orders.map((order, i) => {
           return (
             <React.Fragment key={i}>
-              <li className="relative grid grid-cols-[1fr_auto] gap-6 rounded-2xl py-4">
-                <dl className="grid grid-flow-col grid-cols-4 grid-rows-2 gap-y-3">
-                  <dt className="text-sm font-semibold uppercase text-primary-300">
-                    Order ID
-                  </dt>
-                  <dd className="font-medium">{`#${order.orderId}`}</dd>
-                  <dt className="text-sm font-semibold uppercase text-primary-300">
-                    Status
-                  </dt>
-                  <dd
-                    className={cn(
-                      'font-semibold',
-                      order.status === 'delivered' && 'text-emerald-500',
+              <li className="grid grid-cols-[1.4fr_1fr] gap-8 rounded-xl p-4 ring-1 ring-primary-50">
+                <OrderItemsListing />
+                <div className="">
+                  <dl className="mb-6 grid grid-flow-col grid-cols-2 grid-rows-3 gap-4 text-sm">
+                    <div className="font-semibold text-primary-300">
+                      <dt className="">Order</dt>
+                      <dd className="font-medium text-primary-400">
+                        #{order.orderId}
+                      </dd>
+                    </div>
+                    <div className="space-y-0.5">
+                      <dt className="font-semibold text-primary-300">
+                        Total Amount
+                      </dt>
+                      <dd className="font-semibold text-primary-400">
+                        $99999.99
+                      </dd>
+                    </div>
+                    <div className="space-y-1">
+                      <dt className="font-semibold text-primary-300">Status</dt>
+                      <dt className="w-max rounded-full bg-emerald-50 px-2 py-1 font-medium text-emerald-600">
+                        Delivered
+                      </dt>
+                    </div>
+                    <div className="space-y-0.5">
+                      <dt className="font-semibold text-primary-300">
+                        Order Date
+                      </dt>
+                      <dd className="font-medium text-primary-400">
+                        {new Intl.DateTimeFormat('en-us', {
+                          dateStyle: 'long',
+                        }).format(order.orderDate!)}
+                      </dd>
+                    </div>
+                    {order.deliveredAt && (
+                      <div className="space-y-0.5">
+                        <dt className="font-semibold text-primary-300">
+                          Delivered at
+                        </dt>
+                        <dd className="font-medium text-primary-400">
+                          {new Intl.DateTimeFormat('en-us', {
+                            dateStyle: 'long',
+                          }).format(order.deliveredAt)}
+                        </dd>
+                      </div>
                     )}
-                  >
-                    {capitalize(order.status)}
-                  </dd>
-                  <dt className="text-sm font-semibold uppercase text-primary-300">
-                    Total Price
-                  </dt>
-                  <dd className="font-medium">$1999.99</dd>
-                  <dt className="text-sm font-semibold uppercase text-primary-300">
-                    Order Date
-                  </dt>
-                  <dd className="font-medium">
-                    {new Intl.DateTimeFormat('en-us', {
-                      dateStyle: 'long',
-                    }).format(order.orderDate!)}
-                  </dd>
-                </dl>
-                <div className="grid gap-y-2">
+                  </dl>
                   <Button
-                    roundness={'lg'}
-                    variant={'secondary'}
-                    className="px-5"
-                    size={'sm'}
+                    className="w-full py-1 text-primary-400 ring-primary-50"
+                    variant={'outline'}
                   >
                     View Details
                   </Button>
-                  <Button
-                    roundness={'lg'}
-                    variant={'secondary'}
-                    className="px-5"
-                    size={'sm'}
-                  >
-                    Invoice
-                  </Button>
                 </div>
               </li>
-              {i < orders.length - 1 && <Divider className="bg-primary-50" />}
             </React.Fragment>
           );
         })}
@@ -72,4 +80,68 @@ const OrdersListing = async () => {
     </div>
   );
 };
+// const OrdersListing = async ({ session }: { session: Session }) => {
+//   const orders = await getOrdersServer(session.user.id, false);
+
+//   return (
+//     <div className="rounded-main px-8 py-4 ring-1 ring-primary-50">
+//       <ul className="grid grid-cols-1 gap-3">
+//         {orders.map((order, i) => {
+//           return (
+//             <React.Fragment key={i}>
+//               <li className="relative grid grid-cols-[1fr_auto] gap-6 rounded-2xl py-4">
+//                 <dl className="grid grid-flow-col grid-cols-4 grid-rows-2 gap-y-3">
+//                   <dt className="text-sm font-semibold uppercase text-primary-300">
+//                     Order ID
+//                   </dt>
+//                   <dd className="font-medium">{`Order #${order.orderId}`}</dd>
+//                   <dt className="text-sm font-semibold uppercase text-primary-300">
+//                     Status
+//                   </dt>
+//                   <dd
+//                     className={cn(
+//                       'font-semibold',
+//                       order.status === 'delivered' && 'text-emerald-500',
+//                     )}
+//                   >
+//                     {capitalize(order.status)}
+//                   </dd>
+//                   <dt className="text-sm font-semibold uppercase text-primary-300">
+//                     Total Price
+//                   </dt>
+//                   <dd className="font-medium">$1999.99</dd>
+//                   <dt className="text-sm font-semibold uppercase text-primary-300">
+//                     Order Date
+//                   </dt>
+//                   <dd className="font-medium">
+//                     {new Intl.DateTimeFormat('en-us', {
+//                       dateStyle: 'long',
+//                     }).format(order.orderDate!)}
+//                   </dd>
+//                 </dl>
+//                 <div className="grid gap-y-2">
+//                   <Button
+//                     variant={'secondary'}
+//                     className="h-auto rounded-md px-5 py-1 text-xs font-medium"
+//                     size={'sm'}
+//                   >
+//                     View Details
+//                   </Button>
+//                   <Button
+//                     variant={'secondary'}
+//                     className="h-auto rounded-md px-5 py-1 text-xs font-medium"
+//                     size={'sm'}
+//                   >
+//                     Invoice
+//                   </Button>
+//                 </div>
+//               </li>
+//               {i < orders.length - 1 && <Divider className="bg-primary-50" />}
+//             </React.Fragment>
+//           );
+//         })}
+//       </ul>
+//     </div>
+//   );
+// };
 export default OrdersListing;
