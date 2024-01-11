@@ -8,7 +8,7 @@ const OrderItemsListing = () => {
   return (
     <ScrollArea.Root
       type="always"
-      className="h-full max-h-[15rem] min-w-[24rem] rounded-xl text-sm opacity-30 transition-opacity duration-300 hover:opacity-100"
+      className="h-full max-h-[18rem] min-w-[24rem] rounded-xl text-sm opacity-40 transition-opacity duration-300 hover:opacity-100"
     >
       <ScrollArea.Viewport className="h-full w-full rounded-t-lg">
         {[...Array(10).keys()].map((_, i, arr) => {
@@ -30,7 +30,7 @@ const OrderItemsListing = () => {
                       <dt className="font-semibold text-primary-300">
                         Quantity
                       </dt>
-                      <dd className="font-medium text-primary-400">5</dd>
+                      <dd className="font-medium text-primary-400">x5</dd>
                     </div>
                     <div>
                       <dt className="font-semibold text-primary-300">

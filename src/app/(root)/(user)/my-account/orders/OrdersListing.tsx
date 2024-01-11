@@ -6,6 +6,7 @@ import { capitalize, cn } from '@/lib/util';
 import { Session } from 'next-auth';
 import React from 'react';
 import OrderItemsListing from './OrderItemsListing';
+import { Package } from 'lucide-react';
 
 const orders = [...Array(10).keys()];
 
@@ -18,17 +19,17 @@ const OrdersListing = async ({ session }: { session: Session }) => {
         {orders.map((order, i) => {
           return (
             <React.Fragment key={i}>
-              <li className="grid grid-cols-[1.4fr_1fr] gap-8 rounded-xl p-4 ring-1 ring-primary-50">
-                <OrderItemsListing />
+              <li className="grid grid-cols-[1.2fr_auto_1fr] gap-4 rounded-xl p-4 ring-1 ring-primary-50">
                 <div className="">
                   <dl className="mb-6 grid grid-flow-col grid-cols-2 grid-rows-3 gap-4 text-sm">
-                    <div className="font-semibold text-primary-300">
-                      <dt className="">Order</dt>
-                      <dd className="font-medium text-primary-400">
-                        #{order.orderId}
-                      </dd>
+                    <div className="col-span-2 flex gap-3 rounded-lg bg-primary-50 px-3 py-3 font-semibold text-primary-400">
+                      <Package size={24} className="text-primary-300" />
+                      <div>
+                        <dt className="">Order Number</dt>
+                        <dd className="text-base">{order.orderId}</dd>
+                      </div>
                     </div>
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 px-3 pt-4">
                       <dt className="font-semibold text-primary-300">
                         Total Amount
                       </dt>
@@ -36,13 +37,13 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                         $99999.99
                       </dd>
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1 px-3">
                       <dt className="font-semibold text-primary-300">Status</dt>
                       <dt className="w-max rounded-full bg-emerald-50 px-2 py-1 font-medium text-emerald-600">
                         Delivered
                       </dt>
                     </div>
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 px-3 pt-4">
                       <dt className="font-semibold text-primary-300">
                         Order Date
                       </dt>
@@ -53,7 +54,7 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                       </dd>
                     </div>
                     {order.deliveredAt && (
-                      <div className="space-y-0.5">
+                      <div className="space-y-0.5 px-3">
                         <dt className="font-semibold text-primary-300">
                           Delivered at
                         </dt>
@@ -72,6 +73,8 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                     View Details
                   </Button>
                 </div>
+                <Divider className="h-full w-px bg-primary-50" />
+                <OrderItemsListing />
               </li>
             </React.Fragment>
           );
