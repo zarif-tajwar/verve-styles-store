@@ -5,7 +5,7 @@ import SelectStatus from './SelectStatus';
 
 const OrderFilters = () => {
   return (
-    <div className="mb-12 grid grid-cols-[1fr_auto] items-end gap-x-16">
+    <div className="mb-16 grid grid-cols-[1fr_auto] items-end gap-x-16">
       <search className="relative">
         <input
           type="text"

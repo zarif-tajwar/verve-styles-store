@@ -15,7 +15,7 @@ const OrdersListing = async ({ session }: { session: Session }) => {
 
   return (
     <div className="rounded-main">
-      <ul className="grid grid-cols-1 gap-6 rounded-xl">
+      <ul className="grid grid-cols-1 gap-10 rounded-xl">
         {orders.map((order, i) => {
           return (
             <React.Fragment key={i}>
@@ -66,15 +66,33 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                       </div>
                     )}
                   </dl>
-                  <Button
-                    className="w-full py-1 text-primary-400 ring-primary-50"
-                    variant={'outline'}
-                  >
-                    View Details
-                  </Button>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button
+                      className="py-1 text-primary-400 ring-primary-50"
+                      variant={'outline'}
+                      roundness={'lg'}
+                    >
+                      Show More Details
+                    </Button>
+                    <Button
+                      className="py-1 text-primary-400 ring-primary-50"
+                      variant={'outline'}
+                      roundness={'lg'}
+                    >
+                      View Invoice
+                    </Button>
+                  </div>
                 </div>
                 <Divider className="h-full w-px bg-primary-50" />
-                <OrderItemsListing />
+                <div className="group relative">
+                  <OrderItemsListing />
+                  <div className="duration-20 pointer-events-none absolute left-0 top-0 flex h-full w-full select-none items-center justify-center bg-white bg-opacity-80 transition-opacity hover:opacity-0 group-hover:opacity-0">
+                    <p className="rounded-full bg-primary-0 px-8 py-2 text-center font-semibold text-primary-400 ring-1 ring-primary-50">
+                      Hover and Scroll to see
+                      <br /> Ordered Products
+                    </p>
+                  </div>
+                </div>
               </li>
             </React.Fragment>
           );

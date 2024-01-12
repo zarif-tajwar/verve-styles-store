@@ -15,8 +15,6 @@ const NavCartDropdown = () => {
   const path = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  console.log(path);
-
   return (
     <DropdownMenu.Root open={isMenuOpen} onOpenChange={setIsMenuOpen}>
       <DropdownMenu.Trigger asChild>

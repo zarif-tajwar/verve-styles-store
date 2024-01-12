@@ -63,8 +63,6 @@ const authConfig = {
 
       session.user.cartId = cartId;
 
-      console.log(session.user.cartId);
-
       return session;
     },
   },

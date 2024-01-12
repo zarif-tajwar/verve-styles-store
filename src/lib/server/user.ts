@@ -48,9 +48,8 @@ export const getOrdersServer = async (
 
   const ordersData = await query
     // .groupBy(orders.id, orderStatus.text)
-    .orderBy(desc(orderDetails.placedAt));
-
-  console.log(ordersData.length, 'ORDERS');
+    .orderBy(desc(orderDetails.placedAt))
+    .limit(5);
 
   return ordersData;
 };
