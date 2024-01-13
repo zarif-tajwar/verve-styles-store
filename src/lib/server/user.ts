@@ -12,46 +12,64 @@ import { desc, eq, gt, sql } from 'drizzle-orm';
 import { OrderLinesInsert, orderLine } from '../db/schema/orderLine';
 import { productEntries } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
-import { genRandomInt } from '../util';
+import { genRandomInt, wait } from '../util';
 import { faker } from '@faker-js/faker';
 
 export const getOrdersServer = async (
   userId: UserSelect['id'] | DummyUserSelect['id'],
   isDummyUser: boolean = false,
 ) => {
-  let query = db
-    .select({
-      orderId: orders.id,
-      status: orderStatus.text,
-      orderDate: orderDetails.placedAt,
-      deliveredAt: orderDetails.deliveredAt,
-      // totalPrice:
-      //   sql<number>`SUM(${orderLine.pricePerUnit}*${orderLine.quantity})`.as(
-      //     'total_price',
-      //   ),
-    })
-    .from(orders)
-    .innerJoin(orderDetails, eq(orderDetails.orderId, orders.id))
-    .innerJoin(orderStatus, eq(orderStatus.id, orderDetails.statusId))
-    // .innerJoin(orderLine, eq(orderLine.orderId, orders.id))
-    .$dynamic();
+  let query = db.query.orders.findMany({
+    limit: 4,
+    columns: {
+      id: true,
+    },
+    where: eq(isDummyUser ? orders.dummyUserId : orders.userId, userId),
+    with: {
+      orderDetails: {
+        with: {
+          order: {
+            columns: {
+              text: true,
+            },
+          },
+        },
+      },
+      orderLine: {
+        with: {
+          productEntries: {
+            columns: {},
+            with: {
+              product: {
+                columns: {
+                  name: true,
+                },
+              },
+              size: {
+                columns: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
 
-  if (isDummyUser) {
-    query
-      .innerJoin(dummyUser, eq(dummyUser.id, orders.dummyUserId))
-      .where(eq(dummyUser.id, userId));
-  } else {
-    query
-      .innerJoin(user, eq(user.id, orders.userId))
-      .where(eq(user.id, userId));
-  }
-
-  const ordersData = await query
-    // .groupBy(orders.id, orderStatus.text)
-    .orderBy(desc(orderDetails.placedAt))
-    .limit(5);
-
-  return ordersData;
+  return (await query).map((order) => ({
+    orderId: order.id,
+    orderDate: order.orderDetails.placedAt,
+    orderDeliveryDate: order.orderDetails.deliveryDate,
+    orderDeliveredAt: order.orderDetails.deliveredAt,
+    status: order.orderDetails.order.text,
+    orderedProducts: order.orderLine.map((orderLine) => ({
+      name: orderLine.productEntries.product.name,
+      size: orderLine.productEntries.size.name,
+      quantity: orderLine.quantity,
+      price: orderLine.pricePerUnit,
+    })),
+  }));
 };
 
 export const generateRandomCompletedOrders = async (

@@ -4,19 +4,33 @@ import Divider from '@/components/UI/Divider';
 import { capitalize, cn, priceFormat } from '@/lib/util';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 
-const OrderItemsListing = () => {
+const OrderItemsListing = ({
+  orderedProductsData,
+}: {
+  orderedProductsData:
+    | {
+        name: string;
+        size: string;
+        quantity: number;
+        price: string;
+      }[]
+    | undefined;
+}) => {
   return (
-    <ScrollArea.Root className="h-full max-h-[18rem] min-w-[24rem] rounded-xl text-sm transition-opacity">
+    <ScrollArea.Root
+      type="always"
+      className="h-full max-h-[19.25rem] min-w-[24rem] rounded-xl text-sm transition-opacity"
+    >
       <ScrollArea.Viewport className="h-full w-full rounded-t-lg">
         <div>
-          {[...Array(10).keys()].map((_, i, arr) => {
+          {orderedProductsData!.map((product, i, arr) => {
             return (
               <div key={i} className="relative">
                 <div className="grid w-full grid-cols-[auto_1fr] gap-4 text-primary-400">
-                  <div className="aspect-auto size-20 rounded-lg bg-primary-50"></div>
-                  <div>
-                    <div className="mb-2 flex gap-2">
-                      <p className="mb-2 font-semibold">A Cool Black T-Shirt</p>
+                  <div className="aspect-auto size-[5.5rem] rounded-lg bg-primary-50"></div>
+                  <div className="flex flex-col justify-between">
+                    <div className="flex gap-2">
+                      <p className="mb-2 font-semibold">{product.name}</p>
                       <span className="mb-2 inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-normal tracking-wide ring-1  ring-inset ring-primary-100">
                         {'small'.length > 3
                           ? capitalize('small')
@@ -24,18 +38,22 @@ const OrderItemsListing = () => {
                       </span>
                     </div>
                     <dl className="grid grid-cols-2">
-                      <div>
+                      <div className="space-y-0.5">
                         <dt className="font-semibold text-primary-300">
                           Quantity
                         </dt>
-                        <dd className="font-medium text-primary-400">x5</dd>
+                        <dd className="font-medium text-primary-400">
+                          x{product.quantity}
+                        </dd>
                       </div>
-                      <div>
+                      <div className="space-y-0.5">
                         <dt className="font-semibold text-primary-300">
-                          Subtotal
+                          Total
                         </dt>
                         <dd className="font-semibold text-primary-400">
-                          $9999.99
+                          {priceFormat(
+                            product.quantity * Number.parseFloat(product.price),
+                          )}
                         </dd>
                       </div>
                     </dl>

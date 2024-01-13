@@ -5,12 +5,15 @@ import OrdersListing from './OrdersListing';
 import OrderFilters from './OrderFilters';
 import GenRanOrderBtn from './GenRanOrderBtn';
 import { SessionProvider } from 'next-auth/react';
+import { Suspense } from 'react';
+import { Divide } from 'lucide-react';
 
 const OrdersPage = async () => {
   const session = await auth();
   if (!session) {
     redirect('/auth/sign-in');
   }
+
   return (
     <SessionProvider session={session}>
       <div className="w-full">
@@ -19,7 +22,9 @@ const OrdersPage = async () => {
           {/* <GenRanOrderBtn /> */}
         </div>
         <OrderFilters />
-        <OrdersListing session={session} />
+        <Suspense fallback={<div>Loading....</div>}>
+          <OrdersListing session={session} />
+        </Suspense>
       </div>
     </SessionProvider>
   );
