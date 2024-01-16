@@ -1,22 +1,67 @@
+'use client';
+
 import { auth } from '@/auth';
 import { Button } from '@/components/UI/Button';
 import Divider from '@/components/UI/Divider';
 import { getOrdersServer } from '@/lib/server/user';
-import { capitalize, cn, priceFormat } from '@/lib/util';
+import { capitalize, cn, priceFormat, wait } from '@/lib/util';
 import { Session } from 'next-auth';
 import React from 'react';
 import OrderItemsListing from './OrderItemsListing';
 import { Package } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useQuery } from '@tanstack/react-query';
+import { getOrdersAction } from '@/lib/actions/user';
+import { useOrderFilterStore } from '@/lib/store/user-order';
+import OrdersPagination from './OrdersPagination';
 
 const orders = [...Array(10).keys()];
 
-const OrdersListing = async ({ session }: { session: Session }) => {
-  const userId = session.user.id;
-  const orders = await getOrdersServer(userId, false);
+const OrdersListing = () => {
+  const session = useSession();
+  const userId = session.data?.user.id;
+  const status = useOrderFilterStore((store) => store.status);
+  const page = useOrderFilterStore((store) => store.page);
+  const orderDateRange = useOrderFilterStore((store) => store.orderDateRange);
+
+  const {
+    data: orders,
+    isFetching,
+    isLoading,
+  } = useQuery({
+    queryKey: [status, orderDateRange, page],
+    queryFn: async () => {
+      // await wait(1000);
+      if (!userId) return [];
+
+      const data = await getOrdersAction(
+        userId,
+        false,
+        status,
+        orderDateRange,
+        page,
+      );
+
+      return data || [];
+    },
+    placeholderData: [],
+  });
+
+  if (!userId) {
+    return null;
+  }
+  if (isFetching) {
+    return <p>Loading...</p>;
+  }
+  if (!orders) {
+    return null;
+  }
+
+  // const orders = await getOrdersServer(userId, false);
 
   return (
     <div className="rounded-main">
-      <ul className="grid grid-cols-1 gap-10 rounded-xl">
+      <ul className="mb-16 grid grid-cols-1 gap-10 rounded-xl">
         {orders.map((order, i) => {
           return (
             <React.Fragment key={i}>
@@ -104,6 +149,7 @@ const OrdersListing = async ({ session }: { session: Session }) => {
           );
         })}
       </ul>
+      <OrdersPagination ordersCount={orders.length} />
     </div>
   );
 };

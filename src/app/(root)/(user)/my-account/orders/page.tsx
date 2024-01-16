@@ -22,9 +22,7 @@ const OrdersPage = async () => {
           {/* <GenRanOrderBtn /> */}
         </div>
         <OrderFilters />
-        <Suspense fallback={<div>Loading....</div>}>
-          <OrdersListing session={session} />
-        </Suspense>
+        <OrdersListing />
       </div>
     </SessionProvider>
   );

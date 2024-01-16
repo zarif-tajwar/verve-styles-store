@@ -9,6 +9,9 @@ import { DateRange } from 'react-day-picker';
 const OrderDateRange = () => {
   const dateRange = useOrderFilterStore((store) => store.orderDateRange);
   const setDateRange = useOrderFilterStore((store) => store.setOrderDateRange);
+
+  console.log(dateRange, 'ORDER DATE RANGE');
+
   return (
     <div className="relative">
       <DatePickerWithRange

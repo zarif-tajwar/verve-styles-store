@@ -1,4 +1,10 @@
 'use server';
-import { generateRandomCompletedOrders } from '@/lib/server/user';
+import {
+  generateRandomCompletedOrders,
+  getOrdersServer,
+} from '@/lib/server/user';
 
-export { generateRandomCompletedOrders as generateRandomCompletedOrdersAction };
+export {
+  generateRandomCompletedOrders as generateRandomCompletedOrdersAction,
+  getOrdersServer as getOrdersAction,
+};

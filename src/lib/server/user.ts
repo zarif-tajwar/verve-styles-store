@@ -9,16 +9,20 @@ import {
   orderDetails,
   orderStatus,
 } from '../db/schema/orderDetails';
-import { and, desc, eq, gt, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, gt, sql } from 'drizzle-orm';
 import { OrderLinesInsert, orderLine } from '../db/schema/orderLine';
 import { productEntries } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
 import { genRandomInt, wait } from '../util';
 import { faker } from '@faker-js/faker';
+import { DateRange } from 'react-day-picker';
 
 export const getOrdersServer = async (
   userId: UserSelect['id'] | DummyUserSelect['id'],
   isDummyUser: boolean = false,
+  status: string | undefined,
+  orderDateRange: DateRange | undefined,
+  page: number,
 ) => {
   let query = sql`
   SELECT
@@ -60,13 +64,48 @@ export const getOrdersServer = async (
   WHERE
   `;
 
+  const conditionals: SQL[] = [];
+
   if (isDummyUser) {
-    query.append(sql` o.dummy_user_id = ${userId}`);
+    conditionals.push(sql`o.dummy_user_id = ${userId}`);
   } else {
-    query.append(sql` o.user_id = ${userId}`);
+    conditionals.push(sql`o.user_id = ${userId}`);
   }
 
+  if (status) {
+    if (
+      ['delivered', 'cancelled', 'returned'].findIndex((v) => v === status) !==
+      -1
+    ) {
+      conditionals.push(sql`os.text = ${status}`);
+    } else if (status === 'ongoing') {
+      conditionals.push(
+        sql`os.text IN ('processing','confirmed','out for delivery')`,
+      );
+    }
+  }
+
+  if (orderDateRange) {
+    if (orderDateRange.from && orderDateRange.to) {
+      conditionals.push(
+        sql`DATE(od.placed_at) BETWEEN ${orderDateRange.from} AND ${orderDateRange.to}`,
+      );
+    }
+    if (orderDateRange.from && !orderDateRange.to) {
+      conditionals.push(
+        sql`DATE(od.placed_at) = DATE(${orderDateRange.from}::timestamp)`,
+      );
+    }
+  }
+
+  query.append(sql.join(conditionals, sql.raw(' and ')));
+
+  query.append(sql` ORDER BY od.placed_at`);
   query.append(sql` LIMIT 4`);
+
+  if (page > 1) {
+    query.append(sql` OFFSET ${4 * (page - 1)}`);
+  }
 
   const res = await db.execute(query);
 
