@@ -1,20 +1,14 @@
 'use client';
 
 import Divider from '@/components/UI/Divider';
+import { UserOrderedProduct } from '@/lib/types/user';
 import { capitalize, cn, priceFormat } from '@/lib/util';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 
 const OrderItemsListing = ({
-  orderedProductsData,
+  orderedProducts,
 }: {
-  orderedProductsData:
-    | {
-        name: string;
-        size: string;
-        quantity: number;
-        price: string;
-      }[]
-    | undefined;
+  orderedProducts: UserOrderedProduct[];
 }) => {
   return (
     <ScrollArea.Root
@@ -23,7 +17,7 @@ const OrderItemsListing = ({
     >
       <ScrollArea.Viewport className="h-full w-full rounded-t-lg">
         <div>
-          {orderedProductsData!.map((product, i, arr) => {
+          {orderedProducts!.map((product, i, arr) => {
             return (
               <div key={i} className="relative">
                 <div className="grid w-full grid-cols-[auto_1fr] gap-4 text-primary-400">
@@ -51,9 +45,7 @@ const OrderItemsListing = ({
                           Total
                         </dt>
                         <dd className="font-semibold text-primary-400">
-                          {priceFormat(
-                            product.quantity * Number.parseFloat(product.price),
-                          )}
+                          {priceFormat(product.total)}
                         </dd>
                       </div>
                     </dl>

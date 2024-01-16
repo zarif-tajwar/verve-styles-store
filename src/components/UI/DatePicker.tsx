@@ -106,7 +106,7 @@ export function DatePickerWithRange({
             variant={'outline'}
             roundness={'lg'}
             className={cn(
-              'min-w-64 justify-start gap-2 text-left font-medium text-primary-400',
+              'min-w-64 justify-start gap-2.5 text-left font-medium text-primary-400',
             )}
           >
             <CalendarMini className="opacity-80" />

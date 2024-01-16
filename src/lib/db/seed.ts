@@ -561,21 +561,54 @@ const populateOrderDetails = async () => {
   await Promise.all(orderDetailsInsertPromise);
 };
 
+const raqSql = sql`SELECT
+o.id AS "orderId",
+order_lines.data AS "orderedProducts",
+od.placed_at AS "orderDate",
+od.delivery_date AS "deliveryDate",
+od."deliveredAt" AS "deliveredAt",
+os.text AS "status"
+FROM
+orders o
+LEFT JOIN order_details od ON od.order_id = o.id
+LEFT JOIN order_status os ON os.id = od.status_id
+LEFT JOIN LATERAL (
+  SELECT
+    JSON_AGG (
+      JSON_BUILD_OBJECT (
+        'quantity',
+        ol.quantity,
+        'total',
+        ROUND(ol.price_per_unit * ol.quantity * (1 - ol.discount/100), 2),
+        'name',
+        pr.name,
+        'size',
+        s.name
+      )
+    ) AS data
+  FROM
+    order_line ol
+    INNER JOIN product_entries pe ON pe.id = ol.product_entry_id
+    INNER JOIN products pr ON pr.id = pe.product_id
+    INNER JOIN sizes s ON s.id = pe.size_id
+  WHERE
+    ol.order_id = o.id
+) AS order_lines ON TRUE
+WHERE
+o.user_id = '2a82464d-7aa5-4018-b032-c6ae3b63f131'
+LIMIT
+4`;
+
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  const userId = '2a82464d-7aa5-4018-b032-c6ae3b63f131';
+  // const userId = '2a82464d-7aa5-4018-b032-c6ae3b63f131';
+  const ex = await db.execute(raqSql);
 
-  const xd = await db.query.orders.findMany({
-    columns: {
-      id: true,
-    },
-    where: eq(orders.userId, userId),
-    with: { orderLine: true, orderDetails: true },
-    limit: 5,
-  });
+  console.log(ex.rows);
+  console.log(typeof ex.rows.at(0)?.deliveredAt);
 
   const end = performance.now();
 

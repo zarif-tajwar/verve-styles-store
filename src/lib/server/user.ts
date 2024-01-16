@@ -2,13 +2,14 @@
 import { UserSelect, user } from '../db/schema/auth';
 import { DummyUserSelect, dummyUser } from '../db/schema/dummyUser';
 import { db } from '../db';
-import { OrderInsert, orders } from '../db/schema/orders';
+import { OrderInsert, OrderSelect, orders } from '../db/schema/orders';
 import {
   OrderDetailsInsert,
+  OrderDetailsSelect,
   orderDetails,
   orderStatus,
 } from '../db/schema/orderDetails';
-import { desc, eq, gt, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, sql } from 'drizzle-orm';
 import { OrderLinesInsert, orderLine } from '../db/schema/orderLine';
 import { productEntries } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
@@ -19,57 +20,59 @@ export const getOrdersServer = async (
   userId: UserSelect['id'] | DummyUserSelect['id'],
   isDummyUser: boolean = false,
 ) => {
-  let query = db.query.orders.findMany({
-    limit: 4,
-    columns: {
-      id: true,
-    },
-    where: eq(isDummyUser ? orders.dummyUserId : orders.userId, userId),
-    with: {
-      orderDetails: {
-        with: {
-          order: {
-            columns: {
-              text: true,
-            },
-          },
-        },
-      },
-      orderLine: {
-        with: {
-          productEntries: {
-            columns: {},
-            with: {
-              product: {
-                columns: {
-                  name: true,
-                },
-              },
-              size: {
-                columns: {
-                  name: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+  let query = sql`
+  SELECT
+    o.id AS "orderId",
+    order_lines.data AS "orderedProducts",
+    od.placed_at AS "orderDate",
+    od.delivery_date AS "deliveryDate",
+    od."deliveredAt" AS "deliveredAt",
+    os.text AS "status"
+  FROM
+    orders o
+    LEFT JOIN order_details od ON od.order_id = o.id
+    LEFT JOIN order_status os ON os.id = od.status_id
+    LEFT JOIN LATERAL (
+      SELECT
+        JSON_AGG (
+          JSON_BUILD_OBJECT (
+            'quantity',
+            ol.quantity,
+            'total',
+            ROUND(
+              ol.price_per_unit * ol.quantity * (1 - ol.discount / 100),
+              2
+            ),
+            'name',
+            pr.name,
+            'size',
+            s.name
+          )
+        ) AS data
+      FROM
+        order_line ol
+        INNER JOIN product_entries pe ON pe.id = ol.product_entry_id
+        INNER JOIN products pr ON pr.id = pe.product_id
+        INNER JOIN sizes s ON s.id = pe.size_id
+      WHERE
+        ol.order_id = o.id
+    ) AS order_lines ON TRUE
+  WHERE
+  `;
 
-  return (await query).map((order) => ({
-    orderId: order.id,
-    orderDate: order.orderDetails.placedAt,
-    orderDeliveryDate: order.orderDetails.deliveryDate,
-    orderDeliveredAt: order.orderDetails.deliveredAt,
-    status: order.orderDetails.order.text,
-    orderedProducts: order.orderLine.map((orderLine) => ({
-      name: orderLine.productEntries.product.name,
-      size: orderLine.productEntries.size.name,
-      quantity: orderLine.quantity,
-      price: orderLine.pricePerUnit,
-    })),
-  }));
+  if (isDummyUser) {
+    query.append(sql` o.dummy_user_id = ${userId}`);
+  } else {
+    query.append(sql` o.user_id = ${userId}`);
+  }
+
+  query.append(sql` LIMIT 4`);
+
+  const res = await db.execute(query);
+
+  const ordersData = res.rows as UserOrder[];
+
+  return ordersData;
 };
 
 export const generateRandomCompletedOrders = async (
@@ -186,3 +189,64 @@ export const generateRandomCompletedOrders = async (
     });
   }
 };
+
+const useOrderData = {
+  orderId: 44342,
+  orderedProducts: [
+    {
+      quantity: 5,
+      total: 31235,
+      name: 'Elegant Rubber Chips',
+      size: 'large',
+    },
+    {
+      quantity: 10,
+      total: 10800,
+      name: 'Tasty Rubber Gloves',
+      size: 'small',
+    },
+  ],
+  orderDate: '2021-03-15T15:34:48.071Z',
+  deliveryDate: '2021-03-17T15:34:48.071Z',
+  deliveredAt: '2021-03-17T14:34:48.071Z',
+  status: 'delivered',
+};
+
+type UserOrderedProduct = {
+  quantity: number;
+  total: number;
+  name: string;
+  size: string;
+};
+
+type UserOrder = {
+  orderId: OrderSelect['id'];
+  status: string;
+  orderDate?: OrderDetailsSelect['placedAt'];
+  deliveryDate?: OrderDetailsSelect['deliveryDate'];
+  deliveredAt?: OrderDetailsSelect['deliveredAt'];
+  orderedProducts: UserOrderedProduct[];
+};
+
+// SELECT o.id AS order_id, order_lines.data AS order_lines
+// FROM orders o
+// LEFT JOIN LATERAL (
+// 	SELECT JSON_AGG(JSON_BUILD_OBJECT('orderLineId',ol.id,
+//                                       'quantity', ol.quantity,
+// 					                  'pricePerUnit', ol.price_per_unit,
+// 									  'discount', ol.discount,
+//                                       'productName', pr.name,
+// 									  'size', s.name
+//                                      )
+// 	) AS data
+// 	     FROM order_line ol
+//     INNER JOIN product_entries pe
+//          ON pe.id = ol.product_entry_id
+//     INNER JOIN products pr
+//          ON pr.id = pe.product_id
+//     INNER JOIN sizes s
+//          ON s.id = pe.size_id
+//     WHERE ol.order_id = o.id
+// ) AS order_lines
+// ON TRUE
+// LIMIT 4

@@ -86,7 +86,7 @@
     "@types/object.groupby": "^1.0.3",
     "@types/pg": "^8.10.9",
     "autoprefixer": "^10.4.16",
-    "drizzle-kit": "^0.20.9",
+    "drizzle-kit": "^0.20.13",
     "esbuild-register": "^3.5.0",
     "postcss": "^8.4.32",
     "prettier": "^3.1.1",

@@ -32,7 +32,7 @@ export const orderDetails = pgTable('order_details', {
 });
 
 export const orderDetailsRelations = relations(orderDetails, ({ one }) => ({
-  order: one(orderStatus, {
+  orderStatus: one(orderStatus, {
     fields: [orderDetails.statusId],
     references: [orderStatus.id],
   }),

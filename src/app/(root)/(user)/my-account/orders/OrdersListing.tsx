@@ -23,12 +23,14 @@ const OrdersListing = async ({ session }: { session: Session }) => {
               <li className="grid grid-cols-[1.2fr_auto_1fr] gap-4 rounded-xl p-4 ring-1 ring-primary-50">
                 <div className="">
                   <dl className="mb-6 grid grid-flow-col grid-cols-2 grid-rows-3 gap-6 text-sm">
-                    <div className="col-span-2 flex items-center gap-3 rounded-lg bg-primary-50 px-3 py-3 font-semibold text-primary-400">
-                      <Package
-                        size={40}
-                        className="text-primary-300 opacity-80"
-                        strokeWidth={1.2}
-                      />
+                    <div className="col-span-2 flex items-center gap-4 rounded-lg bg-primary-50 px-4 py-3 font-semibold text-primary-400">
+                      <span className="inline-flex size-10 items-center justify-center rounded-lg bg-primary-0">
+                        <Package
+                          size={24}
+                          className="text-primary-300"
+                          strokeWidth={1.2}
+                        />
+                      </span>
                       <div>
                         <dt className="">Order Number</dt>
                         <dd className="text-base">{order.orderId}</dd>
@@ -48,17 +50,19 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                         {order.status}
                       </dt>
                     </div>
-                    <div className="space-y-2 px-4 pt-4">
-                      <dt className="font-semibold text-primary-300">
-                        Order Date
-                      </dt>
-                      <dd className="font-medium text-primary-400">
-                        {new Intl.DateTimeFormat('en-us', {
-                          dateStyle: 'long',
-                        }).format(order.orderDate!)}
-                      </dd>
-                    </div>
-                    {order.orderDeliveryDate && (
+                    {order.orderDate && (
+                      <div className="space-y-2 px-4 pt-4">
+                        <dt className="font-semibold text-primary-300">
+                          Order Date
+                        </dt>
+                        <dd className="font-medium text-primary-400">
+                          {new Intl.DateTimeFormat('en-us', {
+                            dateStyle: 'long',
+                          }).format(new Date(order.orderDate))}
+                        </dd>
+                      </div>
+                    )}
+                    {order.deliveredAt && (
                       <div className="space-y-2 px-4">
                         <dt className="font-semibold text-primary-300">
                           Delivered at
@@ -66,7 +70,7 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                         <dd className="font-medium text-primary-400">
                           {new Intl.DateTimeFormat('en-us', {
                             dateStyle: 'long',
-                          }).format(order.orderDeliveryDate)}
+                          }).format(new Date(order.deliveredAt))}
                         </dd>
                       </div>
                     )}
@@ -90,9 +94,7 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                 </div>
                 <Divider className="h-full w-px bg-primary-50" />
                 <div className="group relative">
-                  <OrderItemsListing
-                    orderedProductsData={order.orderedProducts}
-                  />
+                  <OrderItemsListing orderedProducts={order.orderedProducts} />
                   {/* <div className="duration-20 pointer-events-none absolute left-0 top-0 flex h-full w-full select-none items-center justify-center bg-white bg-opacity-80 transition-opacity hover:opacity-0 group-hover:opacity-0">
                     <p className="rounded-full bg-primary-0 px-8 py-2 text-center font-semibold text-primary-400 ring-1 ring-primary-50">
                       Hover and Scroll to see
