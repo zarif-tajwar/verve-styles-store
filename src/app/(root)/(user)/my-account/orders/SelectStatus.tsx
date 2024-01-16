@@ -10,19 +10,19 @@ import {
   SelectValue,
   SelectLabel,
 } from '@/components/UI/Select';
+import { useOrderFilterStore } from '@/lib/store/user-order';
 import { cn } from '@/lib/util';
 import { SelectGroup } from '@radix-ui/react-select';
-import { ChevronDown, ChevronsUpDown, Filter, XIcon } from 'lucide-react';
-import { useQueryState } from 'nuqs';
-import { useState } from 'react';
+import { XIcon } from 'lucide-react';
 
 const selectValues = ['delivered', 'ongoing', 'cancelled', 'returned'];
 
 const SelectStatus = () => {
-  const [value, setValue] = useState<string>('');
+  const status = useOrderFilterStore((store) => store.status);
+  const setStatus = useOrderFilterStore((store) => store.setStatus);
   return (
     <div className="relative">
-      <Select value={value} onValueChange={(v) => setValue(v)}>
+      <Select value={status} onValueChange={(v) => setStatus(v)}>
         <SelectTrigger className="min-w-48 capitalize">
           <SelectValue placeholder="Choose Order Status" />
         </SelectTrigger>
@@ -39,9 +39,9 @@ const SelectStatus = () => {
           </SelectGroup>
         </SelectContent>
       </Select>
-      {value && (
+      {status && (
         <button
-          onClick={() => setValue('')}
+          onClick={() => setStatus('')}
           className="absolute -top-0.5 right-1.5 inline-flex -translate-y-full text-primary-400"
         >
           <XIcon size={20} />

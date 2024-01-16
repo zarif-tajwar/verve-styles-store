@@ -2,7 +2,7 @@ import { auth } from '@/auth';
 import { Button } from '@/components/UI/Button';
 import Divider from '@/components/UI/Divider';
 import { getOrdersServer } from '@/lib/server/user';
-import { capitalize, cn } from '@/lib/util';
+import { capitalize, cn, priceFormat } from '@/lib/util';
 import { Session } from 'next-auth';
 import React from 'react';
 import OrderItemsListing from './OrderItemsListing';
@@ -41,7 +41,12 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                         Total Amount
                       </dt>
                       <dd className="font-semibold text-primary-400">
-                        $99999.99
+                        {priceFormat(
+                          order.orderedProducts.reduce(
+                            (acc, curr) => acc + curr.total,
+                            0,
+                          ),
+                        )}
                       </dd>
                     </div>
                     <div className="space-y-1 px-4">
@@ -93,15 +98,7 @@ const OrdersListing = async ({ session }: { session: Session }) => {
                   </div>
                 </div>
                 <Divider className="h-full w-px bg-primary-50" />
-                <div className="group relative">
-                  <OrderItemsListing orderedProducts={order.orderedProducts} />
-                  {/* <div className="duration-20 pointer-events-none absolute left-0 top-0 flex h-full w-full select-none items-center justify-center bg-white bg-opacity-80 transition-opacity hover:opacity-0 group-hover:opacity-0">
-                    <p className="rounded-full bg-primary-0 px-8 py-2 text-center font-semibold text-primary-400 ring-1 ring-primary-50">
-                      Hover and Scroll to see
-                      <br /> Ordered Products
-                    </p>
-                  </div> */}
-                </div>
+                <OrderItemsListing orderedProducts={order.orderedProducts} />
               </li>
             </React.Fragment>
           );
@@ -110,68 +107,5 @@ const OrdersListing = async ({ session }: { session: Session }) => {
     </div>
   );
 };
-// const OrdersListing = async ({ session }: { session: Session }) => {
-//   const orders = await getOrdersServer(session.user.id, false);
 
-//   return (
-//     <div className="rounded-main px-8 py-4 ring-1 ring-primary-50">
-//       <ul className="grid grid-cols-1 gap-3">
-//         {orders.map((order, i) => {
-//           return (
-//             <React.Fragment key={i}>
-//               <li className="relative grid grid-cols-[1fr_auto] gap-6 rounded-2xl py-4">
-//                 <dl className="grid grid-flow-col grid-cols-4 grid-rows-2 gap-y-3">
-//                   <dt className="text-sm font-semibold uppercase text-primary-300">
-//                     Order ID
-//                   </dt>
-//                   <dd className="font-medium">{`Order #${order.orderId}`}</dd>
-//                   <dt className="text-sm font-semibold uppercase text-primary-300">
-//                     Status
-//                   </dt>
-//                   <dd
-//                     className={cn(
-//                       'font-semibold',
-//                       order.status === 'delivered' && 'text-emerald-500',
-//                     )}
-//                   >
-//                     {capitalize(order.status)}
-//                   </dd>
-//                   <dt className="text-sm font-semibold uppercase text-primary-300">
-//                     Total Price
-//                   </dt>
-//                   <dd className="font-medium">$1999.99</dd>
-//                   <dt className="text-sm font-semibold uppercase text-primary-300">
-//                     Order Date
-//                   </dt>
-//                   <dd className="font-medium">
-//                     {new Intl.DateTimeFormat('en-us', {
-//                       dateStyle: 'long',
-//                     }).format(order.orderDate!)}
-//                   </dd>
-//                 </dl>
-//                 <div className="grid gap-y-2">
-//                   <Button
-//                     variant={'secondary'}
-//                     className="h-auto rounded-md px-5 py-1 text-xs font-medium"
-//                     size={'sm'}
-//                   >
-//                     View Details
-//                   </Button>
-//                   <Button
-//                     variant={'secondary'}
-//                     className="h-auto rounded-md px-5 py-1 text-xs font-medium"
-//                     size={'sm'}
-//                   >
-//                     Invoice
-//                   </Button>
-//                 </div>
-//               </li>
-//               {i < orders.length - 1 && <Divider className="bg-primary-50" />}
-//             </React.Fragment>
-//           );
-//         })}
-//       </ul>
-//     </div>
-//   );
-// };
 export default OrdersListing;
