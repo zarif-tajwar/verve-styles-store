@@ -1,7 +1,6 @@
 import { CalendarMini, SearchIconSm } from '@/components/Svgs/icons';
-import { Button } from '@/components/UI/Button';
-import { ChevronDown } from 'lucide-react';
-import SelectStatus from './SelectStatus';
+
+import FilterMenu from './FilterMenu';
 
 const OrderFilters = () => {
   return (
@@ -16,18 +15,7 @@ const OrderFilters = () => {
         />
         <SearchIconSm className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-300" />
       </search>
-      <div className="flex gap-2">
-        <SelectStatus />
-        <Button
-          variant={'outline'}
-          size={'sm'}
-          roundness={'lg'}
-          className="min-w-48 justify-between font-medium text-primary-400"
-        >
-          Order Date Range
-          <CalendarMini className="text-primary-400" />
-        </Button>
-      </div>
+      <FilterMenu />
     </div>
   );
 };

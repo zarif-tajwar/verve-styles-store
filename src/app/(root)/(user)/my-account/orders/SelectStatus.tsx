@@ -2,24 +2,52 @@
 
 import { FunnelMini } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectLabel,
+} from '@/components/UI/Select';
 import { cn } from '@/lib/util';
-import { ChevronDown, ChevronsUpDown, Filter } from 'lucide-react';
+import { SelectGroup } from '@radix-ui/react-select';
+import { ChevronDown, ChevronsUpDown, Filter, XIcon } from 'lucide-react';
+import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
+const selectValues = ['delivered', 'ongoing', 'cancelled', 'returned'];
+
 const SelectStatus = () => {
-  const [selected, setSelected] = useState(false);
+  const [value, setValue] = useState<string>('');
   return (
-    <Button
-      variant={'outline'}
-      size={'sm'}
-      roundness={'lg'}
-      className="min-w-48 justify-between font-medium text-primary-400"
-      onClick={() => setSelected(!selected)}
-    >
-      Select Order Status
-      {/* <Filter size={16} className="text-primary-400" /> */}
-      <ChevronsUpDown size={16} className="-mr-0.5 text-primary-400" />
-    </Button>
+    <div className="relative">
+      <Select value={value} onValueChange={(v) => setValue(v)}>
+        <SelectTrigger className="min-w-48 capitalize">
+          <SelectValue placeholder="Choose Order Status" />
+        </SelectTrigger>
+        <SelectContent side="bottom" align="center">
+          <SelectGroup>
+            <SelectLabel>Order Status</SelectLabel>
+            {selectValues.map((option) => {
+              return (
+                <SelectItem value={option} key={option} className="capitalize">
+                  {option}
+                </SelectItem>
+              );
+            })}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      {value && (
+        <button
+          onClick={() => setValue('')}
+          className="absolute -top-0.5 right-1.5 inline-flex -translate-y-full text-primary-400"
+        >
+          <XIcon size={20} />
+        </button>
+      )}
+    </div>
   );
 };
 export default SelectStatus;
