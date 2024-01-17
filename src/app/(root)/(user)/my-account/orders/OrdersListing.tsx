@@ -15,6 +15,7 @@ import { getOrdersAction } from '@/lib/actions/user';
 import { useOrderFilterStore } from '@/lib/store/user-order';
 import OrdersPagination from './OrdersPagination';
 import OrderListingSkeleton from './OrderListingSkeleton';
+import OrderStatus from './OrderStatus';
 
 const orders = [...Array(10).keys()];
 
@@ -101,9 +102,7 @@ const OrdersListing = () => {
                         <dt className="font-semibold text-primary-300">
                           Status
                         </dt>
-                        <dt className="-ml-2 w-max rounded-full bg-emerald-50 px-2 py-1 font-medium capitalize text-emerald-600">
-                          {order.status}
-                        </dt>
+                        <OrderStatus status={order.status} />
                       </div>
                       {order.orderDate && (
                         <div className="space-y-2 px-4 pt-4">

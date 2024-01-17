@@ -6,7 +6,7 @@ const labels = new Map([
   ['Login options', 'Email & Accounts'],
 ]);
 
-const AccountLayout = ({ children }: { children: React.ReactNode }) => {
+const AccountLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="container-main flex gap-12 pt-12">
       <div className="pt-4">
