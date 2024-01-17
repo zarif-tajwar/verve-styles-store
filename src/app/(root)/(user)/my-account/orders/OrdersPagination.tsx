@@ -8,7 +8,7 @@ const OrdersPagination = ({ ordersCount }: { ordersCount: number }) => {
   const page = useOrderFilterStore((store) => store.page);
   const setPage = useOrderFilterStore((store) => store.setPage);
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center pt-16">
       <div className="grid grid-cols-2 gap-4">
         <Button
           variant={'secondary'}
