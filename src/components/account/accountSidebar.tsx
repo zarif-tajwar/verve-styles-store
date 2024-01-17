@@ -11,7 +11,7 @@ const sidebarAreas = [
     heading: 'Information',
     links: [
       { icon: FileClock, text: 'Orders', href: '/my-account/orders' },
-      { icon: BookUser, text: 'Addresses', href: '/my-account/addresses' },
+      { icon: BookUser, text: 'Address Book', href: '/my-account/addresses' },
     ],
   },
   {
@@ -59,7 +59,7 @@ const AccountSidebar = () => {
                       )}
                       asChild
                     >
-                      <Link href={link.href}>
+                      <Link href={link.href} prefetch={false}>
                         {<link.icon width={20} height={20} strokeWidth={1.5} />}
                         {link.text}
                       </Link>
