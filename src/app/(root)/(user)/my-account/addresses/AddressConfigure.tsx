@@ -5,19 +5,12 @@ import {
   PencilIcon,
   LinkIcon,
 } from '@heroicons/react/16/solid';
-import { DialogDemo } from './AddressInputModal';
+import AddNewAddress from './AddNewAddress';
 
 const AddressPageButtons = () => {
   return (
     <div className="flex gap-2">
-      <Button
-        variant={'default'}
-        roundness={'default'}
-        className="bg-primary-500 hover:bg-primary-400"
-      >
-        <PlusIcon className="-ml-1 size-4" />
-        Add New Address
-      </Button>
+      <AddNewAddress />
       <Button
         variant={'default'}
         roundness={'default'}
@@ -26,7 +19,6 @@ const AddressPageButtons = () => {
         <LinkIcon className="-ml-1 size-4" />
         Change Default Address
       </Button>
-      <DialogDemo />
     </div>
   );
 };

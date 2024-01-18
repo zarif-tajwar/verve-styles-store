@@ -1,6 +1,7 @@
 import { Button } from '@/components/UI/Button';
 import { CheckIcon, HomeIcon } from '@heroicons/react/20/solid';
 import { PencilSquareIcon } from '@heroicons/react/16/solid';
+import EditAddress from './EditAddress';
 
 const AddressList = () => {
   return (
@@ -13,14 +14,7 @@ const AddressList = () => {
                 <HomeIcon className="h-4 w-4 text-primary-300" />
               </span>
               <p>Home Address 1</p>
-              <Button
-                variant={'secondary'}
-                size={'xs'}
-                className="absolute right-0 top-0 gap-1.5"
-              >
-                <PencilSquareIcon className="size-4" />
-                Edit
-              </Button>
+              <EditAddress />
             </div>
             <dl className="grid w-full grid-cols-2 gap-x-8 gap-y-4">
               <div className="space-y-2">
