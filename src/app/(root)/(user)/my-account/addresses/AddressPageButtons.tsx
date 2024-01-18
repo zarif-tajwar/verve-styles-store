@@ -5,6 +5,7 @@ import {
   PencilIcon,
   LinkIcon,
 } from '@heroicons/react/16/solid';
+import { DialogDemo } from './AddressInputModal';
 
 const AddressPageButtons = () => {
   return (
@@ -25,6 +26,7 @@ const AddressPageButtons = () => {
         <LinkIcon className="-ml-1 size-4" />
         Change Default Address
       </Button>
+      <DialogDemo />
     </div>
   );
 };
