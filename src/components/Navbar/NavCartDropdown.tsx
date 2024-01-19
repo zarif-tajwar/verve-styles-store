@@ -57,6 +57,7 @@ const NavCartDropdown = () => {
             'origin-top-right rounded-xl bg-primary-0 text-sm font-normal shadow-drop',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
+          onCloseAutoFocus={(e) => e.preventDefault()}
         >
           {path !== '/cart' ? (
             <NavCartDropdownContent />

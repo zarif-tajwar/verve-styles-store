@@ -16,7 +16,7 @@ export const address = pgTable('address', {
   country: varchar('country').notNull(),
   city: varchar('city').notNull(),
   phone: varchar('phone').notNull(),
-  label: text('label'),
+  label: text('label').notNull(),
   type: varchar('type', { enum: ['not-relevant', 'home', 'office'] })
     .default('not-relevant')
     .notNull(),

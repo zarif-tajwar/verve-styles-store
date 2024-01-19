@@ -54,6 +54,7 @@ const NavUserDropdown = () => {
             'min-w-[13rem] origin-top-right rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
+          onCloseAutoFocus={(e) => e.preventDefault()}
         >
           {!isLoggedIn || !user ? (
             <DropdownMenu.DropdownMenuItem

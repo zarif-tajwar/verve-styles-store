@@ -16,10 +16,14 @@ import { products } from '../db/schema/products';
 import { genRandomInt, wait } from '../util';
 import { faker } from '@faker-js/faker';
 import { DateRange } from 'react-day-picker';
-import { AddressInsert, address } from '../db/schema/address';
+import { AddressInsert, AddressSelect, address } from '../db/schema/address';
 import { auth } from '@/auth';
-import { AddressFormSchema } from '../validation/address-form';
+import {
+  AddressFormSchema,
+  AddressFormSchemaType,
+} from '../validation/address-form';
 import { Session } from 'next-auth/types';
+import { revalidatePath } from 'next/cache';
 
 type UserOrderedProduct = {
   quantity: number;
@@ -250,7 +254,7 @@ export const generateRandomCompletedOrders = async (
 };
 
 export const addNewAddressServer = async (
-  data: Omit<AddressInsert, 'userId'>,
+  data: AddressFormSchemaType,
   session?: Session,
 ) => {
   const user = session ? session.user : (await auth())?.user;
@@ -262,9 +266,8 @@ export const addNewAddressServer = async (
 
   let label = zParse.data.label;
   if (!label) {
-    if (zParse.data.type === 'not-relevant') label = 'Address';
     if (zParse.data.type === 'home') label = 'Home Address';
-    if (zParse.data.type === 'office') label = 'Office Address';
+    else if (zParse.data.type === 'office') label = 'Office Address';
   }
 
   const res = await db.transaction(async (tx) => {
@@ -280,12 +283,14 @@ export const addNewAddressServer = async (
         userId: user.id,
         isDefault: userDefaultAddress.length === 0,
         isSaved: true,
-        label,
+        label: label ?? 'Address',
       })
       .returning();
 
     return insertedAddress;
   });
+
+  revalidatePath('/my-account/addresses', 'page');
 
   return res;
 };
@@ -295,15 +300,61 @@ export const getSavedAddressesServer = async (session?: Session) => {
   if (!user) return;
 
   return await db
-    .select({
-      address: address.address,
-      country: address.country,
-      city: address.city,
-      phone: address.phone,
-      type: address.type,
-      label: address.label,
-      isDefault: address.isDefault,
-    })
+    .select()
     .from(address)
-    .where(and(eq(address.userId, user.id), eq(address.isSaved, true)));
+    .where(and(eq(address.userId, user.id), eq(address.isSaved, true)))
+    .orderBy(address.createdAt, address.id);
+};
+
+export const editAddressServer = async (
+  addressId: AddressSelect['id'],
+  values: Partial<AddressSelect>,
+  session?: Session,
+) => {
+  const user = session ? session.user : (await auth())?.user;
+  if (!user) return;
+
+  const res = await db.transaction(async (tx) => {
+    const updatedAddress = await tx
+      .update(address)
+      .set(values)
+      .where(and(eq(address.id, addressId), eq(address.userId, user.id)))
+      .returning();
+    return updatedAddress;
+  });
+
+  revalidatePath('/my-account/addresses', 'page');
+
+  return res;
+};
+
+export const deleteAddressServer = async (
+  addressId: AddressSelect['id'],
+  session?: Session,
+) => {
+  const user = session ? session.user : (await auth())?.user;
+  if (!user) return;
+
+  const res = await db.transaction(async (tx) => {
+    const deletedAddress = await tx
+      .delete(address)
+      .where(and(eq(address.id, addressId), eq(address.userId, user.id)))
+      .returning();
+
+    if (!deletedAddress.at(0)?.isDefault) return true;
+
+    const sq = tx
+      .select({ id: address.id })
+      .from(address)
+      .where(eq(address.userId, user.id))
+      .orderBy(address.createdAt, address.id);
+
+    await tx.update(address).set({ isDefault: true }).where(eq(address.id, sq));
+
+    return true;
+  });
+
+  revalidatePath('/my-account/addresses', 'page');
+
+  return res;
 };

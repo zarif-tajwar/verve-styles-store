@@ -19,54 +19,70 @@ import {
 import { Button } from '@/components/UI/Button';
 import { SaveIcon } from '@/components/Svgs/icons';
 import Spinner from '@/components/UI/Spinner';
+import { wait } from '@/lib/util';
 
-type AddressInputFormProps = React.FormHTMLAttributes<HTMLFormElement> & {
-  removeSaveButton?: boolean;
-  previousValues?: AddressFormSchemaType | undefined;
-  afterFormSubmit?: (values: AddressFormSchemaType) => any;
-};
+export type AddressInputFormProps =
+  React.FormHTMLAttributes<HTMLFormElement> & {
+    removeSaveButton?: boolean;
+    previousValues?: AddressFormSchemaType | undefined;
+    afterFormSubmit?: (values: AddressFormSchemaType) => any;
+    saveText?: string;
+  };
 
 const AddressInputForm = React.forwardRef<
   HTMLFormElement,
   AddressInputFormProps
->(({ removeSaveButton, previousValues, afterFormSubmit, ...props }, ref) => {
-  const formHookObject = useForm<AddressFormSchemaType>({
-    resolver: zodResolver(AddressFormSchema),
-    defaultValues: previousValues,
-  });
+>(
+  (
+    { removeSaveButton, previousValues, afterFormSubmit, saveText, ...props },
+    ref,
+  ) => {
+    const formHookObject = useForm<AddressFormSchemaType>({
+      resolver: zodResolver(AddressFormSchema),
+      defaultValues: previousValues,
+    });
 
-  const { isSubmitting } = formHookObject.formState;
+    const { isSubmitting, isDirty } = formHookObject.formState;
 
-  const handleSubmit = async (values: AddressFormSchemaType) => {
-    console.log(values);
-    afterFormSubmit?.(values);
-  };
+    const handleSubmit = async (values: AddressFormSchemaType) => {
+      await afterFormSubmit?.(values);
+    };
 
-  return (
-    <form
-      {...props}
-      ref={ref}
-      onSubmit={formHookObject.handleSubmit(handleSubmit)}
-    >
-      <AddressInputFormFields formHookObject={formHookObject} />
-      {!removeSaveButton && (
-        <div className="flex justify-end pt-12">
-          <Button
-            type="submit"
-            roundness={'lg'}
-            align={'left'}
-            className="min-w-24 gap-1.5"
-            disabled={isSubmitting}
-          >
-            {isSubmitting && <Spinner size={16} />}
-            {!isSubmitting && <SaveIcon className="size-4" />}
-            Save
-          </Button>
-        </div>
-      )}
-    </form>
-  );
-});
+    return (
+      <form
+        {...props}
+        ref={ref}
+        onSubmit={formHookObject.handleSubmit(handleSubmit)}
+      >
+        <AddressInputFormFields formHookObject={formHookObject} />
+        {!removeSaveButton && (
+          <div className="flex justify-end pt-12">
+            <Button
+              type="submit"
+              roundness={'lg'}
+              align={'left'}
+              className="min-w-24 gap-1.5"
+              disabled={isSubmitting || !isDirty}
+            >
+              {isSubmitting && (
+                <>
+                  <Spinner size={16} />
+                  {'Saving'}
+                </>
+              )}
+              {!isSubmitting && (
+                <>
+                  <SaveIcon className="size-4" />
+                  {saveText ?? 'Save'}
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+      </form>
+    );
+  },
+);
 
 AddressInputForm.displayName = 'AddressInputForm';
 
@@ -183,7 +199,13 @@ const AddressInputFormFields = React.forwardRef<
             id="address-label"
             placeholder="Name this address"
             className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
-            {...register('label')}
+            {...register('label', {
+              required: false,
+              setValueAs: (value) => {
+                if (value === '') return undefined;
+                return value;
+              },
+            })}
           />
           {errors.label?.message && (
             <p className="absolute -bottom-0.5 left-3 translate-y-full text-sm text-rose-700">
