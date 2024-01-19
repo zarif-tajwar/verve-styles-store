@@ -10,6 +10,7 @@ import type { AdapterAccount } from '@auth/core/adapters';
 import { relations } from 'drizzle-orm';
 import { orders } from './orders';
 import { carts } from './carts';
+import { address } from './address';
 
 export const user = pgTable('user', {
   id: text('id').notNull().primaryKey(),
@@ -24,6 +25,7 @@ export const user = pgTable('user', {
 
 export const userRelations = relations(user, ({ one, many }) => ({
   orders: many(orders),
+  address: many(address),
   carts: one(carts, {
     fields: [user.id],
     references: [carts.userId],

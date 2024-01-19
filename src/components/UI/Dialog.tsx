@@ -23,7 +23,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0  fixed inset-0 z-50 bg-white/80',
+      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-white/70 backdrop-blur-sm',
       className,
     )}
     {...props}
@@ -34,9 +34,9 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
-    defaultCloseBtn?: boolean;
+    removeDefaultCloseBtn?: boolean;
   }
->(({ className, children, defaultCloseBtn, ...props }, ref) => (
+>(({ className, children, removeDefaultCloseBtn, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
@@ -49,7 +49,7 @@ const DialogContent = React.forwardRef<
     >
       <div className="relative">
         {children}
-        {!defaultCloseBtn && <DialogCloseBtn />}
+        {!removeDefaultCloseBtn && <DialogCloseBtn />}
       </div>
     </DialogPrimitive.Content>
   </DialogPortal>
@@ -64,7 +64,7 @@ const DialogCloseBtn = React.forwardRef<
     ref={ref}
     {...props}
     className={cn(
-      'absolute right-0 top-0 flex size-7 -translate-y-1.5 translate-x-1.5 items-center justify-center rounded-full transition-opacity hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-300 disabled:pointer-events-none',
+      'absolute -top-2 right-0 flex size-7 -translate-y-1.5 translate-x-1.5 items-center justify-center rounded-full transition-opacity hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-300 disabled:pointer-events-none',
       className,
     )}
   >

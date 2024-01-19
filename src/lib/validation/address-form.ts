@@ -19,9 +19,7 @@ export const AddressFormSchema = z.object({
     .max(50, 'City must contain atmost 50 characters'),
   phone: z.string().regex(phoneRegex, 'Invalid Number!'),
   label: z.string().min(3).max(50).optional(),
-  addressType: z
-    .enum(['home', 'office', 'not-relevant'])
-    .default('not-relevant'),
+  type: z.enum(['home', 'office', 'not-relevant']).default('not-relevant'),
 });
 
 export type AddressFormSchemaType = z.infer<typeof AddressFormSchema>;

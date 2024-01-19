@@ -1,4 +1,4 @@
-// import 'server-only';
+import 'server-only';
 import { UserSelect, user } from '../db/schema/auth';
 import { DummyUserSelect, dummyUser } from '../db/schema/dummyUser';
 import { db } from '../db';
@@ -16,6 +16,26 @@ import { products } from '../db/schema/products';
 import { genRandomInt, wait } from '../util';
 import { faker } from '@faker-js/faker';
 import { DateRange } from 'react-day-picker';
+import { AddressInsert, address } from '../db/schema/address';
+import { auth } from '@/auth';
+import { AddressFormSchema } from '../validation/address-form';
+import { Session } from 'next-auth/types';
+
+type UserOrderedProduct = {
+  quantity: number;
+  total: number;
+  name: string;
+  size: string;
+};
+
+type UserOrder = {
+  orderId: OrderSelect['id'];
+  status: string;
+  orderDate?: OrderDetailsSelect['placedAt'];
+  deliveryDate?: OrderDetailsSelect['deliveryDate'];
+  deliveredAt?: OrderDetailsSelect['deliveredAt'];
+  orderedProducts: UserOrderedProduct[];
+};
 
 export const getOrdersServer = async (
   userId: UserSelect['id'] | DummyUserSelect['id'],
@@ -229,63 +249,61 @@ export const generateRandomCompletedOrders = async (
   }
 };
 
-const useOrderData = {
-  orderId: 44342,
-  orderedProducts: [
-    {
-      quantity: 5,
-      total: 31235,
-      name: 'Elegant Rubber Chips',
-      size: 'large',
-    },
-    {
-      quantity: 10,
-      total: 10800,
-      name: 'Tasty Rubber Gloves',
-      size: 'small',
-    },
-  ],
-  orderDate: '2021-03-15T15:34:48.071Z',
-  deliveryDate: '2021-03-17T15:34:48.071Z',
-  deliveredAt: '2021-03-17T14:34:48.071Z',
-  status: 'delivered',
+export const addNewAddressServer = async (
+  data: Omit<AddressInsert, 'userId'>,
+  session?: Session,
+) => {
+  const user = session ? session.user : (await auth())?.user;
+  if (!user) return;
+
+  const zParse = AddressFormSchema.safeParse(data);
+
+  if (!zParse.success) return;
+
+  let label = zParse.data.label;
+  if (!label) {
+    if (zParse.data.type === 'not-relevant') label = 'Address';
+    if (zParse.data.type === 'home') label = 'Home Address';
+    if (zParse.data.type === 'office') label = 'Office Address';
+  }
+
+  const res = await db.transaction(async (tx) => {
+    const userDefaultAddress = await tx
+      .select({ id: address.id })
+      .from(address)
+      .where(and(eq(address.userId, user.id), eq(address.isDefault, true)));
+
+    const insertedAddress = await tx
+      .insert(address)
+      .values({
+        ...zParse.data,
+        userId: user.id,
+        isDefault: userDefaultAddress.length === 0,
+        isSaved: true,
+        label,
+      })
+      .returning();
+
+    return insertedAddress;
+  });
+
+  return res;
 };
 
-type UserOrderedProduct = {
-  quantity: number;
-  total: number;
-  name: string;
-  size: string;
-};
+export const getSavedAddressesServer = async (session?: Session) => {
+  const user = session ? session.user : (await auth())?.user;
+  if (!user) return;
 
-type UserOrder = {
-  orderId: OrderSelect['id'];
-  status: string;
-  orderDate?: OrderDetailsSelect['placedAt'];
-  deliveryDate?: OrderDetailsSelect['deliveryDate'];
-  deliveredAt?: OrderDetailsSelect['deliveredAt'];
-  orderedProducts: UserOrderedProduct[];
+  return await db
+    .select({
+      address: address.address,
+      country: address.country,
+      city: address.city,
+      phone: address.phone,
+      type: address.type,
+      label: address.label,
+      isDefault: address.isDefault,
+    })
+    .from(address)
+    .where(and(eq(address.userId, user.id), eq(address.isSaved, true)));
 };
-
-// SELECT o.id AS order_id, order_lines.data AS order_lines
-// FROM orders o
-// LEFT JOIN LATERAL (
-// 	SELECT JSON_AGG(JSON_BUILD_OBJECT('orderLineId',ol.id,
-//                                       'quantity', ol.quantity,
-// 					                  'pricePerUnit', ol.price_per_unit,
-// 									  'discount', ol.discount,
-//                                       'productName', pr.name,
-// 									  'size', s.name
-//                                      )
-// 	) AS data
-// 	     FROM order_line ol
-//     INNER JOIN product_entries pe
-//          ON pe.id = ol.product_entry_id
-//     INNER JOIN products pr
-//          ON pr.id = pe.product_id
-//     INNER JOIN sizes s
-//          ON s.id = pe.size_id
-//     WHERE ol.order_id = o.id
-// ) AS order_lines
-// ON TRUE
-// LIMIT 4

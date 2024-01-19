@@ -13,7 +13,8 @@ const buttonVariants = cva(
           'ring-1 ring-primary-100 hover:bg-primary-50 hover:ring-primary-50',
         secondary:
           'bg-primary-50 hover:bg-primary-100 text-primary-400 focus-visible:ring-offset-0',
-        ghost: 'hover:bg-primary-50 text-primary-400',
+        ghost:
+          'hover:bg-primary-50 text-primary-400 focus-visible:ring-offset-0',
         inverse:
           'bg-primary-0 text-primary-900 hover:bg-primary-50 focus-visible:ring-offset-primary-900 focus-visible:ring-primary-50',
         // destructive:
