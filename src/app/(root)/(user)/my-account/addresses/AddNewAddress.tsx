@@ -12,10 +12,18 @@ import { useState } from 'react';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import { addNewAddressAction } from '@/lib/actions/user';
 import { useSession } from 'next-auth/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const AddNewAddress = () => {
   const session = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutateAsync: addAddressMutateAsync } = useMutation({
+    mutationFn: addNewAddressAction,
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ['addresses'] });
+    },
+  });
   return (
     <Dialog open={isOpen} onOpenChange={(o) => setIsOpen(o)}>
       <DialogTrigger asChild>
@@ -36,7 +44,10 @@ const AddNewAddress = () => {
         <AddressInputForm
           afterFormSubmit={async (values) => {
             if (!session.data) return;
-            await addNewAddressAction(values, session.data);
+            await addAddressMutateAsync({
+              data: values,
+              session: session.data,
+            });
             setIsOpen(false);
           }}
         />

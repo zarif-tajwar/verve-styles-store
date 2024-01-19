@@ -59,8 +59,6 @@ const AddressInputForm = React.forwardRef<
           <div className="flex justify-end pt-12">
             <Button
               type="submit"
-              roundness={'lg'}
-              align={'left'}
               className="min-w-24 gap-1.5"
               disabled={isSubmitting || !isDirty}
             >

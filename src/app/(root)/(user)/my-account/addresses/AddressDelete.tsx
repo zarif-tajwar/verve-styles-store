@@ -5,12 +5,20 @@ import { deleteAddressAction } from '@/lib/actions/user';
 import { AddressSelect } from '@/lib/db/schema/address';
 import { TrashIcon, XMarkIcon } from '@heroicons/react/16/solid';
 import * as Popover from '@radix-ui/react-popover';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const session = useSession();
+  const queryClient = useQueryClient();
+  const { mutateAsync: deleteAddressMutateAsync } = useMutation({
+    mutationFn: deleteAddressAction,
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ['addresses'] });
+    },
+  });
   return (
     <Popover.Root open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <Popover.Trigger asChild>
@@ -31,7 +39,7 @@ const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
           className="rounded-xl bg-primary-0 p-4 shadow-sm ring-1 ring-primary-50"
           sideOffset={8}
         >
-          <p className="mb-3 text-sm font-medium">Click delete to confirm</p>
+          <p className="mb-3 text-sm font-medium">Click confirm to delete</p>
           <div className="flex items-center gap-2">
             <Button
               variant={'destructive'}
@@ -39,11 +47,15 @@ const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
               className="py-1 font-medium"
               onClick={async () => {
                 if (!session.data) return;
-                await deleteAddressAction(addressId, session.data);
+                await deleteAddressMutateAsync({
+                  addressId,
+                  session: session.data,
+                });
+                setIsOpen(false);
               }}
             >
               <TrashIcon className="size-4" />
-              Delete
+              Confirm
             </Button>
 
             <Popover.Close asChild>

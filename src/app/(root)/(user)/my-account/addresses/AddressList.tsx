@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/UI/Button';
 import {
   CheckIcon,
@@ -11,13 +13,17 @@ import EditAddress from './EditAddress';
 import { Session } from 'next-auth/types';
 import { getSavedAddressesServer } from '@/lib/server/user';
 import AddressDelete from './AddressDelete';
+import { useSession } from 'next-auth/react';
+import { useAddressesQuery } from '@/lib/hooks/address-hooks';
 
-const AddressList = async ({ session }: { session: Session }) => {
-  const savedAddreses = await getSavedAddressesServer(session);
+const AddressList = () => {
+  const session = useSession();
+  const addressesQuery = useAddressesQuery(session.data ?? undefined);
+  const addresses = addressesQuery.data;
 
   return (
     <div className="space-y-4 text-sm">
-      {savedAddreses?.map((address, i) => {
+      {addresses?.map((address, i) => {
         return (
           <div
             key={address.id}

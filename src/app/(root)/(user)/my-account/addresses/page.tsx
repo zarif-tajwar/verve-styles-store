@@ -25,7 +25,7 @@ const AddressesPage = async () => {
           <div>
             <h2 className="mb-4 text-xl font-semibold">Saved Addresses</h2>
             {/* <DefaultAddressRadioGroup /> */}
-            <AddressList session={session} />
+            <AddressList />
           </div>
         </div>
       </SessionProvider>

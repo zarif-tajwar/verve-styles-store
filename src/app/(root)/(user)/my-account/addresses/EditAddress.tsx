@@ -8,6 +8,7 @@ import { PencilSquareIcon } from '@heroicons/react/16/solid';
 import { AddressSelect } from '@/lib/db/schema/address';
 import { useSession } from 'next-auth/react';
 import { editAddressAction } from '@/lib/actions/user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type EditAddressProps = {
   addressData: AddressSelect;
@@ -16,6 +17,13 @@ type EditAddressProps = {
 const EditAddress = ({ addressData }: EditAddressProps) => {
   const session = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutateAsync: editAddressMutateAsync } = useMutation({
+    mutationFn: editAddressAction,
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ['addresses'] });
+    },
+  });
   return (
     <Dialog open={isOpen} onOpenChange={(o) => setIsOpen(o)}>
       <DialogTrigger asChild>
@@ -45,7 +53,11 @@ const EditAddress = ({ addressData }: EditAddressProps) => {
           saveText="Save Changes"
           afterFormSubmit={async (values) => {
             if (!session.data) return;
-            await editAddressAction(addressData.id, values, session.data);
+            await editAddressMutateAsync({
+              addressId: addressData.id,
+              values,
+              session: session.data,
+            });
             setIsOpen(false);
           }}
         />

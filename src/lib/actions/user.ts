@@ -5,6 +5,8 @@ import {
   addNewAddressServer,
   editAddressServer,
   deleteAddressServer,
+  getSavedAddressesServer,
+  changeDefaultAddressServer,
 } from '@/lib/server/user';
 
 export {
@@ -13,4 +15,6 @@ export {
   addNewAddressServer as addNewAddressAction,
   editAddressServer as editAddressAction,
   deleteAddressServer as deleteAddressAction,
+  getSavedAddressesServer as getSavedAddressesAction,
+  changeDefaultAddressServer as changeDefaultAddressAction,
 };

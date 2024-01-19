@@ -253,10 +253,13 @@ export const generateRandomCompletedOrders = async (
   }
 };
 
-export const addNewAddressServer = async (
-  data: AddressFormSchemaType,
-  session?: Session,
-) => {
+export const addNewAddressServer = async ({
+  data,
+  session,
+}: {
+  data: AddressFormSchemaType;
+  session?: Session;
+}) => {
   const user = session ? session.user : (await auth())?.user;
   if (!user) return;
 
@@ -303,14 +306,18 @@ export const getSavedAddressesServer = async (session?: Session) => {
     .select()
     .from(address)
     .where(and(eq(address.userId, user.id), eq(address.isSaved, true)))
-    .orderBy(address.createdAt, address.id);
+    .orderBy(desc(address.createdAt), address.id);
 };
 
-export const editAddressServer = async (
-  addressId: AddressSelect['id'],
-  values: Partial<AddressSelect>,
-  session?: Session,
-) => {
+export const editAddressServer = async ({
+  addressId,
+  values,
+  session,
+}: {
+  addressId: AddressSelect['id'];
+  values: Partial<AddressSelect>;
+  session?: Session;
+}) => {
   const user = session ? session.user : (await auth())?.user;
   if (!user) return;
 
@@ -323,15 +330,16 @@ export const editAddressServer = async (
     return updatedAddress;
   });
 
-  revalidatePath('/my-account/addresses', 'page');
-
   return res;
 };
 
-export const deleteAddressServer = async (
-  addressId: AddressSelect['id'],
-  session?: Session,
-) => {
+export const deleteAddressServer = async ({
+  addressId,
+  session,
+}: {
+  addressId: AddressSelect['id'];
+  session?: Session;
+}) => {
   const user = session ? session.user : (await auth())?.user;
   if (!user) return;
 
@@ -347,14 +355,58 @@ export const deleteAddressServer = async (
       .select({ id: address.id })
       .from(address)
       .where(eq(address.userId, user.id))
-      .orderBy(address.createdAt, address.id);
+      .orderBy(address.createdAt, address.id)
+      .limit(1);
 
     await tx.update(address).set({ isDefault: true }).where(eq(address.id, sq));
 
     return true;
   });
 
-  revalidatePath('/my-account/addresses', 'page');
+  return res;
+};
+
+export const changeDefaultAddressServer = async ({
+  addressId,
+  session,
+}: {
+  addressId: AddressSelect['id'];
+  session?: Session;
+}) => {
+  const user = session ? session.user : (await auth())?.user;
+  if (!user) return;
+
+  const res = await db.transaction(async (tx) => {
+    const sq = tx
+      .select({ id: address.id })
+      .from(address)
+      .where(and(eq(address.userId, user.id), eq(address.isDefault, true)))
+      .limit(1);
+
+    const previousDefaultAddress = await tx
+      .update(address)
+      .set({ isDefault: false })
+      .where(eq(address.id, sq))
+      .returning();
+
+    if (!previousDefaultAddress || previousDefaultAddress.length === 0) {
+      tx.rollback();
+      return;
+    }
+
+    const newDefaultAddress = await tx
+      .update(address)
+      .set({ isDefault: true })
+      .where(and(eq(address.id, addressId), eq(address.userId, user.id)))
+      .returning();
+
+    if (!newDefaultAddress || newDefaultAddress.length === 0) {
+      tx.rollback();
+      return;
+    }
+
+    return newDefaultAddress;
+  });
 
   return res;
 };
