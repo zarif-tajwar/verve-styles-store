@@ -175,7 +175,7 @@ const AddressInputFormFields = React.forwardRef<
             type="text"
             id="phone"
             {...register('phone', { required: 'Phone Number is required!' })}
-            placeholder="Enter your phone number"
+            placeholder="Example: +880 19xxxxxxxxx"
             className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
           />
           {errors.phone?.message && (

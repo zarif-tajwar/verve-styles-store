@@ -2,7 +2,7 @@
 
 import { db } from '../db';
 import { and, desc, eq } from 'drizzle-orm';
-import { AddressSelect, address } from '../db/schema/address';
+import { AddressInsert, AddressSelect, address } from '../db/schema/address';
 import { auth } from '@/auth';
 import {
   AddressFormSchema,
@@ -12,6 +12,7 @@ import { Session } from 'next-auth/types';
 import { actionClient, authorizedActionClient } from './safe-action';
 import { CustomError } from '../errors/custom-error';
 import * as z from 'zod';
+import { faker } from '@faker-js/faker';
 
 const GetAddressSchema = z
   .object({
@@ -49,10 +50,12 @@ export const addNewAddressAction = authorizedActionClient(
     }
     try {
       await db.transaction(async (tx) => {
-        const userDefaultAddress = await tx
-          .select({ id: address.id })
-          .from(address)
-          .where(and(eq(address.userId, userId), eq(address.isDefault, true)));
+        const userDefaultAddress = (
+          await tx
+            .select({ id: address.id })
+            .from(address)
+            .where(and(eq(address.userId, userId), eq(address.isDefault, true)))
+        ).at(0);
 
         const newAddress = (
           await tx
@@ -60,7 +63,7 @@ export const addNewAddressAction = authorizedActionClient(
             .values({
               ...data,
               userId,
-              isDefault: userDefaultAddress.length === 0,
+              isDefault: !userDefaultAddress,
               isSaved: true,
               label: label ?? 'Address',
             })
@@ -215,5 +218,50 @@ export const changeDefaultAddressAction = authorizedActionClient(
     }
 
     return { success: 'Successfully Changed the default Address!' };
+  },
+);
+
+const GenerateRandomAddressSchema = z.object({});
+
+export const generateRandomAddressAction = authorizedActionClient(
+  GenerateRandomAddressSchema,
+  async ({}, { userId }) => {
+    try {
+      await db.transaction(async (tx) => {
+        const userDefaultAddress = (
+          await tx
+            .select({ id: address.id })
+            .from(address)
+            .where(and(eq(address.userId, userId), eq(address.isDefault, true)))
+        ).at(0);
+
+        const newAddress: AddressInsert = {
+          address: faker.location.streetAddress({ useFullAddress: true }),
+          city: faker.location.city(),
+          country: faker.location.country(),
+          label: faker.string.alpha({ length: 10 }),
+          phone: '+' + faker.phone.number(),
+          isSaved: true,
+          userId,
+          type: faker.helpers.arrayElement(['home', 'not-relevant', 'office']),
+          isDefault: !userDefaultAddress,
+        };
+
+        const insertedAddress = (
+          await tx.insert(address).values(newAddress).returning()
+        ).at(0);
+
+        if (!insertedAddress) {
+          tx.rollback();
+          throw new CustomError();
+        }
+      });
+    } catch (e) {
+      throw new CustomError(
+        "Something wen't wrong while generating the address!",
+      );
+    }
+
+    return { message: 'Successfully generated a random address!' };
   },
 );
