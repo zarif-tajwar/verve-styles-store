@@ -34,7 +34,7 @@ export const getAddressesAction = actionClient(
         .orderBy(desc(address.createdAt), address.id);
     } catch (e) {
       throw new CustomError(
-        "Something wen't wrong while fetching the addresses!",
+        'Something went wrong while fetching the addresses!',
       );
     }
   },
@@ -76,9 +76,7 @@ export const addNewAddressAction = authorizedActionClient(
         }
       });
     } catch (e) {
-      throw new CustomError(
-        "Something wen't wrong while creating the address!",
-      );
+      throw new CustomError('Something went wrong while creating the address!');
     }
     return { success: 'Successfully Created the Address!' };
   },
@@ -118,9 +116,7 @@ export const deleteAddressAction = authorizedActionClient(
         }
       });
     } catch (e) {
-      throw new CustomError(
-        "Something wen't wrong while deleting the address!",
-      );
+      throw new CustomError('Something went wrong while deleting the address!');
     }
     return { success: 'Successfully Deleted the Address!' };
   },
@@ -149,9 +145,7 @@ export const editAddressAction = authorizedActionClient(
         }
       });
     } catch (e) {
-      throw new CustomError(
-        "Something wen't wrong while updating the address!",
-      );
+      throw new CustomError('Something went wrong while updating the address!');
     }
     return { success: 'Successfully Deleted the Address!' };
   },
@@ -213,7 +207,7 @@ export const changeDefaultAddressAction = authorizedActionClient(
       });
     } catch (e) {
       throw new CustomError(
-        "Something wen't wrong while changing the default address!",
+        'Something went wrong while changing the default address!',
       );
     }
 
@@ -258,7 +252,7 @@ export const generateRandomAddressAction = authorizedActionClient(
       });
     } catch (e) {
       throw new CustomError(
-        "Something wen't wrong while generating the address!",
+        'Something went wrong while generating the address!',
       );
     }
 

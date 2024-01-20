@@ -2,6 +2,7 @@ import '@/app/globals.css';
 import type { Metadata } from 'next';
 import IntegralCF from './_fonts/integral-cf/font';
 import Geist from './_fonts/geist/font';
+import { Toaster } from '@/components/UI/Toaster';
 
 export const metadata: Metadata = {
   title: 'Clothy - Shop',
@@ -19,6 +20,7 @@ export default function RootLayout({
         className={`${IntegralCF.variable} ${Geist.variable} bg-primary-0 font-geist font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

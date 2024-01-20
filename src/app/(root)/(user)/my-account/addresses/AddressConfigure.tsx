@@ -8,6 +8,7 @@ import {
 import AddNewAddress from './AddNewAddress';
 import ChangeDefaultAddress from './ChangeDefaultAddress';
 import GenRandAddress from './GenRandAddress';
+import ToastBtn from './toastBtn';
 
 const AddressPageButtons = () => {
   return (
@@ -15,6 +16,7 @@ const AddressPageButtons = () => {
       <AddNewAddress />
       <ChangeDefaultAddress />
       <GenRandAddress />
+      <ToastBtn />
     </div>
   );
 };
