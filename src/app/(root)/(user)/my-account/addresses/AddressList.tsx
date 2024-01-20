@@ -14,12 +14,12 @@ import { Session } from 'next-auth/types';
 import { getSavedAddressesServer } from '@/lib/server/user';
 import AddressDelete from './AddressDelete';
 import { useSession } from 'next-auth/react';
-import { useAddressesQuery } from '@/lib/hooks/address-hooks';
+import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
 
 const AddressList = () => {
   const session = useSession();
   const addressesQuery = useAddressesQuery(session.data ?? undefined);
-  const addresses = addressesQuery.data;
+  const addresses = addressesQuery.data?.data;
 
   return (
     <div className="space-y-4 text-sm">

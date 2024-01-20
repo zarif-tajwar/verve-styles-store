@@ -58,6 +58,7 @@
     "lucide-react": "^0.303.0",
     "next": "14.0.4",
     "next-auth": "5.0.0-beta.4",
+    "next-safe-action": "^6.0.1",
     "nextjs-toploader": "^1.6.4",
     "nprogress": "^0.2.0",
     "nuqs": "^1.14.0",

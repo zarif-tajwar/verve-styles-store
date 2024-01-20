@@ -10,18 +10,21 @@ import {
 import AddressInputForm from './AddressInputForm';
 import { useState } from 'react';
 import { PlusIcon } from '@heroicons/react/16/solid';
-import { addNewAddressAction } from '@/lib/actions/user';
+import { addNewAddressAction } from '@/lib/actions/address';
 import { useSession } from 'next-auth/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAction } from 'next-safe-action/hooks';
+import { wait } from '@/lib/util';
 
 const AddNewAddress = () => {
-  const session = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { mutateAsync: addAddressMutateAsync } = useMutation({
-    mutationFn: addNewAddressAction,
+  const { execute, status } = useAction(addNewAddressAction, {
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ['addresses'] });
+    },
+    onError: async (errors) => {
+      alert(JSON.stringify(errors));
     },
   });
   return (
@@ -43,11 +46,7 @@ const AddNewAddress = () => {
         </div>
         <AddressInputForm
           afterFormSubmit={async (values) => {
-            if (!session.data) return;
-            await addAddressMutateAsync({
-              data: values,
-              session: session.data,
-            });
+            await execute(values);
             setIsOpen(false);
           }}
         />

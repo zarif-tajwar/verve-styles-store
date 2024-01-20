@@ -9,33 +9,34 @@ import {
   DialogTrigger,
 } from '@/components/UI/Dialog';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import { useAddressesQuery } from '@/lib/hooks/address-hooks';
+import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
 import { useSession } from 'next-auth/react';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { DialogClose } from '@radix-ui/react-dialog';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { cn } from '@/lib/util';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { changeDefaultAddressAction } from '@/lib/actions/user';
+import { changeDefaultAddressAction } from '@/lib/actions/address';
+import { useAction } from 'next-safe-action/hooks';
 
 const ChangeDefaultAddress = () => {
   const session = useSession();
   const addressesQuery = useAddressesQuery(session.data ?? undefined);
   const queryClient = useQueryClient();
-
-  const { mutateAsync: changeDefaultAddressMutateAsync } = useMutation({
-    mutationFn: changeDefaultAddressAction,
+  const { execute } = useAction(changeDefaultAddressAction, {
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ['addresses'] });
     },
+    onError: (errors) => {
+      alert(JSON.stringify(errors));
+    },
   });
 
-  const defaultAddress = addressesQuery.data?.find(
-    (address) => address.isDefault,
-  );
+  const addresses = addressesQuery.data?.data;
 
-  const [value, setValue] = useState<string | undefined>(
-    defaultAddress?.id.toString(),
+  const selectedValue = useMemo(
+    () => addresses?.find((address) => address.isDefault)?.id?.toString(),
+    [addresses],
   );
 
   return (
@@ -63,46 +64,42 @@ const ChangeDefaultAddress = () => {
           </div>
           <ScrollArea.Root className="h-full min-w-[24rem] rounded-xl transition-opacity">
             <ScrollArea.Viewport className="h-full max-h-[15rem] w-full rounded-lg p-4 shadow-inner">
-              {addressesQuery.data && (
-                <RadioGroup.Root
-                  value={value}
-                  onValueChange={async (value) => {
-                    if (!session.data) return;
-                    setValue(value);
-                    await changeDefaultAddressMutateAsync({
-                      addressId: Number.parseInt(value),
-                      session: session.data,
-                    });
-                  }}
-                >
-                  <div className="grid gap-4">
-                    {addressesQuery.data.map((address) => {
-                      return (
-                        <label
-                          key={address.id}
-                          htmlFor={`address-${address.id}`}
-                          className={cn(
-                            'flex items-center gap-4 rounded-lg px-3 py-2 ring-1 ring-inset ring-primary-50',
-                            value === address.id.toString() &&
-                              'ring-2 ring-primary-400',
-                          )}
-                        >
-                          <RadioGroup.Item
-                            id={`address-${address.id}`}
-                            value={address.id.toString()}
-                            className="relative size-5 rounded-full ring-2 ring-inset ring-primary-50 data-[state=checked]:ring-primary-400"
+              {addresses && (
+                <form>
+                  <RadioGroup.Root
+                    defaultValue={selectedValue}
+                    onValueChange={async (value) => {
+                      await execute({ addressId: Number.parseInt(value) });
+                    }}
+                  >
+                    <div className="grid gap-4">
+                      {addresses.map((address) => {
+                        return (
+                          <label
+                            key={address.id}
+                            htmlFor={`address-${address.id}`}
+                            className={cn(
+                              'flex items-center gap-4 rounded-lg px-3 py-2 ring-1 ring-inset ring-primary-50',
+                              'has-[:checked]:ring-2 has-[:checked]:ring-primary-400',
+                            )}
                           >
-                            <RadioGroup.Indicator className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400" />
-                          </RadioGroup.Item>
-                          <div className="text-sm">
-                            <p className="font-medium">{address.label}</p>
-                            <p>{`${address.address}, ${address.city}, ${address.country}, ${address.phone}`}</p>
-                          </div>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </RadioGroup.Root>
+                            <RadioGroup.Item
+                              id={`address-${address.id}`}
+                              value={address.id.toString()}
+                              className="relative size-5 rounded-full ring-2 ring-inset ring-primary-50 data-[state=checked]:ring-primary-400"
+                            >
+                              <RadioGroup.Indicator className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400" />
+                            </RadioGroup.Item>
+                            <div className="text-sm">
+                              <p className="font-medium">{address.label}</p>
+                              <p>{`${address.address}, ${address.city}, ${address.country}, ${address.phone}`}</p>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </RadioGroup.Root>
+                </form>
               )}
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar

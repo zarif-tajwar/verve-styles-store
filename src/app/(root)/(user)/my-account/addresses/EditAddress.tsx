@@ -7,21 +7,24 @@ import { useState } from 'react';
 import { PencilSquareIcon } from '@heroicons/react/16/solid';
 import { AddressSelect } from '@/lib/db/schema/address';
 import { useSession } from 'next-auth/react';
-import { editAddressAction } from '@/lib/actions/user';
+import { editAddressAction } from '@/lib/actions/address';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAction } from 'next-safe-action/hooks';
 
 type EditAddressProps = {
   addressData: AddressSelect;
 };
 
 const EditAddress = ({ addressData }: EditAddressProps) => {
-  const session = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { mutateAsync: editAddressMutateAsync } = useMutation({
-    mutationFn: editAddressAction,
+
+  const { execute } = useAction(editAddressAction, {
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ['addresses'] });
+    },
+    onError: (errors) => {
+      alert(JSON.stringify(errors));
     },
   });
   return (
@@ -52,11 +55,9 @@ const EditAddress = ({ addressData }: EditAddressProps) => {
           }}
           saveText="Save Changes"
           afterFormSubmit={async (values) => {
-            if (!session.data) return;
-            await editAddressMutateAsync({
+            await execute({
+              newAddressValues: values,
               addressId: addressData.id,
-              values,
-              session: session.data,
             });
             setIsOpen(false);
           }}

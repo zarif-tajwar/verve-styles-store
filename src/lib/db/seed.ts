@@ -39,6 +39,7 @@ import {
   orderDetails,
   orderStatus,
 } from './schema/orderDetails';
+import { address } from './schema/address';
 
 async function populateSizes() {
   await db

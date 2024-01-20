@@ -1,22 +1,24 @@
 'use client';
 
 import { Button } from '@/components/UI/Button';
-import { deleteAddressAction } from '@/lib/actions/user';
+import { deleteAddressAction } from '@/lib/actions/address';
 import { AddressSelect } from '@/lib/db/schema/address';
 import { TrashIcon, XMarkIcon } from '@heroicons/react/16/solid';
 import * as Popover from '@radix-ui/react-popover';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
+import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 
 const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const session = useSession();
   const queryClient = useQueryClient();
-  const { mutateAsync: deleteAddressMutateAsync } = useMutation({
-    mutationFn: deleteAddressAction,
+  const { execute } = useAction(deleteAddressAction, {
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: ['addresses'] });
+    },
+    onError: (errors) => {
+      alert(JSON.stringify(errors));
     },
   });
   return (
@@ -46,11 +48,7 @@ const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
               size={'xs'}
               className="py-1 font-medium"
               onClick={async () => {
-                if (!session.data) return;
-                await deleteAddressMutateAsync({
-                  addressId,
-                  session: session.data,
-                });
+                await execute({ addressId });
                 setIsOpen(false);
               }}
             >
