@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/UI/Button';
+import { errorToast, messageToast } from '@/components/UI/Toaster';
 import { deleteAddressAction } from '@/lib/actions/address';
 import { AddressSelect } from '@/lib/db/schema/address';
 import { TrashIcon, XMarkIcon } from '@heroicons/react/16/solid';
@@ -14,11 +15,17 @@ const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { execute } = useAction(deleteAddressAction, {
-    onSuccess: async () => {
+    onSuccess: async ({ success }) => {
       await queryClient.refetchQueries({ queryKey: ['addresses'] });
+      messageToast(success);
     },
     onError: (errors) => {
-      alert(JSON.stringify(errors));
+      if (errors.serverError) {
+        errorToast('Failed', { description: errors.serverError });
+      }
+      if (errors.fetchError) {
+        errorToast('Failed', { description: errors.fetchError });
+      }
     },
   });
   return (

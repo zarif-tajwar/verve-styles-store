@@ -15,16 +15,23 @@ import { useSession } from 'next-auth/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
 import { wait } from '@/lib/util';
+import { errorToast, successToast } from '@/components/UI/Toaster';
 
 const AddNewAddress = () => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { execute, status } = useAction(addNewAddressAction, {
-    onSuccess: async () => {
+    onSuccess: async ({ success }) => {
       await queryClient.refetchQueries({ queryKey: ['addresses'] });
+      successToast(success);
     },
     onError: async (errors) => {
-      alert(JSON.stringify(errors));
+      if (errors.serverError) {
+        errorToast('Failed', { description: errors.serverError });
+      }
+      if (errors.fetchError) {
+        errorToast('Failed', { description: errors.fetchError });
+      }
     },
   });
   return (

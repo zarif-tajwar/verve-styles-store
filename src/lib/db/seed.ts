@@ -40,6 +40,7 @@ import {
   orderStatus,
 } from './schema/orderDetails';
 import { address } from './schema/address';
+import { z } from 'zod';
 
 async function populateSizes() {
   await db
@@ -561,6 +562,10 @@ async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
+
+  const parse = z.number().safeParse(NaN);
+
+  console.log(JSON.stringify(parse));
 
   const end = performance.now();
 

@@ -34,7 +34,7 @@ export const getAddressesAction = actionClient(
         .orderBy(desc(address.createdAt), address.id);
     } catch (e) {
       throw new CustomError(
-        'Something went wrong while fetching the addresses!',
+        'Something went wrong while fetching the addresses',
       );
     }
   },
@@ -78,7 +78,7 @@ export const addNewAddressAction = authorizedActionClient(
     } catch (e) {
       throw new CustomError('Something went wrong while creating the address!');
     }
-    return { success: 'Successfully Created the Address!' };
+    return { success: 'Successfully Created the Address' };
   },
 );
 
@@ -147,7 +147,7 @@ export const editAddressAction = authorizedActionClient(
     } catch (e) {
       throw new CustomError('Something went wrong while updating the address!');
     }
-    return { success: 'Successfully Deleted the Address!' };
+    return { success: 'Successfully Edited the Address' };
   },
 );
 
@@ -211,7 +211,7 @@ export const changeDefaultAddressAction = authorizedActionClient(
       );
     }
 
-    return { success: 'Successfully Changed the default Address!' };
+    return { success: 'Successfully changed the default address' };
   },
 );
 
@@ -256,6 +256,6 @@ export const generateRandomAddressAction = authorizedActionClient(
       );
     }
 
-    return { message: 'Successfully generated a random address!' };
+    return { message: 'Successfully generated a random address' };
   },
 );

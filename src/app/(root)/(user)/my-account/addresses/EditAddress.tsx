@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react';
 import { editAddressAction } from '@/lib/actions/address';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
+import { errorToast, successToast } from '@/components/UI/Toaster';
 
 type EditAddressProps = {
   addressData: AddressSelect;
@@ -20,11 +21,17 @@ const EditAddress = ({ addressData }: EditAddressProps) => {
   const queryClient = useQueryClient();
 
   const { execute } = useAction(editAddressAction, {
-    onSuccess: async () => {
+    onSuccess: async ({ success }) => {
       await queryClient.refetchQueries({ queryKey: ['addresses'] });
+      successToast(success);
     },
     onError: (errors) => {
-      alert(JSON.stringify(errors));
+      if (errors.serverError) {
+        errorToast('Failed', { description: errors.serverError });
+      }
+      if (errors.fetchError) {
+        errorToast('Failed', { description: errors.fetchError });
+      }
     },
   });
   return (

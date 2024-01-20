@@ -2,7 +2,6 @@
 
 'use client';
 
-import { CheckIcon } from '@heroicons/react/16/solid';
 import React from 'react';
 import { Toaster as Sonner, toast } from 'sonner';
 
@@ -22,9 +21,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           cancelButton:
             'group-[.toast]:bg-primary-300 group-[.toast]:text-primary-0',
           title: '!font-medium',
-          //   error: 'group-[.toaster]:text-red-500 group-[.toaster]:text-sm',
         },
-        // unstyled: true,
       }}
       {...props}
     />
