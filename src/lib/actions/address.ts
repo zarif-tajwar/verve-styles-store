@@ -2,17 +2,14 @@
 
 import { db } from '../db';
 import { and, desc, eq } from 'drizzle-orm';
-import { AddressInsert, AddressSelect, address } from '../db/schema/address';
+import { AddressInsert, address } from '../db/schema/address';
 import { auth } from '@/auth';
-import {
-  AddressFormSchema,
-  AddressFormSchemaType,
-} from '../validation/address-form';
+import { AddressFormSchema } from '../validation/address-form';
 import { Session } from 'next-auth/types';
 import { actionClient, authorizedActionClient } from './safe-action';
 import { CustomError } from '../errors/custom-error';
 import * as z from 'zod';
-import { faker } from '@faker-js/faker';
+import { rand, randAddress, randPhoneNumber, randText } from '@ngneat/falso';
 
 const GetAddressSchema = z
   .object({
@@ -78,7 +75,7 @@ export const addNewAddressAction = authorizedActionClient(
     } catch (e) {
       throw new CustomError('Something went wrong while creating the address!');
     }
-    return { success: 'Successfully Created the Address' };
+    return { success: 'Successfully created the Address' };
   },
 );
 
@@ -229,15 +226,17 @@ export const generateRandomAddressAction = authorizedActionClient(
             .where(and(eq(address.userId, userId), eq(address.isDefault, true)))
         ).at(0);
 
+        const fakeAddress = randAddress();
+
         const newAddress: AddressInsert = {
-          address: faker.location.streetAddress({ useFullAddress: true }),
-          city: faker.location.city(),
-          country: faker.location.country(),
-          label: faker.string.alpha({ length: 10 }),
-          phone: '+' + faker.phone.number(),
+          address: fakeAddress.street,
+          city: fakeAddress.city,
+          country: fakeAddress.country!,
+          label: randText({ charCount: 10 }),
+          phone: randPhoneNumber({ countryCode: 'UK' }),
           isSaved: true,
           userId,
-          type: faker.helpers.arrayElement(['home', 'not-relevant', 'office']),
+          type: rand(['home', 'not-relevant', 'office']),
           isDefault: !userDefaultAddress,
         };
 

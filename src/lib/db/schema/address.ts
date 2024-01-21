@@ -20,7 +20,7 @@ export const address = pgTable('address', {
   type: varchar('type', { enum: ['not-relevant', 'home', 'office'] })
     .default('not-relevant')
     .notNull(),
-  userId: text('user_id').references(() => user.id),
+  userId: text('user_id').references(() => user.id, { onDelete: 'no action' }),
   dummyUserId: varchar('dummy_user_id').references(() => dummyUser.id),
   isDefault: boolean('is_default').default(false),
   isSaved: boolean('is_saved').default(false),

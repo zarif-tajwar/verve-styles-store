@@ -1,12 +1,13 @@
 import NextAuth, { type NextAuthConfig } from 'next-auth';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
+import EmailProvider from 'next-auth/providers/email';
 import { temporaryAdapter } from './temporaryAdapter';
 import { UserSelect, accounts, user as userTable } from '@/lib/db/schema/auth';
 import 'dotenv/config';
 import { parseIntWithUndefined, wait } from './lib/util';
 import { db } from './lib/db';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
@@ -46,6 +47,17 @@ const authConfig = {
         };
       },
     }),
+    EmailProvider({
+      server: {
+        host: process.env.SENDGRID_HOST,
+        port: process.env.SENDGRID_PORT,
+        auth: {
+          user: process.env.SENDGRID_USER,
+          pass: process.env.SENDGRID_API_KEY,
+        },
+      },
+      from: process.env.SENDGRID_EMAIL_FROM,
+    }),
   ],
   adapter: authAdapter,
   callbacks: {
@@ -80,28 +92,19 @@ const authConfig = {
       // these extra database calls wouldn't be necessary if auth js supported custom logic
       // or provided the oauth profile object while creating an account
       db.transaction(async (tx) => {
-        const extraInfo = (
-          await tx
-            .select({
-              name: accounts.name,
-              email: accounts.email,
-            })
-            .from(accounts)
-            .where(eq(accounts.providerAccountId, account.providerAccountId))
-        )[0];
-
-        if (extraInfo && extraInfo.email && extraInfo.name) {
-          await tx.rollback();
-          return;
-        }
-
         await tx
           .update(accounts)
           .set({
             email: profile.email,
             name: profile.name,
           })
-          .where(eq(accounts.providerAccountId, account.providerAccountId));
+          .where(
+            and(
+              eq(accounts.providerAccountId, account.providerAccountId),
+              isNull(accounts.name),
+              isNull(accounts.email),
+            ),
+          );
       });
     },
   },

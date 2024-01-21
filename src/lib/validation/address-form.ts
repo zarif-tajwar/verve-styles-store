@@ -1,6 +1,8 @@
 import * as z from 'zod';
 
-export const phoneRegex = new RegExp(/^(\+|00)[1-9][0-9 \-\(\)\.]{7,32}$/);
+export const phoneRegex = new RegExp(
+  /^(?:\+?\d{1,4}[\s-]?)?(?:\(\d{1,}\)[\s-]?)?\d{1,}[\s-]?\d{1,}[\s-]?\d{1,}[\s-]?\d{1,}$/,
+);
 
 export const AddressFormSchema = z.object({
   address: z

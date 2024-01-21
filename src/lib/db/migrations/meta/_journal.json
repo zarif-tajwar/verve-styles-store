@@ -260,6 +260,27 @@
       "when": 1705673454270,
       "tag": "0036_big_paper_doll",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "5",
+      "when": 1705788171271,
+      "tag": "0037_flippant_zarek",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "5",
+      "when": 1705788508703,
+      "tag": "0038_futuristic_stranger",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "5",
+      "when": 1705788575629,
+      "tag": "0039_clumsy_shadowcat",
+      "breakpoints": true
     }
   ]
 }

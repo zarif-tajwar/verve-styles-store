@@ -20,7 +20,9 @@ export const user = pgTable('user', {
   image: text('image'),
   role: text('role', {
     enum: ['ADMIN', 'STAFF', 'USER'],
-  }).notNull(),
+  })
+    .notNull()
+    .default('USER'),
 });
 
 export const userRelations = relations(user, ({ one, many }) => ({
