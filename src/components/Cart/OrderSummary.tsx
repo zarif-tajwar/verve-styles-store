@@ -6,6 +6,7 @@ import Divider from '../UI/Divider';
 import { Button } from '../UI/Button';
 import { useCartItemsStore } from '@/lib/store/cart-store';
 import { CartItemProps } from '@/lib/types/cart';
+import Link from 'next/link';
 
 const OrderSummary = ({
   cartItemsData,
@@ -92,9 +93,11 @@ const OrderSummary = ({
               Apply
             </Button>
           </div>
-          <Button size={'xl'} className="w-full gap-3">
-            Go to checkout
-            <MoveRight />
+          <Button asChild size={'xl'} className="w-full gap-3">
+            <Link href={'/checkout'}>
+              Go to checkout
+              <MoveRight />
+            </Link>
           </Button>
         </div>
       </div>

@@ -12,12 +12,12 @@ const Logo = ({
   return (
     <span
       className={cn(
-        'inline-block select-none flex-col font-integral-cf text-[2rem] font-bold leading-none',
+        'inline-block select-none flex-col font-integral-cf text-[1.75rem] font-bold leading-none',
         className,
       )}
       {...props}
     >
-      Clothy
+      Verve&nbsp;&nbsp;Styles
     </span>
   );
 };

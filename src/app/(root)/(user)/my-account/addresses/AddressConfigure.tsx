@@ -16,7 +16,6 @@ const AddressPageButtons = () => {
       <AddNewAddress />
       <ChangeDefaultAddress />
       <GenRandAddress />
-      <ToastBtn />
     </div>
   );
 };
