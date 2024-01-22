@@ -252,14 +252,3 @@ export const generateRandomCompletedOrders = async (
     });
   }
 };
-
-export const getSavedAddressesServer = async (session?: Session) => {
-  const user = session ? session.user : (await auth())?.user;
-  if (!user) return;
-
-  return await db
-    .select()
-    .from(address)
-    .where(and(eq(address.userId, user.id), eq(address.isSaved, true)))
-    .orderBy(desc(address.createdAt), address.id);
-};

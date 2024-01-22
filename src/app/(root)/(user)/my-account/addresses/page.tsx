@@ -1,7 +1,6 @@
 import { auth } from '@/auth';
 import WIP from '@/components/UI/WIP';
 import { redirect } from 'next/navigation';
-import DefaultAddressRadioGroup from './DefaultAddressRadioGroup';
 import AddressList from './AddressList';
 import AddressConfigure from './AddressConfigure';
 import { SessionProvider } from 'next-auth/react';

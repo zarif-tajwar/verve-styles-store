@@ -2,6 +2,7 @@
 
 import AddressInputForm from '@/app/(root)/(user)/my-account/addresses/AddressInputForm';
 import { useCheckoutStore } from '@/lib/store/checkout-store';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { useShallow } from 'zustand/react/shallow';
 
 const ShippingAddressInput = () => {
@@ -12,7 +13,7 @@ const ShippingAddressInput = () => {
   const setMode = useCheckoutStore((store) => store.setShippingAdressMode);
   return (
     <div
-      className="rounded-xl px-6 py-6 shadow-sm"
+      className="relative rounded-xl px-6 py-6 shadow-sm"
       onClick={() => setMode('input')}
     >
       <div className="mb-5">
@@ -20,6 +21,9 @@ const ShippingAddressInput = () => {
         <p className="text-sm text-primary-500">Enter a different address</p>
       </div>
       <AddressInputForm removeSaveButton />
+      {isActive && (
+        <CheckCircleIcon className="absolute left-0 top-0 size-6 -translate-x-1/2 -translate-y-1/2" />
+      )}
     </div>
   );
 };

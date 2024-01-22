@@ -11,7 +11,6 @@ import {
 import { PencilSquareIcon } from '@heroicons/react/16/solid';
 import EditAddress from './EditAddress';
 import { Session } from 'next-auth/types';
-import { getSavedAddressesServer } from '@/lib/server/user';
 import AddressDelete from './AddressDelete';
 import { useSession } from 'next-auth/react';
 import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';

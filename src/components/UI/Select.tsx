@@ -22,12 +22,14 @@ const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
     removeDefaultIcon?: boolean;
+    noLineClamp?: boolean;
   }
->(({ className, children, removeDefaultIcon = false, ...props }, ref) => (
+>(({ className, children, removeDefaultIcon, noLineClamp, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex min-h-9 w-full items-center justify-between whitespace-nowrap rounded-lg border border-none bg-transparent px-3 py-2 text-sm font-medium text-primary-400 shadow-sm ring-1 ring-primary-100 focus:outline-none focus:ring-1 focus:ring-primary-200 disabled:cursor-not-allowed disabled:opacity-50  [&>span]:line-clamp-1',
+      'flex min-h-9 w-full items-center justify-between whitespace-nowrap rounded-lg border border-none bg-transparent px-3 py-2 text-sm font-medium text-primary-400 shadow-sm ring-1 ring-primary-100 focus:outline-none focus:ring-1 focus:ring-primary-200 disabled:cursor-not-allowed disabled:opacity-50',
+      !noLineClamp && '[&>span]:line-clamp-1',
       className,
     )}
     {...props}
@@ -95,7 +97,7 @@ const SelectContent = React.forwardRef<
       sideOffset={4}
       {...props}
     >
-      <SelectScrollUpButton />
+      {/* <SelectScrollUpButton /> */}
       <SelectPrimitive.Viewport
         className={cn(
           'p-1',
@@ -105,7 +107,7 @@ const SelectContent = React.forwardRef<
       >
         {children}
       </SelectPrimitive.Viewport>
-      <SelectScrollDownButton />
+      {/* <SelectScrollDownButton /> */}
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
 ));
