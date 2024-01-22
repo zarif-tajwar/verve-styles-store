@@ -102,8 +102,8 @@ const AddressInputFormFields = React.forwardRef<
   } = formHookObject;
   return (
     <div ref={ref} className="@container">
-      <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @xl:gap-8">
-        <div className="relative grid gap-1">
+      <div className="grid grid-cols-1 gap-4 @md:grid-cols-2 @xl:gap-8">
+        <div className="flex flex-col gap-1">
           <Label
             required={true}
             htmlFor="address"
@@ -124,27 +124,7 @@ const AddressInputFormFields = React.forwardRef<
             </p>
           )}
         </div>
-        <div className="relative grid gap-1">
-          <Label
-            htmlFor="country"
-            className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
-          >
-            Country
-          </Label>
-          <Input
-            {...register('country', { required: 'Country is required!' })}
-            type="text"
-            id="country"
-            placeholder="Enter your country"
-            className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
-          />
-          {errors.country?.message && (
-            <p className="absolute -bottom-0.5 left-3 translate-y-full text-sm text-rose-700">
-              {errors.country.message}
-            </p>
-          )}
-        </div>
-        <div className="relative grid gap-1">
+        <div className="flex flex-col gap-1">
           <Label
             htmlFor="city"
             className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
@@ -164,7 +144,28 @@ const AddressInputFormFields = React.forwardRef<
             </p>
           )}
         </div>
-        <div className="relative grid gap-1">
+        <div className="flex flex-col gap-1">
+          <Label
+            htmlFor="country"
+            className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+          >
+            Country
+          </Label>
+          <Input
+            {...register('country', { required: 'Country is required!' })}
+            type="text"
+            id="country"
+            placeholder="Enter your country"
+            className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
+          />
+          {errors.country?.message && (
+            <p className="absolute -bottom-0.5 left-3 translate-y-full text-sm text-rose-700">
+              {errors.country.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1">
           <Label
             htmlFor="phone"
             className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
@@ -184,7 +185,7 @@ const AddressInputFormFields = React.forwardRef<
             </p>
           )}
         </div>
-        <div className="relative grid gap-1">
+        <div className="flex flex-col gap-1">
           <Label
             required={false}
             htmlFor="address-label"
