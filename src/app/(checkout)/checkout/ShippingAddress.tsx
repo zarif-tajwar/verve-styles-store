@@ -2,6 +2,7 @@ import AddressInputForm from '@/app/(root)/(user)/my-account/addresses/AddressIn
 import ShippingAddressSelect from './ShippingAddressSelect';
 import ShippingAddressInput from './ShippingAddressInput';
 import { getSavedAddressesServer } from '@/lib/actions/address';
+import ShippingAddressAccordion from './ShippingAddressAccordion';
 
 const ShippingAddress = async () => {
   const savedAddresses = (await getSavedAddressesServer()) ?? [];
@@ -13,9 +14,8 @@ const ShippingAddress = async () => {
           Fillup your Shipping Address your payment details and make payment
         </p>
       </div>
-      <div className="max-w-lg space-y-4">
-        <ShippingAddressSelect savedAddresses={savedAddresses} />
-        <ShippingAddressInput />
+      <div className="max-w-lg">
+        <ShippingAddressAccordion savedAddresses={savedAddresses} />
       </div>
     </div>
   );

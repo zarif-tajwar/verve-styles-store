@@ -18,12 +18,18 @@ import {
 } from '@radix-ui/react-select';
 import { AddressSelect } from '@/lib/db/schema/address';
 import React, { useState } from 'react';
-import { ChevronDownIcon } from '@heroicons/react/24/solid';
+// import { ChevronDownIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import {
   BriefcaseIcon,
   HashtagIcon,
   HomeIcon,
 } from '@heroicons/react/16/solid';
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@radix-ui/react-accordion';
 
 const ShippingAddressSelect = ({
   savedAddresses,
@@ -50,64 +56,82 @@ const ShippingAddressSelect = ({
     savedAddresses.at(0);
 
   return (
-    <div
-      className="relative rounded-xl px-6 py-6 shadow-sm"
-      onClick={() => setMode('select')}
-    >
-      <div className="mb-5">
-        <h3 className="text-lg font-semibold">Saved Addresses</h3>
-        <p className="text-sm text-primary-500">
-          Choose from your saved addresses
-        </p>
-      </div>
-      <Select value={selectValue} onValueChange={setValue}>
-        <SelectTrigger
-          className="grid grid-cols-[1fr_auto] bg-primary-50 text-left shadow-none ring-0"
-          noLineClamp
-          removeDefaultIcon
-        >
-          <SelectValue placeholder="Select" className="">
-            {selectedAddress && <AddressItem address={selectedAddress} />}
-          </SelectValue>
-          <SelectIcon asChild>
-            <ChevronDownIcon className="size-6 text-primary-500" />
-          </SelectIcon>
-        </SelectTrigger>
-        <SelectPortal>
-          <SelectContent className="">
-            <SelectViewport className="rounded-lg bg-primary-0 p-3 shadow-drop">
-              {savedAddresses.map((address) => {
-                return (
-                  <React.Fragment key={address.id}>
-                    <SelectItem
-                      value={address.id.toString()}
-                      className={cn(
-                        'block rounded-lg py-2 pl-3 pr-9',
-                        'relative w-full cursor-default select-none rounded-md text-sm outline-none focus:bg-primary-50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-                      )}
-                    >
-                      <SelectItemText>
-                        <AddressItem includeLabel address={address} />
-                      </SelectItemText>
-                      <SelectItemIndicator
-                        className="absolute right-3 top-1/2 -translate-y-1/2"
-                        asChild
-                      >
-                        <CheckIcon className="size-6" />
-                      </SelectItemIndicator>
-                    </SelectItem>
-                    <SelectSeparator className="mx-auto h-px w-[96%] bg-primary-50 last:hidden" />
-                  </React.Fragment>
-                );
-              })}
-            </SelectViewport>
-          </SelectContent>
-        </SelectPortal>
-      </Select>
-
-      {isActive && (
-        <CheckCircleIcon className="absolute left-0 top-0 size-6 -translate-x-1/2 -translate-y-1/2" />
-      )}
+    <div className="relative">
+      <AccordionItem
+        value="select"
+        className={cn(
+          'overflow-hidden rounded-xl bg-primary-0 shadow-sm transition-colors duration-300',
+          !isActive && 'hover:bg-primary-50',
+        )}
+      >
+        <AccordionTrigger className="w-full px-6">
+          <div className="w-full py-6 text-left">
+            <h3 className="text-lg font-semibold">Saved Addresses</h3>
+            <p className="text-sm text-primary-500">
+              Choose from your saved addresses
+            </p>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+          <div className="px-6 pb-6">
+            <Select
+              value={selectValue}
+              onValueChange={setValue}
+              onOpenChange={(open) => {
+                if (open && !isActive) {
+                  setMode('select');
+                }
+              }}
+            >
+              <SelectTrigger
+                className="group grid grid-cols-[1fr_auto] bg-primary-50 text-left shadow-none ring-0"
+                noLineClamp
+                removeDefaultIcon
+              >
+                <SelectValue placeholder="Select" className="">
+                  {selectedAddress && <AddressItem address={selectedAddress} />}
+                </SelectValue>
+                <SelectIcon className="inline-flex size-6 items-center justify-center rounded-full text-primary-500 transition-colors duration-100 group-hover:bg-primary-400 group-hover:text-primary-0">
+                  <ChevronDownIcon className="size-5" />
+                </SelectIcon>
+              </SelectTrigger>
+              <SelectPortal>
+                <SelectContent className="">
+                  <SelectViewport className="rounded-lg bg-primary-0 p-3 shadow-drop">
+                    {savedAddresses.map((address) => {
+                      return (
+                        <React.Fragment key={address.id}>
+                          <SelectItem
+                            value={address.id.toString()}
+                            className={cn(
+                              'block rounded-lg py-2 pl-3 pr-9',
+                              'relative w-full cursor-default select-none rounded-md text-sm outline-none focus:bg-primary-50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                            )}
+                          >
+                            <SelectItemText>
+                              <AddressItem includeLabel address={address} />
+                            </SelectItemText>
+                            <SelectItemIndicator
+                              className="absolute right-3 top-1/2 -translate-y-1/2"
+                              asChild
+                            >
+                              <CheckIcon className="size-6" />
+                            </SelectItemIndicator>
+                          </SelectItem>
+                          <SelectSeparator className="mx-auto my-3 h-px w-[96%] bg-primary-50 last:hidden" />
+                        </React.Fragment>
+                      );
+                    })}
+                  </SelectViewport>
+                </SelectContent>
+              </SelectPortal>
+            </Select>
+          </div>
+        </AccordionContent>
+        {isActive && (
+          <CheckCircleIcon className="absolute left-0 top-0 size-8 -translate-x-1/2 -translate-y-1/2" />
+        )}
+      </AccordionItem>
     </div>
   );
 };

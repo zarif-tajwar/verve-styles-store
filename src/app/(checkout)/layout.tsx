@@ -10,8 +10,6 @@ export default async function CheckoutLayout({
   if (!session) redirect('/auth/sign-in');
 
   return (
-    <div className="flex min-h-[100svh] flex-col justify-center bg-primary-0">
-      {children}
-    </div>
+    <div className="flex min-h-[100svh] flex-col bg-primary-0">{children}</div>
   );
 }

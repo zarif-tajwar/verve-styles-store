@@ -46,11 +46,21 @@ const config: Config = {
           from: { opacity: '1', transform: 'scale(1)' },
           to: { opacity: '0', transform: 'scale(0.8)' },
         },
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
       },
       animation: {
         scaleFromTopRightAnim:
           'scaleFromTopRight 200ms cubic-bezier(0.34, 1.56, 0.64, 1)',
         shrinkToTopRightAnim: 'shrinkToTopRight 100ms ease',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
       transitionTimingFunction: {
         subtleSpring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',

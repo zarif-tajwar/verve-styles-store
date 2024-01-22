@@ -2,7 +2,13 @@
 
 import * as React from 'react';
 import { Input } from '@/components/UI/Input';
-import { Select } from '@/components/UI/Select';
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+  SelectItem,
+} from '@/components/UI/Select';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import {
   HashtagIcon,
@@ -19,7 +25,7 @@ import {
 import { Button } from '@/components/UI/Button';
 import { SaveIcon } from '@/components/Svgs/icons';
 import Spinner from '@/components/UI/Spinner';
-import { wait } from '@/lib/util';
+import { cn, wait } from '@/lib/util';
 
 export type AddressInputFormProps =
   React.FormHTMLAttributes<HTMLFormElement> & {
@@ -90,6 +96,15 @@ interface AddressInputFormFieldsProps
   extends React.HTMLAttributes<HTMLDivElement> {
   formHookObject: UseFormReturn<AddressFormSchemaType>;
 }
+
+const addressTypeOptions: {
+  type: AddressFormSchemaType['type'];
+  icon: typeof HomeIcon;
+}[] = [
+  { type: 'home', icon: HomeIcon },
+  { type: 'office', icon: BriefcaseIcon },
+  { type: 'not-relevant', icon: HashtagIcon },
+];
 
 const AddressInputFormFields = React.forwardRef<
   HTMLDivElement,
@@ -218,51 +233,43 @@ const AddressInputFormFields = React.forwardRef<
             required={false}
             className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
           >
-            Choose Address Type
+            Address Type
           </Label>
           <Controller
             name="type"
             control={control}
             render={({ field }) => {
               return (
-                <RadioGroup.Root
-                  onValueChange={field.onChange}
-                  {...field}
-                  id="addressType"
-                >
-                  <div className="flex flex-wrap items-start gap-2 text-sm">
-                    <label
-                      htmlFor="not-relevant"
-                      className="inline-flex cursor-pointer items-center rounded-md bg-primary-50 px-2 py-1 has-[:checked]:bg-primary-500 has-[:checked]:text-primary-0"
-                    >
-                      <RadioGroup.Item value="not-relevant" id="not-relevant" />
-                      <span className="inline-flex items-center gap-1">
-                        <HashtagIcon className="-ml-0.5 size-4" />
-                        Not relevant
-                      </span>
-                    </label>
-                    <label
-                      htmlFor="home"
-                      className="inline-flex cursor-pointer items-center rounded-md bg-primary-50 px-2 py-1 has-[:checked]:bg-primary-500 has-[:checked]:text-primary-0"
-                    >
-                      <RadioGroup.Item value="home" id="home" />
-                      <span className="inline-flex items-center gap-1">
-                        <HomeIcon className="-ml-0.5 size-4" />
-                        Home
-                      </span>
-                    </label>
-                    <label
-                      htmlFor="office"
-                      className="inline-flex cursor-pointer items-center rounded-md bg-primary-50 px-2 py-1 has-[:checked]:bg-primary-500 has-[:checked]:text-primary-0"
-                    >
-                      <RadioGroup.Item value="office" id="office" />
-                      <span className="inline-flex items-center gap-1">
-                        <BriefcaseIcon className="-ml-0.5 size-4" />
-                        Office
-                      </span>
-                    </label>
-                  </div>
-                </RadioGroup.Root>
+                <Select onValueChange={field.onChange} {...field}>
+                  <SelectTrigger
+                    className={cn(
+                      'bg-primary-50 py-1 font-normal shadow-none ring-0 data-[placeholder]:text-primary-300',
+                      'min-h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2',
+                      'focus:ring-2 focus:ring-primary-400',
+                    )}
+                  >
+                    <SelectValue
+                      placeholder="Select address type"
+                      className={cn()}
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="item-aligned" className="">
+                    {addressTypeOptions.map((option) => {
+                      return (
+                        <SelectItem
+                          className="pl-1.5"
+                          key={option.type}
+                          value={option.type}
+                        >
+                          <span className="inline-flex items-center gap-2 capitalize">
+                            <option.icon className="size-4 text-primary-400" />
+                            {option.type}
+                          </span>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
               );
             }}
           />
