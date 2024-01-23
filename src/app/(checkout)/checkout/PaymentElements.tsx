@@ -8,9 +8,9 @@ const PaymentElements = () => {
   return (
     <div>
       <div className="mb-8 space-y-1">
-        <h2 className="text-2xl font-semibold">Payment</h2>
-        <p className="text-primary-400">
-          Enter your payment information and click Make Payment
+        <h3 className="text-xl font-semibold">Payment Details</h3>
+        <p className="text-sm text-primary-400">
+          Enter your payment information and click place order
         </p>
       </div>
       <Elements

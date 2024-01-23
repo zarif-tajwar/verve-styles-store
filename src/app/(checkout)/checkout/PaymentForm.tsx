@@ -69,7 +69,12 @@ const PaymentForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />
-      <Button type="submit" className="mt-8">
+      <Button
+        type="submit"
+        roundness={'lg'}
+        size={'lg'}
+        className="mt-8 w-full"
+      >
         Place Order
       </Button>
     </form>
