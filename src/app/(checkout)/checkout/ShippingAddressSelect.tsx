@@ -60,7 +60,7 @@ const ShippingAddressSelect = ({
       <AccordionItem
         value="select"
         className={cn(
-          'overflow-hidden rounded-xl bg-primary-0 shadow-sm transition-colors duration-300',
+          'rounded-xl bg-primary-0 shadow-sm transition-colors duration-300',
           !isActive && 'hover:bg-primary-50',
         )}
       >
@@ -72,7 +72,12 @@ const ShippingAddressSelect = ({
             </p>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+        <AccordionContent
+          className={cn(
+            'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
+            !isActive && 'overflow-clip',
+          )}
+        >
           <div className="px-6 pb-6">
             <Select
               value={selectValue}

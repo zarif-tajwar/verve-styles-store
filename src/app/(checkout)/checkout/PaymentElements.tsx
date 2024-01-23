@@ -2,9 +2,8 @@
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from './PaymentForm';
 import getStripe from '@/lib/stripe/client-side';
-import GeistFont from '@/app/_fonts/geist/font';
 
-const PaymentElements = () => {
+const PaymentElements = ({ amount }: { amount: number }) => {
   return (
     <div>
       <div className="mb-8 space-y-1">
@@ -18,8 +17,7 @@ const PaymentElements = () => {
         options={{
           currency: 'usd',
           mode: 'payment',
-          amount: 47 * 100,
-
+          amount: amount * 100,
           appearance: {
             theme: 'flat',
             variables: {
@@ -27,12 +25,6 @@ const PaymentElements = () => {
               fontFamily: `Roboto, sans-serif`,
             },
           },
-          fonts: [
-            {
-              family: 'GeistSans',
-              src: 'F:\\Portfolio\\ecom-cloths-next\\src\\app\\_fonts\\geist\\GeistVF.woff2',
-            },
-          ],
         }}
       >
         <PaymentForm />

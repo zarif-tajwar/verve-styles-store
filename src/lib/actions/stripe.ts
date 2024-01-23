@@ -14,7 +14,7 @@ export const createPaymentIntent = authorizedActionClient(
   async ({}, {}) => {
     const paymentIntent: Stripe.PaymentIntent =
       await stripe.paymentIntents.create({
-        amount: 47 * 100,
+        amount: 48 * 100,
         currency: 'usd',
         automatic_payment_methods: { enabled: true },
       });

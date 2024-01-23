@@ -22,7 +22,7 @@ const CheckoutPage = async () => {
             <CheckoutCartItems cartItems={cartItems} />
           </div>
           <div className="grid gap-16 py-14">
-            <PaymentSection />
+            <PaymentSection cartItems={cartItems} />
           </div>
         </div>
       ) : (

@@ -26,6 +26,13 @@ import { Button } from '@/components/UI/Button';
 import { SaveIcon } from '@/components/Svgs/icons';
 import Spinner from '@/components/UI/Spinner';
 import { cn, wait } from '@/lib/util';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/UI/Tooltip';
+import { TooltipArrow, TooltipContentProps } from '@radix-ui/react-tooltip';
 
 export type AddressInputFormProps =
   React.FormHTMLAttributes<HTMLFormElement> & {
@@ -106,7 +113,7 @@ const addressTypeOptions: {
   { type: 'not-relevant', icon: HashtagIcon },
 ];
 
-const AddressInputFormFields = React.forwardRef<
+export const AddressInputFormFields = React.forwardRef<
   HTMLDivElement,
   AddressInputFormFieldsProps
 >(({ formHookObject }, ref) => {
@@ -117,166 +124,196 @@ const AddressInputFormFields = React.forwardRef<
   } = formHookObject;
   return (
     <div ref={ref} className="@container">
-      <div className="grid grid-cols-1 gap-4 @md:grid-cols-2 @xl:gap-8">
-        <div className="flex flex-col gap-1">
-          <Label
-            required={true}
-            htmlFor="address"
-            className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
-          >
-            Your Address
-          </Label>
-          <Input
-            {...register('address', { required: 'Address is required!' })}
-            type="text"
-            id="address"
-            placeholder="Enter your address"
-            className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
-          />
-          {errors.address?.message && (
-            <p className="absolute -bottom-0.5 left-3 translate-y-full text-sm text-rose-700">
-              {errors.address.message}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-1">
-          <Label
-            htmlFor="city"
-            className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
-          >
-            City
-          </Label>
-          <Input
-            type="text"
-            {...register('city', { required: 'City is required!' })}
-            id="city"
-            placeholder="Enter your city"
-            className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
-          />
-          {errors.city?.message && (
-            <p className="absolute -bottom-0.5 left-3 translate-y-full text-sm text-rose-700">
-              {errors.city.message}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-1">
-          <Label
-            htmlFor="country"
-            className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
-          >
-            Country
-          </Label>
-          <Input
-            {...register('country', { required: 'Country is required!' })}
-            type="text"
-            id="country"
-            placeholder="Enter your country"
-            className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
-          />
-          {errors.country?.message && (
-            <p className="absolute -bottom-0.5 left-3 translate-y-full text-sm text-rose-700">
-              {errors.country.message}
-            </p>
-          )}
-        </div>
+      <TooltipProvider>
+        <div className="grid grid-cols-1 gap-4 @md:grid-cols-2 @xl:gap-8">
+          <div className="relative flex flex-col gap-1">
+            <Label
+              required={true}
+              htmlFor="address"
+              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+            >
+              Your Address
+            </Label>
+            <InputErrorTooltip
+              message={errors.address?.message}
+              open={!!errors.address?.message}
+              side="left"
+            >
+              <Input
+                {...register('address', { required: 'Address is required!' })}
+                type="text"
+                id="address"
+                placeholder="Enter your address"
+                className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
+              />
+            </InputErrorTooltip>
+          </div>
+          <div className="relative flex flex-col gap-1">
+            <Label
+              htmlFor="city"
+              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+            >
+              City
+            </Label>
+            <InputErrorTooltip
+              message={errors.city?.message}
+              open={!!errors.city?.message}
+              side="right"
+            >
+              <Input
+                type="text"
+                {...register('city', { required: 'City is required!' })}
+                id="city"
+                placeholder="Enter your city"
+                className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
+              />
+            </InputErrorTooltip>
+          </div>
+          <div className="relative flex flex-col gap-1">
+            <Label
+              htmlFor="country"
+              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+            >
+              Country
+            </Label>
+            <InputErrorTooltip
+              open={!!errors.country?.message}
+              message={errors.country?.message}
+              side="left"
+            >
+              <Input
+                {...register('country', { required: 'Country is required!' })}
+                type="text"
+                id="country"
+                placeholder="Enter your country"
+                className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
+              />
+            </InputErrorTooltip>
+          </div>
 
-        <div className="flex flex-col gap-1">
-          <Label
-            htmlFor="phone"
-            className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
-          >
-            Phone
-          </Label>
-          <Input
-            type="text"
-            id="phone"
-            {...register('phone', { required: 'Phone Number is required!' })}
-            placeholder="Example: +880 19xxxxxxxxx"
-            className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
-          />
-          {errors.phone?.message && (
-            <p className="absolute -bottom-0.5 left-3 translate-y-full text-sm text-rose-700">
-              {errors.phone.message}
-            </p>
-          )}
+          <div className="relative flex flex-col gap-1">
+            <Label
+              htmlFor="phone"
+              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+            >
+              Phone
+            </Label>
+            <InputErrorTooltip
+              message={errors.phone?.message}
+              open={!!errors.phone?.message}
+              side="right"
+            >
+              <Input
+                type="text"
+                id="phone"
+                {...register('phone', {
+                  required: 'Phone Number is required!',
+                })}
+                placeholder="Example: +880 19xxxxxxxxx"
+                className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
+              />
+            </InputErrorTooltip>
+          </div>
+          <div className="relative flex flex-col gap-1">
+            <Label
+              required={false}
+              htmlFor="address-label"
+              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+            >
+              Address Label
+            </Label>
+            <InputErrorTooltip
+              open={!!errors.label?.message}
+              message={errors.label?.message}
+              side="left"
+            >
+              <Input
+                type="text"
+                id="address-label"
+                placeholder="Name this address"
+                className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
+                {...register('label', {
+                  required: false,
+                  setValueAs: (value) => {
+                    if (value === '') return undefined;
+                    return value;
+                  },
+                })}
+              />
+            </InputErrorTooltip>
+          </div>
+          <div className="relative flex flex-col gap-1">
+            <Label
+              htmlFor="addressType"
+              required={false}
+              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+            >
+              Address Type
+            </Label>
+            <Controller
+              name="type"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <Select onValueChange={field.onChange} {...field}>
+                    <SelectTrigger
+                      className={cn(
+                        'bg-primary-50 py-1 font-normal shadow-none ring-0 data-[placeholder]:text-primary-300',
+                        'min-h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2',
+                        'focus:ring-2 focus:ring-primary-400',
+                      )}
+                    >
+                      <SelectValue
+                        placeholder="Select address type"
+                        className={cn()}
+                      />
+                    </SelectTrigger>
+                    <SelectContent position="item-aligned" className="">
+                      {addressTypeOptions.map((option) => {
+                        return (
+                          <SelectItem
+                            className="pl-1.5"
+                            key={option.type}
+                            value={option.type}
+                          >
+                            <span className="inline-flex items-center gap-2 capitalize">
+                              <option.icon className="size-4 text-primary-400" />
+                              {option.type}
+                            </span>
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                );
+              }}
+            />
+          </div>
         </div>
-        <div className="flex flex-col gap-1">
-          <Label
-            required={false}
-            htmlFor="address-label"
-            className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
-          >
-            Address Label
-          </Label>
-          <Input
-            type="text"
-            id="address-label"
-            placeholder="Name this address"
-            className="h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2"
-            {...register('label', {
-              required: false,
-              setValueAs: (value) => {
-                if (value === '') return undefined;
-                return value;
-              },
-            })}
-          />
-          {errors.label?.message && (
-            <p className="absolute -bottom-0.5 left-3 translate-y-full text-sm text-rose-700">
-              {errors.label.message}
-            </p>
-          )}
-        </div>
-        <div className="relative flex flex-col gap-1">
-          <Label
-            htmlFor="addressType"
-            required={false}
-            className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
-          >
-            Address Type
-          </Label>
-          <Controller
-            name="type"
-            control={control}
-            render={({ field }) => {
-              return (
-                <Select onValueChange={field.onChange} {...field}>
-                  <SelectTrigger
-                    className={cn(
-                      'bg-primary-50 py-1 font-normal shadow-none ring-0 data-[placeholder]:text-primary-300',
-                      'min-h-8 rounded-md px-2 py-1 @xl:h-9 @xl:rounded-lg @xl:px-3 @xl:py-2',
-                      'focus:ring-2 focus:ring-primary-400',
-                    )}
-                  >
-                    <SelectValue
-                      placeholder="Select address type"
-                      className={cn()}
-                    />
-                  </SelectTrigger>
-                  <SelectContent position="item-aligned" className="">
-                    {addressTypeOptions.map((option) => {
-                      return (
-                        <SelectItem
-                          className="pl-1.5"
-                          key={option.type}
-                          value={option.type}
-                        >
-                          <span className="inline-flex items-center gap-2 capitalize">
-                            <option.icon className="size-4 text-primary-400" />
-                            {option.type}
-                          </span>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              );
-            }}
-          />
-        </div>
-      </div>
+      </TooltipProvider>
     </div>
   );
 });
 
 AddressInputFormFields.displayName = 'AddressInputFormFields';
+
+const InputErrorTooltip = ({
+  open,
+  message,
+  children,
+  side,
+}: {
+  open: boolean;
+  message: string | undefined;
+  children: React.ReactNode;
+  side: TooltipContentProps['side'];
+}) => {
+  return (
+    <Tooltip open={open}>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent className="max-w-48 text-sm text-rose-800" side={side}>
+        {message ?? 'Incorrect Input'}
+      </TooltipContent>
+    </Tooltip>
+  );
+};

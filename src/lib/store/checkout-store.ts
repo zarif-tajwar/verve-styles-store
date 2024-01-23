@@ -1,5 +1,6 @@
 import { DateRange } from 'react-day-picker';
 import { create } from 'zustand';
+import { AddressFormSchemaType } from '../validation/address-form';
 
 type CheckoutStoreAction = {
   setShippingAdressMode: (
@@ -10,12 +11,24 @@ type CheckoutStoreAction = {
 type CheckoutStore = {
   shippingAddress: {
     mode: 'input' | 'select';
+    inputForm: { values: AddressFormSchemaType; isValid: boolean };
   };
 };
 
 const initialState: CheckoutStore = {
   shippingAddress: {
     mode: 'select',
+    inputForm: {
+      isValid: false,
+      values: {
+        address: '',
+        city: '',
+        country: '',
+        phone: '',
+        type: 'not-relevant',
+        label: '',
+      },
+    },
   },
 };
 

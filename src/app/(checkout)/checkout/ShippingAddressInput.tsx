@@ -2,7 +2,7 @@
 
 import AddressInputForm from '@/app/(root)/(user)/my-account/addresses/AddressInputForm';
 import { useCheckoutStore } from '@/lib/store/checkout-store';
-import { cn } from '@/lib/util';
+import { cn, wait } from '@/lib/util';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import {
   AccordionContent,
@@ -11,19 +11,19 @@ import {
 } from '@radix-ui/react-accordion';
 import { useShallow } from 'zustand/react/shallow';
 import ShippingAddressInputForm from './ShippingAddressInputForm';
+import { useMemo } from 'react';
 
 const ShippingAddressInput = () => {
   const mode = useCheckoutStore(
     useShallow((store) => store.shippingAddress.mode),
   );
   const isActive = mode === 'input';
-  const setMode = useCheckoutStore((store) => store.setShippingAdressMode);
   return (
     <div className="relative">
       <AccordionItem
         value="input"
         className={cn(
-          'relative overflow-hidden rounded-xl bg-primary-0 shadow-sm transition-colors duration-300',
+          'relative rounded-xl bg-primary-0 shadow-sm transition-colors duration-300',
           !isActive && 'hover:bg-primary-50',
         )}
       >
@@ -35,8 +35,13 @@ const ShippingAddressInput = () => {
             </p>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
-          <ShippingAddressInputForm className="px-6 pb-6" />
+        <AccordionContent
+          className={cn(
+            'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
+            !isActive && 'overflow-clip',
+          )}
+        >
+          <ShippingAddressInputForm />
         </AccordionContent>
       </AccordionItem>
       {isActive && (

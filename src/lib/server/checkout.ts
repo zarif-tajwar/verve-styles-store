@@ -37,3 +37,23 @@ export const getCartItemsForCheckout = async (session?: Session) => {
 export type CartItemsForCheckout = Awaited<
   ReturnType<typeof getCartItemsForCheckout>
 >;
+
+export const calcPricingDetails = (
+  cartItems: NonNullable<CartItemsForCheckout>,
+) => {
+  let subtotal: number = 0;
+  let totalDiscount: number = 0;
+
+  for (let cartItem of cartItems) {
+    const itemSubtotal = Number.parseFloat(cartItem.price) * cartItem.quantity;
+    const discount = itemSubtotal * Number.parseFloat(cartItem.discount ?? '0');
+    totalDiscount += discount;
+    subtotal += itemSubtotal;
+  }
+  let deliveryCharge: number = 25;
+  let taxes: number = 0;
+
+  const total = subtotal + deliveryCharge + taxes - totalDiscount;
+
+  return { subtotal, total, deliveryCharge, totalDiscount, taxes };
+};
