@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from '@radix-ui/react-accordion';
 import { useShallow } from 'zustand/react/shallow';
+import ShippingAddressInputForm from './ShippingAddressInputForm';
 
 const ShippingAddressInput = () => {
   const mode = useCheckoutStore(
@@ -35,7 +36,7 @@ const ShippingAddressInput = () => {
           </div>
         </AccordionTrigger>
         <AccordionContent className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
-          <AddressInputForm removeSaveButton className="px-6 pb-6" />
+          <ShippingAddressInputForm className="px-6 pb-6" />
         </AccordionContent>
       </AccordionItem>
       {isActive && (

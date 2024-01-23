@@ -1,6 +1,7 @@
 'use client';
 
 import Divider from '@/components/UI/Divider';
+import SizeBadge from '@/components/UI/SizeBadge';
 import { UserOrderedProduct } from '@/lib/types/user';
 import { capitalize, cn, priceFormat } from '@/lib/util';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
@@ -25,11 +26,7 @@ const OrderItemsListing = ({
                   <div className="flex flex-col justify-between">
                     <div className="flex gap-2">
                       <p className="mb-2 font-semibold">{product.name}</p>
-                      <span className="mb-2 inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-normal tracking-wide ring-1  ring-inset ring-primary-100">
-                        {'small'.length > 3
-                          ? capitalize('small')
-                          : 'small'.toUpperCase()}
-                      </span>
+                      <SizeBadge sizeText={product.size} />
                     </div>
                     <dl className="grid grid-cols-2">
                       <div className="space-y-0.5">
