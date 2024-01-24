@@ -6,7 +6,7 @@ export const authorizedActionClient = createSafeActionClient({
   middleware: async () => {
     const session = await auth();
     if (!session) throw new CustomError('Not logged in!');
-    return { userId: session.user.id };
+    return { userId: session.user.id, session };
   },
   handleReturnedServerError: (e) => {
     if (e instanceof CustomError) {

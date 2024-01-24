@@ -20,7 +20,7 @@ export const invoice = pgTable('invoice', {
     .notNull()
     .references(() => orders.id),
   subtotal: numeric('subtotal').notNull(),
-  discount: numeric('discount').default('0'),
+  totalDiscountInCurrency: numeric('total_discount_in_currency').default('0'),
   deliveryCharge: numeric('delivery_charge').notNull(),
   taxes: numeric('taxes').default('0'),
   createdAt: timestamp('created_at').defaultNow(),

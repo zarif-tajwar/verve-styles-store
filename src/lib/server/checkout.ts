@@ -9,13 +9,15 @@ import { cartItems } from '../db/schema/cartItems';
 import { productEntries } from '../db/schema/productEntries';
 import { eq, sql } from 'drizzle-orm';
 
-export const getCartItemsForCheckout = async (session?: Session) => {
-  const cartId = await getCartId(session);
-
-  if (!cartId) return;
-
-  const cartItemsData = await db
-    .select({
+export const getCartItemsForCheckout = async ({
+  cartId,
+  sort,
+}: {
+  cartId: number;
+  sort?: boolean;
+}) => {
+  let query = db
+    .selectDistinctOn([productEntries.id], {
       name: products.name,
       price: products.price,
       sizeName: sizes.name,
@@ -23,13 +25,23 @@ export const getCartItemsForCheckout = async (session?: Session) => {
       quantity: cartItems.quantity,
       createdAt: cartItems.createdAt,
       discount: products.discount,
+      productEntryId: productEntries.id,
+      stockQuantity: productEntries.quantity,
     })
     .from(cartItems)
     .innerJoin(productEntries, eq(productEntries.id, cartItems.productEntryId))
     .innerJoin(products, eq(products.id, productEntries.productID))
     .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
     .where(eq(cartItems.cartId, cartId))
-    .orderBy(sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`);
+    .$dynamic();
+
+  if (sort) {
+    query = query.orderBy(
+      sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`,
+    );
+  }
+
+  const cartItemsData = await query;
 
   return cartItemsData;
 };
@@ -40,6 +52,7 @@ export type CartItemsForCheckout = Awaited<
 
 export const calcPricingDetails = (
   cartItems: NonNullable<CartItemsForCheckout>,
+  outputInString: boolean = false,
 ) => {
   let subtotal: number = 0;
   let totalDiscount: number = 0;

@@ -11,7 +11,10 @@ const CheckoutPage = async () => {
   if (!session) redirect('/auth/sign-in');
   if (!session.user.cartId) redirect('/shop');
 
-  const cartItems = await getCartItemsForCheckout(session);
+  const cartItems = await getCartItemsForCheckout({
+    cartId: session.user.cartId,
+    sort: true,
+  });
 
   return (
     <div className="container-main">
