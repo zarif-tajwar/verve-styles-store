@@ -14,50 +14,74 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import { useAction } from 'next-safe-action/hooks';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useCheckoutAddress } from './useCheckoutAddress';
+import { performCheckoutAction } from '@/lib/actions/checkout';
+import { cn } from '@/lib/util';
+import Spinner from '@/components/UI/Spinner';
+import { CheckCircleIcon, CheckIcon } from '@heroicons/react/20/solid';
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  // const { execute, result } = useAction(createPaymentIntent);
-  const { addressId, dataGetter, isValid, shippingAddressMode, trigger } =
-    useCheckoutAddress();
+  const { getCheckoutAddress } = useCheckoutAddress();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(true);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleCheckout = async () => {
     if (!stripe || !elements) {
+      messageToast('Please try again!');
       return;
     }
 
-    messageToast('Payment Submitted!');
+    const shippingAddress = getCheckoutAddress();
+
+    if (!shippingAddress) {
+      errorToast('Something went wrong with the address!');
+      return;
+    }
 
     const { error: submitError } = await elements.submit();
 
     if (submitError) {
-      errorToast('Payment Submit Error');
-    }
-
-    const { data } = await createPaymentIntent({});
-
-    // const { data } = result;
-
-    if (!data?.client_secret) {
-      errorToast('No client secret recieved!');
       return;
     }
 
-    messageToast('Payment Initiated!');
+    const { data, serverError, validationErrors } = await performCheckoutAction(
+      { shippingAddress },
+    );
 
-    const clientSecret = data.client_secret;
+    if (serverError) {
+      errorToast(serverError);
+      return;
+    }
+    if (validationErrors) {
+      errorToast('Something went wrong with data validation');
+      return;
+    }
+
+    if (!data) {
+      errorToast('Something went wrong with the checkout', {
+        description: 'Please try again',
+      });
+      return;
+    }
+
+    const { orderId, stripeClientSecret } = data;
+
+    if (!stripeClientSecret) {
+      errorToast('Something went wrong with Stripe Payment', {
+        description: 'Please try again',
+      });
+      return;
+    }
 
     const { error, paymentIntent } = await stripe.confirmPayment({
-      clientSecret,
+      clientSecret: stripeClientSecret,
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/donate-with-elements/result`,
-        payment_method_data: { billing_details: { name: 'Zarif Tajwar' } },
+        return_url: `${window.location.origin}/result`,
       },
       redirect: 'if_required',
     });
@@ -67,42 +91,47 @@ const PaymentForm = () => {
     }
 
     if (paymentIntent?.status === 'succeeded') {
-      successToast('Success');
+      setIsSuccess(true);
+      successToast('Your order was placed successfully');
     }
   };
 
   console.log('PAYMENT FORM RENDERED');
 
-  const handleOrderPreparation = () => {
-    if (shippingAddressMode === 'input') {
-      if (isValid) {
-        successToast('Address Form Is Valid');
-      } else {
-        trigger?.();
-        errorToast('Address Form Is Invalid');
-      }
-    }
-    if (shippingAddressMode === 'select') {
-      successToast(addressId + 'Address ID');
-    }
-  };
-
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        handleOrderPreparation();
+        setIsLoading(true);
+        await handleCheckout();
+        setIsLoading(false);
       }}
     >
-      {/* <form onSubmit={handleSubmit}> */}
       <PaymentElement />
       <Button
         type="submit"
         roundness={'lg'}
         size={'lg'}
-        className="mt-8 w-full"
+        className={cn(
+          'mt-8 w-full',
+          isSuccess &&
+            'gap-2 bg-emerald-500 text-primary-0 disabled:opacity-100',
+        )}
+        disabled={isLoading || isSuccess}
       >
-        Place Order
+        {!isLoading && !isSuccess && 'Place Order'}
+        {isLoading && (
+          <>
+            <Spinner size={20} />
+            {'Placing your order'}
+          </>
+        )}
+        {isSuccess && (
+          <>
+            <CheckCircleIcon className="size-5" />
+            {'Success'}
+          </>
+        )}
       </Button>
     </form>
   );

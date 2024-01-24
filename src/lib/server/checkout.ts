@@ -34,10 +34,9 @@ export const getCartItemsForCheckout = async ({
     .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
     .where(eq(cartItems.cartId, cartId))
     .$dynamic();
-
   if (sort) {
     query = query.orderBy(
-      sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`,
+      sql`${productEntries.id} DESC, ${cartItems.createdAt} DESC`,
     );
   }
 

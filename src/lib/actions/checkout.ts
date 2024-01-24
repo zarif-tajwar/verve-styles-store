@@ -35,6 +35,8 @@ const PerformCheckoutSchema = z.object({
   ]),
 });
 
+export type PerformCheckoutSchemaType = z.infer<typeof PerformCheckoutSchema>;
+
 export const performCheckoutAction = authorizedActionClient(
   PerformCheckoutSchema,
   async ({ shippingAddress }, { userId, session }) => {
