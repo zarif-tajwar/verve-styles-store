@@ -178,7 +178,7 @@ export const AddressItem = ({
         </div>
       </dl>
       {address.isDefault && (
-        <span className="absolute right-0 top-0.5 rounded-full bg-primary-400 px-2 text-xs text-primary-0">
+        <span className="absolute right-0 top-0.5 rounded-full bg-primary-100 px-2 text-xs text-primary-500 ring-1 ring-black/10">
           Default
         </span>
       )}

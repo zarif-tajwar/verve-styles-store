@@ -6,12 +6,15 @@ import {
   timestamp,
   text,
   varchar,
+  boolean,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 import { relations } from 'drizzle-orm';
 import { orderLine } from './orderLine';
 import { dummyUser } from './dummyUser';
 import { orderDetails } from './orderDetails';
+import { orderPaymentDetails } from './orderPaymentDetails';
+import { invoice } from './invoice';
 
 export const orders = pgTable(
   'orders',
@@ -41,6 +44,14 @@ export const orderRelations = relations(orders, ({ one, many }) => ({
   orderDetails: one(orderDetails, {
     fields: [orders.id],
     references: [orderDetails.orderId],
+  }),
+  orderPaymentDetails: one(orderPaymentDetails, {
+    fields: [orders.id],
+    references: [orderPaymentDetails.orderId],
+  }),
+  invoice: one(invoice, {
+    fields: [orders.id],
+    references: [invoice.orderId],
   }),
 }));
 

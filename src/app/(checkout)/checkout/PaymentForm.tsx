@@ -16,28 +16,14 @@ import {
 import { useAction } from 'next-safe-action/hooks';
 import { FormEvent } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { useCheckoutAddress } from './useCheckoutAddress';
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const trigger = useCheckoutStore(
-    useShallow(
-      (store) => store.shippingAddress.inputForm.addressInputFormTrigger,
-    ),
-  );
-  const isValid = useCheckoutStore(
-    useShallow((store) => store.shippingAddress.inputForm.isValid),
-  );
-  const dataGetter = useCheckoutStore(
-    (store) => store.shippingAddress.inputForm.dataGetter,
-  );
-  const shippingAddressMode = useCheckoutStore(
-    (store) => store.shippingAddress.mode,
-  );
-  const addressId = useCheckoutStore(
-    (store) => store.shippingAddress.select.addressId,
-  );
   // const { execute, result } = useAction(createPaymentIntent);
+  const { addressId, dataGetter, isValid, shippingAddressMode, trigger } =
+    useCheckoutAddress();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

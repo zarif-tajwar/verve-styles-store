@@ -281,6 +281,13 @@
       "when": 1705788575629,
       "tag": "0039_clumsy_shadowcat",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "5",
+      "when": 1706110384879,
+      "tag": "0040_daily_warlock",
+      "breakpoints": true
     }
   ]
 }

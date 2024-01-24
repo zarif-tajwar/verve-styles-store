@@ -563,9 +563,7 @@ async function execute() {
 
   const start = performance.now();
 
-  const parse = z.number().safeParse(NaN);
-
-  console.log(JSON.stringify(parse));
+  await populateDummyUsers(500);
 
   const end = performance.now();
 
