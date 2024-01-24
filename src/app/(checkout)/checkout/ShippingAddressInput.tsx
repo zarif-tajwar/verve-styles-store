@@ -41,7 +41,7 @@ const ShippingAddressInput = () => {
             !isActive && 'overflow-clip',
           )}
         >
-          <ShippingAddressInputForm />
+          <ShippingAddressInputForm className="px-6 pb-6" />
         </AccordionContent>
       </AccordionItem>
       {isActive && (

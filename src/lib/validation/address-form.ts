@@ -24,7 +24,11 @@ export const AddressFormSchema = z.object({
     .string()
     .min(1, 'Please enter your phone number!')
     .regex(phoneRegex, 'Invalid Number!'),
-  label: z.string().min(3).max(50).optional(),
+  label: z
+    .string()
+    .min(3, 'Label must contain atleast 3 characters')
+    .max(50, 'Label must contain atmost 50 characters')
+    .optional(),
   type: z.enum(['home', 'office', 'not-relevant']).default('not-relevant'),
 });
 

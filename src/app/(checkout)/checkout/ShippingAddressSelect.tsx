@@ -17,7 +17,7 @@ import {
   SelectSeparator,
 } from '@radix-ui/react-select';
 import { AddressSelect } from '@/lib/db/schema/address';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 // import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import {
@@ -40,6 +40,7 @@ const ShippingAddressSelect = ({
     useShallow((store) => store.shippingAddress.mode),
   );
   const setMode = useCheckoutStore((store) => store.setShippingAdressMode);
+  const setAddressId = useCheckoutStore((store) => store.setAddressId);
   const isActive = mode === 'select';
 
   const defaultAddress = savedAddresses.find((address) => address.isDefault);
@@ -54,6 +55,10 @@ const ShippingAddressSelect = ({
     ) ??
     defaultAddress ??
     savedAddresses.at(0);
+
+  useEffect(() => {
+    setAddressId(Number.parseInt(selectValue));
+  }, [selectValue, setAddressId]);
 
   return (
     <div className="relative">

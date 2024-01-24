@@ -5,6 +5,7 @@ import ShippingAddressInputForm from './ShippingAddressInputForm';
 
 const ShippingAddress = async () => {
   const savedAddresses = (await getSavedAddressesServer()) ?? [];
+  const savedAddressesLength = savedAddresses.length;
   return (
     <div className="max-w-lg">
       <div className="mb-4 space-y-1">
@@ -19,7 +20,9 @@ const ShippingAddress = async () => {
         {savedAddresses.length > 0 ? (
           <ShippingAddressAccordion savedAddresses={savedAddresses} />
         ) : (
-          <ShippingAddressInputForm />
+          <ShippingAddressInputForm
+            savedAddressesLength={savedAddressesLength}
+          />
         )}
       </div>
     </div>

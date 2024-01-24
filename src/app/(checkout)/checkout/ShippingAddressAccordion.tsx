@@ -30,7 +30,6 @@ const ShippingAddressAccordion = ({
           if (value === 'input') {
             setShippingAddressMode(value);
           }
-          console.log(shippingAddressMode, 'CURRENT SHIPPING ADDRESS MODE');
         }}
       >
         <ShippingAddressSelect savedAddresses={savedAddresses} />

@@ -7,6 +7,7 @@ import {
   successToast,
 } from '@/components/UI/Toaster';
 import { createPaymentIntent } from '@/lib/actions/stripe';
+import { useCheckoutStore } from '@/lib/store/checkout-store';
 import {
   PaymentElement,
   useElements,
@@ -14,10 +15,28 @@ import {
 } from '@stripe/react-stripe-js';
 import { useAction } from 'next-safe-action/hooks';
 import { FormEvent } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
+  const trigger = useCheckoutStore(
+    useShallow(
+      (store) => store.shippingAddress.inputForm.addressInputFormTrigger,
+    ),
+  );
+  const isValid = useCheckoutStore(
+    useShallow((store) => store.shippingAddress.inputForm.isValid),
+  );
+  const dataGetter = useCheckoutStore(
+    (store) => store.shippingAddress.inputForm.dataGetter,
+  );
+  const shippingAddressMode = useCheckoutStore(
+    (store) => store.shippingAddress.mode,
+  );
+  const addressId = useCheckoutStore(
+    (store) => store.shippingAddress.select.addressId,
+  );
   // const { execute, result } = useAction(createPaymentIntent);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -66,8 +85,30 @@ const PaymentForm = () => {
     }
   };
 
+  console.log('PAYMENT FORM RENDERED');
+
+  const handleOrderPreparation = () => {
+    if (shippingAddressMode === 'input') {
+      if (isValid) {
+        successToast('Address Form Is Valid');
+      } else {
+        trigger?.();
+        errorToast('Address Form Is Invalid');
+      }
+    }
+    if (shippingAddressMode === 'select') {
+      successToast(addressId + 'Address ID');
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleOrderPreparation();
+      }}
+    >
+      {/* <form onSubmit={handleSubmit}> */}
       <PaymentElement />
       <Button
         type="submit"
