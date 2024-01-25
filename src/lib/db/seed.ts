@@ -558,12 +558,59 @@ const populateOrderDetails = async () => {
   await Promise.all(orderDetailsInsertPromise);
 };
 
+const updateStockQuantityTest = async () => {
+  const qb = new QueryBuilder();
+
+  const rows = [
+    { id: 1, decrementBy: 5 },
+    { id: 2, decrementBy: 10 },
+    { id: 3, decrementBy: 15 },
+    { id: 4, decrementBy: 20 },
+    { id: 5, decrementBy: 25 },
+  ];
+
+  const targetColumnValues = [];
+  const sqlChunks: SQL[] = [];
+
+  sqlChunks.push(sql`(case`);
+  for (const row of rows) {
+    targetColumnValues.push(row.id);
+    sqlChunks.push(
+      // sql`when id = ${row.id} then 500`,
+      // sql`when id = ${
+      //   row.id
+      // } then ${sql`(select (${productEntries.quantity} - ${row.decrementBy}) from ${productEntries} where ${productEntries.id} = ${row.id})`}`,
+      sql`when ${productEntries.id} = ${row.id} then (${qb
+        .select({
+          quantity: sql<number>`${productEntries.quantity} - ${row.decrementBy}`,
+        })
+        .from(productEntries)
+        .where(eq(productEntries.id, row.id))})`,
+    );
+  }
+  sqlChunks.push(sql`end)`);
+
+  const finalSql = sql.join(sqlChunks, sql.raw(' '));
+
+  const res = await db
+    .update(productEntries)
+    .set({ quantity: finalSql })
+    .where(inArray(productEntries.id, targetColumnValues))
+    .returning();
+  // .toSQL();
+
+  console.log(res);
+  // console.log(res.sql);
+
+  return res;
+};
+
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  await populateDummyUsers(500);
+  await updateStockQuantityTest();
 
   const end = performance.now();
 

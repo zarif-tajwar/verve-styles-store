@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { actionClient, authorizedActionClient } from './safe-action';
 import { AddressFormSchema } from '../validation/address-form';
 import { address } from '../db/schema/address';
-import { and, eq } from 'drizzle-orm';
+import { SQL, and, eq, inArray, sql } from 'drizzle-orm';
 import { CustomError } from '../errors/custom-error';
 import { createId } from '@paralleldrive/cuid2';
 import {
@@ -20,9 +20,14 @@ import { invoice } from '../db/schema/invoice';
 import Stripe from 'stripe';
 import { stripe } from '../stripe/server-side';
 import { ProductSelect } from '../db/schema/products';
-import { CartItemsSelect } from '../db/schema/cartItems';
-import { ProductEntrySelect } from '../db/schema/productEntries';
+import { CartItemsSelect, cartItems } from '../db/schema/cartItems';
+import {
+  ProductEntrySelect,
+  productEntries,
+} from '../db/schema/productEntries';
 import { SizeSelect } from '../db/schema/sizes';
+import { OrderLinesInsert, orderLine } from '../db/schema/orderLine';
+import { QueryBuilder } from 'drizzle-orm/pg-core';
 
 const CheckoutAddressInputSchema = z.object({
   mode: z.literal('input'),
@@ -59,13 +64,13 @@ export const performCheckoutAction = authorizedActionClient(
 
     if (!cartId) throw new CustomError('Shopping cart not found!');
 
-    const cartItems = await getCartItemsForCheckout({ cartId });
+    const orderedCartItems = await getCartItemsForCheckout({ cartId });
 
-    if (cartItems.length === 0)
+    if (orderedCartItems.length === 0)
       throw new CustomError('Shopping cart is empty!');
 
     // Checking if a product entry is unavailable due to low stock quantity
-    for (let cartItem of cartItems) {
+    for (let cartItem of orderedCartItems) {
       if (
         cartItem.stockQuantity === 0 ||
         cartItem.stockQuantity - cartItem.quantity < 0
@@ -156,7 +161,7 @@ export const performCheckoutAction = authorizedActionClient(
         deliveryDate.setDate(placedAt.getDate() + 2);
 
         const { deliveryCharge, subtotal, taxes, totalDiscount, total } =
-          calcPricingDetails(cartItems, true);
+          calcPricingDetails(orderedCartItems, true);
 
         const invoicePromise = tx.insert(invoice).values({
           orderId: createdOrder.id,
@@ -176,7 +181,58 @@ export const performCheckoutAction = authorizedActionClient(
           updatedAt: placedAt,
         });
 
-        await Promise.all([invoicePromise, orderDetailsPromise]);
+        // updating stock quantity and creating orderLine
+        const qb = new QueryBuilder();
+        const stockSqlChunks: SQL[] = [];
+        const productEntryIds: ProductEntrySelect['id'][] = [];
+        const cartItemIds: CartItemsSelect['id'][] = [];
+        const orderLinesData: OrderLinesInsert[] = [];
+
+        // for update query multiple mutations
+        stockSqlChunks.push(sql`(case`);
+        for (const cartItem of orderedCartItems) {
+          // orderline data
+          orderLinesData.push({
+            orderId: createdOrder.id,
+            pricePerUnit: cartItem.price,
+            productEntryId: cartItem.productEntryId,
+            quantity: cartItem.quantity,
+            discount: cartItem.discount,
+            createdAt: placedAt,
+          });
+          // for updating stock quantity
+          productEntryIds.push(cartItem.productEntryId);
+          cartItemIds.push(cartItem.cartItemId);
+          stockSqlChunks.push(
+            sql`when ${productEntries.id} = ${
+              cartItem.productEntryId
+            } then (${qb
+              .select({
+                newQuantity: sql<number>`${productEntries.quantity} - ${cartItem.quantity}`,
+              })
+              .from(productEntries)
+              .where(eq(productEntries.id, cartItem.productEntryId))})`,
+          );
+        }
+        stockSqlChunks.push(sql`end)`);
+        const finalStockUpdateSql = sql.join(stockSqlChunks, sql.raw(' '));
+
+        const orderLinesPromise = tx.insert(orderLine).values(orderLinesData);
+        const stockUpdatePromise = tx
+          .update(productEntries)
+          .set({ quantity: finalStockUpdateSql })
+          .where(inArray(productEntries.id, productEntryIds));
+        const cleanCartPromise = tx
+          .delete(cartItems)
+          .where(inArray(cartItems.id, cartItemIds));
+
+        await Promise.all([
+          invoicePromise,
+          orderDetailsPromise,
+          orderLinesPromise,
+          stockUpdatePromise,
+          cleanCartPromise,
+        ]);
 
         return { orderId: createdOrder.id, total };
       } catch (e) {

@@ -6,21 +6,17 @@ import {
   messageToast,
   successToast,
 } from '@/components/UI/Toaster';
-import { createPaymentIntent } from '@/lib/actions/stripe';
-import { useCheckoutStore } from '@/lib/store/checkout-store';
 import {
   PaymentElement,
   useElements,
   useStripe,
 } from '@stripe/react-stripe-js';
-import { useAction } from 'next-safe-action/hooks';
-import { FormEvent, useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
+import { useState } from 'react';
 import { useCheckoutAddress } from './useCheckoutAddress';
 import { performCheckoutAction } from '@/lib/actions/checkout';
-import { cn, wait } from '@/lib/util';
+import { cn } from '@/lib/util';
 import Spinner from '@/components/UI/Spinner';
-import { CheckCircleIcon, CheckIcon } from '@heroicons/react/20/solid';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/navigation';
 
 const PaymentForm = () => {
@@ -115,10 +111,12 @@ const PaymentForm = () => {
   return (
     <form
       onSubmit={async (e) => {
+        console.time('checkout');
         e.preventDefault();
         setIsLoading(true);
         await handleCheckout();
         setIsLoading(false);
+        console.timeEnd('checkout');
       }}
     >
       <PaymentElement />
