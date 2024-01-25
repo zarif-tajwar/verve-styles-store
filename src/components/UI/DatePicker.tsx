@@ -106,10 +106,9 @@ export function DatePickerWithRange({
             variant={'outline'}
             roundness={'lg'}
             className={cn(
-              'min-w-64 justify-start gap-2.5 text-left font-medium text-primary-400',
+              'min-w-64 justify-between gap-2.5 text-left font-medium text-primary-400',
             )}
           >
-            <CalendarMini className="opacity-80" />
             {dateRange?.from ? (
               dateRange.to ? (
                 <>
@@ -122,6 +121,7 @@ export function DatePickerWithRange({
             ) : (
               <span>{placeholder}</span>
             )}
+            <CalendarMini className="opacity-80" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end" sideOffset={8}>

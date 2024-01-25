@@ -234,6 +234,7 @@ export const performCheckoutAction = authorizedActionClient(
           cleanCartPromise,
         ]);
 
+        // Handling Payment
         const paymentIntent: Stripe.PaymentIntent = await stripe.paymentIntents
           .create({
             amount: total * 100,
@@ -265,8 +266,6 @@ export const performCheckoutAction = authorizedActionClient(
         );
       }
     });
-
-    // Handling Payment
 
     return createdOrder;
   },
