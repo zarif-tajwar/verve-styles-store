@@ -234,30 +234,40 @@ export const performCheckoutAction = authorizedActionClient(
           cleanCartPromise,
         ]);
 
-        return { orderId: createdOrder.id, total };
-      } catch (e) {
+        const paymentIntent: Stripe.PaymentIntent = await stripe.paymentIntents
+          .create({
+            amount: total * 100,
+            currency: 'usd',
+            automatic_payment_methods: { enabled: true },
+            metadata: {
+              orderId: createdOrder.id,
+            },
+          })
+          .catch(() => {
+            throw new CustomError('Something went wrong with Stripe Payment');
+          });
+
+        if (!paymentIntent.client_secret) {
+          tx.rollback();
+          throw new CustomError('Something went wrong with Stripe Payment');
+        }
+
+        return {
+          stripeClientSecret: paymentIntent.client_secret,
+          orderId: createdOrder.id,
+          isThereUnavailableProduct: false,
+        };
+      } catch (error) {
         throw new CustomError(
-          'Something went wrong while creating the order! Please try again.',
+          error instanceof CustomError
+            ? error.message
+            : 'Something went wrong while creating the order! Please try again.',
         );
       }
     });
 
     // Handling Payment
 
-    const paymentIntent: Stripe.PaymentIntent =
-      await stripe.paymentIntents.create({
-        amount: createdOrder.total * 100,
-        currency: 'usd',
-        automatic_payment_methods: { enabled: true },
-        metadata: {
-          orderId: createdOrder.orderId,
-        },
-      });
-
-    return {
-      stripeClientSecret: paymentIntent.client_secret,
-      orderId: createdOrder.orderId,
-      isThereUnavailableProduct: false,
-    };
+    return createdOrder;
   },
 );
