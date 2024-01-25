@@ -17,8 +17,6 @@ import OrdersPagination from './OrdersPagination';
 import OrderListingSkeleton from './OrderListingSkeleton';
 import OrderStatus from './OrderStatus';
 
-const orders = [...Array(10).keys()];
-
 const OrdersListing = () => {
   const session = useSession();
   const userId = session.data?.user.id;
@@ -91,7 +89,7 @@ const OrdersListing = () => {
                         </dt>
                         <dd className="font-semibold text-primary-400">
                           {priceFormat(
-                            order.orderedProducts.reduce(
+                            order.orderedProducts?.reduce(
                               (acc, curr) => acc + curr.total,
                               0,
                             ),

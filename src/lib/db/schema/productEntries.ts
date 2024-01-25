@@ -51,4 +51,5 @@ export const productEntryRelations = relations(
   }),
 );
 
-export type ProductEntryInsert = InferInsertModel<typeof productEntries>;
+export type ProductEntrySelect = typeof productEntries.$inferSelect;
+export type ProductEntryInsert = typeof productEntries.$inferInsert;

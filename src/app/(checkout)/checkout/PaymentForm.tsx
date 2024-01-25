@@ -18,16 +18,18 @@ import { FormEvent, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useCheckoutAddress } from './useCheckoutAddress';
 import { performCheckoutAction } from '@/lib/actions/checkout';
-import { cn } from '@/lib/util';
+import { cn, wait } from '@/lib/util';
 import Spinner from '@/components/UI/Spinner';
 import { CheckCircleIcon, CheckIcon } from '@heroicons/react/20/solid';
+import { useRouter } from 'next/navigation';
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const { getCheckoutAddress } = useCheckoutAddress();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const router = useRouter();
 
   const handleCheckout = async () => {
     if (!stripe || !elements) {
@@ -65,6 +67,18 @@ const PaymentForm = () => {
       errorToast('Something went wrong with the checkout', {
         description: 'Please try again',
       });
+      return;
+    }
+
+    if (data.isThereUnavailableProduct) {
+      errorToast(
+        'At least one of your ordered products is not available due to low stock',
+        {
+          description: 'Redirecting you to the cart page',
+          duration: 5000,
+        },
+      );
+      router.replace('/cart');
       return;
     }
 
@@ -108,31 +122,31 @@ const PaymentForm = () => {
       }}
     >
       <PaymentElement />
-      <Button
-        type="submit"
-        roundness={'lg'}
-        size={'lg'}
-        className={cn(
-          'mt-8 w-full',
-          isSuccess &&
-            'gap-2 bg-emerald-500 text-primary-0 disabled:opacity-100',
-        )}
-        disabled={isLoading || isSuccess}
-      >
-        {!isLoading && !isSuccess && 'Place Order'}
-        {isLoading && (
-          <>
-            <Spinner size={20} />
-            {'Placing your order'}
-          </>
+      <div className="pt-8">
+        {!isSuccess && (
+          <Button
+            type="submit"
+            roundness={'lg'}
+            size={'lg'}
+            className={cn('w-full')}
+            disabled={isLoading}
+          >
+            {!isLoading && 'Place Order'}
+            {isLoading && (
+              <>
+                <Spinner size={20} />
+                {'Placing your order'}
+              </>
+            )}
+          </Button>
         )}
         {isSuccess && (
-          <>
+          <span className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-emerald-500 text-primary-0">
             <CheckCircleIcon className="size-5" />
             {'Success'}
-          </>
+          </span>
         )}
-      </Button>
+      </div>
     </form>
   );
 };

@@ -6,7 +6,10 @@ import {
   successToast,
   warningToast,
 } from '@/components/UI/Toaster';
+import { useCountDown } from '@/lib/hooks/useCountdown';
 import { wait } from '@/lib/util';
+import { randLines } from '@ngneat/falso';
+import { useEffect } from 'react';
 
 const ToastBtn = () => {
   return (
@@ -20,8 +23,8 @@ const ToastBtn = () => {
         // await wait(1000);
         // messageToast('Event was successful!');
         // await wait(1000);
-        warningToast('Warning', {
-          description: "Make sure you're deleting the right item",
+        errorToast('Stock quantity mismatch', {
+          description: randLines({ length: 10 }).join(''),
         });
       }}
     >

@@ -9,15 +9,20 @@ import { and, eq } from 'drizzle-orm';
 import { CustomError } from '../errors/custom-error';
 import { createId } from '@paralleldrive/cuid2';
 import {
+  CartItemsForCheckout,
   calcPricingDetails,
   getCartItemsForCheckout,
 } from '../server/checkout';
-import { orders } from '../db/schema/orders';
+import { OrderSelect, orders } from '../db/schema/orders';
 import { orderDetails } from '../db/schema/orderDetails';
 import { orderPaymentDetails } from '../db/schema/orderPaymentDetails';
 import { invoice } from '../db/schema/invoice';
 import Stripe from 'stripe';
 import { stripe } from '../stripe/server-side';
+import { ProductSelect } from '../db/schema/products';
+import { CartItemsSelect } from '../db/schema/cartItems';
+import { ProductEntrySelect } from '../db/schema/productEntries';
+import { SizeSelect } from '../db/schema/sizes';
 
 const CheckoutAddressInputSchema = z.object({
   mode: z.literal('input'),
@@ -37,9 +42,18 @@ const PerformCheckoutSchema = z.object({
 
 export type PerformCheckoutSchemaType = z.infer<typeof PerformCheckoutSchema>;
 
+type PerformCheckoutReturn = Promise<
+  | {
+      stripeClientSecret: Stripe.PaymentIntent['client_secret'] | undefined;
+      orderId: OrderSelect['id'] | undefined;
+      isThereUnavailableProduct: boolean;
+    }
+  | undefined
+>;
+
 export const performCheckoutAction = authorizedActionClient(
   PerformCheckoutSchema,
-  async ({ shippingAddress }, { userId, session }) => {
+  async ({ shippingAddress }, { userId, session }): PerformCheckoutReturn => {
     // Handling Cart
     const cartId = session.user.cartId;
 
@@ -49,6 +63,20 @@ export const performCheckoutAction = authorizedActionClient(
 
     if (cartItems.length === 0)
       throw new CustomError('Shopping cart is empty!');
+
+    // Checking if a product entry is unavailable due to low stock quantity
+    for (let cartItem of cartItems) {
+      if (
+        cartItem.stockQuantity === 0 ||
+        cartItem.stockQuantity - cartItem.quantity < 0
+      ) {
+        return {
+          isThereUnavailableProduct: true,
+          orderId: undefined,
+          stripeClientSecret: undefined,
+        };
+      }
+    }
 
     // Handling Address
     let addressId: number | undefined = undefined;
@@ -173,6 +201,7 @@ export const performCheckoutAction = authorizedActionClient(
     return {
       stripeClientSecret: paymentIntent.client_secret,
       orderId: createdOrder.orderId,
+      isThereUnavailableProduct: false,
     };
   },
 );

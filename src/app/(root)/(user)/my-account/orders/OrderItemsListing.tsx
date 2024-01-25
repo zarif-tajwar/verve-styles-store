@@ -18,7 +18,7 @@ const OrderItemsListing = ({
     >
       <ScrollArea.Viewport className="h-full w-full rounded-t-lg">
         <div>
-          {orderedProducts!.map((product, i, arr) => {
+          {orderedProducts?.map((product, i, arr) => {
             return (
               <div key={i} className="relative">
                 <div className="grid w-full grid-cols-[auto_1fr] gap-4 text-primary-400">

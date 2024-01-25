@@ -69,3 +69,5 @@ export const calcPricingDetails = (
 
   return { subtotal, total, deliveryCharge, totalDiscount, taxes };
 };
+
+// export const calc;
