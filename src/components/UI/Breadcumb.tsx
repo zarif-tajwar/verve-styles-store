@@ -14,6 +14,8 @@ const pathNameToLabel = (str: string) => capitalize(str).replaceAll('-', ' ');
 const Breadcumb = ({ customLabels }: Breadcumb) => {
   const pathname = usePathname();
 
+  console.log(pathname, 'PATHNAME');
+
   const links = useMemo(() => {
     let lastDashIndex = 0;
     let hrefs: string[] = [];

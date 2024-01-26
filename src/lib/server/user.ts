@@ -124,7 +124,7 @@ export const getOrdersServer = async (
 
   query.append(sql.join(conditionals, sql.raw(' and ')));
 
-  query.append(sql` ORDER BY od.placed_at`);
+  query.append(sql` ORDER BY od.placed_at DESC`);
   query.append(sql` LIMIT 4`);
 
   if (page > 1) {

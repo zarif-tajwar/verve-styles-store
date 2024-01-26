@@ -16,6 +16,7 @@ import { useOrderFilterStore } from '@/lib/store/user-order';
 import OrdersPagination from './OrdersPagination';
 import OrderListingSkeleton from './OrderListingSkeleton';
 import OrderStatus from './OrderStatus';
+import Link from 'next/link';
 
 const OrdersListing = () => {
   const session = useSession();
@@ -132,8 +133,11 @@ const OrdersListing = () => {
                         className="py-1.5 text-primary-400 ring-primary-50"
                         variant={'outline'}
                         roundness={'lg'}
+                        asChild
                       >
-                        Show More Details
+                        <Link href={`/my-account/orders/${order.orderId}`}>
+                          Show More Details
+                        </Link>
                       </Button>
                       <Button
                         className="py-1.5 text-primary-400 ring-primary-50"

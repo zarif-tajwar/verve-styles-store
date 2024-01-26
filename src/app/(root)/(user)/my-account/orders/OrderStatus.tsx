@@ -8,7 +8,13 @@ import {
 } from '@/components/Svgs/icons';
 import { cn } from '@/lib/util';
 
-const OrderStatus = ({ status }: { status: string | undefined }) => {
+const OrderStatus = ({
+  status,
+  className,
+}: {
+  status: string | undefined;
+  className?: string;
+}) => {
   return (
     <dt
       className={cn(
@@ -19,6 +25,7 @@ const OrderStatus = ({ status }: { status: string | undefined }) => {
         status === 'confirmed' && 'text-emerald-700',
         status === 'processing' && 'text-lime-700',
         // status === 'returned' && 'text-red-700/80',
+        className,
       )}
     >
       {status === 'out for delivery' && <TruckMicro />}
