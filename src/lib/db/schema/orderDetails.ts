@@ -23,9 +23,6 @@ export const orderDetails = pgTable('order_details', {
   orderId: integer('order_id')
     .primaryKey()
     .references(() => orders.id),
-  addressId: integer('address_id')
-    .notNull()
-    .references(() => address.id),
   placedAt: timestamp('placed_at').defaultNow(),
   deliveryDate: timestamp('delivery_date'),
   deliveredAt: timestamp('deliveredAt'),
@@ -39,10 +36,6 @@ export const orderDetailsRelations = relations(orderDetails, ({ one }) => ({
   orderStatus: one(orderStatus, {
     fields: [orderDetails.statusId],
     references: [orderStatus.id],
-  }),
-  address: one(address, {
-    fields: [orderDetails.addressId],
-    references: [address.id],
   }),
 }));
 

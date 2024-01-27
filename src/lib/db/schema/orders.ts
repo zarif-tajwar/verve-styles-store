@@ -15,6 +15,7 @@ import { dummyUser } from './dummyUser';
 import { orderDetails } from './orderDetails';
 import { orderPaymentDetails } from './orderPaymentDetails';
 import { invoice } from './invoice';
+import { orderCustomerDetails } from './orderCustomerDetails';
 
 export const orders = pgTable(
   'orders',
@@ -52,6 +53,10 @@ export const orderRelations = relations(orders, ({ one, many }) => ({
   invoice: one(invoice, {
     fields: [orders.id],
     references: [invoice.orderId],
+  }),
+  orderCustomerDetails: one(orderCustomerDetails, {
+    fields: [orders.id],
+    references: [orderCustomerDetails.orderId],
   }),
 }));
 

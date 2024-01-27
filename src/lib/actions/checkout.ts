@@ -28,6 +28,12 @@ import {
 import { SizeSelect } from '../db/schema/sizes';
 import { OrderLinesInsert, orderLine } from '../db/schema/orderLine';
 import { QueryBuilder } from 'drizzle-orm/pg-core';
+import {
+  OrderCustomerAddressDetailsInsert,
+  OrderCustomerDetailsInsert,
+  orderCustomerDetails,
+} from '../db/schema/orderCustomerDetails';
+import { createSafeActionClient } from 'next-safe-action';
 
 const CheckoutAddressInputSchema = z.object({
   mode: z.literal('input'),
@@ -83,13 +89,13 @@ export const performCheckoutAction = authorizedActionClient(
       }
     }
 
-    // Handling Address
-    let addressId: number | undefined = undefined;
+    // Handling Address Insert Data
+    let addressInsertData: OrderCustomerAddressDetailsInsert | undefined;
 
     if (shippingAddress.mode === 'select') {
-      const isAddressIdValid = (
+      const savedAddress = (
         await db
-          .select({ addressId: address.id })
+          .select()
           .from(address)
           .where(
             and(
@@ -98,8 +104,12 @@ export const performCheckoutAction = authorizedActionClient(
             ),
           )
       ).at(0);
-      if (isAddressIdValid) {
-        addressId = shippingAddress.addressId;
+      if (savedAddress) {
+        addressInsertData = {
+          ...savedAddress,
+          addressLabel: savedAddress.label,
+          addressType: savedAddress.type,
+        };
       } else {
         throw new CustomError(
           'Selected address was invalid! Please use another option.',
@@ -108,38 +118,19 @@ export const performCheckoutAction = authorizedActionClient(
     }
 
     if (shippingAddress.mode === 'input') {
-      const newAddress = await db.transaction(async (tx) => {
-        const res = (
-          await tx
-            .insert(address)
-            .values({
-              address: shippingAddress.values.address,
-              city: shippingAddress.values.city,
-              country: shippingAddress.values.country,
-              phone: shippingAddress.values.phone,
-              type: shippingAddress.values.type,
-              label:
-                shippingAddress.values.label ??
-                `My Address #${createId().slice(0, 3)}`,
-              isSaved: false,
-              userId,
-            })
-            .returning()
-        ).at(0);
-
-        if (!res) {
-          tx.rollback();
-          throw new CustomError(
-            'Something went wrong with while creating the address entry! Please try again.',
-          );
-        }
-
-        return res;
-      });
-      addressId = newAddress.id;
+      addressInsertData = {
+        address: shippingAddress.values.address,
+        addressLabel:
+          shippingAddress.values.label ??
+          `My Address #${createId().slice(0, 3)}`,
+        city: shippingAddress.values.city,
+        country: shippingAddress.values.country,
+        phone: shippingAddress.values.phone,
+        addressType: shippingAddress.values.type,
+      };
     }
 
-    if (!addressId)
+    if (!addressInsertData)
       throw new CustomError(
         'Something went wrong with the billing address! Please try again.',
       );
@@ -173,13 +164,21 @@ export const performCheckoutAction = authorizedActionClient(
         });
 
         const orderDetailsPromise = tx.insert(orderDetails).values({
-          addressId: addressId!,
           orderId: createdOrder.id,
           statusId: 1,
           deliveryDate,
           placedAt,
           updatedAt: placedAt,
         });
+
+        const orderCustomerDetailsPromise = tx
+          .insert(orderCustomerDetails)
+          .values({
+            ...addressInsertData!,
+            orderId: createdOrder.id,
+            customerEmail: session.user.email ?? null,
+            customerName: session.user.name ?? '',
+          });
 
         // updating stock quantity and creating orderLine
         const qb = new QueryBuilder();
@@ -232,6 +231,7 @@ export const performCheckoutAction = authorizedActionClient(
           orderLinesPromise,
           stockUpdatePromise,
           cleanCartPromise,
+          orderCustomerDetailsPromise,
         ]);
 
         // Handling Payment
@@ -268,5 +268,42 @@ export const performCheckoutAction = authorizedActionClient(
     });
 
     return createdOrder;
+  },
+);
+
+const CreateOrderPaymentDetailsSchema = z.object({
+  orderId: z.number(),
+  paymentMethod: z.enum(['stripe', 'dummy']),
+  paymentMethodSessionId: z.string(),
+});
+
+export const createOrderPaymentDetails = authorizedActionClient(
+  CreateOrderPaymentDetailsSchema,
+  async ({ orderId, paymentMethod, paymentMethodSessionId }, { userId }) => {
+    const res = await db.transaction(async (tx) => {
+      try {
+        const isAllowed = (
+          await tx
+            .select({ orderId: orders.id })
+            .from(orders)
+            .where(and(eq(orders.userId, userId), eq(orders.id, orderId)))
+        ).at(0);
+        if (!isAllowed) {
+          throw new CustomError();
+        }
+
+        const createdPaymentDetails = await tx
+          .insert(orderPaymentDetails)
+          .values({ orderId, paymentMethod, paymentMethodSessionId })
+          .returning();
+
+        return createdPaymentDetails;
+      } catch (err) {
+        throw new CustomError(
+          'Something went wrong while creating the payment details! Please contact support!',
+        );
+      }
+    });
+    return res;
   },
 );

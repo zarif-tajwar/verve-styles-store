@@ -610,8 +610,6 @@ async function execute() {
 
   const start = performance.now();
 
-  await updateStockQuantityTest();
-
   const end = performance.now();
 
   console.log(`✅ Completed in ${end - start}ms`);
