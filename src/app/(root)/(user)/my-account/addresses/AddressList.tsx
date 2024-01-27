@@ -1,19 +1,15 @@
 'use client';
 
-import { Button } from '@/components/UI/Button';
 import {
-  CheckIcon,
   HomeIcon,
   BriefcaseIcon,
   HashtagIcon,
-  TrashIcon,
 } from '@heroicons/react/16/solid';
-import { PencilSquareIcon } from '@heroicons/react/16/solid';
 import EditAddress from './EditAddress';
-import { Session } from 'next-auth/types';
 import AddressDelete from './AddressDelete';
 import { useSession } from 'next-auth/react';
 import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
+import * as AccoundDetailsCard from '@/components/UI/AccountDetailsCard';
 
 const AddressList = () => {
   const session = useSession();
@@ -22,14 +18,17 @@ const AddressList = () => {
 
   return (
     <div className="space-y-4 text-sm">
-      {addresses?.map((address, i) => {
+      {addresses?.map((address) => {
+        const listItemsData = [
+          { heading: 'Address', description: address.address },
+          { heading: 'City', description: address.city },
+          { heading: 'Country', description: address.country },
+          { heading: 'Phone', description: address.phone },
+        ];
         return (
-          <div
-            key={address.id}
-            className="rounded-xl p-5 ring-1 ring-primary-50"
-          >
-            <div className="relative mb-4 flex flex-col gap-2 text-base font-medium text-primary-500">
-              <span className="flex size-7 items-center justify-center rounded-md bg-primary-50 text-primary-300">
+          <AccoundDetailsCard.Card key={address.id}>
+            <AccoundDetailsCard.CardHeader>
+              <AccoundDetailsCard.CardHeaderIcon>
                 {address.type === 'home' && <HomeIcon className="size-4" />}
                 {address.type === 'office' && (
                   <BriefcaseIcon className="size-4" />
@@ -37,7 +36,7 @@ const AddressList = () => {
                 {address.type === 'not-relevant' && (
                   <HashtagIcon className="size-4" />
                 )}
-              </span>
+              </AccoundDetailsCard.CardHeaderIcon>
               <div className="flex items-center gap-2">
                 <p>{address.label}</p>
                 {address.isDefault && (
@@ -50,26 +49,22 @@ const AddressList = () => {
                 <EditAddress addressData={address} />
                 <AddressDelete addressId={address.id} />
               </div>
-            </div>
-            <dl className="grid w-full grid-cols-2 gap-x-8 gap-y-4 font-medium">
-              <div className="space-y-2">
-                <dd className="text-primary-400 opacity-90">Address</dd>
-                <dt>{address.address}</dt>
-              </div>
-              <div className="space-y-2">
-                <dd className="text-primary-400 opacity-90">City</dd>
-                <dt>{address.city}</dt>
-              </div>
-              <div className="space-y-2">
-                <dd className="text-primary-400 opacity-90">Country</dd>
-                <dt>{address.country}</dt>
-              </div>
-              <div className="space-y-2">
-                <dd className="text-primary-400 opacity-90">Phone</dd>
-                <dt>{address.phone}</dt>
-              </div>
-            </dl>
-          </div>
+            </AccoundDetailsCard.CardHeader>
+            <AccoundDetailsCard.CardList>
+              {listItemsData.map((item) => {
+                return (
+                  <AccoundDetailsCard.CardListItem key={item.heading}>
+                    <AccoundDetailsCard.CardListItemHeading>
+                      {item.heading}
+                    </AccoundDetailsCard.CardListItemHeading>
+                    <AccoundDetailsCard.CardListItemDescription>
+                      {item.description}
+                    </AccoundDetailsCard.CardListItemDescription>
+                  </AccoundDetailsCard.CardListItem>
+                );
+              })}
+            </AccoundDetailsCard.CardList>
+          </AccoundDetailsCard.Card>
         );
       })}
     </div>

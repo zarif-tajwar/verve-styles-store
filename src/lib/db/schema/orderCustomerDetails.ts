@@ -9,7 +9,7 @@ import { orders } from './orders';
 
 export const orderCustomerDetails = pgTable('order_customer_details', {
   orderId: integer('order_id')
-    .notNull()
+    .primaryKey()
     .references(() => orders.id),
   customerName: text('customer_name').notNull(),
   customerEmail: text('customer_email'),

@@ -101,7 +101,9 @@ const OrdersListing = () => {
                         <dt className="font-semibold text-primary-300">
                           Status
                         </dt>
-                        <OrderStatus status={order.status} />
+                        <dd>
+                          <OrderStatus status={order.status} />
+                        </dd>
                       </div>
                       {order.orderDate && (
                         <div className="space-y-2 px-4 pt-4">

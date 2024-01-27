@@ -1,0 +1,1 @@
+ALTER TABLE "order_customer_details" ADD PRIMARY KEY ("order_id");

@@ -1,5 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import * as Schema from '@/lib/db/schema/auth';
+import { ulid } from 'ulidx';
 
 import type {
   Adapter,
@@ -16,10 +17,10 @@ export function temporaryAdapter(): Adapter {
 
   return {
     async createUser(data) {
-      const typedData = data as Omit<Schema.UserInsert, 'id'>;
+      const typedData = data;
       return (await client
         .insert(user)
-        .values({ ...typedData, id: crypto.randomUUID() })
+        .values({ ...typedData, id: ulid() })
         .returning()
         .then((res) => res[0] ?? null)) as Awaitable<AdapterUser>;
     },

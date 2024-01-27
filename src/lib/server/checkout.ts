@@ -8,6 +8,7 @@ import { sizes } from '../db/schema/sizes';
 import { cartItems } from '../db/schema/cartItems';
 import { productEntries } from '../db/schema/productEntries';
 import { eq, sql } from 'drizzle-orm';
+import { InvoiceSelect } from '../db/schema/invoice';
 
 export const getCartItemsForCheckout = async ({
   cartId,
@@ -69,5 +70,11 @@ export const calcPricingDetails = (
 
   return { subtotal, total, deliveryCharge, totalDiscount, taxes };
 };
+
+export const calcTotalFromInvoiceData = (data: InvoiceSelect) =>
+  Number.parseFloat(data.subtotal) +
+  Number.parseFloat(data.taxes ?? '0') +
+  Number.parseFloat(data.deliveryCharge) -
+  Number.parseFloat(data.totalDiscountInCurrency ?? '0');
 
 // export const calc;

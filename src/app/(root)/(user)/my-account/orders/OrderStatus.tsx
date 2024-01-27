@@ -16,7 +16,7 @@ const OrderStatus = ({
   className?: string;
 }) => {
   return (
-    <dt
+    <span
       className={cn(
         '-ml-2 flex w-max items-center gap-1 rounded-full bg-primary-50 px-2 py-1 font-medium capitalize text-primary-500',
         status === 'delivered' && 'bg-emerald-50 text-emerald-600',
@@ -35,7 +35,7 @@ const OrderStatus = ({
       {status === 'processing' && <DocumentListMicro />}
       {status === 'returned' && <ArrowUTurnRightMicro />}
       {status}
-    </dt>
+    </span>
   );
 };
 export default OrderStatus;
