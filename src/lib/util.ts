@@ -85,3 +85,12 @@ export const getStrIndexPositions = (str: string, subStr: string): number[] => {
 
 export const parseIntWithUndefined = (str: string) =>
   Number.parseInt(str || '') || undefined;
+
+export const dateFormatter = (
+  timestamp: Date | number,
+  includeTime: boolean = false,
+) =>
+  new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'long',
+    ...(includeTime ? { timeStyle: 'short' } : {}),
+  }).format(timestamp);

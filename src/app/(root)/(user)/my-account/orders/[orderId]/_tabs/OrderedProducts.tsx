@@ -8,7 +8,7 @@ import { orderLine } from '@/lib/db/schema/orderLine';
 import { productEntries } from '@/lib/db/schema/productEntries';
 import { products } from '@/lib/db/schema/products';
 import { sizes } from '@/lib/db/schema/sizes';
-import { cn, priceFormat } from '@/lib/util';
+import { cn, priceFormat, wait } from '@/lib/util';
 import { PencilIcon } from '@heroicons/react/16/solid';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { eq } from 'drizzle-orm';
@@ -86,7 +86,7 @@ const OrderedProducts = async ({
             </AddressDetailsCard.CardListItemDescription>
           </AddressDetailsCard.CardListItem>
         </AddressDetailsCard.CardList>
-        <Divider className="my-8" />
+        <Divider className="my-6 bg-primary-50" />
         <ul className="grid grid-cols-3 gap-x-6 gap-y-12">
           {orderLineItems.map((orderLine, i) => {
             const pricePerUnit = Number.parseFloat(
@@ -158,7 +158,6 @@ const OrderedProducts = async ({
                     </Button>
                   </div>
                 </li>
-                {/* <Divider className="bg-primary-50" /> */}
               </React.Fragment>
             );
           })}
