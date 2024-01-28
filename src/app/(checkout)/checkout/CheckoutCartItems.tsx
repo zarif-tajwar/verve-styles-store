@@ -27,7 +27,9 @@ const CheckoutCartItems = ({
                 <div className="aspect-square rounded-lg bg-primary-50"></div>
                 <div className="flex flex-col justify-between">
                   <div className="flex items-center gap-2 text-sm font-medium">
-                    <h4>{cartItem.name}</h4>
+                    <h4 className="text-base text-primary-500">
+                      {cartItem.name}
+                    </h4>
                   </div>
                   <dl
                     className={cn(
@@ -35,7 +37,7 @@ const CheckoutCartItems = ({
                       // 'grid grid-cols-[0.7fr_1.3fr_1fr_1fr_1fr] gap-x-4',
                       // 'grid grid-cols-5 gap-x-4',
                       '[&_dd]:font-medium [&_dd]:text-primary-400',
-                      '[&_dt]:font-semibold [&_dt]:text-primary-400',
+                      '[&_dt]:font-semibold [&_dt]:text-primary-500',
                     )}
                   >
                     <div className="space-y-0.5">

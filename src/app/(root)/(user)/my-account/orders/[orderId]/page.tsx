@@ -11,7 +11,7 @@ import OrderStatus from '../OrderStatus';
 import { Package } from 'lucide-react';
 import { CreditCardIcon, UserIcon } from '@heroicons/react/24/outline';
 import * as AddressDetailsCard from '@/components/UI/AccountDetailsCard';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { orderCustomerDetails } from '@/lib/db/schema/orderCustomerDetails';
 import { calcTotalFromInvoiceData } from '@/lib/server/checkout';
 import { priceFormat } from '@/lib/util';
@@ -33,14 +33,14 @@ const OrderDetailsPage = async ({
     await db
       .select()
       .from(orders)
-      .leftJoin(orderDetails, eq(orderDetails.orderId, orders.id))
-      .leftJoin(invoice, eq(invoice.orderId, orders.id))
+      .innerJoin(orderDetails, eq(orderDetails.orderId, orders.id))
+      .innerJoin(invoice, eq(invoice.orderId, orders.id))
       .leftJoin(orderPaymentDetails, eq(orderPaymentDetails.orderId, orders.id))
-      .leftJoin(
+      .innerJoin(
         orderCustomerDetails,
         eq(orderCustomerDetails.orderId, orders.id),
       )
-      .leftJoin(orderStatus, eq(orderStatus.id, orderDetails.statusId))
+      .innerJoin(orderStatus, eq(orderStatus.id, orderDetails.statusId))
       .where(and(eq(orders.id, orderId), eq(orders.userId, session.user.id)))
   ).at(0);
 
@@ -146,10 +146,10 @@ const OrderDetailsPage = async ({
             </AddressDetailsCard.CardListItem>
             <AddressDetailsCard.CardListItem>
               <AddressDetailsCard.CardListItemHeading>
-                Paid Amount
+                {isPaid ? `Paid Amount` : `Due Amount`}
               </AddressDetailsCard.CardListItemHeading>
               <AddressDetailsCard.CardListItemDescription>
-                {isPaid ? totalStr : 'N/A'}
+                {totalStr}
               </AddressDetailsCard.CardListItemDescription>
             </AddressDetailsCard.CardListItem>
           </AddressDetailsCard.CardList>
@@ -216,7 +216,9 @@ const OrderDetailsPage = async ({
             </AddressDetailsCard.CardListItem>
           </AddressDetailsCard.CardList>
         </AddressDetailsCard.Card>
-        <OrderedProducts />
+        <Suspense fallback={<p>Loading...</p>}>
+          <OrderedProducts orderId={orderId} invoiceData={orderData.invoice} />
+        </Suspense>
       </div>
     </div>
   );
