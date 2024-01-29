@@ -107,7 +107,7 @@ const PaymentForm = () => {
       successToast('Your order was placed successfully');
 
       await wait(1000);
-      router.push(href);
+      router.replace(href);
     }
   };
 

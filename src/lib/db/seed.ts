@@ -41,6 +41,8 @@ import {
 } from './schema/orderDetails';
 import { address } from './schema/address';
 import { z } from 'zod';
+import * as https from 'https';
+import * as fs from 'fs';
 
 async function populateSizes() {
   await db
@@ -605,10 +607,49 @@ const updateStockQuantityTest = async () => {
   return res;
 };
 
+function downloadImage(url: string, destination: string): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    const file = fs.createWriteStream(destination);
+
+    https
+      .get(url, (response) => {
+        response.pipe(file);
+
+        file.on('finish', () => {
+          file.close();
+          resolve();
+        });
+      })
+      .on('error', (error) => {
+        fs.unlink(destination, () => {
+          reject(error);
+        });
+      });
+  });
+}
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
+
+  const res = await fetch(
+    'https://api.escuelajs.co/api/v1/products?categoryId=1',
+  );
+  const data = (await res.json()) as any[];
+
+  const images = data
+    .flatMap((x: any) => x.images)
+    .filter((x: string) => x.startsWith('https://i.imgur.com/'));
+
+  const promises: Promise<unknown>[] = [];
+
+  for (let i = 0; i < images.length; i++) {
+    promises.push(downloadImage(images[i] as string, `image${i}.jpeg`));
+  }
+
+  await Promise.all(promises);
+
+  console.log(images);
 
   const end = performance.now();
 

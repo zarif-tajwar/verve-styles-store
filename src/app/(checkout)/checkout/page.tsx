@@ -5,6 +5,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { getCartItemsForCheckout } from '@/lib/server/checkout';
 import PaymentSection from './PaymentSection';
+import Link from 'next/link';
 
 const CheckoutPage = async () => {
   const session = await auth();
@@ -29,7 +30,10 @@ const CheckoutPage = async () => {
           </div>
         </div>
       ) : (
-        <div>Your cart is empty! Add some cloths in your cart first.</div>
+        <div>
+          <div>Your cart is empty! Add some cloths in your cart first.</div>
+          <Link href={'/shop'}>Go back to shop</Link>
+        </div>
       )}
     </div>
   );

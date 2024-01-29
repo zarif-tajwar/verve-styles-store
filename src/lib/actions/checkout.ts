@@ -34,6 +34,7 @@ import {
   orderCustomerDetails,
 } from '../db/schema/orderCustomerDetails';
 import { createSafeActionClient } from 'next-safe-action';
+import { revalidatePath } from 'next/cache';
 
 const CheckoutAddressInputSchema = z.object({
   mode: z.literal('input'),
@@ -307,3 +308,7 @@ export const createOrderPaymentDetails = authorizedActionClient(
     return res;
   },
 );
+
+export const revalidatePathAction = (href: string) => {
+  revalidatePath(href);
+};

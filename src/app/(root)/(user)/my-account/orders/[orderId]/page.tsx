@@ -19,6 +19,7 @@ import {
 import Details from './_tabs/Details';
 import Link from 'next/link';
 import Invoice from './_tabs/Invoice';
+import { Skeleton as AccountCardSkeleton } from '@/components/UI/AccountDetailsCard';
 
 const invoiceTableColumns = getTableColumns(invoice);
 
@@ -127,7 +128,7 @@ const OrderDetailsPage = async ({
       </div>
       <div className="grid grid-cols-1 gap-6">
         {view === 'details' && (
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense fallback={<AccountCardSkeleton />}>
             <Details
               orderId={orderId}
               orderStatus={orderStatusText}
@@ -136,7 +137,7 @@ const OrderDetailsPage = async ({
           </Suspense>
         )}
         {view === 'products' && (
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense fallback={<AccountCardSkeleton />}>
             <OrderedProducts orderId={orderId} invoiceData={invoiceData} />
           </Suspense>
         )}

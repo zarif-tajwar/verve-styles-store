@@ -133,6 +133,34 @@ const CardListItemDescription = React.forwardRef<
 
 CardListItemDescription.displayName = 'CardListItemDescription';
 
+const Skeleton = () => {
+  return (
+    <div className="grid w-full animate-pulse grid-cols-1 gap-6">
+      {[...Array(3).keys()].map((i) => {
+        return (
+          <div
+            key={i}
+            className="min-h-56 rounded-xl p-5 ring-1 ring-primary-50"
+          >
+            <div className="mb-2 size-10 rounded-lg bg-primary-100"></div>
+            <div className="mb-6 h-7 w-44 rounded-md bg-primary-100"></div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+              {[...Array(4).keys()].map((i) => {
+                return (
+                  <div key={i}>
+                    <div className="mb-1.5 h-5 w-28 rounded-md bg-primary-100"></div>
+                    <div className="h-5 w-48 rounded-md bg-primary-100"></div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export {
   Card,
   CardHeader,
@@ -141,4 +169,5 @@ export {
   CardListItem,
   CardListItemHeading,
   CardListItemDescription,
+  Skeleton,
 };

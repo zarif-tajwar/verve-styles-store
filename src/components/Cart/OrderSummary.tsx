@@ -7,6 +7,7 @@ import { Button } from '../UI/Button';
 import { useCartItemsStore } from '@/lib/store/cart-store';
 import { CartItemProps } from '@/lib/types/cart';
 import Link from 'next/link';
+import { revalidatePathAction } from '@/lib/actions/checkout';
 
 const OrderSummary = ({
   cartItemsData,
@@ -93,7 +94,12 @@ const OrderSummary = ({
               Apply
             </Button>
           </div>
-          <Button asChild size={'xl'} className="w-full gap-3">
+          <Button
+            asChild
+            size={'xl'}
+            className="w-full gap-3"
+            onClick={() => revalidatePathAction('/checkout')}
+          >
             <Link href={'/checkout'}>
               Go to checkout
               <MoveRight />
