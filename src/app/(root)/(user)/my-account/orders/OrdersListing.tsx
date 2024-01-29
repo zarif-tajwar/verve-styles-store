@@ -145,8 +145,13 @@ const OrdersListing = () => {
                         className="py-1.5 text-primary-400 ring-primary-50"
                         variant={'outline'}
                         roundness={'lg'}
+                        asChild
                       >
-                        View Invoice
+                        <Link
+                          href={`/my-account/orders/${order.orderId}?view=invoice`}
+                        >
+                          View Invoice
+                        </Link>
                       </Button>
                     </div>
                   </div>

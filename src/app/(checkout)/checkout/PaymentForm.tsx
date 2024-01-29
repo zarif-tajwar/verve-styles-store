@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import { useCheckoutAddress } from './useCheckoutAddress';
 import { performCheckoutAction } from '@/lib/actions/checkout';
-import { cn } from '@/lib/util';
+import { cn, wait } from '@/lib/util';
 import Spinner from '@/components/UI/Spinner';
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/navigation';
@@ -87,11 +87,13 @@ const PaymentForm = () => {
       return;
     }
 
+    const href = `/my-account/orders/${orderId}`;
+
     const { error, paymentIntent } = await stripe.confirmPayment({
       clientSecret: stripeClientSecret,
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/result`,
+        return_url: `${window.location.origin}${href}`,
       },
       redirect: 'if_required',
     });
@@ -103,6 +105,9 @@ const PaymentForm = () => {
     if (paymentIntent?.status === 'succeeded') {
       setIsSuccess(true);
       successToast('Your order was placed successfully');
+
+      await wait(1000);
+      router.push(href);
     }
   };
 

@@ -18,6 +18,7 @@ import {
 } from '@heroicons/react/16/solid';
 import Details from './_tabs/Details';
 import Link from 'next/link';
+import Invoice from './_tabs/Invoice';
 
 const invoiceTableColumns = getTableColumns(invoice);
 
@@ -139,7 +140,7 @@ const OrderDetailsPage = async ({
             <OrderedProducts orderId={orderId} invoiceData={invoiceData} />
           </Suspense>
         )}
-        {view === 'invoice' && <p>Invoice</p>}
+        {view === 'invoice' && <Invoice />}
       </div>
     </div>
   );

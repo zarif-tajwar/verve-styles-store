@@ -4,6 +4,10 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@react-pdf/image': 2.2.3
+  '@react-pdf/pdfkit': 3.0.4
+
 dependencies:
   '@auth/core':
     specifier: ^0.19.0
