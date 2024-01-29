@@ -1,0 +1,1 @@
+ALTER TABLE "edge_store_images" ALTER COLUMN "size" SET DATA TYPE integer;

@@ -43,6 +43,13 @@ import { address } from './schema/address';
 import { z } from 'zod';
 import * as https from 'https';
 import * as fs from 'fs';
+import {
+  EdgeStoreClientResponse,
+  edgeStoreBackendClient,
+} from '../server/edgestore';
+import { EdgeStoreImagesInsert, edgeStoreImages } from './schema/edgeStore';
+import { ProductImagesInsert, productImages } from './schema/productImages';
+import { rand } from '@ngneat/falso';
 
 async function populateSizes() {
   await db
@@ -607,49 +614,120 @@ const updateStockQuantityTest = async () => {
   return res;
 };
 
-function downloadImage(url: string, destination: string): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
-    const file = fs.createWriteStream(destination);
-
-    https
-      .get(url, (response) => {
-        response.pipe(file);
-
-        file.on('finish', () => {
-          file.close();
-          resolve();
-        });
-      })
-      .on('error', (error) => {
-        fs.unlink(destination, () => {
-          reject(error);
-        });
-      });
+const uploadPicsTemp = async () => {
+  const files = await fs.readdirSync(
+    'C:\\Users\\katalist\\Desktop\\verve-images\\platzi\\tshirts',
+    { withFileTypes: true },
+  );
+  const imagesData = files.map((file) => {
+    const imagePath = `${file.path}\\${file.name}`;
+    const fileBuffer = fs.readFileSync(imagePath);
+    const blob = new Blob([fileBuffer], { type: 'image/jpeg' });
+    // const fileObj = new File([blob], file.name, { type: 'image/jpeg' });
+    return {
+      blob,
+      name: file.name,
+    };
   });
-}
+  const responses: EdgeStoreClientResponse['publicFiles']['upload'][] = [];
+  const promises: Promise<EdgeStoreClientResponse['publicFiles']['upload']>[] =
+    [];
+
+  for (let i = 0; i < imagesData.length; i++) {
+    const data = imagesData[i]!;
+    const promise = edgeStoreBackendClient.publicFiles.upload({
+      content: {
+        blob: data.blob,
+        extension: 'jpeg',
+      },
+      options: {
+        temporary: false,
+      },
+      input: { attribute: 'Platzi (fakestore api)', clothing: 'tshirts' },
+    });
+    promises.push(promise);
+  }
+
+  const data = await Promise.all(promises);
+
+  const dataInsert: EdgeStoreImagesInsert[] = data.map((x) => ({
+    url: x.url,
+    size: x.size,
+    attribute: x.metadata.attribute,
+    clothing: x.metadata.clothing,
+  }));
+
+  const dbInsertedData = await db
+    .insert(edgeStoreImages)
+    .values(dataInsert)
+    .returning();
+
+  console.log(JSON.stringify(dbInsertedData));
+};
+
+const populateProductImages = async () => {
+  const [productData, edgeStoreImagesData] = await Promise.all([
+    db
+      .selectDistinct({ productId: products.id, clothing: clothing.name })
+      .from(products)
+      .innerJoin(clothing, eq(products.clothingID, clothing.id)),
+    db.select().from(edgeStoreImages),
+  ]);
+
+  const productImagesInsertData: ProductImagesInsert[] = [];
+
+  let productPopulated = 0;
+  let productImageInsertCreated = 0;
+
+  for (let i = 0; i < productData.length; i++) {
+    const selectedProduct = productData.at(i)!;
+    const filteredEdgeStoreImages = edgeStoreImagesData.filter(
+      (imgData) => imgData.clothing === selectedProduct.clothing,
+    );
+    for (let j = 0; j < 3; j++) {
+      const selectedEdgeStoreImage = rand(filteredEdgeStoreImages);
+      productImagesInsertData.push({
+        productID: selectedProduct.productId,
+        url: selectedEdgeStoreImage.url,
+        size: selectedEdgeStoreImage.size,
+        isDefault: j === 0,
+      });
+      productImageInsertCreated += 1;
+    }
+    productPopulated += 1;
+  }
+
+  const promises: Promise<unknown>[] = [];
+
+  for (let i = 0; i < productImagesInsertData.length; i = i + 10000) {
+    const dataChunk = productImagesInsertData.slice(
+      i,
+      Math.min(i + 10000, productImagesInsertData.length - 1),
+    );
+    promises.push(db.insert(productImages).values(dataChunk));
+  }
+
+  await Promise.all(promises);
+};
+
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  const res = await fetch(
-    'https://api.escuelajs.co/api/v1/products?categoryId=1',
-  );
-  const data = (await res.json()) as any[];
+  const data = await db
+    .selectDistinct({
+      productId: products.id,
+      clothing: clothing.name,
+      url: productImages.url,
+      isDefault: productImages.isDefault,
+    })
+    .from(products)
+    .innerJoin(clothing, eq(products.clothingID, clothing.id))
+    .innerJoin(productImages, eq(products.id, productImages.productID))
+    .limit(20);
 
-  const images = data
-    .flatMap((x: any) => x.images)
-    .filter((x: string) => x.startsWith('https://i.imgur.com/'));
-
-  const promises: Promise<unknown>[] = [];
-
-  for (let i = 0; i < images.length; i++) {
-    promises.push(downloadImage(images[i] as string, `image${i}.jpeg`));
-  }
-
-  await Promise.all(promises);
-
-  console.log(images);
+  console.log(data);
 
   const end = performance.now();
 

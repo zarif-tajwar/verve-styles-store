@@ -12,6 +12,7 @@ import { clothing } from './clothing';
 import { dressStyles } from './dressStyles';
 import { InferSelectModel, relations } from 'drizzle-orm';
 import { productEntries } from './productEntries';
+import { productImages } from './productImages';
 
 export const products = pgTable(
   'products',
@@ -52,6 +53,7 @@ export const productRelations = relations(products, ({ one, many }) => ({
     references: [dressStyles.id],
   }),
   productEntry: many(productEntries),
+  productImages: many(productImages),
 }));
 
 export type ProductSelect = InferSelectModel<typeof products>;

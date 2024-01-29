@@ -1,0 +1,1 @@
+ALTER TABLE "edge_store_images" ADD COLUMN "clothing" text;

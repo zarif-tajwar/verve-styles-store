@@ -4,10 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@react-pdf/image': 2.2.3
-  '@react-pdf/pdfkit': 3.0.4
-
 dependencies:
   '@auth/core':
     specifier: ^0.19.0
@@ -15,6 +11,9 @@ dependencies:
   '@auth/drizzle-adapter':
     specifier: ^0.3.12
     version: 0.3.12(nodemailer@6.9.8)
+  '@edgestore/server':
+    specifier: ^0.1.6
+    version: 0.1.6(react-dom@18.2.0)(react@18.2.0)(zod@3.22.4)
   '@heroicons/react':
     specifier: ^2.1.1
     version: 2.1.1(react@18.2.0)
@@ -391,6 +390,49 @@ packages:
     dependencies:
       superjson: 2.2.1
     dev: true
+
+  /@edgestore/server@0.1.6(react-dom@18.2.0)(react@18.2.0)(zod@3.22.4):
+    resolution: {integrity: sha512-HugdT2ibEhYXfyFp1cVK0rlUus0QT77sgIRidGntxalZv8K524AOG1ZfJV9+HPUV8/I015uTvGL69kZRs0h8aA==}
+    peerDependencies:
+      '@aws-sdk/client-s3': '>=3.0.0'
+      '@aws-sdk/s3-request-presigner': '>=3.0.0'
+      '@azure/storage-blob': ^12.17.0
+      zod: '>=3.0.0'
+    peerDependenciesMeta:
+      '@aws-sdk/client-s3':
+        optional: true
+      '@aws-sdk/s3-request-presigner':
+        optional: true
+      '@azure/storage-blob':
+        optional: true
+      zod:
+        optional: true
+    dependencies:
+      '@edgestore/shared': 0.1.6(react-dom@18.2.0)(react@18.2.0)(zod@3.22.4)
+      '@panva/hkdf': 1.1.1
+      cookie: 0.5.0
+      jose: 4.15.4
+      uuid: 9.0.1
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - react
+      - react-dom
+    dev: false
+
+  /@edgestore/shared@0.1.6(react-dom@18.2.0)(react@18.2.0)(zod@3.22.4):
+    resolution: {integrity: sha512-KmM+C3uQvK1M5ehqPsIQxokIhPxF3ZmvefqL2ecY+bjN6XllU3/56wr3/xicxfuy1/BEh2VV3pzCusVO4IxxNA==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      zod: '>=3.0.0'
+    peerDependenciesMeta:
+      zod:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      zod: 3.22.4
+    dev: false
 
   /@emnapi/runtime@0.44.0:
     resolution: {integrity: sha512-ZX/etZEZw8DR7zAB1eVQT40lNo0jeqpb6dCgOvctB6FIQ5PoXfMuNY8+ayQfu8tNQbAB8gQWSSJupR8NxeiZXw==}
@@ -2812,6 +2854,11 @@ packages:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: false
 
+  /cookie@0.5.0:
+    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+    engines: {node: '>= 0.6'}
+    dev: false
+
   /cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
@@ -4201,6 +4248,10 @@ packages:
   /jiti@1.21.0:
     resolution: {integrity: sha512-gFqAIbuKyyso/3G2qhiO2OM6shY6EPP/R0+mkDbyspxKazh8BXDC5FiFsUjlczgdNz/vfra0da2y+aHrusLG/Q==}
     hasBin: true
+
+  /jose@4.15.4:
+    resolution: {integrity: sha512-W+oqK4H+r5sITxfxpSU+MMdr/YSWGvgZMQDIsNoBDGGy4i7GBPTtvFKibQzW06n3U3TqHjhvBJsirShsEJ6eeQ==}
+    dev: false
 
   /jose@5.2.0:
     resolution: {integrity: sha512-oW3PCnvyrcm1HMvGTzqjxxfnEs9EoFOFWi2HsEGhlFVOXxTE3K9GKWVMFoFw06yPUqwpvEWic1BmtUZBI/tIjw==}
@@ -5778,6 +5829,11 @@ packages:
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
+    dev: false
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
     dev: false
 

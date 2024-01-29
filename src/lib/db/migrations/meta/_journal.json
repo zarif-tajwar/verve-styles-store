@@ -330,6 +330,48 @@
       "when": 1706333694229,
       "tag": "0046_nosy_jazinda",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "5",
+      "when": 1706566006849,
+      "tag": "0047_colossal_photon",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "5",
+      "when": 1706566303002,
+      "tag": "0048_rapid_maelstrom",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "5",
+      "when": 1706566331925,
+      "tag": "0049_fine_wolfpack",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "5",
+      "when": 1706566348346,
+      "tag": "0050_loving_tempest",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "5",
+      "when": 1706567210359,
+      "tag": "0051_melted_maverick",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "5",
+      "when": 1706568676289,
+      "tag": "0052_rapid_hardball",
+      "breakpoints": true
     }
   ]
 }

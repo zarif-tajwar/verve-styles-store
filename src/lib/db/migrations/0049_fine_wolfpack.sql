@@ -1,0 +1,1 @@
+DROP TABLE "edge_store_images";
