@@ -15,14 +15,11 @@ const NavCartDropdownContent = () => {
   const { data: cartItems, isLoading } = useQuery({
     queryKey: CART_ITEM_DATA_QUERY_KEY,
     queryFn: async () => {
-      console.log('NAV CART DATA FETCHED');
       const data = await getCartItemsServer();
       return data ?? [];
     },
     refetchOnMount: false,
   });
-
-  console.log(cartItems);
 
   const subtotal = cartItems?.reduce(
     (acc, curr) => acc + Number.parseFloat(curr.price) * curr.quantity,

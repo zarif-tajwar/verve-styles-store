@@ -1,11 +1,8 @@
-import './globals.css';
+import '@/app/globals.css';
 import type { Metadata } from 'next';
 import IntegralCF from './_fonts/integral-cf/font';
 import Geist from './_fonts/geist/font';
-import Navbar from '@/components/Navbar/Navbar';
-import Footer from '@/components/Footer/Footer';
-import Provider from '@/lib/provider/provider';
-import NextTopLoader from 'nextjs-toploader';
+import { Toaster } from '@/components/UI/Toaster';
 
 export const metadata: Metadata = {
   title: 'Clothy - Shop',
@@ -22,12 +19,8 @@ export default function RootLayout({
       <body
         className={`${IntegralCF.variable} ${Geist.variable} bg-primary-0 font-geist font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
       >
-        <Provider>
-          <NextTopLoader color="#a4a4a4" showSpinner={false} shadow={false} />
-          <Navbar />
-          {children}
-          <Footer />
-        </Provider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

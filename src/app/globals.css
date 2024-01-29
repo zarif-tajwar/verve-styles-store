@@ -8,9 +8,9 @@
   }
 }
 @layer base {
-  h2 {
+  /* h2 {
     @apply font-integral-cf text-5xl font-bold uppercase;
-  }
+  } */
 
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,

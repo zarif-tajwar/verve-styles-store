@@ -8,21 +8,24 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary-900 text-primary-0 hover:bg-primary-500',
+        default:
+          'bg-primary-900 text-primary-0 hover:bg-primary-500 disabled:opacity-50',
         outline:
-          'ring-1 ring-primary-100 hover:bg-primary-50 hover:ring-primary-50',
+          'ring-1 ring-primary-100 ring-inset hover:bg-primary-50 hover:ring-primary-50',
         secondary:
           'bg-primary-50 hover:bg-primary-100 text-primary-400 focus-visible:ring-offset-0',
-        ghost: 'hover:bg-primary-50 text-primary-400',
+        ghost:
+          'hover:bg-primary-50 text-primary-400 focus-visible:ring-offset-0',
         inverse:
           'bg-primary-0 text-primary-900 hover:bg-primary-50 focus-visible:ring-offset-primary-900 focus-visible:ring-primary-50',
-        // destructive:
-        //   'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+        destructive:
+          'text-red-500 ring-1 ring-inset hover:bg-red-500 hover:text-primary-0 ring-red-500',
         // link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
         default: 'px-3 text-sm py-2',
-        sm: 'h-9 px-3',
+        sm: 'h-9 px-3 text-sm',
+        xs: 'py-1 leading-none px-3 text-sm',
         md: 'px-4 py-2.5 text-base',
         lg: 'h-11 px-8',
         xl: 'py-4 px-14 text-base duration-200',

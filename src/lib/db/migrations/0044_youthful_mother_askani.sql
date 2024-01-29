@@ -1,0 +1,1 @@
+ALTER TABLE "order_customer_details" RENAME COLUMN "type" TO "address_type";

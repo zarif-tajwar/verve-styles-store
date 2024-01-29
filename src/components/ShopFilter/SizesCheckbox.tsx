@@ -35,7 +35,7 @@ const SizesCheckbox = () => {
             variant: 'secondary',
             roundness: 'default',
             className:
-              'px-6 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
+              'px-6 py-1.5 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
           })}
         >
           <div>{option.label}</div>

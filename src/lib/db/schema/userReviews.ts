@@ -15,7 +15,7 @@ export const userReviews = pgTable(
   {
     id: serial('id').primaryKey(),
     orderLineId: integer('order_line_id')
-      .references(() => orderLine.id)
+      .references(() => orderLine.id, { onDelete: 'cascade' })
       .notNull(),
     comment: text('comment'),
     rating: numeric('rating', {
@@ -33,7 +33,7 @@ export const userReviews = pgTable(
   }),
 );
 
-export const userReviewsRelations = relations(userReviews, ({ one, many }) => ({
+export const userReviewsRelations = relations(userReviews, ({ one }) => ({
   orderLineId: one(orderLine, {
     fields: [userReviews.orderLineId],
     references: [orderLine.id],

@@ -1,0 +1,1 @@
+ALTER TABLE "order_status" ALTER COLUMN "text" SET NOT NULL;

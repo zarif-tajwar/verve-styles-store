@@ -1,4 +1,4 @@
-import { GeistSans } from 'geist/font';
+import { GeistSans } from 'geist/font/sans';
 
 const font = GeistSans;
 

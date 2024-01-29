@@ -16,7 +16,7 @@ import { orderLine } from './orderLine';
 export const productEntries = pgTable(
   'product_entries',
   {
-    id: serial('id'),
+    id: serial('id').primaryKey(),
     productID: integer('product_id')
       .references(() => products.id)
       .notNull(),
@@ -29,7 +29,6 @@ export const productEntries = pgTable(
     updatedAt: timestamp('updated_at').defaultNow(),
   },
   (table) => ({
-    pk: primaryKey(table.id),
     unq: unique('unq').on(table.productID, table.sizeID),
     IdIdx: index('id_idx').on(table.id),
     productIdIdx: index('product_id_idx').on(table.productID),
@@ -52,4 +51,5 @@ export const productEntryRelations = relations(
   }),
 );
 
-export type ProductEntryInsert = InferInsertModel<typeof productEntries>;
+export type ProductEntrySelect = typeof productEntries.$inferSelect;
+export type ProductEntryInsert = typeof productEntries.$inferInsert;

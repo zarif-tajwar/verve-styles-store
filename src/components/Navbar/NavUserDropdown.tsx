@@ -4,8 +4,25 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Button } from '../UI/Button';
 import Link from 'next/link';
 import { cn } from '@/lib/util';
+import { FileClock, LogIn, LogOut, User2 } from 'lucide-react';
+import { signOutAction } from '@/lib/actions/auth';
+import React from 'react';
+import Divider from '../UI/Divider';
+
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+
+const navDropdownItemClasses = cn(
+  'rounded-lg font-medium text-primary-400',
+  'data-[highlighted]:bg-primary-50 data-[highlighted]:outline-0',
+  'inline-flex w-full items-center gap-2.5 px-2 py-3',
+);
 
 const NavUserDropdown = () => {
+  const session = useSession();
+  const isLoggedIn = session.status === 'authenticated';
+  const user = session.data?.user;
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -34,58 +51,94 @@ const NavUserDropdown = () => {
           align="end"
           sideOffset={4}
           className={cn(
-            'w-44 origin-top-right rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
+            'min-w-[13rem] origin-top-right rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
             'data-[state=closed]:animate-shrinkToTopRightAnim data-[state=open]:animate-scaleFromTopRightAnim',
           )}
+          onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          <DropdownMenu.DropdownMenuItem className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0">
-            <Link
-              href={'/sign-in'}
-              className="inline-flex w-full items-center gap-2.5 px-2 py-3"
+          {!isLoggedIn || !user ? (
+            <DropdownMenu.DropdownMenuItem
+              className={navDropdownItemClasses}
+              asChild
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-5 w-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z"
-                  clipRule="evenodd"
-                />
-                <path
-                  fillRule="evenodd"
-                  d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z"
-                  clipRule="evenodd"
-                />
-              </svg>
-
-              <span>Login</span>
-            </Link>
-          </DropdownMenu.DropdownMenuItem>
-          <DropdownMenu.DropdownMenuItem className="rounded-lg text-primary-400 data-[highlighted]:bg-primary-500 data-[highlighted]:text-primary-50 data-[highlighted]:outline-0">
-            <Link
-              href={'/sign-up'}
-              className="inline-flex w-full items-center gap-2.5 px-2 py-3"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-5 w-5"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M14 6a2.5 2.5 0 00-4-3 2.5 2.5 0 00-4 3H3.25C2.56 6 2 6.56 2 7.25v.5C2 8.44 2.56 9 3.25 9h6V6h1.5v3h6C17.44 9 18 8.44 18 7.75v-.5C18 6.56 17.44 6 16.75 6H14zm-1-1.5a1 1 0 01-1 1h-1v-1a1 1 0 112 0zm-6 0a1 1 0 001 1h1v-1a1 1 0 00-2 0z"
-                  clipRule="evenodd"
-                />
-                <path d="M9.25 10.5H3v4.75A2.75 2.75 0 005.75 18h3.5v-7.5zM10.75 18v-7.5H17v4.75A2.75 2.75 0 0114.25 18h-3.5z" />
-              </svg>
-
-              <span>Sign Up</span>
-            </Link>
-          </DropdownMenu.DropdownMenuItem>
+              <Link href={'/auth/sign-in'}>
+                <LogIn className="h-5 w-5" />
+                <span>Login</span>
+              </Link>
+            </DropdownMenu.DropdownMenuItem>
+          ) : (
+            <>
+              <DropdownMenu.Group>
+                <div className="grid grid-cols-[auto_1fr] gap-2.5 py-2 pl-0.5 pr-2 outline-none">
+                  {/* PROFILE IMAGE */}
+                  <div className="relative aspect-square w-9 overflow-hidden rounded-full">
+                    {user.name && user.email && user.image ? (
+                      <Image
+                        src={user.image}
+                        fill
+                        alt={`Profile picture of ${user.name ?? user.email}`}
+                        className="h-full w-full object-cover saturate-0"
+                      />
+                    ) : (
+                      <span className="bg-primary-50 uppercase">
+                        {user.name?.at(0)}
+                      </span>
+                    )}
+                  </div>
+                  {/* PROFILE INFO */}
+                  <div className="flex flex-col gap-1 leading-none">
+                    {user.name && (
+                      <span className="font-medium text-primary-400">
+                        {user.name}
+                      </span>
+                    )}
+                    {user.email && (
+                      <Link
+                        href={'/my-account/login-options'}
+                        className="w-max border-b border-transparent text-xs text-primary-300 hover:border-primary-200"
+                      >
+                        {user.email}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </DropdownMenu.Group>
+              <Divider className="my-2 bg-primary-50" />
+              <DropdownMenu.Group className="flex flex-col">
+                <DropdownMenu.DropdownMenuItem
+                  className={navDropdownItemClasses}
+                  asChild
+                >
+                  <Link href={'/my-account/orders'}>
+                    <FileClock className="h-5 w-5" />
+                    <span>Orders</span>
+                  </Link>
+                </DropdownMenu.DropdownMenuItem>
+                <DropdownMenu.DropdownMenuItem
+                  className={navDropdownItemClasses}
+                  asChild
+                >
+                  <Link href={'/my-account'}>
+                    <User2 className="h-5 w-5" />
+                    <span>My Account</span>
+                  </Link>
+                </DropdownMenu.DropdownMenuItem>
+                <DropdownMenu.DropdownMenuItem
+                  className={navDropdownItemClasses}
+                  asChild
+                >
+                  <button
+                    onClick={async () => {
+                      await signOutAction({ redirectTo: '/shop' });
+                    }}
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span>Logout</span>
+                  </button>
+                </DropdownMenu.DropdownMenuItem>
+              </DropdownMenu.Group>
+            </>
+          )}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>

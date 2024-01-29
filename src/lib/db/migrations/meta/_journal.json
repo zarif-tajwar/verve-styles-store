@@ -120,6 +120,216 @@
       "when": 1698499045975,
       "tag": "0016_milky_leopardon",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1702182336242,
+      "tag": "0017_skinny_rhodey",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1702736742349,
+      "tag": "0018_lazy_namorita",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1702916207796,
+      "tag": "0019_strange_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1702916875197,
+      "tag": "0020_tearful_onslaught",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1702917052168,
+      "tag": "0021_nosy_mystique",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "5",
+      "when": 1702966337350,
+      "tag": "0022_daffy_iron_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1704552355435,
+      "tag": "0023_flaky_silver_samurai",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1704552928445,
+      "tag": "0024_same_pete_wisdom",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1704611030336,
+      "tag": "0025_rainy_susan_delgado",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1704627314122,
+      "tag": "0026_petite_mister_fear",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1704642837737,
+      "tag": "0027_smart_zemo",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "5",
+      "when": 1704729886184,
+      "tag": "0028_mute_piledriver",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "5",
+      "when": 1704730487801,
+      "tag": "0029_melted_major_mapleleaf",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "5",
+      "when": 1704730600409,
+      "tag": "0030_overjoyed_texas_twister",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "5",
+      "when": 1704735779015,
+      "tag": "0031_windy_gargoyle",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "5",
+      "when": 1704738542273,
+      "tag": "0032_strange_layla_miller",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "5",
+      "when": 1704882049317,
+      "tag": "0033_absurd_lilith",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "5",
+      "when": 1704882299033,
+      "tag": "0034_windy_matthew_murdock",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "5",
+      "when": 1705659047324,
+      "tag": "0035_brown_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "5",
+      "when": 1705673454270,
+      "tag": "0036_big_paper_doll",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "5",
+      "when": 1705788171271,
+      "tag": "0037_flippant_zarek",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "5",
+      "when": 1705788508703,
+      "tag": "0038_futuristic_stranger",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "5",
+      "when": 1705788575629,
+      "tag": "0039_clumsy_shadowcat",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "5",
+      "when": 1706110384879,
+      "tag": "0040_daily_warlock",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "5",
+      "when": 1706123073594,
+      "tag": "0041_cuddly_lockjaw",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "5",
+      "when": 1706282026358,
+      "tag": "0042_keen_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "5",
+      "when": 1706282177191,
+      "tag": "0043_fair_forge",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "5",
+      "when": 1706282823541,
+      "tag": "0044_youthful_mother_askani",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "5",
+      "when": 1706284033584,
+      "tag": "0045_bizarre_bulldozer",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "5",
+      "when": 1706333694229,
+      "tag": "0046_nosy_jazinda",
+      "breakpoints": true
     }
   ]
 }

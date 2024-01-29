@@ -1,0 +1,1 @@
+ALTER TABLE "invoice" RENAME COLUMN "discount" TO "total_discount_in_currency";

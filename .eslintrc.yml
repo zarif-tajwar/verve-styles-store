@@ -1,0 +1,14 @@
+root: true
+extends:
+  - 'plugin:drizzle/recommended'
+  - 'next/core-web-vitals'
+parser: '@typescript-eslint/parser'
+parserOptions:
+  project: './tsconfig.json'
+plugins:
+  - drizzle
+rules:
+  'drizzle/enforce-delete-with-where':
+    - 'error'
+    - 'drizzleObjectName':
+        - 'db'

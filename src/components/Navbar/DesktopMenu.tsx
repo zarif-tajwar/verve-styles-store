@@ -3,6 +3,7 @@ import Link from 'next/link';
 import ShopLink from './ShopLink';
 import NavUserDropdown from './NavUserDropdown';
 import NavCartDropdown from './NavCartDropdown';
+import NavDropdownMenuWrap from './NavDropdownMenuWrap';
 
 const DesktopMenu = () => {
   return (
@@ -11,10 +12,7 @@ const DesktopMenu = () => {
       <div className="flex-grow">
         <SearchProduct />
       </div>
-      <div className="-mx-2 flex items-center">
-        <NavCartDropdown />
-        <NavUserDropdown />
-      </div>
+      <NavDropdownMenuWrap />
     </div>
   );
 };

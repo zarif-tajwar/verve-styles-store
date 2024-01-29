@@ -2,9 +2,11 @@ import {
   InferColumnsDataTypes,
   SQL,
   and,
+  between,
   eq,
   getTableColumns,
   inArray,
+  isNull,
   lt,
   sql,
 } from 'drizzle-orm';
@@ -20,18 +22,27 @@ import { ProductSelect, products } from './schema/products';
 import { sizes } from './schema/sizes';
 import { faker } from '@faker-js/faker';
 import crypto from 'crypto';
-import { ProductEntry, productEntries } from './schema/productEntries';
-import { FilterSearchQueryValuesSchema } from '../validation/schemas';
+import { ProductEntryInsert, productEntries } from './schema/productEntries';
 import { genRandomInt, wait } from '../util';
-import { UsersInsert, users } from './schema/users';
 import { CartsInsert, CartsSelect, carts } from './schema/carts';
 import { CartItemsInsert, cartItems } from './schema/cartItems';
-import { orders } from './schema/orders';
+import { OrderInsert, orders } from './schema/orders';
 import { OrderLinesInsert, orderLine } from './schema/orderLine';
 import { UserReviewsInsert, userReviews } from './schema/userReviews';
-import { productRating } from './schema/productRating';
-import { productSalesCount } from './schema/productSalesCount';
-import { getProductsFromDB } from '../dbCalls/filter';
+import {
+  DummyUserInsert,
+  DummyUserSelect,
+  dummyUser,
+} from './schema/dummyUser';
+import {
+  OrderDetailsInsert,
+  orderDetails,
+  orderStatus,
+} from './schema/orderDetails';
+import { address } from './schema/address';
+import { z } from 'zod';
+import * as https from 'https';
+import * as fs from 'fs';
 
 async function populateSizes() {
   await db
@@ -142,7 +153,7 @@ async function populateProductEntries(n: number) {
     return `${clothing}-${productName}-${sizeName}-${uuid}`.toLocaleLowerCase();
   });
 
-  const inputProductEntries: ProductEntry[] = entryProductAndSizeID.map(
+  const inputProductEntries: ProductEntryInsert[] = entryProductAndSizeID.map(
     ([productID, sizeID], i) => ({
       productID: productID,
       sizeID: sizeID,
@@ -184,421 +195,461 @@ const updateProductEntryQuantity = async () => {
   await Promise.allSettled(promises);
 };
 
-const populateUsers = async (n: number) => {
-  const randomlyGeneratedUsers: UsersInsert[] = [...Array(n).keys()].map(() => {
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-
-    const generatedUser = {
-      firstName,
-      lastName,
-      username: faker.internet.userName({ firstName, lastName }).toLowerCase(),
-      email: faker.internet.email({ firstName, lastName }).toLowerCase(),
-    };
-
-    return generatedUser;
-  });
-
-  await db.insert(users).values(randomlyGeneratedUsers);
-};
-
-const populateCarts = async (n: number) => {
-  const userIdArr = await db
-    .select({
-      userId: users.id,
-    })
-    .from(users);
-
-  const alreadyExistingCartsUserIdArr = await db
-    .select({
-      userId: carts.userId,
-    })
-    .from(carts);
-
-  const selectedUsersIndex: number[] = [];
-
-  while (selectedUsersIndex.length < n) {
-    const randomIndex = genRandomInt(0, userIdArr.length - 1);
-
-    if (selectedUsersIndex.findIndex((val) => val === randomIndex) !== -1)
-      continue;
-
-    if (
-      alreadyExistingCartsUserIdArr.some(
-        (val) => val.userId === userIdArr[randomIndex]!.userId,
-      )
-    )
-      continue;
-
-    selectedUsersIndex.push(randomIndex);
-  }
-
-  const generatedCarts: CartsInsert[] = selectedUsersIndex.map((val) => {
-    const date = faker.date.past({ years: 1 });
-    return {
-      userId: userIdArr.at(val)?.userId || 0,
-      createdAt: date,
-      updatedAt: date,
-    };
-  });
-
-  await db.insert(carts).values(generatedCarts);
-};
-
-const populateCartItems = async (n: number) => {
-  const productEntryIdArray = await db
-    .select({
-      productEntryId: productEntries.id,
-    })
-    .from(productEntries);
-
-  const cartIdArray = await db
-    .select({
-      cartId: carts.id,
-    })
-    .from(carts);
-
-  const cartItemsArray = await db
-    .select({
-      cartId: cartItems.cartId,
-      productEntryID: cartItems.productEntryId,
-    })
-    .from(cartItems);
-
-  const combinations: [number, number][] = [];
-
-  while (combinations.length < n) {
-    const selectedCombination = [
-      productEntryIdArray[genRandomInt(0, productEntryIdArray.length - 1)]!
-        .productEntryId,
-      cartIdArray[genRandomInt(0, cartIdArray.length - 1)]!.cartId,
-    ];
-
-    if (
-      combinations.some(
-        (arr: [number, number]) =>
-          arr.at(0) === selectedCombination.at(0) &&
-          arr.at(1) === selectedCombination.at(1),
-      )
-    )
-      continue;
-
-    if (
-      cartItemsArray.some((item) => {
-        item.productEntryID === selectedCombination.at(0) &&
-          item.cartId === selectedCombination.at(1);
-      })
-    )
-      continue;
-
-    combinations.push(selectedCombination as [number, number]);
-  }
-
-  const generatedCartItems: CartItemsInsert[] = combinations.map(
-    ([productEntryId, cartId]) => {
-      const date = faker.date.recent();
-      return {
-        cartId,
-        productEntryId,
-        // quantity: genRandomInt(200, 800),
-        quantity: 200,
-        createdAt: date,
-        updatedAt: date,
+const populateDummyUsers = async (n: number) => {
+  const randomlyGeneratedUsers: DummyUserInsert[] = [...Array(n).keys()].map(
+    () => {
+      const generatedUser: DummyUserInsert = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        image: faker.image.avatar(),
       };
+
+      return generatedUser;
     },
   );
 
-  const promises: Promise<void>[] = [];
-
-  for (let i = 0; i < generatedCartItems.length; i++) {
-    const cartItem = generatedCartItems.at(i);
-
-    if (cartItem === undefined) continue;
-
-    const cartItemTransactionPromise = db.transaction(async (tx1) => {
-      const res = await tx1
-        .select({
-          quantity: productEntries.quantity,
-        })
-        .from(productEntries)
-        .where(eq(productEntries.id, cartItem.productEntryId));
-
-      const inventoryQuantity = res.at(0)?.quantity || 0;
-
-      if (inventoryQuantity < cartItem.quantity) {
-        await tx1.rollback();
-        return;
-      }
-
-      await tx1.insert(cartItems).values(cartItem);
-    });
-
-    promises.push(cartItemTransactionPromise);
-  }
-
-  await Promise.allSettled(promises);
-
-  // await db.insert(cartItems).values(generatedCartItems);
+  await db.insert(dummyUser).values(randomlyGeneratedUsers);
 };
 
-const makeRandomOrders = async (n: number) => {
+// const populateCarts = async (n: number) => {
+//   const userIdArr = await db
+//     .select({
+//       userId: users.id,
+//     })
+//     .from(users);
+
+//   const alreadyExistingCartsUserIdArr = await db
+//     .select({
+//       userId: carts.userId,
+//     })
+//     .from(carts);
+
+//   const selectedUsersIndex: number[] = [];
+
+//   while (selectedUsersIndex.length < n) {
+//     const randomIndex = genRandomInt(0, userIdArr.length - 1);
+
+//     if (selectedUsersIndex.findIndex((val) => val === randomIndex) !== -1)
+//       continue;
+
+//     if (
+//       alreadyExistingCartsUserIdArr.some(
+//         (val) => val.userId === userIdArr[randomIndex]!.userId,
+//       )
+//     )
+//       continue;
+
+//     selectedUsersIndex.push(randomIndex);
+//   }
+
+//   const generatedCarts: CartsInsert[] = selectedUsersIndex.map((val) => {
+//     const date = faker.date.past({ years: 1 });
+//     return {
+//       userId: userIdArr.at(val)?.userId || 0,
+//       createdAt: date,
+//       updatedAt: date,
+//     };
+//   });
+
+//   await db.insert(carts).values(generatedCarts);
+// };
+
+// const populateCartItems = async (n: number) => {
+//   const productEntryIdArray = await db
+//     .select({
+//       productEntryId: productEntries.id,
+//     })
+//     .from(productEntries);
+
+//   const cartIdArray = await db
+//     .select({
+//       cartId: carts.id,
+//     })
+//     .from(carts);
+
+//   const cartItemsArray = await db
+//     .select({
+//       cartId: cartItems.cartId,
+//       productEntryID: cartItems.productEntryId,
+//     })
+//     .from(cartItems);
+
+//   const combinations: [number, number][] = [];
+
+//   while (combinations.length < n) {
+//     const selectedCombination = [
+//       productEntryIdArray[genRandomInt(0, productEntryIdArray.length - 1)]!
+//         .productEntryId,
+//       cartIdArray[genRandomInt(0, cartIdArray.length - 1)]!.cartId,
+//     ];
+
+//     if (
+//       combinations.some(
+//         (arr: [number, number]) =>
+//           arr.at(0) === selectedCombination.at(0) &&
+//           arr.at(1) === selectedCombination.at(1),
+//       )
+//     )
+//       continue;
+
+//     if (
+//       cartItemsArray.some((item) => {
+//         item.productEntryID === selectedCombination.at(0) &&
+//           item.cartId === selectedCombination.at(1);
+//       })
+//     )
+//       continue;
+
+//     combinations.push(selectedCombination as [number, number]);
+//   }
+
+//   const generatedCartItems: CartItemsInsert[] = combinations.map(
+//     ([productEntryId, cartId]) => {
+//       const date = faker.date.recent();
+//       return {
+//         cartId,
+//         productEntryId,
+//         // quantity: genRandomInt(200, 800),
+//         quantity: 200,
+//         createdAt: date,
+//         updatedAt: date,
+//       };
+//     },
+//   );
+
+//   const promises: Promise<void>[] = [];
+
+//   for (let i = 0; i < generatedCartItems.length; i++) {
+//     const cartItem = generatedCartItems.at(i);
+
+//     if (cartItem === undefined) continue;
+
+//     const cartItemTransactionPromise = db.transaction(async (tx1) => {
+//       const res = await tx1
+//         .select({
+//           quantity: productEntries.quantity,
+//         })
+//         .from(productEntries)
+//         .where(eq(productEntries.id, cartItem.productEntryId));
+
+//       const inventoryQuantity = res.at(0)?.quantity || 0;
+
+//       if (inventoryQuantity < cartItem.quantity) {
+//         await tx1.rollback();
+//         return;
+//       }
+
+//       await tx1.insert(cartItems).values(cartItem);
+//     });
+
+//     promises.push(cartItemTransactionPromise);
+//   }
+
+//   await Promise.allSettled(promises);
+
+//   // await db.insert(cartItems).values(generatedCartItems);
+// };
+
+const makeRandomDummyOrders = async (n: number) => {
   const getUserIdsPromise = db
     .select({
-      userId: users.id,
+      userId: dummyUser.id,
     })
-    .from(users);
+    .from(dummyUser);
 
-  const getProductEntryIdsPromise = db
+  const getProductEntriesPromise = db
     .select({
       productEntryId: productEntries.id,
+      stockQuantity: productEntries.quantity,
+      price: products.price,
     })
-    .from(productEntries);
+    .from(productEntries)
+    .innerJoin(products, eq(products.id, productEntries.productID));
 
-  const [userIds, productEntryIds] = await Promise.all([
+  const [userIds, productEntriesData] = await Promise.all([
     getUserIdsPromise,
-    getProductEntryIdsPromise,
+    getProductEntriesPromise,
   ]);
 
   let ordersMade = 0;
-  let firstLoop = 0;
-  let secondLoop = 0;
 
-  while (ordersMade < n) {
-    firstLoop += 1;
-    console.log(`First loop ran ${firstLoop}`);
+  const chosenUserIds: DummyUserSelect['id'][] = [];
+
+  while (chosenUserIds.length <= n) {
     const chosenRandomUserId =
       userIds[genRandomInt(0, userIds.length - 1)]!.userId;
+    chosenUserIds.push(chosenRandomUserId);
+  }
 
-    await db.transaction(async (tx1) => {
-      const usersCart = await tx1.query.carts.findFirst({
-        where: eq(carts.userId, chosenRandomUserId),
-      });
+  await db.transaction(async (tx1) => {
+    const newOrdersData: Partial<OrderInsert>[] = chosenUserIds.map((id) => ({
+      dummyUserId: id,
+    }));
+    const newOrders = await tx1
+      .insert(orders)
+      .values(newOrdersData)
+      .returning();
 
-      let cartId = usersCart?.id;
+    for (let chosenRandomUserId of chosenUserIds) {
+      const date = faker.date.past({ years: 3 });
 
-      if (usersCart === undefined) {
-        const date = faker.date.past({ years: 1 });
-        const returnedCart = await tx1
-          .insert(carts)
-          .values({
-            userId: chosenRandomUserId,
-            createdAt: date,
-            updatedAt: date,
-          })
-          .returning();
-        cartId = returnedCart[0]!.id;
-      }
+      const newOrder = newOrders.find(
+        (order) => order.dummyUserId === chosenRandomUserId,
+      );
 
-      if (cartId === undefined) {
+      if (!newOrder) {
         tx1.rollback();
         return;
       }
 
-      const targetCartItemsCount = genRandomInt(3, 9);
+      const newOrderId = newOrder.id;
 
-      let currentCartItemsCount = 0;
-      console.log(targetCartItemsCount, 'Target Items Count');
+      const targetOrderLineCount = genRandomInt(3, 9);
 
-      while (currentCartItemsCount < targetCartItemsCount) {
-        secondLoop += 1;
-        console.log(`Second loop ran ${secondLoop}`);
+      let currentOrderLineCount = 0;
 
-        const randomProductEntryId =
-          productEntryIds[genRandomInt(0, productEntryIds.length - 1)]!
-            .productEntryId;
+      const promises: Promise<unknown>[] = [];
+
+      while (currentOrderLineCount < targetOrderLineCount) {
+        const randomProductEntry =
+          productEntriesData[genRandomInt(0, productEntriesData.length - 1)]!;
+        const randomProductEntryId = randomProductEntry.productEntryId;
+
         const randomQuantity = genRandomInt(4, 10);
 
-        const stockQuantity = (
-          await tx1.query.productEntries.findFirst({
-            columns: {
-              quantity: true,
-            },
-            where: eq(productEntries.id, randomProductEntryId),
-          })
-        )?.quantity;
-
-        if (!stockQuantity || stockQuantity < randomQuantity) {
+        if (
+          !randomProductEntry.stockQuantity ||
+          randomProductEntry.stockQuantity < randomQuantity
+        ) {
           tx1.rollback();
           continue;
         }
 
-        const cartItemAlreadyExists =
-          (await tx1.query.cartItems.findFirst({
-            where: and(
-              eq(cartItems.cartId, cartId),
-              eq(cartItems.productEntryId, randomProductEntryId),
-            ),
-          })) !== undefined;
-
-        if (cartItemAlreadyExists) {
-          await tx1
-            .update(cartItems)
-            .set({
-              quantity: randomQuantity,
-              updatedAt: new Date(),
-            })
-            .where(
-              and(
-                eq(cartItems.cartId, cartId),
-                eq(cartItems.productEntryId, randomProductEntryId),
-              ),
-            );
-        } else {
-          await tx1.insert(cartItems).values({
-            cartId,
+        if (randomQuantity > randomProductEntry.stockQuantity) {
+          tx1.rollback();
+          continue;
+        }
+        const insertOrderLinePromise = tx1
+          .insert(orderLine)
+          .values({
+            orderId: newOrderId,
             productEntryId: randomProductEntryId,
             quantity: randomQuantity,
-          });
-        }
-        currentCartItemsCount += 1;
-      }
-      secondLoop = 0;
-
-      const date = new Date();
-      const orderId = (
-        await tx1
-          .insert(orders)
-          .values({
-            userId: chosenRandomUserId,
-            createdAt: date,
-            updatedAt: date,
+            pricePerUnit: randomProductEntry.price,
           })
-          .returning()
-      )?.at(0)?.id;
+          .onConflictDoNothing();
 
-      if (!orderId) {
-        tx1.rollback();
-        return;
-      }
-
-      const cartItemsProps = await tx1
-        .select({
-          productEntryId: productEntries.id,
-          stockQuantity: productEntries.quantity,
-          orderQuantity: cartItems.quantity,
-          price: products.price,
-        })
-        .from(cartItems)
-        .innerJoin(
-          productEntries,
-          eq(productEntries.id, cartItems.productEntryId),
-        )
-        .innerJoin(products, eq(products.id, productEntries.productID))
-        .where(eq(cartItems.cartId, cartId));
-
-      // console.log(cartItemsProps, 'cartItemProps');
-
-      // tx1.rollback();
-      // return;
-
-      const promises: Promise<unknown>[] = [];
-
-      for (let carItemProp of cartItemsProps) {
-        console.log(carItemProp.productEntryId, 'productID');
-        console.log(carItemProp.stockQuantity, 'stock');
-        if (carItemProp.stockQuantity < carItemProp.orderQuantity) {
-          tx1.rollback();
-          return;
-        }
-
-        const inputOrder = tx1.insert(orderLine).values({
-          orderId,
-          pricePerUnit: carItemProp.price,
-          productEntryId: carItemProp.productEntryId,
-          quantity: carItemProp.orderQuantity,
-          createdAt: date,
-          updatedAt: date,
-        });
-
-        const updateStock = tx1
+        const updateStockPromise = tx1
           .update(productEntries)
           .set({
-            quantity: carItemProp.stockQuantity - carItemProp.orderQuantity,
+            quantity: randomProductEntry.stockQuantity - randomQuantity,
             updatedAt: date,
           })
-          .where(eq(productEntries.id, carItemProp.productEntryId));
+          .where(eq(productEntries.id, randomProductEntryId));
+        promises.push(insertOrderLinePromise, updateStockPromise);
 
-        promises.push(inputOrder, updateStock);
+        currentOrderLineCount += 1;
       }
-
-      const deleteCartItems = tx1
-        .delete(cartItems)
-        .where(eq(cartItems.cartId, cartId));
-
-      promises.push(deleteCartItems);
 
       await Promise.all(promises);
 
       ordersMade += 1;
-    });
-  }
+    }
+  });
 };
 
-const postFakeReviews = async () => {
-  const orderLines = await db
+const postFakeReviews = async (n: number = 1000) => {
+  const allOrderLines = await db
     .select({ id: orderLine.id, date: orderLine.updatedAt })
-    .from(orderLine);
+    .from(orderLine)
+    .leftJoin(userReviews, eq(orderLine.id, userReviews.orderLineId))
+    .where(isNull(userReviews.orderLineId));
 
-  const generatedReviews: UserReviewsInsert[] = orderLines.map((orderLine) => ({
-    orderLineId: orderLine.id,
-    createdAt: orderLine.date,
-    updatedAt: orderLine.date,
-    rating: (genRandomInt(6, 10) / 2).toString(),
-    comment: faker.lorem.paragraph(5),
+  const selectedOrderLines: typeof allOrderLines = [];
+
+  for (let i = 0; i < n; i++) {
+    const selectedOrderLine = allOrderLines.at(
+      genRandomInt(0, allOrderLines.length - 1),
+    );
+    if (
+      selectedOrderLine?.id &&
+      !selectedOrderLines.find((x) => x.id === selectedOrderLine.id)
+    ) {
+      selectedOrderLines.push(selectedOrderLine);
+    }
+  }
+
+  const generatedReviews: UserReviewsInsert[] = selectedOrderLines.map(
+    (orderLine) => ({
+      orderLineId: orderLine.id,
+      createdAt: orderLine.date,
+      updatedAt: orderLine.date,
+      rating: (genRandomInt(6, 10) / 2).toString(),
+      comment: faker.lorem.paragraph(5),
+    }),
+  );
+
+  await db.transaction(async (tx) => {
+    await tx.insert(userReviews).values(generatedReviews).onConflictDoNothing();
+  });
+};
+
+const populateOrderStatusText = async () => {
+  await db
+    .insert(orderStatus)
+    .values([
+      { text: 'processing' },
+      { text: 'confirmed' },
+      { text: 'out for delivery' },
+      { text: 'delivered' },
+      { text: 'cancelled' },
+      { text: 'returned' },
+    ]);
+};
+
+const populateOrderDates = async () => {
+  const allOrders = await db.select().from(orders);
+
+  const updatedOrdersData = allOrders.map((order) => ({
+    id: order.id,
+    date: faker.date.past({ years: 3 }),
   }));
 
   const promises: Promise<unknown>[] = [];
 
-  for (let i = 0; i < generatedReviews.length; i += 1000) {
-    promises.push(
-      db
-        .insert(userReviews)
-        .values(
-          generatedReviews.slice(
-            i,
-            Math.min(i + 1000, generatedReviews.length - 1),
-          ),
-        ),
-    );
+  for (let order of updatedOrdersData) {
+    const orderPromise = db
+      .update(orders)
+      .set({ createdAt: order.date, updatedAt: new Date() })
+      .where(eq(orders.id, order.id));
+
+    promises.push(orderPromise);
   }
 
   await Promise.all(promises);
 };
 
-const cookies = () => {
-  const lol = [...Array(5).keys()].map(() => {
-    return {
-      name: faker.person.fullName(),
-      number: faker.phone.number(),
-      age: faker.number.int({
-        min: 18,
-        max: 50,
-      }),
-      date: faker.date.anytime(),
-      email: faker.internet.email(),
-      adress: faker.location.streetAddress({
-        useFullAddress: true,
-      }),
+const populateOrderDetails = async () => {
+  const allOrders = await db.select().from(orders);
+
+  const orderDetailsInsertPromise: Promise<unknown>[] = [];
+
+  for (let order of allOrders) {
+    if (!order.createdAt) continue;
+
+    const deliveryDate = new Date(order.createdAt);
+    deliveryDate.setDate(order.createdAt.getDate() + 2);
+
+    const deliveredAt = new Date(deliveryDate);
+    deliveredAt.setHours(deliveredAt.getHours() - genRandomInt(1, 6));
+
+    const orderDetailsInsert: OrderDetailsInsert = {
+      orderId: order.id,
+      placedAt: order.createdAt,
+      deliveryDate,
+      deliveredAt,
+      statusId: 4,
+      updatedAt: new Date(),
     };
-  });
-  console.log('BEFORE');
-  console.table(lol);
-  const jsonString = JSON.stringify(lol);
-  const base64enc = btoa(jsonString);
-  const base64dec = atob(base64enc);
-  const returedObject = JSON.parse(base64dec);
-  console.log(base64enc);
-  // console.log(jsonString);
-  // console.log('AFTER');
-  // console.table(returedObject);
+
+    orderDetailsInsertPromise.push(
+      db.insert(orderDetails).values(orderDetailsInsert).onConflictDoNothing(),
+    );
+  }
+
+  await Promise.all(orderDetailsInsertPromise);
 };
 
+const updateStockQuantityTest = async () => {
+  const qb = new QueryBuilder();
+
+  const rows = [
+    { id: 1, decrementBy: 5 },
+    { id: 2, decrementBy: 10 },
+    { id: 3, decrementBy: 15 },
+    { id: 4, decrementBy: 20 },
+    { id: 5, decrementBy: 25 },
+  ];
+
+  const targetColumnValues = [];
+  const sqlChunks: SQL[] = [];
+
+  sqlChunks.push(sql`(case`);
+  for (const row of rows) {
+    targetColumnValues.push(row.id);
+    sqlChunks.push(
+      // sql`when id = ${row.id} then 500`,
+      // sql`when id = ${
+      //   row.id
+      // } then ${sql`(select (${productEntries.quantity} - ${row.decrementBy}) from ${productEntries} where ${productEntries.id} = ${row.id})`}`,
+      sql`when ${productEntries.id} = ${row.id} then (${qb
+        .select({
+          quantity: sql<number>`${productEntries.quantity} - ${row.decrementBy}`,
+        })
+        .from(productEntries)
+        .where(eq(productEntries.id, row.id))})`,
+    );
+  }
+  sqlChunks.push(sql`end)`);
+
+  const finalSql = sql.join(sqlChunks, sql.raw(' '));
+
+  const res = await db
+    .update(productEntries)
+    .set({ quantity: finalSql })
+    .where(inArray(productEntries.id, targetColumnValues))
+    .returning();
+  // .toSQL();
+
+  console.log(res);
+  // console.log(res.sql);
+
+  return res;
+};
+
+function downloadImage(url: string, destination: string): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    const file = fs.createWriteStream(destination);
+
+    https
+      .get(url, (response) => {
+        response.pipe(file);
+
+        file.on('finish', () => {
+          file.close();
+          resolve();
+        });
+      })
+      .on('error', (error) => {
+        fs.unlink(destination, () => {
+          reject(error);
+        });
+      });
+  });
+}
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  cookies();
+  const res = await fetch(
+    'https://api.escuelajs.co/api/v1/products?categoryId=1',
+  );
+  const data = (await res.json()) as any[];
+
+  const images = data
+    .flatMap((x: any) => x.images)
+    .filter((x: string) => x.startsWith('https://i.imgur.com/'));
+
+  const promises: Promise<unknown>[] = [];
+
+  for (let i = 0; i < images.length; i++) {
+    promises.push(downloadImage(images[i] as string, `image${i}.jpeg`));
+  }
+
+  await Promise.all(promises);
+
+  console.log(images);
 
   const end = performance.now();
 

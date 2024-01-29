@@ -6,11 +6,11 @@ import {
   useQueryStates,
   Values,
   SetValues,
-} from 'next-usequerystate';
+} from 'nuqs';
 import { shopFilterKeys } from '@/lib/validation/schemas';
 import { URL_QUERY_SEPERATORS } from '@/lib/validation/constants';
 import { quickSortByReference } from '../util';
-import { type SearchParamsServer } from '@/lib/types/common';
+import { SearchParamsServer } from '../types/common';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
@@ -141,12 +141,7 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
 
   const handlePageChange = (pageNum: number, totalPages: number) => {
     if (pageNum < 1 || pageNum === currentPage || pageNum > totalPages) return;
-    setParamsState(
-      { page: pageNum.toString() },
-      {
-        scroll: true,
-      },
-    );
+    setParamsState({ page: pageNum.toString() });
   };
 
   const store: Store = {

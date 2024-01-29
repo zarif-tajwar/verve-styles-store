@@ -13,14 +13,22 @@ import {
   productEntries,
   ProductEntryInsert,
 } from '../db/schema/productEntries';
-import { and, eq, gt, gte, sql } from 'drizzle-orm';
+import { and, eq, ExtractTablesWithRelations, gt, gte, sql } from 'drizzle-orm';
 import { carts } from '../db/schema/carts';
-import { genRandomInt } from '../util';
+import { genRandomInt, parseIntWithUndefined } from '../util';
+import { auth } from '@/auth';
+import { PgTransaction } from 'drizzle-orm/pg-core';
+import {
+  NodePgDatabase,
+  NodePgQueryResultHKT,
+} from 'drizzle-orm/node-postgres';
+import { UserInsert } from '../db/schema/auth';
+import { getCartId } from '../server/cart';
 
 export const getCartItemsServer = async () => {
-  const cartId = Number(cookies().get('cartId')?.value);
+  const cartId = await getCartId();
 
-  if (Number.isNaN(cartId)) return undefined;
+  if (!cartId) return;
 
   const cartItemsData = await db
     .select({
@@ -74,7 +82,7 @@ export const updateCartItemQuantityServer = async ({
   return updated;
 };
 
-export const addCartItemServer = async ({
+export const addCartItemAction = async ({
   productId,
   sizeId,
   quantity,
@@ -83,18 +91,12 @@ export const addCartItemServer = async ({
   sizeId: ProductEntryInsert['sizeID'];
   quantity: CartItemsInsert['quantity'];
 }) => {
-  let cartId: number | undefined = Number(cookies().get('cartId')?.value);
+  const cartId = await getCartId(undefined, true);
 
   const cartItem = await db.transaction(async (tx) => {
     if (!cartId) {
-      let [cart] = await tx.insert(carts).values({}).returning();
-      cartId = cart?.id;
-      if (cartId === undefined) {
-        tx.rollback();
-        return;
-      } else {
-        cookies().set('cartId', cartId.toString());
-      }
+      tx.rollback();
+      return;
     }
 
     const [product] = await tx
@@ -144,18 +146,9 @@ export const addCartItemServer = async ({
 };
 
 export const generateCartItems = async ({ num }: { num: number }) => {
-  let cartId: number | undefined = Number(cookies().get('cartId')?.value);
+  const cartId = await getCartId(undefined, true);
 
-  if (!cartId) {
-    let [cart] = await db.insert(carts).values({}).returning();
-    cartId = cart?.id;
-  }
-
-  if (cartId === undefined) {
-    return;
-  } else {
-    cookies().set('cartId', cartId.toString());
-  }
+  if (!cartId) return;
 
   const productEntryIds = await db
     .select({ id: productEntries.id })
@@ -164,7 +157,7 @@ export const generateCartItems = async ({ num }: { num: number }) => {
 
   const generatedCartItems: CartItemsInsert[] = [...Array(num).keys()].map(
     () => ({
-      cartId: cartId!,
+      cartId,
       productEntryId: productEntryIds.at(
         genRandomInt(0, productEntryIds.length - 1),
       )!.id!,
@@ -178,9 +171,9 @@ export const generateCartItems = async ({ num }: { num: number }) => {
 };
 
 export const clearCartItems = async () => {
-  const cartId = Number(cookies().get('cartId')?.value);
+  const cartId = await getCartId(undefined, true);
 
-  if (Number.isNaN(cartId)) return undefined;
+  if (!cartId) return;
 
   return await db.transaction(async (tx) => {
     return await tx

@@ -5,7 +5,7 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 import { Button, buttonVariants } from '../UI/Button';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addCartItemServer } from '@/lib/actions/cart';
+import { addCartItemAction } from '@/lib/actions/cart';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 import Spinner from '../UI/Spinner';
 import {
@@ -37,7 +37,7 @@ const ProductAddCartRadioGroup = ({
     isIdle,
     isError,
   } = useMutation({
-    mutationFn: addCartItemServer,
+    mutationFn: addCartItemAction,
     onSuccess: () => {
       queryClient.refetchQueries({
         queryKey: CART_ITEM_DATA_QUERY_KEY,

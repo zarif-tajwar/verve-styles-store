@@ -1,56 +1,67 @@
 'use client';
 
-import { HTMLAttributes, useEffect, useState } from 'react';
+import {
+  HTMLAttributes,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import { cn } from '@/lib/util';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useInView } from 'framer-motion';
 import { Button } from '../UI/Button';
 import Star from '../UI/Star';
 import { ArrowRight } from 'lucide-react';
 import { Verified } from '../Svgs/icons';
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from '../UI/Carousel';
 
 const CustomerReviews = () => {
-  const [currCard, setCurrCard] = useState(3);
-  const [isVisible, setIsVisible] = useState(false);
-  const cardsPerSlide = 3;
+  const [api, setApi] = useState<CarouselApi>();
+  const carouselRef = useRef<null | HTMLDivElement>(null);
+  const isVisible = useInView(carouselRef);
 
-  const goLeft = () =>
-    setCurrCard((currCard) => {
-      if (currCard > 0) return currCard - cardsPerSlide;
-      return currCard;
-    });
-  const goRight = () =>
-    setCurrCard((currCard) => {
-      if (currCard <= Reviews.length - 1 - cardsPerSlide)
-        return currCard + cardsPerSlide;
-      return currCard;
-    });
+  const scrollPrev = useCallback(() => {
+    api?.scrollPrev();
+  }, [api]);
 
-  const handleKeyboardControl = (e: globalThis.KeyboardEvent) => {
-    if (!isVisible) return;
-    if (document.activeElement?.tagName === 'INPUT') return;
+  const scrollNext = useCallback(() => {
+    api?.scrollNext();
+  }, [api]);
 
-    if (e.key === 'ArrowRight') goRight();
-    if (e.key === 'ArrowLeft') goLeft();
-  };
+  const handleKeyboardControl = useCallback(
+    (e: globalThis.KeyboardEvent) => {
+      if (!isVisible) return;
+      if (document.activeElement?.tagName === 'INPUT') return;
+
+      if (e.key === 'ArrowRight') scrollNext();
+      if (e.key === 'ArrowLeft') scrollPrev();
+    },
+    [isVisible, scrollNext, scrollPrev],
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyboardControl);
     return () => document.removeEventListener('keydown', handleKeyboardControl);
-  }, [isVisible]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isVisible, handleKeyboardControl]);
 
   return (
     <section className="mt-20 overflow-x-hidden" id="reviews">
       <div className="container-main">
         <div className="flex w-full items-end justify-between">
-          <h2>Our Happy Customers</h2>
+          <h2 className="font-integral-cf text-5xl font-bold uppercase">
+            Our Happy Customers
+          </h2>
           <div className="flex select-none items-center gap-2">
             <Button
               variant={'outline'}
               size={'square'}
               className="rotate-180 select-none"
-              disabled={currCard === 0}
-              onClick={goLeft}
-              aria-hidden={currCard === 0}
+              onClick={scrollPrev}
               aria-label="Go right"
             >
               <ArrowRight />
@@ -58,59 +69,43 @@ const CustomerReviews = () => {
             <Button
               variant={'outline'}
               size={'square'}
-              disabled={currCard > Reviews.length - 1 - cardsPerSlide}
-              aria-hidden={currCard > Reviews.length - 1 - cardsPerSlide}
               aria-label="Go left"
-              onClick={goRight}
+              onClick={scrollNext}
               className="select-none"
             >
               <ArrowRight />
             </Button>
           </div>
         </div>
-        <div className="mt-10">
-          <AnimatePresence initial={false}>
-            <motion.div
-              className="relative h-[17rem] w-full cursor-grab touch-none select-none gap-y-5 bg-primary-0"
-              // style={{
-              //   gridTemplateColumns: `repeat(${Reviews.length}, 1fr)`,
-              // }}
-              onViewportEnter={() => {
-                setIsVisible(true);
-              }}
-              onViewportLeave={() => {
-                setIsVisible(false);
-              }}
-              onPanStart={(_, info) => {
-                if (info.delta.x > 0) goLeft();
-                if (info.delta.x < 0) goRight();
-              }}
-            >
+        <div className="pt-16">
+          <Carousel
+            opts={{
+              align: 'center',
+              startIndex: 1,
+              dragFree: true,
+              slidesToScroll: 1,
+              breakpoints: {
+                '(min-width: 768px)': {
+                  slidesToScroll: 3,
+                },
+              },
+            }}
+            setApi={setApi}
+            ref={carouselRef}
+          >
+            <CarouselContent className="-ml-5 cursor-grab">
               {Reviews.map((review, i) => {
-                const isNotHighlighted = !(
-                  i >= currCard && i < currCard + cardsPerSlide
-                );
                 return (
-                  <motion.div
-                    animate={{
-                      x: `calc(${(i - currCard) * 100}% + ${
-                        (i - currCard) * 1.25
-                      }rem)`,
-                      opacity: isNotHighlighted ? 0.4 : 1,
-                    }}
-                    transition={{ type: 'spring', bounce: 0.2 }}
+                  <CarouselItem
                     key={i}
-                    className={cn(
-                      'absolute z-50 h-full w-[32.34%] bg-primary-0',
-                    )}
-                    aria-disabled={isNotHighlighted}
+                    className="pl-5 sm:basis-1/2 lg:basis-1/3"
                   >
                     <ReviewCard review={review} className="h-full w-full" />
-                  </motion.div>
+                  </CarouselItem>
                 );
               })}
-            </motion.div>
-          </AnimatePresence>
+            </CarouselContent>
+          </Carousel>
         </div>
       </div>
     </section>

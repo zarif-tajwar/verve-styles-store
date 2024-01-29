@@ -11,3 +11,6 @@ export const sizes = pgTable('sizes', {
 export const sizeRelations = relations(sizes, ({ many }) => ({
   productEntry: many(productEntries),
 }));
+
+export type SizeSelect = typeof sizes.$inferSelect;
+export type SizeInsert = typeof sizes.$inferInsert;

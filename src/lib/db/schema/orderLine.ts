@@ -15,7 +15,7 @@ export const orderLine = pgTable(
   {
     id: serial('id').primaryKey(),
     orderId: integer('order_id')
-      .references(() => orders.id)
+      .references(() => orders.id, { onDelete: 'cascade' })
       .notNull(),
     productEntryId: integer('product_entry_id')
       .references(() => productEntries.id)
@@ -25,6 +25,10 @@ export const orderLine = pgTable(
       precision: 6,
       scale: 2,
     }).notNull(),
+    discount: numeric('discount', {
+      precision: 3,
+      scale: 1,
+    }).default('0'),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },
@@ -37,7 +41,7 @@ export const orderLine = pgTable(
   }),
 );
 
-export const orderLineRelations = relations(orderLine, ({ one, many }) => ({
+export const orderLineRelations = relations(orderLine, ({ one }) => ({
   orders: one(orders, {
     fields: [orderLine.orderId],
     references: [orders.id],

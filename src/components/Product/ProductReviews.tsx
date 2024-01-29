@@ -3,19 +3,19 @@ import Star from '../UI/Star';
 import { Review } from '@/lib/types/product-page';
 import { Verified } from '../Svgs/icons';
 import { db } from '@/lib/db';
-import { users } from '@/lib/db/schema/users';
+import { user } from '@/lib/db/schema/auth';
 import { userReviews } from '@/lib/db/schema/userReviews';
-import { desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, isNotNull, sql } from 'drizzle-orm';
 import { orderLine } from '@/lib/db/schema/orderLine';
 import { productEntries } from '@/lib/db/schema/productEntries';
 import { orders } from '@/lib/db/schema/orders';
 import { wait } from '@/lib/util';
+import { dummyUser } from '@/lib/db/schema/dummyUser';
 
 const ProductReviews = async ({ productId }: { productId: number }) => {
   const reviews = await db
     .select({
-      userFirstName: users.firstName,
-      userLastName: users.lastName,
+      reviewerName: dummyUser.name,
       rating: userReviews.rating,
       postDate: userReviews.createdAt,
       review: userReviews.comment,
@@ -25,7 +25,7 @@ const ProductReviews = async ({ productId }: { productId: number }) => {
     .innerJoin(orderLine, eq(orderLine.id, userReviews.orderLineId))
     .innerJoin(productEntries, eq(productEntries.id, orderLine.productEntryId))
     .innerJoin(orders, eq(orders.id, orderLine.orderId))
-    .innerJoin(users, eq(users.id, orders.userId))
+    .innerJoin(dummyUser, eq(dummyUser.id, orders.dummyUserId))
     .where(eq(productEntries.productID, productId))
     .orderBy(desc(userReviews.createdAt))
     .limit(9);
@@ -77,9 +77,7 @@ const ProductReviewCard = ({ review }: { review: Review }) => {
       </div>
       <div className="mb-3 flex items-center gap-2">
         <span className="block text-lg font-semibold">
-          {[review.userFirstName, review.userLastName?.at(0)?.concat('.')].join(
-            ' ',
-          )}
+          {review.reviewerName}
         </span>
         <Verified />
       </div>
