@@ -49,7 +49,14 @@ import {
 } from '../server/edgestore';
 import { EdgeStoreImagesInsert, edgeStoreImages } from './schema/edgeStore';
 import { ProductImagesInsert, productImages } from './schema/productImages';
-import { rand, randEmail, randFullName, randImg } from '@ngneat/falso';
+import {
+  rand,
+  randEmail,
+  randFirstName,
+  randFullName,
+  randImg,
+  randLastName,
+} from '@ngneat/falso';
 import { UserInsert, user } from './schema/auth';
 import { ulid } from 'ulidx';
 
@@ -713,14 +720,18 @@ const populateProductImages = async () => {
 };
 
 const insertSomeTestUsers = async (n: number) => {
-  const insertData: UserInsert[] = [...Array(n).keys()].map(() => ({
-    id: ulid(),
-    email: randEmail(),
-    name: randFullName(),
-    role: 'TEST USER',
-    emailVerified: null,
-    image: randImg({ width: 300 }),
-  }));
+  const insertData: UserInsert[] = [...Array(n).keys()].map(() => {
+    const firstName = randFirstName({ withAccents: false });
+    const lastName = randLastName({ withAccents: false });
+    return {
+      id: ulid(),
+      email: randEmail({ firstName, lastName }),
+      name: `${firstName} ${lastName}`,
+      role: 'TEST USER',
+      emailVerified: null,
+      image: faker.image.avatarGitHub(),
+    };
+  });
   return await db.transaction(async (tx) => {
     return await tx.insert(user).values(insertData).returning();
   });

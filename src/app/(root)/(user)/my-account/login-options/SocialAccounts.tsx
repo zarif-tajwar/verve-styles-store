@@ -24,6 +24,14 @@ const providers: Providers = [
 ];
 
 const SocialAccounts = async ({ session }: { session: Session }) => {
+  const userRole = session.user.role;
+
+  console.log(userRole, 'USER ROLE');
+
+  if (userRole === 'TEST USER') {
+    return <div>Not Available for Test Users!</div>;
+  }
+
   const linkedSocialProviders = await db
     .select({
       provider: accounts.provider,

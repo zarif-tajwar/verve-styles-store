@@ -7,6 +7,7 @@ import { temporaryAdapter } from './temporaryAdapter';
 import {
   UserSelect,
   accounts,
+  sessions,
   user,
   user as userTable,
 } from '@/lib/db/schema/auth';
@@ -19,6 +20,8 @@ import { cookies } from 'next/headers';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { carts } from './lib/db/schema/carts';
 import { handleCartOnSignIn } from './lib/server/cart';
+import { randomUUID } from 'crypto';
+import { SESSION_MAX_AGE } from './lib/constants/auth';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
@@ -30,7 +33,7 @@ const getRole = (email: string): UserSelect['role'] => {
 };
 
 const authConfig = {
-  session: { strategy: 'jwt' },
+  session: { maxAge: SESSION_MAX_AGE, strategy: 'database' },
   providers: [
     GoogleProvider({
       profile: (profile: GoogleProfile) => {
@@ -66,10 +69,7 @@ const authConfig = {
     //   from: process.env.SENDGRID_EMAIL_FROM,
     // }),
     CredentialsProvider({
-      // type: 'credentials',
-      // id: 'test-credentials',
-      // credentials: { password: { label: 'Password', type: 'password' } },
-      authorize: async ({ password }) => {
+      authorize: async ({}) => {
         const allTestUsers = await db
           .select()
           .from(user)
@@ -91,68 +91,56 @@ const authConfig = {
   ],
   adapter: authAdapter,
   callbacks: {
-    session: async ({ session, token, trigger }) => {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
+    jwt: async ({ token }) => {
+      if (!token.sub) return token;
 
-        const cartId = (
-          await db
-            .select({ cartId: carts.id })
-            .from(carts)
-            .where(eq(carts.userId, token.sub))
-        )?.at(0)?.cartId;
+      const createdSession = (
+        await db
+          .insert(sessions)
+          .values({
+            expires: new Date(Date.now() + SESSION_MAX_AGE * 1000),
+            sessionToken: randomUUID(),
+            userId: token.sub,
+          })
+          .returning()
+      ).at(0);
 
-        session.user.cartId = cartId;
-      }
-      if (session.user && token.role) {
-        session.user.role = token.role as UserSelect['role'];
-      }
-      console.log(JSON.stringify(session), 'SESSION');
+      if (!createdSession) return token;
+
+      return { ...token, id: createdSession.sessionToken };
+    },
+    session: async ({ session, user }) => {
+      const dbUser = user as UserSelect;
+      session.user.id = user.id;
+      session.user.role = dbUser.role;
+
+      const cartId = (
+        await db
+          .select({ cartId: carts.id })
+          .from(carts)
+          .where(eq(carts.userId, user.id))
+      )?.at(0)?.cartId;
+
+      session.user.cartId = cartId;
 
       return session;
     },
-    jwt: async ({ token, user }) => {
-      if (!token.sub) return token;
-
-      const dbUser = user as UserSelect;
-
-      if (!dbUser) return token;
-
-      token.role = dbUser.role;
-
-      console.log(JSON.stringify(token), 'JWT');
-
-      return token;
-    },
-    // authorized: async ({ auth }) => {
-    //   if (auth?.user) {
-    //     const isAllowed = !!(
-    //       await db
-    //         .select({ id: user.id })
-    //         .from(user)
-    //         .where(eq(user.id, auth.user.id))
-    //     ).at(0);
-
-    //     return isAllowed;
-    //   }
-    //   return !!auth?.user;
-    // },
-    // signIn: async ({ user: dbUser }) => {
-    //   const isAllowed = !!(
-    //     await db
-    //       .select({ id: user.id })
-    //       .from(user)
-    //       .where(eq(user.id, dbUser.id))
-    //   ).at(0);
-
-    //   return isAllowed;
-    // },
   },
+  jwt: {
+    encode: ({ token }) => {
+      return token?.id as unknown as string;
+    },
+    decode: () => {
+      return null;
+    },
+  },
+
   pages: {
     signIn: '/auth/sign-in',
     signOut: '/auth/sign-out',
     error: '/auth/error',
   },
+
   events: {
     signIn: async ({ user }) => {
       await handleCartOnSignIn(user);
