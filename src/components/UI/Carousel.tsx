@@ -146,24 +146,39 @@ const Carousel = React.forwardRef<
 );
 Carousel.displayName = 'Carousel';
 
+interface CarouselViewportType extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const CarouselViewport = ({
+  className,
+  children,
+  ...props
+}: CarouselViewportType) => {
+  const { carouselRef } = useCarousel();
+
+  return (
+    <div ref={carouselRef} {...props} className={cn(className)}>
+      {children}
+    </div>
+  );
+};
+CarouselViewport.displayName = 'CarouselViewport';
+
 const CarouselContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { carouselRef, orientation } = useCarousel();
+  const { orientation } = useCarousel();
 
   return (
-    <div ref={carouselRef} className="">
-      <div
-        ref={ref}
-        className={cn(
-          'flex',
-          orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
-          className,
-        )}
-        {...props}
-      />
-    </div>
+    <div
+      ref={ref}
+      className={cn(
+        'flex',
+        orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
+        className,
+      )}
+      {...props}
+    />
   );
 });
 CarouselContent.displayName = 'CarouselContent';

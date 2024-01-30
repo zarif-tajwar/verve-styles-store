@@ -18,6 +18,7 @@ import {
   CarouselApi,
   CarouselContent,
   CarouselItem,
+  CarouselViewport,
 } from '../UI/Carousel';
 
 const CustomerReviews = () => {
@@ -93,18 +94,20 @@ const CustomerReviews = () => {
             setApi={setApi}
             ref={carouselRef}
           >
-            <CarouselContent className="-ml-5 cursor-grab">
-              {Reviews.map((review, i) => {
-                return (
-                  <CarouselItem
-                    key={i}
-                    className="pl-5 sm:basis-1/2 lg:basis-1/3"
-                  >
-                    <ReviewCard review={review} className="h-full w-full" />
-                  </CarouselItem>
-                );
-              })}
-            </CarouselContent>
+            <CarouselViewport>
+              <CarouselContent className="-ml-5 cursor-grab">
+                {Reviews.map((review, i) => {
+                  return (
+                    <CarouselItem
+                      key={i}
+                      className="pl-5 sm:basis-1/2 lg:basis-1/3"
+                    >
+                      <ReviewCard review={review} className="h-full w-full" />
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+            </CarouselViewport>
           </Carousel>
         </div>
       </div>
