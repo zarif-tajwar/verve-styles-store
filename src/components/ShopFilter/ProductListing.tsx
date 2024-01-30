@@ -1,6 +1,6 @@
 'use client';
 
-import { FilteredProductItem } from '@/lib/actions/shop';
+import { FilteredProductItem } from '@/lib/server/shop';
 import { makeValidURL } from '@/lib/util';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -22,14 +22,15 @@ const ProductListing = ({
   return (
     <Link href={href} className="inline-block">
       <div key={href} className="relative z-0 origin-top-left">
-        <div className="mb-4 aspect-square w-full overflow-hidden rounded-main">
-          <Image
-            src={'/products/black-striped-tshirt.png'}
-            alt="product"
-            width={300}
-            height={300}
-            className="h-full w-full object-cover"
-          />
+        <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-main">
+          {product.imageUrl && (
+            <Image
+              src={product.imageUrl}
+              alt={`${product.name}`}
+              className="object-cover grayscale"
+              fill
+            />
+          )}
         </div>
         <div>
           <h3 className="mb-2 text-xl font-medium capitalize">

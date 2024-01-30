@@ -16,6 +16,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'files.edgestore.dev',
+        port: '',
+      },
+      {
+        protocol: 'https',
         hostname: 'scontent.fdac11-2.fna.fbcdn.net',
         port: '',
       },

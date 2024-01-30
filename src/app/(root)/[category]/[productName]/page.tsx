@@ -12,6 +12,7 @@ import { Suspense } from 'react';
 import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
 import ProductReviews from '@/components/Product/ProductReviews';
 import { SearchParamsServer } from '@/lib/types/common';
+import ProductImage from '@/components/Product/ProductImage';
 
 // export async function generateStaticParams() {
 //   const slugs = await db
@@ -67,47 +68,8 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
   return (
     <main className="container-main pt-20">
       <section>
-        <div className="grid grid-cols-2 gap-10">
-          <div className="flex max-h-[34rem] gap-4">
-            <div className="grid h-full w-[152px] grid-cols-1 grid-rows-3 gap-4">
-              <div className="overflow-hidden rounded-main ring-2 ring-black/60">
-                <Image
-                  src={'/products/one-life-graphic-tshirt.png'}
-                  alt="One Life Graphic T-Shirt"
-                  width={444}
-                  height={666}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="overflow-hidden rounded-main">
-                <Image
-                  src={'/products/one-life-graphic-tshirt-back.png'}
-                  alt="One Life Graphic T-Shirt Back"
-                  width={444}
-                  height={666}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="overflow-hidden rounded-main">
-                <Image
-                  src={'/products/one-life-graphic-tshirt-model.png'}
-                  alt="One Life Graphic T-Shirt Model"
-                  width={444}
-                  height={666}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </div>
-            <div className="flex-grow overflow-hidden rounded-main">
-              <Image
-                src={'/products/one-life-graphic-tshirt.png'}
-                alt="One Life Graphic T-Shirt"
-                width={444}
-                height={666}
-                className="h-full w-full object-cover"
-              />
-            </div>
-          </div>
+        <div className="grid grid-cols-2 gap-16">
+          <ProductImage productId={product.id} />
           <div>
             <h1 className="mb-3.5 font-integral-cf text-4xl font-bold">
               {product.name}

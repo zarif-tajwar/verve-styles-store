@@ -13,6 +13,7 @@ import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { productRating } from '@/lib/db/schema/productRating';
 import { productSalesCount } from '@/lib/db/schema/productSalesCount';
 import { SearchParamsServer } from '@/lib/types/common';
+import { ProductImagesSelect, productImages } from '../db/schema/productImages';
 
 export type FilteredProductItem = {
   id: ProductSelect['id'];
@@ -21,6 +22,7 @@ export type FilteredProductItem = {
   categoryName: ClothingSelect['name'] | null;
   averageRating: typeof productRating.averageRating._.data | null;
   totalCount: number;
+  imageUrl: ProductImagesSelect['url'] | null;
   totalSales?: number | null;
 };
 
@@ -46,14 +48,18 @@ export const getShopProductsServer = async (
       categoryName: clothing.name,
       averageRating: productRating.averageRating,
       totalCount: sql<number>`COUNT(*) OVER()`,
+      imageUrl: productImages.url,
       ...(data.sort_by === 'most popular'
         ? { totalSales: productSalesCount.totalSales }
         : {}),
     })
     .from(products)
     .innerJoin(clothing, eq(clothing.id, products.clothingID))
+    .leftJoin(productImages, eq(products.id, productImages.productID))
     .leftJoin(productRating, eq(productRating.productId, products.id))
     .$dynamic();
+
+  conditionals.push(eq(productImages.isDefault, true));
 
   if (data.clothing !== undefined) {
     conditionals.push(inArray(clothing.name, data.clothing));
