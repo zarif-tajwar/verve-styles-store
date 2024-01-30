@@ -23,6 +23,8 @@ const NavUserDropdown = () => {
   const isLoggedIn = session.status === 'authenticated';
   const user = session.data?.user;
 
+  console.log(JSON.stringify(user));
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>

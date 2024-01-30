@@ -19,7 +19,7 @@ export const user = pgTable('user', {
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
   role: text('role', {
-    enum: ['ADMIN', 'STAFF', 'USER'],
+    enum: ['ADMIN', 'STAFF', 'USER', 'TEST USER'],
   })
     .notNull()
     .default('USER'),

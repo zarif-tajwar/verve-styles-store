@@ -24,6 +24,11 @@ const nextConfig = {
         hostname: 'scontent.fdac11-2.fna.fbcdn.net',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+      },
     ],
   },
 };

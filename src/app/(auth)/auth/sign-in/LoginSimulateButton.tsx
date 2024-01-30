@@ -2,26 +2,18 @@
 
 import { Button } from '@/components/UI/Button';
 import Spinner from '@/components/UI/Spinner';
-import { signInAction } from '@/lib/actions/auth';
+import { simulateSignInAction } from '@/lib/actions/auth';
 import { cn, wait } from '@/lib/util';
-import { BuiltInProviderType } from '@auth/core/providers';
+import { LockOpenIcon } from '@heroicons/react/20/solid';
 import { ArrowRight } from 'lucide-react';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
-const SignInButton = ({
-  provider,
-  icon,
-  text,
+const LoginSimulateButton = ({
   isFormActive,
   setIsFormActive,
-  className,
 }: {
-  provider: BuiltInProviderType;
-  icon: React.ReactNode;
-  text: string;
   isFormActive: boolean;
   setIsFormActive: Dispatch<SetStateAction<boolean>>;
-  className?: string;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -29,21 +21,21 @@ const SignInButton = ({
   const isCurrentButtonActive = isFormActive && isLoading;
 
   const handleClick = async () => {
-    try {
-      setIsLoading(true);
-      setIsFormActive(true);
-      await signInAction(provider, { redirectTo: '/shop' });
-      // await wait(1000);
-      // throw new Error('Something went wrong!');
-      setErrorMessage(null);
-    } catch (err: any) {
-      setErrorMessage(err.message);
-      setIsLoading(false);
-      setIsFormActive(false);
-    } finally {
-    }
+    await simulateSignInAction();
+    // try {
+    //   setIsLoading(true);
+    //   setIsFormActive(true);
+    //   // await signInAction('credentials', { redirectTo: '/shop' });
+    //   // await wait(1000);
+    //   // throw new Error('Something went wrong!');
+    //   setErrorMessage(null);
+    // } catch (err: any) {
+    //   setErrorMessage(err.message);
+    //   setIsLoading(false);
+    //   setIsFormActive(false);
+    // } finally {
+    // }
   };
-
   return (
     <div>
       {errorMessage && (
@@ -58,16 +50,23 @@ const SignInButton = ({
         onClick={handleClick}
         variant={'outline'}
         className={cn(
-          'group w-full justify-start gap-4 px-5',
+          'group w-full justify-start gap-4 px-5 text-primary-400',
           isCurrentButtonActive &&
             'bg-primary-50 ring-primary-50 disabled:opacity-80 ',
-          className,
         )}
-        // roundness={'xl'}
         disabled={isFormActive}
       >
-        {isCurrentButtonActive ? <Spinner className="h-5 w-5" /> : icon}
-        <span>{text}</span>
+        {isCurrentButtonActive ? (
+          <Spinner className="h-5 w-5" />
+        ) : (
+          <LockOpenIcon className="size-5" />
+        )}
+        <span>
+          <span className="text-sm font-medium">
+            Simulate Login&nbsp;&nbsp;
+          </span>
+          <span className="text-xs font-semibold">(Test User)</span>
+        </span>
         <span
           className={cn(
             'flex flex-grow -translate-x-2 justify-end opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100',
@@ -80,4 +79,4 @@ const SignInButton = ({
     </div>
   );
 };
-export default SignInButton;
+export default LoginSimulateButton;

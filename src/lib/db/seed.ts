@@ -49,7 +49,9 @@ import {
 } from '../server/edgestore';
 import { EdgeStoreImagesInsert, edgeStoreImages } from './schema/edgeStore';
 import { ProductImagesInsert, productImages } from './schema/productImages';
-import { rand } from '@ngneat/falso';
+import { rand, randEmail, randFullName, randImg } from '@ngneat/falso';
+import { UserInsert, user } from './schema/auth';
+import { ulid } from 'ulidx';
 
 async function populateSizes() {
   await db
@@ -710,24 +712,34 @@ const populateProductImages = async () => {
   await Promise.all(promises);
 };
 
+const insertSomeTestUsers = async (n: number) => {
+  const insertData: UserInsert[] = [...Array(n).keys()].map(() => ({
+    id: ulid(),
+    email: randEmail(),
+    name: randFullName(),
+    role: 'TEST USER',
+    emailVerified: null,
+    image: randImg({ width: 300 }),
+  }));
+  return await db.transaction(async (tx) => {
+    return await tx.insert(user).values(insertData).returning();
+  });
+};
+
+const deleteAllTestUsers = async () => {
+  return await db.transaction(async (tx) => {
+    await tx.delete(user).where(eq(user.role, 'TEST USER')).returning();
+  });
+};
+
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  const data = await db
-    .selectDistinct({
-      productId: products.id,
-      clothing: clothing.name,
-      url: productImages.url,
-      isDefault: productImages.isDefault,
-    })
-    .from(products)
-    .innerJoin(clothing, eq(products.clothingID, clothing.id))
-    .innerJoin(productImages, eq(products.id, productImages.productID))
-    .limit(20);
-
-  console.log(data);
+  await insertSomeTestUsers(5);
+  // await deleteAllTestUsers();
+  // await deleteAllTestUsers();
 
   const end = performance.now();
 

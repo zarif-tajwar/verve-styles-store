@@ -56,7 +56,7 @@ const SignInPage = async ({
             </div>
           )}
           <div className="flex flex-col gap-1">
-            <h1 className="text-3xl font-semibold">Get inside Clothy</h1>
+            <h1 className="text-3xl font-semibold">Get inside Verve</h1>
             <p className="text-primary-400">{`Don't keep your dream wardrobe waiting!`}</p>
           </div>
           <SignInFormWrapper />
