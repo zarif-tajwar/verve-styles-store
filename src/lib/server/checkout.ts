@@ -9,6 +9,7 @@ import { cartItems } from '../db/schema/cartItems';
 import { productEntries } from '../db/schema/productEntries';
 import { eq, sql } from 'drizzle-orm';
 import { InvoiceSelect } from '../db/schema/invoice';
+import { DELIVERY_CHARGE } from '../constants/dummy-values';
 
 export const getCartItemsForCheckout = async ({
   cartId,
@@ -63,7 +64,7 @@ export const calcPricingDetails = (
     totalDiscount += discount;
     subtotal += itemSubtotal;
   }
-  let deliveryCharge: number = 25;
+  let deliveryCharge: number = DELIVERY_CHARGE;
   let taxes: number = 0;
 
   const total = subtotal + deliveryCharge + taxes - totalDiscount;

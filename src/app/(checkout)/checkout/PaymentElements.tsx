@@ -23,6 +23,13 @@ const PaymentElements = ({ amount }: { amount: number }) => {
             variables: {
               borderRadius: '0.5rem',
               fontFamily: `Roboto, sans-serif`,
+              colorPrimary: '#303030',
+            },
+            rules: {
+              '.Input': { padding: '0.812rem', backgroundColor: '#f0f0f0' },
+              '.Input:focus': {
+                boxShadow: '0px 0px 0px 2px #606060',
+              },
             },
           },
         }}

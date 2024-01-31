@@ -7,6 +7,7 @@ import { getCartItemsForCheckout } from '@/lib/server/checkout';
 import PaymentSection from './PaymentSection';
 import Link from 'next/link';
 import { decodeSingleSqid } from '@/lib/server/sqids';
+import TestArea from './TestArea';
 
 const CheckoutPage = async () => {
   const session = await dedupedAuth();
@@ -21,13 +22,16 @@ const CheckoutPage = async () => {
   return (
     <div className="container-main">
       {cartItems && cartItems.length > 0 ? (
-        <div className="grid grid-cols-[1fr_0.6fr]">
-          <div className="grid gap-16 py-20">
-            <ShippingAddress />
-            <CheckoutCartItems cartItems={cartItems} />
-          </div>
-          <div className="grid gap-16 py-14">
-            <PaymentSection cartItems={cartItems} />
+        <div className="min-h-[140svh]">
+          <div className="grid grid-cols-[1fr_0.6fr]">
+            <div className="grid gap-16 py-20">
+              <ShippingAddress />
+              <CheckoutCartItems cartItems={cartItems} />
+            </div>
+            <div className="grid gap-16 py-14">
+              <PaymentSection cartItems={cartItems} />
+              <TestArea />
+            </div>
           </div>
         </div>
       ) : (

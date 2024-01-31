@@ -749,8 +749,8 @@ async function execute() {
 
   const start = performance.now();
 
-  // await insertSomeTestUsers(5);
-  console.log(decodeSingleSqid('y5P6cUMEAe'));
+  await insertSomeTestUsers(5);
+  // console.log(decodeSingleSqid('y5P6cUMEAe'));
   // await deleteAllTestUsers();
   // await deleteAllTestUsers();
 

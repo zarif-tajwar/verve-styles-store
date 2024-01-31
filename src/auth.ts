@@ -145,6 +145,7 @@ const authConfig = {
 
   events: {
     signIn: async ({ user }) => {
+      console.log('SIGN IN HAPPENED');
       await handleCartOnSignIn(user);
     },
     linkAccount: async ({ profile, account }) => {

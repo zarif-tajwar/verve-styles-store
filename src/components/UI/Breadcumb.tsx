@@ -28,8 +28,11 @@ const Breadcumb = ({ customLabels }: Breadcumb) => {
       if (!char) continue;
 
       if (char === '/' && i !== 0) {
-        hrefs.push(currHref);
-        labels.push(pathNameToLabel(currLabel));
+        const label = pathNameToLabel(currLabel);
+        if (label !== Number.parseInt(label).toString()) {
+          hrefs.push(currHref);
+          labels.push(pathNameToLabel(currLabel));
+        }
         lastDashIndex = i;
         currLabel = '';
       }
@@ -40,8 +43,11 @@ const Breadcumb = ({ customLabels }: Breadcumb) => {
 
       currHref += char;
     }
-    hrefs.push(currHref);
-    labels.push(pathNameToLabel(currLabel));
+    const label = pathNameToLabel(currLabel);
+    if (label !== Number.parseInt(label).toString()) {
+      hrefs.push(currHref);
+      labels.push(pathNameToLabel(currLabel));
+    }
     return { hrefs, labels };
   }, [pathname]);
 

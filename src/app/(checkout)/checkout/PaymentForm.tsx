@@ -104,7 +104,9 @@ const PaymentForm = () => {
 
     if (paymentIntent?.status === 'succeeded') {
       setIsSuccess(true);
-      successToast('Your order was placed successfully');
+      successToast('Your order was placed successfully', {
+        position: 'top-center',
+      });
 
       await wait(1000);
       router.replace(href);
@@ -121,7 +123,6 @@ const PaymentForm = () => {
         setIsLoading(true);
         await handleCheckout();
         setIsLoading(false);
-        console.timeEnd('checkout');
       }}
     >
       <PaymentElement />

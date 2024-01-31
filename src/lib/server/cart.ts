@@ -154,12 +154,11 @@ export const handleCartOnSignIn = async (user: User) => {
 
       if (cookieCartItemsLength > 0) {
         if (userCartId) await tx.delete(carts).where(eq(carts.id, userCartId));
-
-        await tx
-          .update(carts)
-          .set({ userId: user.id })
-          .where(eq(carts.id, cartIdFromCookies));
       }
+      await tx
+        .update(carts)
+        .set({ userId: user.id })
+        .where(eq(carts.id, cartIdFromCookies));
     }
 
     if (!cartIdFromCookies && !userCartId) {

@@ -18,12 +18,11 @@ export const GET = auth(async function GET(req) {
       cartId = await getGuestUserCartId(true);
     }
 
+    console.log(cartId);
+
     // if theres still no cart
     if (!cartId) {
-      return NextResponse.json(
-        { message: 'Cart was not found!' },
-        { status: 500 },
-      );
+      throw new Error();
     }
 
     const cartItems = await getCartItems({
@@ -34,7 +33,8 @@ export const GET = auth(async function GET(req) {
     return NextResponse.json({ data: cartItems });
   } catch (error) {
     return NextResponse.json(
-      { message: 'Something went wrong while fetching the cart!' },
+      // { message: error.message },
+      { message: 'Something went wrong with the cart!' },
       { status: 500 },
     );
   }
