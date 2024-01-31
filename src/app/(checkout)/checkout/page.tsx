@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { getCartItemsForCheckout } from '@/lib/server/checkout';
 import PaymentSection from './PaymentSection';
 import Link from 'next/link';
+import { decodeSingleSqid } from '@/lib/server/sqids';
 
 const CheckoutPage = async () => {
   const session = await dedupedAuth();
@@ -13,7 +14,7 @@ const CheckoutPage = async () => {
   if (!session.user.cartId) redirect('/shop');
 
   const cartItems = await getCartItemsForCheckout({
-    cartId: session.user.cartId,
+    cartId: decodeSingleSqid(session.user.cartId),
     sort: true,
   });
 

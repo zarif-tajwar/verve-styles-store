@@ -35,6 +35,7 @@ import {
 } from '../db/schema/orderCustomerDetails';
 import { createSafeActionClient } from 'next-safe-action';
 import { revalidatePath } from 'next/cache';
+import { decodeSingleSqid } from '../server/sqids';
 
 const CheckoutAddressInputSchema = z.object({
   mode: z.literal('input'),
@@ -67,7 +68,9 @@ export const performCheckoutAction = authorizedActionClient(
   PerformCheckoutSchema,
   async ({ shippingAddress }, { userId, session }): PerformCheckoutReturn => {
     // Handling Cart
-    const cartId = session.user.cartId;
+    const cartId = session.user.cartId
+      ? decodeSingleSqid(session.user.cartId)
+      : undefined;
 
     if (!cartId) throw new CustomError('Shopping cart not found!');
 

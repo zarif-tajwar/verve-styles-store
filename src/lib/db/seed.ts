@@ -59,6 +59,7 @@ import {
 } from '@ngneat/falso';
 import { UserInsert, user } from './schema/auth';
 import { ulid } from 'ulidx';
+import { decodeSingleSqid } from '../server/sqids';
 
 async function populateSizes() {
   await db
@@ -748,7 +749,8 @@ async function execute() {
 
   const start = performance.now();
 
-  await insertSomeTestUsers(5);
+  // await insertSomeTestUsers(5);
+  console.log(decodeSingleSqid('y5P6cUMEAe'));
   // await deleteAllTestUsers();
   // await deleteAllTestUsers();
 

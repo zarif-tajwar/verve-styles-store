@@ -1,9 +1,7 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { db } from '../db';
 import { products } from '../db/schema/products';
-import { sizes } from '../db/schema/sizes';
 import {
   cartItems,
   CartItemsInsert,
@@ -13,59 +11,26 @@ import {
   productEntries,
   ProductEntryInsert,
 } from '../db/schema/productEntries';
-import { and, eq, ExtractTablesWithRelations, gt, gte, sql } from 'drizzle-orm';
-import { carts } from '../db/schema/carts';
-import { genRandomInt, parseIntWithUndefined } from '../util';
-import { auth } from '@/auth';
-import { PgTransaction } from 'drizzle-orm/pg-core';
-import {
-  NodePgDatabase,
-  NodePgQueryResultHKT,
-} from 'drizzle-orm/node-postgres';
-import { UserInsert } from '../db/schema/auth';
+import { and, eq, gt, gte } from 'drizzle-orm';
+import { genRandomInt } from '../util';
 import { getCartId } from '../server/cart';
+import { decodeSingleSqid } from '../server/sqids';
 
-export const getCartItemsServer = async () => {
-  const cartId = await getCartId();
-
-  if (!cartId) return;
-
-  const cartItemsData = await db
-    .select({
-      name: products.name,
-      price: products.price,
-      sizeName: sizes.name,
-      cartItemId: cartItems.id,
-      quantity: cartItems.quantity,
-      createdAt: cartItems.createdAt,
-    })
-    .from(cartItems)
-    .innerJoin(productEntries, eq(productEntries.id, cartItems.productEntryId))
-    .innerJoin(products, eq(products.id, productEntries.productID))
-    .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
-    .where(eq(cartItems.cartId, cartId))
-    .orderBy(sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`);
-
-  return cartItemsData;
-};
-
-export const deleteCartItemServer = async (
-  cartItemId: CartItemsSelect['id'],
-) => {
+export const deleteCartItemAction = async (cartItemId: string) => {
   const deleted = await db.transaction(async (tx) => {
     return await tx
       .delete(cartItems)
-      .where(eq(cartItems.id, cartItemId))
+      .where(eq(cartItems.id, decodeSingleSqid(cartItemId)))
       .returning();
   });
   return deleted;
 };
 
-export const updateCartItemQuantityServer = async ({
+export const updateCartItemQuantityAction = async ({
   cartItemId,
   newQuantity,
 }: {
-  cartItemId: CartItemsSelect['id'];
+  cartItemId: string;
   newQuantity: CartItemsInsert['quantity'];
 }) => {
   const updated = await db.transaction(async (tx) => {
@@ -75,7 +40,7 @@ export const updateCartItemQuantityServer = async ({
         quantity: newQuantity,
         updatedAt: new Date(),
       })
-      .where(eq(cartItems.id, cartItemId))
+      .where(eq(cartItems.id, decodeSingleSqid(cartItemId)))
       .returning();
     return res;
   });

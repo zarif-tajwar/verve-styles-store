@@ -48,5 +48,5 @@ export const db = drizzle(connection, {
     ...authSchema,
     ...dummyUserSchema,
   },
-  logger: new CustomLogger(),
+  // logger: new CustomLogger(),
 });

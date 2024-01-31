@@ -80,6 +80,7 @@ const CartQuantityCounter = ({
           e.preventDefault();
           handleChange(quantity - 1);
         }}
+        type="button"
       >
         <MinusIcon className="h-5 w-5" />
       </button>
@@ -102,6 +103,7 @@ const CartQuantityCounter = ({
           e.preventDefault();
           handleChange(quantity + 1);
         }}
+        type="button"
       >
         <PlusIcon className="h-5 w-5" />
       </button>

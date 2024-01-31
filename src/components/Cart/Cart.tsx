@@ -7,7 +7,7 @@ import { Button } from '../UI/Button';
 import { LayoutGroup, motion } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
 import { clearCartItems, generateCartItems } from '@/lib/actions/cart';
-import { useCartItemsQuery } from '@/lib/hooks/cart-hooks';
+import { useCartItemsQuery } from '@/lib/queries/cart';
 
 const Cart = () => {
   const { data, refetch } = useCartItemsQuery();

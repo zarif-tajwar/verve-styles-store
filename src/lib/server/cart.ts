@@ -20,6 +20,7 @@ import {
   gt,
   gte,
   isNull,
+  SQL,
   sql,
 } from 'drizzle-orm';
 import { carts, CartsSelect } from '../db/schema/carts';
@@ -48,19 +49,24 @@ export const createCart = async (
 };
 
 export const getGuestUserCartId = async (createIfNotFound: boolean = false) => {
-  let cartIdFromCookies = cookies().get('cartId')?.value;
+  const encodedCartIdFromCookies = cookies().get('cartId')?.value;
+  let cartIdFromCookies = encodedCartIdFromCookies
+    ? decodeSingleSqid(encodedCartIdFromCookies)
+    : undefined;
 
   if (cartIdFromCookies) {
     const validatedCart = (
       await db
         .select({ userId: carts.userId })
         .from(carts)
-        .where(eq(carts.id, decodeSingleSqid(cartIdFromCookies)))
+        .where(eq(carts.id, cartIdFromCookies))
     ).at(0);
 
     if (!validatedCart || validatedCart.userId) {
       cartIdFromCookies = undefined;
       cookies().delete('cartId');
+    } else {
+      return cartIdFromCookies;
     }
   }
 
@@ -171,6 +177,8 @@ export const getCartItems = async ({
   cartId: CartsSelect['id'];
   isGuestFetcher?: boolean;
 }): Promise<FetchedCartItem[]> => {
+  let conditional: SQL = eq(cartItems.cartId, cartId);
+
   let query = db
     .select({
       name: products.name,
@@ -184,15 +192,19 @@ export const getCartItems = async ({
     .innerJoin(productEntries, eq(productEntries.id, cartItems.productEntryId))
     .innerJoin(products, eq(products.id, productEntries.productID))
     .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
-    .$dynamic()
-    .where(eq(cartItems.cartId, cartId))
-    .orderBy(sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`);
+    .$dynamic();
 
   if (isGuestFetcher) {
-    query = query
-      .innerJoin(carts, eq(carts.id, cartItems.id))
-      .where(isNull(carts.userId));
+    query = query.innerJoin(carts, eq(carts.id, cartItems.cartId));
+    const condition = and(eq(cartItems.cartId, cartId), isNull(carts.userId));
+    if (condition) {
+      conditional = condition;
+    }
   }
+
+  query = query
+    .where(conditional)
+    .orderBy(sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`);
 
   const cartItemsData = (await query).map((cartItem) => ({
     ...cartItem,

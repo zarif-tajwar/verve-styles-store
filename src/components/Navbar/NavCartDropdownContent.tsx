@@ -1,5 +1,5 @@
 'use client';
-import { getCartItemsServer } from '@/lib/actions/cart';
+import { useCartItemsQuery } from '@/lib/queries/cart';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
@@ -12,14 +12,7 @@ import MessageComp from './MessageComp';
 import { Loader } from 'lucide-react';
 
 const NavCartDropdownContent = () => {
-  const { data: cartItems, isLoading } = useQuery({
-    queryKey: CART_ITEM_DATA_QUERY_KEY,
-    queryFn: async () => {
-      const data = await getCartItemsServer();
-      return data ?? [];
-    },
-    refetchOnMount: false,
-  });
+  const { data: cartItems, isLoading } = useCartItemsQuery();
 
   const subtotal = cartItems?.reduce(
     (acc, curr) => acc + Number.parseFloat(curr.price) * curr.quantity,

@@ -14,8 +14,8 @@ import { buttonVariants } from '../UI/Button';
 import { History, Trash } from 'lucide-react';
 import { useCountDown } from '@/lib/hooks/useCountdown';
 import {
-  deleteCartItemServer,
-  updateCartItemQuantityServer,
+  deleteCartItemAction,
+  updateCartItemQuantityAction,
 } from '@/lib/actions/cart';
 import { CartItemsInsert } from '@/lib/db/schema/cartItems';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
@@ -43,11 +43,11 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   const queryClient = useQueryClient();
 
   const { mutateAsync: deleteMutation } = useMutation({
-    mutationFn: deleteCartItemServer,
+    mutationFn: deleteCartItemAction,
   });
 
   const { mutateAsync: updateMutation } = useMutation({
-    mutationFn: updateCartItemQuantityServer,
+    mutationFn: updateCartItemQuantityAction,
   });
 
   const debouncedUpdateQuantity = useDebounce(

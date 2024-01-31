@@ -1,6 +1,6 @@
 'use client';
 
-import { capitalize, cn, wait } from '@/lib/util';
+import { capitalize, cn } from '@/lib/util';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { Button, buttonVariants } from '../UI/Button';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
@@ -8,13 +8,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addCartItemAction } from '@/lib/actions/cart';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 import Spinner from '../UI/Spinner';
-import {
-  BagCartIcon,
-  BagCartIconMini,
-  CheckIcon,
-  CheckMini,
-} from '../Svgs/icons';
-import { Check } from 'lucide-react';
+import { BagCartIconMini } from '../Svgs/icons';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
+import { useEffect, useState } from 'react';
+import { errorToast } from '../UI/Toaster';
 
 type sizeOptions = {
   sizeName: string;
@@ -29,49 +26,66 @@ const ProductAddCartRadioGroup = ({
   productId: number;
 }) => {
   const queryClient = useQueryClient();
-  // const cartQueryKey = getQueryKey(trpc.getCartItems);
+
+  const [selectedSizeValue, setSelectedSizeValue] = useState('');
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [isAllowedToSubmit, setIsAllowedToSubmit] = useState(true);
+
   const {
     mutateAsync: addCartItemMutation,
     isPending,
     isSuccess,
-    isIdle,
-    isError,
+    variables,
   } = useMutation({
     mutationFn: addCartItemAction,
     onSuccess: () => {
+      setIsAllowedToSubmit(false);
       queryClient.refetchQueries({
         queryKey: CART_ITEM_DATA_QUERY_KEY,
       });
     },
+    onMutate: () => {
+      setIsAllowedToSubmit(false);
+    },
+    onError: () => {
+      errorToast('Something went wrong!');
+      setIsAllowedToSubmit(true);
+    },
   });
 
-  const disableAddToCartButton = isPending;
+  useEffect(() => {
+    if (!isSuccess) return;
+    if (
+      variables.sizeId === Number.parseInt(selectedSizeValue) &&
+      variables.quantity === selectedQuantity
+    ) {
+      setIsAllowedToSubmit(false);
+      return;
+    }
+    setIsAllowedToSubmit(true);
+  }, [selectedSizeValue, selectedQuantity, variables, isSuccess]);
+
+  const showSuccess = isSuccess && !isAllowedToSubmit && !isPending;
+  const showLoading = isPending && !isAllowedToSubmit;
 
   return (
     <form
       onSubmit={async (e) => {
         e.preventDefault();
-        const start = performance.now();
-        const formEl = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formEl.entries());
 
-        const quantity = Number(data.quantity);
-        const sizeId = Number(data.size);
+        const quantity = selectedQuantity;
+        const sizeId = Number(selectedSizeValue);
 
-        if (Number.isNaN(quantity) || Number.isNaN(sizeId)) {
+        if (Number.isNaN(selectedQuantity) || Number.isNaN(sizeId)) {
           console.error('Inavlid Input');
           return;
         }
 
-        const cartItem = await addCartItemMutation({
+        await addCartItemMutation({
           productId,
           quantity,
           sizeId,
         });
-
-        console.log(cartItem);
-        const end = performance.now();
-        console.log(end - start);
       }}
     >
       <label
@@ -87,6 +101,8 @@ const ProductAddCartRadioGroup = ({
         orientation="horizontal"
         name="size"
         id="clothing-size"
+        value={selectedSizeValue}
+        onValueChange={(value) => setSelectedSizeValue(value)}
       >
         {sizeOptions.map(({ sizeId, sizeName }) => (
           <RadioGroup.Item
@@ -108,31 +124,32 @@ const ProductAddCartRadioGroup = ({
       </RadioGroup.Root>
       <div className="my-6 h-px w-full bg-black/10" />
       <div className="grid h-[3.25rem] w-full grid-cols-3 gap-5 font-medium">
-        <CartQuantityCounter className="h-full w-full max-w-none" />
+        <CartQuantityCounter
+          initial={selectedQuantity}
+          onChange={setSelectedQuantity}
+          className="h-full w-full max-w-none"
+        />
         <Button
-          // onClick={(e) => e.preventDefault()}
+          type="submit"
           size={'md'}
           className={cn(
             'col-span-2 w-full transition-colors duration-200 disabled:opacity-100',
-            isSuccess && 'cursor-default bg-emerald-500 hover:bg-emerald-500',
+            showSuccess && 'cursor-default bg-emerald-500 hover:bg-emerald-500',
           )}
-          disabled={disableAddToCartButton}
-          aria-disabled={disableAddToCartButton}
+          disabled={!isAllowedToSubmit}
+          aria-disabled={!isAllowedToSubmit}
         >
           <span className="inline-flex items-center justify-center gap-2">
-            {isIdle && (
+            {isAllowedToSubmit && (
               <>
                 <BagCartIconMini className="-ml-5 mr-1 inline-block -translate-y-0.5" />
                 <span>Add to Cart</span>
               </>
             )}
-            {isPending && <Spinner size={24} className="text-primary-50" />}
-            {isSuccess && (
+            {showLoading && <Spinner size={24} className="text-primary-50" />}
+            {showSuccess && (
               <>
-                <Check
-                  strokeWidth={2.5}
-                  className="-ml-5 inline-block h-5 w-5"
-                />
+                <CheckCircleIcon className="-ml-5 size-5" />
                 <span>Added to cart</span>
               </>
             )}

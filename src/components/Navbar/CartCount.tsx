@@ -1,6 +1,6 @@
 'use client';
 
-import { useCartItemsQuery } from '@/lib/hooks/cart-hooks';
+import { useCartItemsQuery } from '@/lib/queries/cart';
 import Spinner from '../UI/Spinner';
 
 const CartCount = () => {
