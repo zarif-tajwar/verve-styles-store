@@ -93,26 +93,27 @@ export const addCartItemAction = async ({
 }) => {
   const cartId = await getCartId(undefined, true);
 
-  const cartItem = await db.transaction(async (tx) => {
-    if (!cartId) {
-      tx.rollback();
-      return;
-    }
+  if (!cartId) {
+    return;
+  }
 
-    const [product] = await tx
-      .selectDistinct({
-        name: products.name,
-        productEntryId: productEntries.id,
-      })
-      .from(products)
-      .innerJoin(productEntries, eq(productEntries.productID, products.id))
-      .where(
-        and(
-          eq(productEntries.productID, productId),
-          eq(productEntries.sizeID, sizeId),
-          gt(productEntries.quantity, quantity),
-        ),
-      );
+  const cartItem = await db.transaction(async (tx) => {
+    const product = (
+      await tx
+        .selectDistinct({
+          name: products.name,
+          productEntryId: productEntries.id,
+        })
+        .from(products)
+        .innerJoin(productEntries, eq(productEntries.productID, products.id))
+        .where(
+          and(
+            eq(productEntries.productID, productId),
+            eq(productEntries.sizeID, sizeId),
+            gt(productEntries.quantity, quantity),
+          ),
+        )
+    ).at(0);
 
     if (product === undefined) {
       tx.rollback();

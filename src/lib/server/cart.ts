@@ -2,8 +2,8 @@ import 'server-only';
 
 import { cookies } from 'next/headers';
 import { db } from '../db';
-import { products } from '../db/schema/products';
-import { sizes } from '../db/schema/sizes';
+import { products, ProductSelect } from '../db/schema/products';
+import { sizes, SizeSelect } from '../db/schema/sizes';
 import {
   cartItems,
   CartItemsInsert,
@@ -13,8 +13,16 @@ import {
   productEntries,
   ProductEntryInsert,
 } from '../db/schema/productEntries';
-import { and, eq, ExtractTablesWithRelations, gt, gte, sql } from 'drizzle-orm';
-import { carts } from '../db/schema/carts';
+import {
+  and,
+  eq,
+  ExtractTablesWithRelations,
+  gt,
+  gte,
+  isNull,
+  sql,
+} from 'drizzle-orm';
+import { carts, CartsSelect } from '../db/schema/carts';
 import { genRandomInt, parseIntWithUndefined } from '../util';
 import { auth, dedupedAuth } from '@/auth';
 import { PgTransaction } from 'drizzle-orm/pg-core';
@@ -25,6 +33,8 @@ import {
 import { UserInsert, user as userTable } from '../db/schema/auth';
 import { Session } from 'next-auth';
 import { User } from 'next-auth/types';
+import { decodeSingleSqid, encodeSingleSqid } from './sqids';
+import { cache } from 'react';
 
 export const createCart = async (
   dbInstance?:
@@ -38,13 +48,14 @@ export const createCart = async (
 };
 
 export const getGuestUserCartId = async (createIfNotFound: boolean = false) => {
-  let cartIdFromCookies = parseIntWithUndefined(
-    cookies().get('cartId')?.value || '',
-  );
+  let cartIdFromCookies = cookies().get('cartId')?.value;
 
   if (cartIdFromCookies) {
     const validatedCart = (
-      await db.select().from(carts).where(eq(carts.id, cartIdFromCookies))
+      await db
+        .select({ userId: carts.userId })
+        .from(carts)
+        .where(eq(carts.id, decodeSingleSqid(cartIdFromCookies)))
     ).at(0);
 
     if (!validatedCart || validatedCart.userId) {
@@ -54,22 +65,24 @@ export const getGuestUserCartId = async (createIfNotFound: boolean = false) => {
   }
 
   if (!cartIdFromCookies && createIfNotFound) {
-    cartIdFromCookies = (await createCart()).at(0)?.id;
+    const createdCartId = (await createCart()).at(0)?.id;
 
-    if (cartIdFromCookies)
-      cookies().set('cartId', cartIdFromCookies.toString());
+    if (createdCartId) {
+      cookies().set('cartId', encodeSingleSqid(createdCartId));
+      return createdCartId;
+    }
   }
-
-  return cartIdFromCookies;
 };
 
 export const getCartId = async (
-  session?: Session,
+  session?: Session | null,
   createIfNotFound: boolean = false,
 ) => {
-  const authSession = session ? session : await dedupedAuth();
+  const authSession = session !== undefined ? session : await dedupedAuth();
 
-  let cartId = authSession?.user.cartId;
+  let cartId = authSession?.user.cartId
+    ? decodeSingleSqid(authSession.user.cartId)
+    : undefined;
 
   if (cartId) return cartId;
 
@@ -79,9 +92,11 @@ export const getCartId = async (
 };
 
 export const handleCartOnSignIn = async (user: User) => {
-  let cartIdFromCookies = parseIntWithUndefined(
-    cookies().get('cartId')?.value || '',
-  );
+  const encodedCartIdFromCookies = cookies().get('cartId')?.value;
+  let cartIdFromCookies = encodedCartIdFromCookies
+    ? decodeSingleSqid(encodedCartIdFromCookies)
+    : undefined;
+
   await db.transaction(async (tx) => {
     let userCartId: number | undefined = undefined;
     const userCartIdDbCall = tx
@@ -91,20 +106,18 @@ export const handleCartOnSignIn = async (user: User) => {
       .where(eq(userTable.id, user.id));
 
     if (cartIdFromCookies) {
-      const validateCookieCart = tx
+      const validateCookieCartDbCall = tx
         .select()
         .from(carts)
         .where(eq(carts.id, cartIdFromCookies));
 
-      const res = await Promise.allSettled([
-        userCartIdDbCall,
-        validateCookieCart,
-      ]);
-      if (res[0].status === 'fulfilled') {
-        userCartId = res[0].value?.at(0)?.cartId;
+      const [userCartIdData, validatedCartIdFromCookiesData] =
+        await Promise.all([userCartIdDbCall, validateCookieCartDbCall]);
+      if (userCartIdData) {
+        userCartId = userCartIdData.at(0)?.cartId;
       }
-      if (res[1].status === 'fulfilled') {
-        const validatedCookieCart = res[1].value?.at(0);
+      if (validatedCartIdFromCookiesData) {
+        const validatedCookieCart = validatedCartIdFromCookiesData.at(0);
         if (!validatedCookieCart) {
           cartIdFromCookies = undefined;
         }
@@ -126,12 +139,21 @@ export const handleCartOnSignIn = async (user: User) => {
     }
 
     if (cartIdFromCookies && userCartId !== cartIdFromCookies) {
-      if (userCartId) await tx.delete(carts).where(eq(carts.id, userCartId));
+      const cookieCartItemsLength = (
+        await tx
+          .select()
+          .from(cartItems)
+          .where(eq(cartItems.cartId, cartIdFromCookies))
+      ).length;
 
-      await tx
-        .update(carts)
-        .set({ userId: user.id })
-        .where(eq(carts.id, cartIdFromCookies));
+      if (cookieCartItemsLength > 0) {
+        if (userCartId) await tx.delete(carts).where(eq(carts.id, userCartId));
+
+        await tx
+          .update(carts)
+          .set({ userId: user.id })
+          .where(eq(carts.id, cartIdFromCookies));
+      }
     }
 
     if (!cartIdFromCookies && !userCartId) {
@@ -141,3 +163,63 @@ export const handleCartOnSignIn = async (user: User) => {
     if (cookies().has('cartId')) cookies().delete('cartId');
   });
 };
+
+export const getCartItems = async ({
+  cartId,
+  isGuestFetcher,
+}: {
+  cartId: CartsSelect['id'];
+  isGuestFetcher?: boolean;
+}): Promise<FetchedCartItem[]> => {
+  let query = db
+    .select({
+      name: products.name,
+      price: products.price,
+      sizeName: sizes.name,
+      cartItemId: cartItems.id,
+      quantity: cartItems.quantity,
+      createdAt: cartItems.createdAt,
+    })
+    .from(cartItems)
+    .innerJoin(productEntries, eq(productEntries.id, cartItems.productEntryId))
+    .innerJoin(products, eq(products.id, productEntries.productID))
+    .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
+    .$dynamic()
+    .where(eq(cartItems.cartId, cartId))
+    .orderBy(sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`);
+
+  if (isGuestFetcher) {
+    query = query
+      .innerJoin(carts, eq(carts.id, cartItems.id))
+      .where(isNull(carts.userId));
+  }
+
+  const cartItemsData = (await query).map((cartItem) => ({
+    ...cartItem,
+    cartItemId: encodeSingleSqid(cartItem.cartItemId),
+  }));
+
+  return cartItemsData;
+};
+
+export type FetchedCartItem = {
+  name: ProductSelect['name'];
+  price: ProductSelect['price'];
+  sizeName: SizeSelect['name'];
+  cartItemId: string;
+  quantity: CartItemsSelect['quantity'];
+  createdAt: CartItemsSelect['createdAt'];
+};
+
+export const fetchCartItemsFromServerComp = cache(async () => {
+  const session = await dedupedAuth();
+  const cartId = await getCartId(session, true);
+  if (!cartId) return;
+
+  const cartItemsData = await getCartItems({
+    cartId,
+    isGuestFetcher: !session,
+  });
+
+  return cartItemsData;
+});

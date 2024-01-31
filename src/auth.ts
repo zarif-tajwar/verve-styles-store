@@ -23,6 +23,7 @@ import { handleCartOnSignIn } from './lib/server/cart';
 import { randomUUID } from 'crypto';
 import { SESSION_MAX_AGE } from './lib/constants/auth';
 import { cache } from 'react';
+import { encodeSingleSqid } from './lib/server/sqids';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
@@ -122,7 +123,7 @@ const authConfig = {
           .where(eq(carts.userId, user.id))
       )?.at(0)?.cartId;
 
-      session.user.cartId = cartId;
+      session.user.cartId = cartId ? encodeSingleSqid(cartId) : undefined;
 
       return session;
     },
