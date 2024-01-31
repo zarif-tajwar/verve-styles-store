@@ -1,13 +1,7 @@
 'use client';
 
 import * as Slider from '@radix-ui/react-slider';
-import useQueryParams from '@/lib/hooks/useQueryParams';
-import {
-  URL_QUERY_SEPERATORS,
-  defaultPriceRange,
-} from '@/lib/validation/constants';
-import { useShopFilterStore } from '@/lib/store/shop-filter';
-import { PriceRange } from '@/lib/types/ShopFilter';
+import { defaultPriceRange } from '@/lib/validation/constants';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import { useState } from 'react';
 

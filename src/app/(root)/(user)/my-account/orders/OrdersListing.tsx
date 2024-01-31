@@ -29,6 +29,7 @@ const OrdersListing = () => {
     data: orders,
     isFetching,
     isLoading,
+    isFetched,
   } = useQuery({
     queryKey: [status, orderDateRange, page],
     queryFn: async () => {
@@ -54,16 +55,19 @@ const OrdersListing = () => {
   // if (isFetching) {
   //   return <OrderListingSkeleton />;
   // }
-  if (!orders) {
-    return null;
-  }
+  // if (!orders) {
+  //   return null;
+  // }
 
   // const orders = await getOrdersServer(userId, false);
 
   return (
     <div className="rounded-main">
       {isFetching && <OrderListingSkeleton />}
-      {!isFetching && (
+      {orders && orders.length === 0 && (
+        <p className="text-xl font-medium">No orders found!</p>
+      )}
+      {orders && !isFetching && (
         <ul className="relative grid grid-cols-1 gap-10 rounded-xl">
           {orders.map((order, i) => {
             return (
@@ -163,7 +167,7 @@ const OrdersListing = () => {
           })}
         </ul>
       )}
-      <OrdersPagination ordersCount={orders.length} />
+      {orders && <OrdersPagination ordersCount={orders.length} />}
     </div>
   );
 };

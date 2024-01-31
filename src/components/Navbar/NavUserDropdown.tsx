@@ -18,6 +18,9 @@ const navDropdownItemClasses = cn(
   'inline-flex w-full items-center gap-2.5 px-2 py-3',
 );
 
+const truncateStr = (str: string, length: number) =>
+  str.length > length ? str.slice(0, length - 1) + '...' : str;
+
 const NavUserDropdown = () => {
   const session = useSession();
   const isLoggedIn = session.status === 'authenticated';
@@ -89,7 +92,7 @@ const NavUserDropdown = () => {
                   <div className="flex flex-col gap-1 leading-none">
                     {user.name && (
                       <span className="font-medium text-primary-400">
-                        {user.name}
+                        {truncateStr(user.name, 20)}
                       </span>
                     )}
                     {user.email && (
@@ -97,7 +100,7 @@ const NavUserDropdown = () => {
                         href={'/my-account/login-options'}
                         className="w-max border-b border-transparent text-xs text-primary-300 hover:border-primary-200"
                       >
-                        {user.email}
+                        {truncateStr(user.email, 20)}
                       </Link>
                     )}
                   </div>

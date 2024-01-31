@@ -5,7 +5,7 @@ import { Search } from '../Svgs/icons';
 
 const SearchProduct = () => {
   return (
-    <search className="relative">
+    <search className="relative w-full max-w-[608px]">
       <input
         type="text"
         placeholder="Search for products..."

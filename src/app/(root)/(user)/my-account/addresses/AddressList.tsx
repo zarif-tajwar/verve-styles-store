@@ -10,11 +10,25 @@ import AddressDelete from './AddressDelete';
 import { useSession } from 'next-auth/react';
 import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
 import * as AccoundDetailsCard from '@/components/UI/AccountDetailsCard';
+import Spinner from '@/components/UI/Spinner';
 
 const AddressList = () => {
   const session = useSession();
-  const addressesQuery = useAddressesQuery(session.data ?? undefined);
-  const addresses = addressesQuery.data?.data;
+  const { data, isFetching } = useAddressesQuery(session.data ?? undefined);
+  const addresses = data?.data;
+
+  if (isFetching) {
+    return (
+      <div className="flex w-full items-center justify-center gap-2">
+        <Spinner className="size-6" />
+        <p className="font-semibold text-primary-400">Loading...</p>
+      </div>
+    );
+  }
+
+  if (addresses && addresses.length === 0) {
+    return <p>{`You dont have any saved addresses!`}</p>;
+  }
 
   return (
     <div className="space-y-4 text-sm">

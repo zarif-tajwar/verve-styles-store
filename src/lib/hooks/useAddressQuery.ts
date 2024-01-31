@@ -8,7 +8,7 @@ export const useAddressesQuery = (session?: Session) => {
   return useQuery({
     queryKey: ['addresses'],
     queryFn: async () => {
-      return await getAddressesAction({ session });
+      return (await getAddressesAction({ session })) ?? [];
     },
   });
 };
