@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { actionClient, authorizedActionClient } from './safe-action';
 import { and, desc, eq } from 'drizzle-orm';
 import { AddressInsert, address } from '../db/schema/address';
-import { auth } from '@/auth';
+import { auth, dedupedAuth } from '@/auth';
 import { AddressFormSchema } from '../validation/address-form';
 import { Session } from 'next-auth/types';
 import { CustomError } from '../errors/custom-error';
@@ -21,7 +21,7 @@ export const getAddressesAction = actionClient(
   GetAddressSchema,
   async ({ session }) => {
     try {
-      const user = session ? session.user : (await auth())?.user;
+      const user = session ? session.user : (await dedupedAuth())?.user;
       if (!user) throw new CustomError();
 
       return await db

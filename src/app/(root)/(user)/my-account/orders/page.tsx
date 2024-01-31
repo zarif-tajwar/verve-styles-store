@@ -1,21 +1,18 @@
-import { auth } from '@/auth';
-import WIP from '@/components/UI/WIP';
+import { dedupedAuth } from '@/auth';
 import { redirect } from 'next/navigation';
 import OrdersListing from './OrdersListing';
 import OrderFilters from './OrderFilters';
-import GenRanOrderBtn from './GenRanOrderBtn';
 import { SessionProvider } from 'next-auth/react';
-import { Suspense } from 'react';
-import { Divide } from 'lucide-react';
+import ClientSessionProvider from '@/lib/provider/client-session-provider';
 
 const OrdersPage = async () => {
-  const session = await auth();
+  const session = await dedupedAuth();
   if (!session) {
     redirect('/auth/sign-in');
   }
 
   return (
-    <SessionProvider session={session}>
+    <ClientSessionProvider session={session}>
       <div className="w-full">
         <div className="relative mb-8">
           <h1 className="text-3xl font-semibold">Order History</h1>
@@ -24,7 +21,7 @@ const OrdersPage = async () => {
         <OrderFilters />
         <OrdersListing />
       </div>
-    </SessionProvider>
+    </ClientSessionProvider>
   );
 };
 export default OrdersPage;

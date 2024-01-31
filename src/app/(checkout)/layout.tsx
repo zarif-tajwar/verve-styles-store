@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { dedupedAuth } from '@/auth';
 import { redirect } from 'next/navigation';
 
 export default async function CheckoutLayout({
@@ -6,7 +6,7 @@ export default async function CheckoutLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const session = await dedupedAuth();
   if (!session) redirect('/auth/sign-in');
 
   return (

@@ -2,11 +2,11 @@ import { cn } from '@/lib/util';
 import SocialAccounts from './SocialAccounts';
 import { Suspense } from 'react';
 import LoadingState from './LoadingState';
-import { auth } from '@/auth';
+import { dedupedAuth } from '@/auth';
 import { redirect } from 'next/navigation';
 
 const LoginOptions = async () => {
-  const session = await auth();
+  const session = await dedupedAuth();
   if (!session) {
     redirect('/auth/sign-in');
   }

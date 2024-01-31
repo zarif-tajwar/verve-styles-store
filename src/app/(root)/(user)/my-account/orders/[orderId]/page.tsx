@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { auth, dedupedAuth } from '@/auth';
 import { db } from '@/lib/db';
 import { invoice } from '@/lib/db/schema/invoice';
 import { orderDetails, orderStatus } from '@/lib/db/schema/orderDetails';
@@ -36,7 +36,7 @@ const OrderDetailsPage = async ({
   params: { orderId: string };
   searchParams: { view: string | undefined };
 }) => {
-  const session = await auth();
+  const session = await dedupedAuth();
   if (!session) redirect('/auth/sign-in');
 
   const parsedOrderId = z.coerce.number().safeParse(params.orderId);

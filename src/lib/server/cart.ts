@@ -16,7 +16,7 @@ import {
 import { and, eq, ExtractTablesWithRelations, gt, gte, sql } from 'drizzle-orm';
 import { carts } from '../db/schema/carts';
 import { genRandomInt, parseIntWithUndefined } from '../util';
-import { auth } from '@/auth';
+import { auth, dedupedAuth } from '@/auth';
 import { PgTransaction } from 'drizzle-orm/pg-core';
 import {
   NodePgDatabase,
@@ -67,7 +67,7 @@ export const getCartId = async (
   session?: Session,
   createIfNotFound: boolean = false,
 ) => {
-  const authSession = session ? session : await auth();
+  const authSession = session ? session : await dedupedAuth();
 
   let cartId = authSession?.user.cartId;
 

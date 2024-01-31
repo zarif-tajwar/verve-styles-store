@@ -1,14 +1,14 @@
 import ShippingAddress from './ShippingAddress';
 
 import CheckoutCartItems from './CheckoutCartItems';
-import { auth } from '@/auth';
+import { auth, dedupedAuth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { getCartItemsForCheckout } from '@/lib/server/checkout';
 import PaymentSection from './PaymentSection';
 import Link from 'next/link';
 
 const CheckoutPage = async () => {
-  const session = await auth();
+  const session = await dedupedAuth();
   if (!session) redirect('/auth/sign-in');
   if (!session.user.cartId) redirect('/shop');
 

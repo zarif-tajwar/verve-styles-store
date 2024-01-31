@@ -14,6 +14,18 @@ import * as authSchema from './schema/auth';
 import * as dummyUserSchema from './schema/dummyUser';
 import { Pool } from 'pg';
 import 'dotenv/config';
+import { Logger } from 'drizzle-orm/logger';
+
+class CustomLogger implements Logger {
+  logQuery(query: string, params: unknown[]): void {
+    console.log(
+      new Intl.DateTimeFormat(undefined, { timeStyle: 'medium' }).format(
+        Date.now(),
+      ),
+      { query, params },
+    );
+  }
+}
 
 const connectionString = process.env.DB_URL!;
 const connection = new Pool({
@@ -36,5 +48,5 @@ export const db = drizzle(connection, {
     ...authSchema,
     ...dummyUserSchema,
   },
-  // logger: true,
+  logger: new CustomLogger(),
 });

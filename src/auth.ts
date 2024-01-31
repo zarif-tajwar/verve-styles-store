@@ -22,6 +22,7 @@ import { carts } from './lib/db/schema/carts';
 import { handleCartOnSignIn } from './lib/server/cart';
 import { randomUUID } from 'crypto';
 import { SESSION_MAX_AGE } from './lib/constants/auth';
+import { cache } from 'react';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
@@ -170,3 +171,5 @@ const authConfig = {
 } satisfies NextAuthConfig;
 
 export const { auth, handlers, signOut, signIn, update } = NextAuth(authConfig);
+
+export const dedupedAuth = cache(auth);

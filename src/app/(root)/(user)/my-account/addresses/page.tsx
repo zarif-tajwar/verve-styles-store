@@ -1,12 +1,11 @@
-import { auth } from '@/auth';
-import WIP from '@/components/UI/WIP';
+import { dedupedAuth } from '@/auth';
 import { redirect } from 'next/navigation';
 import AddressList from './AddressList';
 import AddressConfigure from './AddressConfigure';
-import { SessionProvider } from 'next-auth/react';
+import ClientSessionProvider from '@/lib/provider/client-session-provider';
 
 const AddressesPage = async () => {
-  const session = await auth();
+  const session = await dedupedAuth();
   if (!session) {
     redirect('/auth/sign-in');
   }
@@ -15,7 +14,7 @@ const AddressesPage = async () => {
       <div className="mb-12">
         <h1 className="text-3xl font-semibold">Address Book</h1>
       </div>
-      <SessionProvider session={session}>
+      <ClientSessionProvider session={session}>
         <div className="grid gap-12">
           <div>
             <h2 className="mb-4 text-xl font-semibold">Configure Addresses</h2>
@@ -27,7 +26,7 @@ const AddressesPage = async () => {
             <AddressList />
           </div>
         </div>
-      </SessionProvider>
+      </ClientSessionProvider>
     </div>
   );
 };
