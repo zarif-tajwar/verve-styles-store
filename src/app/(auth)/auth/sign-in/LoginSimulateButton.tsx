@@ -21,20 +21,11 @@ const LoginSimulateButton = ({
   const isCurrentButtonActive = isFormActive && isLoading;
 
   const handleClick = async () => {
+    setIsLoading(true);
+    setIsFormActive(true);
     await simulateSignInAction();
-    // try {
-    //   setIsLoading(true);
-    //   setIsFormActive(true);
-    //   // await signInAction('credentials', { redirectTo: '/shop' });
-    //   // await wait(1000);
-    //   // throw new Error('Something went wrong!');
-    //   setErrorMessage(null);
-    // } catch (err: any) {
-    //   setErrorMessage(err.message);
-    //   setIsLoading(false);
-    //   setIsFormActive(false);
-    // } finally {
-    // }
+    setIsLoading(false);
+    setIsFormActive(false);
   };
   return (
     <div>

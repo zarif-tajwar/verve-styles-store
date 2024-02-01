@@ -1,14 +1,10 @@
 'use server';
 
-import 'server-only';
 import { signIn, signOut } from '@/auth';
-import { cookies } from 'next/headers';
-import { actionClient } from './safe-action';
+import 'server-only';
 import { z } from 'zod';
-import { CustomError } from '../errors/custom-error';
 
-export { signIn as signInAction };
-export { signOut as signOutAction };
+export { signIn as signInAction, signOut as signOutAction };
 
 const SimulateSignInActionSchema = z.object({});
 

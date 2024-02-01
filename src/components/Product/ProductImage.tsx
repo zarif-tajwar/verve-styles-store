@@ -1,7 +1,6 @@
 import { db } from '@/lib/db';
 import { productImages } from '@/lib/db/schema/productImages';
 import { eq } from 'drizzle-orm';
-import Image from 'next/image';
 import ProductImageShowcase from './ProductImageShowcase';
 
 const ProductImage = async ({ productId }: { productId: number }) => {

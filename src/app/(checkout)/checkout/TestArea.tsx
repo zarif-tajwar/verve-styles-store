@@ -1,15 +1,14 @@
 'use client';
 
 import { Button } from '@/components/UI/Button';
-import { useEffect, useState } from 'react';
-import copy from 'copy-to-clipboard';
-import { performDummyCheckout } from '@/lib/actions/checkout';
-import { useAction } from 'next-safe-action/hooks';
-import { errorToast, successToast } from '@/components/UI/Toaster';
-import { useRouter } from 'next/navigation';
-import { CheckCircleIcon } from '@heroicons/react/16/solid';
 import Spinner from '@/components/UI/Spinner';
+import { errorToast, successToast } from '@/components/UI/Toaster';
+import { performDummyCheckout } from '@/lib/actions/checkout';
 import { wait } from '@/lib/util';
+import { CheckCircleIcon } from '@heroicons/react/16/solid';
+import copy from 'copy-to-clipboard';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const TestArea = () => {
   const cardNumber = '4242 4242 4242 4242';

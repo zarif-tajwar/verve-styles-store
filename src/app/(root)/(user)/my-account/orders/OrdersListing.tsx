@@ -1,22 +1,19 @@
 'use client';
 
-import { auth } from '@/auth';
 import { Button } from '@/components/UI/Button';
 import Divider from '@/components/UI/Divider';
-import { getOrdersServer } from '@/lib/server/user';
-import { capitalize, cn, priceFormat, wait } from '@/lib/util';
-import { Session } from 'next-auth';
-import React from 'react';
-import OrderItemsListing from './OrderItemsListing';
-import { Package } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import { useQuery } from '@tanstack/react-query';
 import { getOrdersAction } from '@/lib/actions/user';
 import { useOrderFilterStore } from '@/lib/store/user-order';
-import OrdersPagination from './OrdersPagination';
+import { priceFormat } from '@/lib/util';
+import { useQuery } from '@tanstack/react-query';
+import { Package } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import React from 'react';
+import OrderItemsListing from './OrderItemsListing';
 import OrderListingSkeleton from './OrderListingSkeleton';
 import OrderStatus from './OrderStatus';
-import Link from 'next/link';
+import OrdersPagination from './OrdersPagination';
 
 const OrdersListing = () => {
   const session = useSession();

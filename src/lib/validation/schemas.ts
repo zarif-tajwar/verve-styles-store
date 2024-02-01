@@ -1,14 +1,13 @@
-import { array, z } from 'zod';
-import { SearchQueryUnreservedChars } from '../hooks/useQueryParams';
+import { z } from 'zod';
 import { isValueInArray, quickSortByReference } from '../util';
 import {
-  clothingColumnNames,
-  defaultSortOptionValue,
-  defaultPriceRange,
-  dressStylesColumnNames,
-  sortOptionValues,
   URL_QUERY_SEPERATORS,
+  clothingColumnNames,
+  defaultPriceRange,
+  defaultSortOptionValue,
+  dressStylesColumnNames,
   sizesColumnNames,
+  sortOptionValues,
 } from './constants';
 
 export const zParseMultiOptionSearchQuery = (targetArray: string[]) =>

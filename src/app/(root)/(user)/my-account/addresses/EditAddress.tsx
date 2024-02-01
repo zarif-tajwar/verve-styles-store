@@ -2,15 +2,14 @@
 
 import { Button } from '@/components/UI/Button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/UI/Dialog';
-import AddressInputForm, { AddressInputFormProps } from './AddressInputForm';
-import { useState } from 'react';
-import { PencilSquareIcon } from '@heroicons/react/16/solid';
-import { AddressSelect } from '@/lib/db/schema/address';
-import { useSession } from 'next-auth/react';
-import { editAddressAction } from '@/lib/actions/address';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAction } from 'next-safe-action/hooks';
 import { errorToast, successToast } from '@/components/UI/Toaster';
+import { editAddressAction } from '@/lib/actions/address';
+import { AddressSelect } from '@/lib/db/schema/address';
+import { PencilSquareIcon } from '@heroicons/react/16/solid';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAction } from 'next-safe-action/hooks';
+import { useState } from 'react';
+import AddressInputForm from './AddressInputForm';
 
 type EditAddressProps = {
   addressData: AddressSelect;

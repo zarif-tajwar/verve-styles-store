@@ -1,9 +1,8 @@
 import { dedupedAuth } from '@/auth';
-import { redirect } from 'next/navigation';
-import OrdersListing from './OrdersListing';
-import OrderFilters from './OrderFilters';
-import { SessionProvider } from 'next-auth/react';
 import ClientSessionProvider from '@/lib/provider/client-session-provider';
+import { redirect } from 'next/navigation';
+import OrderFilters from './OrderFilters';
+import OrdersListing from './OrdersListing';
 
 const OrdersPage = async () => {
   const session = await dedupedAuth();

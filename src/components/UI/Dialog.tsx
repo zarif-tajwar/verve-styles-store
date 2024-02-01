@@ -1,10 +1,9 @@
 'use client';
 
-import * as React from 'react';
-import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { X } from 'lucide-react';
 import { XMarkIcon as XMarkIcon16 } from '@heroicons/react/16/solid';
 import { XMarkIcon as XMarkIcon20 } from '@heroicons/react/20/solid';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import * as React from 'react';
 
 import { cn } from '@/lib/util';
 
@@ -84,9 +83,9 @@ DialogCloseBtn.displayName = 'DialogCloseBtn';
 
 export {
   Dialog,
-  DialogPortal,
-  DialogOverlay,
   DialogCloseBtn,
-  DialogTrigger,
   DialogContent,
+  DialogOverlay,
+  DialogPortal,
+  DialogTrigger,
 };

@@ -1,6 +1,6 @@
 import { MessageSquare, RetryIcon } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
-import { ArrowLeft, RotateCw, ShieldAlert, StoreIcon } from 'lucide-react';
+import { ArrowLeft, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 
 const AuthErrorPage = () => {

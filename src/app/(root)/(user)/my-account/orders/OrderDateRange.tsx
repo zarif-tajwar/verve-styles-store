@@ -3,14 +3,10 @@
 import { DatePickerWithRange } from '@/components/UI/DatePicker';
 import { useOrderFilterStore } from '@/lib/store/user-order';
 import { XIcon } from 'lucide-react';
-import { useState } from 'react';
-import { DateRange } from 'react-day-picker';
 
 const OrderDateRange = () => {
   const dateRange = useOrderFilterStore((store) => store.orderDateRange);
   const setDateRange = useOrderFilterStore((store) => store.setOrderDateRange);
-
-  console.log(dateRange, 'ORDER DATE RANGE');
 
   return (
     <div className="relative">

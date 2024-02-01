@@ -1,21 +1,14 @@
 'use client';
 
 import { Button } from '@/components/UI/Button';
-import {
-  Dialog,
-  DialogCloseBtn,
-  DialogContent,
-  DialogTrigger,
-} from '@/components/UI/Dialog';
-import AddressInputForm from './AddressInputForm';
-import { useState } from 'react';
-import { PlusIcon } from '@heroicons/react/16/solid';
-import { addNewAddressAction } from '@/lib/actions/address';
-import { useSession } from 'next-auth/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAction } from 'next-safe-action/hooks';
-import { wait } from '@/lib/util';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/UI/Dialog';
 import { errorToast, successToast } from '@/components/UI/Toaster';
+import { addNewAddressAction } from '@/lib/actions/address';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAction } from 'next-safe-action/hooks';
+import { useState } from 'react';
+import AddressInputForm from './AddressInputForm';
 
 const AddNewAddress = () => {
   const [isOpen, setIsOpen] = useState(false);

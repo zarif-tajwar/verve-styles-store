@@ -33,8 +33,6 @@ const SelectMain = () => {
     'sort_by',
   );
 
-  console.log('SORT RENDERED');
-
   return (
     <Select.Root
       value={currentOptionValue || defaultSortOptionValue}

@@ -1,8 +1,7 @@
 import { dedupedAuth } from '@/auth';
+import ClientSessionProvider from '@/lib/provider/client-session-provider';
 import NavCartDropdown from './NavCartDropdown';
 import NavUserDropdown from './NavUserDropdown';
-import { SessionProvider } from 'next-auth/react';
-import ClientSessionProvider from '@/lib/provider/client-session-provider';
 
 const NavDropdownMenuWrap = async () => {
   const session = await dedupedAuth();

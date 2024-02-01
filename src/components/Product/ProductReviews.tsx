@@ -1,16 +1,14 @@
-import ProductReviewMenu from './ProductReviewMenu';
-import Star from '../UI/Star';
-import { Review } from '@/lib/types/product-page';
-import { Verified } from '../Svgs/icons';
 import { db } from '@/lib/db';
-import { user } from '@/lib/db/schema/auth';
-import { userReviews } from '@/lib/db/schema/userReviews';
-import { and, desc, eq, isNotNull, sql } from 'drizzle-orm';
-import { orderLine } from '@/lib/db/schema/orderLine';
-import { productEntries } from '@/lib/db/schema/productEntries';
-import { orders } from '@/lib/db/schema/orders';
-import { wait } from '@/lib/util';
 import { dummyUser } from '@/lib/db/schema/dummyUser';
+import { orderLine } from '@/lib/db/schema/orderLine';
+import { orders } from '@/lib/db/schema/orders';
+import { productEntries } from '@/lib/db/schema/productEntries';
+import { userReviews } from '@/lib/db/schema/userReviews';
+import { Review } from '@/lib/types/product-page';
+import { desc, eq, sql } from 'drizzle-orm';
+import { Verified } from '../Svgs/icons';
+import Star from '../UI/Star';
+import ProductReviewMenu from './ProductReviewMenu';
 
 const ProductReviews = async ({ productId }: { productId: number }) => {
   const reviews = await db

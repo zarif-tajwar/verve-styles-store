@@ -1,16 +1,13 @@
-import { auth } from '@/auth';
-import { GoogleIcon, FacebookIcon, YahooIcon } from '@/components/Svgs/icons';
+import { FacebookIcon, GoogleIcon } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
 import { db } from '@/lib/db';
 import { accounts } from '@/lib/db/schema/auth';
-import { cn, wait } from '@/lib/util';
-import { and, eq } from 'drizzle-orm';
-import { Check, Link as LinkIcon } from 'lucide-react';
-import { redirect } from 'next/navigation';
-import ConnectAccountButton from './ConnectAccountButton';
-import { SvgIconProps } from '@/lib/types/common';
+import { cn } from '@/lib/util';
 import { BuiltInProviderType } from '@auth/core/providers';
+import { and, eq } from 'drizzle-orm';
+import { Check } from 'lucide-react';
 import { Session } from 'next-auth/types';
+import ConnectAccountButton from './ConnectAccountButton';
 
 type Providers = {
   label: string;
@@ -25,8 +22,6 @@ const providers: Providers = [
 
 const SocialAccounts = async ({ session }: { session: Session }) => {
   const userRole = session.user.role;
-
-  console.log(userRole, 'USER ROLE');
 
   if (userRole === 'TEST USER') {
     return <div>Not Available for Test Users!</div>;

@@ -1,17 +1,14 @@
 'use client';
 
-import { FunnelMini } from '@/components/Svgs/icons';
-import { Button } from '@/components/UI/Button';
 import {
   Select,
   SelectContent,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
-  SelectLabel,
 } from '@/components/UI/Select';
 import { useOrderFilterStore } from '@/lib/store/user-order';
-import { cn } from '@/lib/util';
 import { SelectGroup } from '@radix-ui/react-select';
 import { XIcon } from 'lucide-react';
 

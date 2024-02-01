@@ -1,32 +1,26 @@
 'use client';
 
-import { Button } from '@/components/UI/Button';
-import { LinkIcon, SpeakerWaveIcon } from '@heroicons/react/16/solid';
-import {
-  Dialog,
-  DialogCloseBtn,
-  DialogContent,
-  DialogTrigger,
-} from '@/components/UI/Dialog';
-import * as RadioGroup from '@radix-ui/react-radio-group';
-import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
-import { useSession } from 'next-auth/react';
-import * as ScrollArea from '@radix-ui/react-scroll-area';
-import { DialogClose } from '@radix-ui/react-dialog';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { cn, wait } from '@/lib/util';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { changeDefaultAddressAction } from '@/lib/actions/address';
-import { useAction } from 'next-safe-action/hooks';
-import { errorToast, successToast } from '@/components/UI/Toaster';
-import Spinner from '@/components/UI/Spinner';
 import { SaveIcon } from '@/components/Svgs/icons';
-import { Controller, useForm } from 'react-hook-form';
+import { Button } from '@/components/UI/Button';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/UI/Dialog';
+import Spinner from '@/components/UI/Spinner';
+import { errorToast, successToast } from '@/components/UI/Toaster';
+import { changeDefaultAddressAction } from '@/lib/actions/address';
+import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
+import { cn } from '@/lib/util';
 import {
   DefaultAddressFormSchema,
   DefaultAddressFormSchemaType,
 } from '@/lib/validation/address-form';
+import { LinkIcon } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import * as ScrollArea from '@radix-ui/react-scroll-area';
+import { useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useAction } from 'next-safe-action/hooks';
+import { useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 const ChangeDefaultAddress = () => {
   const session = useSession();

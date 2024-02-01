@@ -6,8 +6,7 @@ import { deleteAddressAction } from '@/lib/actions/address';
 import { AddressSelect } from '@/lib/db/schema/address';
 import { TrashIcon, XMarkIcon } from '@heroicons/react/16/solid';
 import * as Popover from '@radix-ui/react-popover';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 

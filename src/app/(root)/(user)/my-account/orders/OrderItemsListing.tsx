@@ -3,7 +3,7 @@
 import Divider from '@/components/UI/Divider';
 import SizeBadge from '@/components/UI/SizeBadge';
 import { UserOrderedProduct } from '@/lib/types/user';
-import { capitalize, cn, priceFormat } from '@/lib/util';
+import { priceFormat } from '@/lib/util';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 
 const OrderItemsListing = ({

@@ -1,35 +1,29 @@
 'use client';
 
-import { useCheckoutStore } from '@/lib/store/checkout-store';
-import { useShallow } from 'zustand/react/shallow';
-import { cn } from '@/lib/util';
-import { CheckCircleIcon, CheckIcon } from '@heroicons/react/24/solid';
 import { Select, SelectTrigger } from '@/components/UI/Select';
-import {
-  SelectIcon,
-  SelectPortal,
-  SelectValue,
-  SelectContent,
-  SelectViewport,
-  SelectItemIndicator,
-  SelectItem,
-  SelectItemText,
-  SelectSeparator,
-} from '@radix-ui/react-select';
 import { AddressSelect } from '@/lib/db/schema/address';
-import React, { useEffect, useRef, useState } from 'react';
-// import { ChevronDownIcon } from '@heroicons/react/24/solid';
+import { useCheckoutStore } from '@/lib/store/checkout-store';
+import { cn } from '@/lib/util';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import {
-  BriefcaseIcon,
-  HashtagIcon,
-  HomeIcon,
-} from '@heroicons/react/16/solid';
+import { CheckCircleIcon, CheckIcon } from '@heroicons/react/24/solid';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@radix-ui/react-accordion';
+import {
+  SelectContent,
+  SelectIcon,
+  SelectItem,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectPortal,
+  SelectSeparator,
+  SelectValue,
+  SelectViewport,
+} from '@radix-ui/react-select';
+import React, { useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 const ShippingAddressSelect = ({
   savedAddresses,

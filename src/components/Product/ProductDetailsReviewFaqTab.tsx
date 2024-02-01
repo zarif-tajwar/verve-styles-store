@@ -2,11 +2,9 @@
 
 import { cn, isValueInArray } from '@/lib/util';
 import * as Tabs from '@radix-ui/react-tabs';
-import ProductReviews from './ProductReviews';
-import { Review } from '@/lib/types/product-page';
-import WIP from '../UI/WIP';
+import { parseAsStringEnum, useQueryState } from 'nuqs';
 import React, { useEffect } from 'react';
-import { useQueryState, parseAsStringEnum } from 'nuqs';
+import WIP from '../UI/WIP';
 
 const ProductDetails = () => (
   <div>

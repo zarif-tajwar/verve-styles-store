@@ -1,29 +1,20 @@
+import { faker } from '@faker-js/faker';
+import { SQL, eq, gt, sql } from 'drizzle-orm';
+import { DateRange } from 'react-day-picker';
 import 'server-only';
-import { UserSelect, user } from '../db/schema/auth';
-import { DummyUserSelect, dummyUser } from '../db/schema/dummyUser';
 import { db } from '../db';
-import { OrderInsert, OrderSelect, orders } from '../db/schema/orders';
+import { UserSelect } from '../db/schema/auth';
+import { DummyUserSelect } from '../db/schema/dummyUser';
 import {
   OrderDetailsInsert,
   OrderDetailsSelect,
   orderDetails,
-  orderStatus,
 } from '../db/schema/orderDetails';
-import { SQL, and, desc, eq, gt, sql } from 'drizzle-orm';
 import { OrderLinesInsert, orderLine } from '../db/schema/orderLine';
+import { OrderInsert, OrderSelect, orders } from '../db/schema/orders';
 import { productEntries } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
-import { genRandomInt, wait } from '../util';
-import { faker } from '@faker-js/faker';
-import { DateRange } from 'react-day-picker';
-import { AddressInsert, AddressSelect, address } from '../db/schema/address';
-import { auth } from '@/auth';
-import {
-  AddressFormSchema,
-  AddressFormSchemaType,
-} from '../validation/address-form';
-import { Session } from 'next-auth/types';
-import { revalidatePath } from 'next/cache';
+import { genRandomInt } from '../util';
 
 type UserOrderedProduct = {
   quantity: number;

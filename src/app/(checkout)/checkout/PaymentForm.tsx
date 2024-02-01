@@ -113,8 +113,6 @@ const PaymentForm = () => {
     }
   };
 
-  console.log('PAYMENT FORM RENDERED');
-
   return (
     <form
       onSubmit={async (e) => {

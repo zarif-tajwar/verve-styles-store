@@ -1,80 +1,56 @@
-import {
-  InferColumnsDataTypes,
-  SQL,
-  and,
-  between,
-  eq,
-  getTableColumns,
-  inArray,
-  isNull,
-  lt,
-  sql,
-} from 'drizzle-orm';
-import {
-  PgDialect,
-  PgTableWithColumns,
-  QueryBuilder,
-} from 'drizzle-orm/pg-core';
-import { db } from './index';
-import { clothing } from './schema/clothing';
-import { dressStyles } from './schema/dressStyles';
-import { ProductSelect, products } from './schema/products';
-import { sizes } from './schema/sizes';
 import { faker } from '@faker-js/faker';
-import crypto from 'crypto';
-import { ProductEntryInsert, productEntries } from './schema/productEntries';
-import { genRandomInt, wait } from '../util';
-import { CartsInsert, CartsSelect, carts } from './schema/carts';
-import { CartItemsInsert, cartItems } from './schema/cartItems';
-import { OrderInsert, orders } from './schema/orders';
-import { OrderLinesInsert, orderLine } from './schema/orderLine';
-import { UserReviewsInsert, userReviews } from './schema/userReviews';
-import {
-  DummyUserInsert,
-  DummyUserSelect,
-  dummyUser,
-} from './schema/dummyUser';
-import {
-  OrderDetailsInsert,
-  orderDetails,
-  orderStatus,
-} from './schema/orderDetails';
-import { AddressInsert, AddressSelect, address } from './schema/address';
-import { z } from 'zod';
-import * as https from 'https';
-import * as fs from 'fs';
-import {
-  EdgeStoreClientResponse,
-  edgeStoreBackendClient,
-} from '../server/edgestore';
-import { EdgeStoreImagesInsert, edgeStoreImages } from './schema/edgeStore';
-import { ProductImagesInsert, productImages } from './schema/productImages';
 import {
   rand,
   randAddress,
   randEmail,
   randFirstName,
-  randFullName,
-  randImg,
   randLastName,
   randPastDate,
   randPhoneNumber,
   randText,
 } from '@ngneat/falso';
-import { UserInsert, UserSelect, user } from './schema/auth';
+import crypto from 'crypto';
+import { SQL, and, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { QueryBuilder } from 'drizzle-orm/pg-core';
+import * as fs from 'fs';
 import { ulid } from 'ulidx';
-import { decodeSingleSqid } from '../server/sqids';
+import {
+  EdgeStoreClientResponse,
+  edgeStoreBackendClient,
+} from '../server/edgestore';
+import { genRandomInt } from '../util';
+import { db } from './index';
+import { AddressInsert, address } from './schema/address';
+import { UserInsert, UserSelect, user } from './schema/auth';
+import { clothing } from './schema/clothing';
+import { dressStyles } from './schema/dressStyles';
+import {
+  DummyUserInsert,
+  DummyUserSelect,
+  dummyUser,
+} from './schema/dummyUser';
+import { EdgeStoreImagesInsert, edgeStoreImages } from './schema/edgeStore';
+import { InvoiceInsert, invoice } from './schema/invoice';
 import {
   OrderCustomerDetailsInsert,
   orderCustomerDetails,
 } from './schema/orderCustomerDetails';
 import {
+  OrderDetailsInsert,
+  orderDetails,
+  orderStatus,
+} from './schema/orderDetails';
+import { OrderLinesInsert, orderLine } from './schema/orderLine';
+import {
   OrderPaymentDetailsInsert,
-  OrderPaymentDetailsSelect,
   orderPaymentDetails,
 } from './schema/orderPaymentDetails';
-import { InvoiceInsert, invoice } from './schema/invoice';
-import { productSalesCount } from './schema/productSalesCount';
+import { OrderInsert, orders } from './schema/orders';
+import { ProductEntryInsert, productEntries } from './schema/productEntries';
+import { ProductImagesInsert, productImages } from './schema/productImages';
+import { products } from './schema/products';
+import { sizes } from './schema/sizes';
+import { UserReviewsInsert, userReviews } from './schema/userReviews';
 
 async function populateSizes() {
   await db

@@ -1,6 +1,5 @@
-import { Loader } from 'lucide-react';
-import Star from '../UI/Star';
 import Spinner from '../UI/Spinner';
+import Star from '../UI/Star';
 
 export const ProductListingSkeleton = () => {
   return (

@@ -1,25 +1,25 @@
-import { auth, dedupedAuth } from '@/auth';
+import { dedupedAuth } from '@/auth';
+import { Skeleton as AccountCardSkeleton } from '@/components/UI/AccountDetailsCard';
 import { db } from '@/lib/db';
 import { invoice } from '@/lib/db/schema/invoice';
 import { orderDetails, orderStatus } from '@/lib/db/schema/orderDetails';
 import { orders } from '@/lib/db/schema/orders';
-import { and, eq, getTableColumns } from 'drizzle-orm';
-import { redirect } from 'next/navigation';
-import { z } from 'zod';
-import OrderStatus from '../OrderStatus';
-import React, { Suspense } from 'react';
 import { calcTotalFromInvoiceData } from '@/lib/server/checkout';
 import { cn, priceFormat } from '@/lib/util';
-import OrderedProducts from './_tabs/OrderedProducts';
 import {
   InformationCircleIcon,
   NewspaperIcon,
   Square3Stack3DIcon,
 } from '@heroicons/react/16/solid';
-import Details from './_tabs/Details';
+import { and, eq, getTableColumns } from 'drizzle-orm';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
+import { z } from 'zod';
+import OrderStatus from '../OrderStatus';
+import Details from './_tabs/Details';
 import Invoice from './_tabs/Invoice';
-import { Skeleton as AccountCardSkeleton } from '@/components/UI/AccountDetailsCard';
+import OrderedProducts from './_tabs/OrderedProducts';
 
 const invoiceTableColumns = getTableColumns(invoice);
 

@@ -1,15 +1,13 @@
 'use client';
 import { useCartItemsQuery } from '@/lib/queries/cart';
-import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
+import { capitalize, cn, priceFormat } from '@/lib/util';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
-import { useQuery } from '@tanstack/react-query';
-import { capitalize, cn, priceFormat, wait } from '@/lib/util';
-import Divider from '../UI/Divider';
-import { Button } from '../UI/Button';
-import Link from 'next/link';
-import MessageComp from './MessageComp';
 import { Loader } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '../UI/Button';
+import Divider from '../UI/Divider';
+import MessageComp from './MessageComp';
 
 const NavCartDropdownContent = () => {
   const { data: cartItems, isLoading } = useCartItemsQuery();

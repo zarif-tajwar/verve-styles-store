@@ -1,24 +1,18 @@
 'use client';
 
-import * as React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
-import {
-  DayPicker,
-  DayPickerRangeProps,
-  SelectRangeEventHandler,
-} from 'react-day-picker';
+import * as React from 'react';
+import { DayPicker, SelectRangeEventHandler } from 'react-day-picker';
 
 import { cn } from '@/lib/util';
 import { buttonVariants } from './Button';
 
-import { format, addDays } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
 
 import { Button } from '@/components/UI/Button';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { DateRange } from 'react-day-picker';
-import { unknown } from 'zod';
 import { CalendarMini } from '../Svgs/icons';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 

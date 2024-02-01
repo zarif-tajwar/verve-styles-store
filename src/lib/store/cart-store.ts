@@ -1,11 +1,5 @@
 import { create } from 'zustand';
-import {
-  defaultPriceRange,
-  defaultSortOptionValue,
-} from '../validation/constants';
-import { ShopFilterState } from '../types/ShopFilter';
 import { CartItemState } from '../types/cart';
-import { cartItems } from '../db/schema/cartItems';
 
 type CartStoreAction = {
   updateQuantity: (

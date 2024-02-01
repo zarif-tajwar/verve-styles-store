@@ -1,15 +1,13 @@
 import 'server-only';
 
-import { Session } from 'next-auth/types';
-import { getCartId } from './cart';
+import { eq, sql } from 'drizzle-orm';
+import { DELIVERY_CHARGE } from '../constants/dummy-values';
 import { db } from '../db';
+import { cartItems } from '../db/schema/cartItems';
+import { InvoiceSelect } from '../db/schema/invoice';
+import { productEntries } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
 import { sizes } from '../db/schema/sizes';
-import { cartItems } from '../db/schema/cartItems';
-import { productEntries } from '../db/schema/productEntries';
-import { eq, sql } from 'drizzle-orm';
-import { InvoiceSelect } from '../db/schema/invoice';
-import { DELIVERY_CHARGE } from '../constants/dummy-values';
 
 export const getCartItemsForCheckout = async ({
   cartId,

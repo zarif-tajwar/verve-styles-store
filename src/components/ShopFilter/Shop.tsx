@@ -31,8 +31,6 @@ const Shop = () => {
 
   const totalProducts = productItems?.at(0)?.totalCount;
 
-  console.log('SHOP PARENT GRID RENDERED');
-
   return (
     <>
       <div className="absolute -top-28 left-1/2 mx-auto flex w-max min-w-[19rem] -translate-x-1/2 grid-cols-2 flex-col justify-center gap-4 rounded-main p-4 ring-1 ring-primary-100">

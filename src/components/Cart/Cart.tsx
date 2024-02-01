@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import OrderSummary from '@/components/Cart/OrderSummary';
 import CartItem from '@/components/Cart/CartItem';
-import { Button } from '../UI/Button';
-import { LayoutGroup, motion } from 'framer-motion';
-import { useMutation } from '@tanstack/react-query';
+import OrderSummary from '@/components/Cart/OrderSummary';
 import { clearCartItems, generateCartItems } from '@/lib/actions/cart';
 import { useCartItemsQuery } from '@/lib/queries/cart';
-import { cartItems } from '@/lib/db/schema/cartItems';
+import { useMutation } from '@tanstack/react-query';
+import { LayoutGroup, motion } from 'framer-motion';
+import { useMemo } from 'react';
+import { Button } from '../UI/Button';
 import Spinner from '../UI/Spinner';
 
 const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {

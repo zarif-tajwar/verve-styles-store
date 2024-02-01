@@ -1,23 +1,13 @@
 import NextAuth, { type NextAuthConfig } from 'next-auth';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
-import EmailProvider from 'next-auth/providers/email';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { temporaryAdapter } from './temporaryAdapter';
-import {
-  UserSelect,
-  accounts,
-  sessions,
-  user,
-  user as userTable,
-} from '@/lib/db/schema/auth';
+import { UserSelect, accounts, sessions, user } from '@/lib/db/schema/auth';
 import 'dotenv/config';
-import { genRandomInt, parseIntWithUndefined, wait } from './lib/util';
+import { genRandomInt } from './lib/util';
 import { db } from './lib/db';
 import { and, eq, isNull } from 'drizzle-orm';
-import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { carts } from './lib/db/schema/carts';
 import { handleCartOnSignIn } from './lib/server/cart';
 import { randomUUID } from 'crypto';
@@ -145,7 +135,6 @@ const authConfig = {
 
   events: {
     signIn: async ({ user }) => {
-      console.log('SIGN IN HAPPENED');
       await handleCartOnSignIn(user);
     },
     linkAccount: async ({ profile, account }) => {

@@ -1,5 +1,4 @@
 import { cn } from '@/lib/util';
-import Link from 'next/link';
 import { HTMLAttributes } from 'react';
 
 const Logo = ({

@@ -1,13 +1,13 @@
 'use client';
 
-import { cn, priceFormat } from '@/lib/util';
-import { MoveRight, Tag } from 'lucide-react';
-import Divider from '../UI/Divider';
-import { Button } from '../UI/Button';
+import { revalidatePathAction } from '@/lib/actions/checkout';
 import { useCartItemsStore } from '@/lib/store/cart-store';
 import { CartItemProps } from '@/lib/types/cart';
+import { priceFormat } from '@/lib/util';
+import { MoveRight } from 'lucide-react';
 import Link from 'next/link';
-import { revalidatePathAction } from '@/lib/actions/checkout';
+import { Button } from '../UI/Button';
+import Divider from '../UI/Divider';
 
 const OrderSummary = ({
   cartItemsData,

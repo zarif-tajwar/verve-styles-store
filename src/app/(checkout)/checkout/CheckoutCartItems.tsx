@@ -1,5 +1,5 @@
 import Divider from '@/components/UI/Divider';
-import SizeBadge, { formatSizeText } from '@/components/UI/SizeBadge';
+import { formatSizeText } from '@/components/UI/SizeBadge';
 import { CartItemsForCheckout } from '@/lib/server/checkout';
 import { cn, priceFormat } from '@/lib/util';
 import React from 'react';
@@ -34,8 +34,6 @@ const CheckoutCartItems = ({
                   <dl
                     className={cn(
                       'grid grid-cols-[0.7fr_1.3fr_1fr_1fr_1fr] gap-x-4',
-                      // 'grid grid-cols-[0.7fr_1.3fr_1fr_1fr_1fr] gap-x-4',
-                      // 'grid grid-cols-5 gap-x-4',
                       '[&_dd]:font-medium [&_dd]:text-primary-400',
                       '[&_dt]:font-semibold [&_dt]:text-primary-500',
                     )}

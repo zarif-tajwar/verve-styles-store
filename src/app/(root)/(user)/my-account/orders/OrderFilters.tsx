@@ -1,4 +1,4 @@
-import { CalendarMini, SearchIconSm } from '@/components/Svgs/icons';
+import { SearchIconSm } from '@/components/Svgs/icons';
 
 import FilterMenu from './FilterMenu';
 

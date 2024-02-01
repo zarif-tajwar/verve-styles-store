@@ -1,10 +1,9 @@
 'use client';
 
-import { cn } from '@/lib/util';
-import * as Checkbox from '@radix-ui/react-checkbox';
-import { sizesOptions } from '@/lib/validation/constants';
-import { buttonVariants } from '../UI/Button';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { sizesOptions } from '@/lib/validation/constants';
+import * as Checkbox from '@radix-ui/react-checkbox';
+import { buttonVariants } from '../UI/Button';
 
 const SizesCheckbox = () => {
   const multipleOptionCheck = useShopFilter(

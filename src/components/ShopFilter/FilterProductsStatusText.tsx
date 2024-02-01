@@ -16,8 +16,6 @@ const FilterProductsStatusText = ({
     Math.min(currentPage * FILTER_PRODUCTS_PER_PAGE, totalProducts),
   ];
 
-  console.log('PRODUCT PAGE STATUS RENDERED');
-
   return (
     <p className="flex-grow pb-2 text-black/60">
       Showing {range.at(0)}-{range.at(1)} of {totalProducts} Products

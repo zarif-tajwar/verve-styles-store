@@ -1,41 +1,31 @@
 import 'server-only';
 
-import { cookies } from 'next/headers';
-import { db } from '../db';
-import { products, ProductSelect } from '../db/schema/products';
-import { sizes, SizeSelect } from '../db/schema/sizes';
-import {
-  cartItems,
-  CartItemsInsert,
-  CartItemsSelect,
-} from '../db/schema/cartItems';
-import {
-  productEntries,
-  ProductEntryInsert,
-} from '../db/schema/productEntries';
+import { dedupedAuth } from '@/auth';
 import {
   and,
   eq,
   ExtractTablesWithRelations,
-  gt,
-  gte,
   isNull,
   SQL,
   sql,
 } from 'drizzle-orm';
-import { carts, CartsSelect } from '../db/schema/carts';
-import { genRandomInt, parseIntWithUndefined } from '../util';
-import { auth, dedupedAuth } from '@/auth';
-import { PgTransaction } from 'drizzle-orm/pg-core';
 import {
   NodePgDatabase,
   NodePgQueryResultHKT,
 } from 'drizzle-orm/node-postgres';
-import { UserInsert, user as userTable } from '../db/schema/auth';
+import { PgTransaction } from 'drizzle-orm/pg-core';
 import { Session } from 'next-auth';
 import { User } from 'next-auth/types';
-import { decodeSingleSqid, encodeSingleSqid } from './sqids';
+import { cookies } from 'next/headers';
 import { cache } from 'react';
+import { db } from '../db';
+import { UserInsert, user as userTable } from '../db/schema/auth';
+import { cartItems, CartItemsSelect } from '../db/schema/cartItems';
+import { carts, CartsSelect } from '../db/schema/carts';
+import { productEntries } from '../db/schema/productEntries';
+import { products, ProductSelect } from '../db/schema/products';
+import { sizes, SizeSelect } from '../db/schema/sizes';
+import { decodeSingleSqid, encodeSingleSqid } from './sqids';
 
 export const createCart = async (
   dbInstance?:

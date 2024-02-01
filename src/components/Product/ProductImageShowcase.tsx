@@ -2,7 +2,7 @@
 
 import { ProductImagesSelect } from '@/lib/db/schema/productImages';
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Carousel,
   CarouselApi,
@@ -50,8 +50,6 @@ const ProductImageShowcase = ({
     mainCarouselApi.on('select', handleSelect);
     mainCarouselApi.on('reInit', handleSelect);
   }, [handleSelect, mainCarouselApi]);
-
-  console.log('IMAGE RE-RENDERED');
 
   return (
     <div>
