@@ -1,4 +1,4 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 import * as sizesSchema from './schema/sizes';
 import * as clothingSchema from './schema/clothing';
 import * as dressStylesSchema from './schema/dressStyles';
@@ -18,9 +18,9 @@ import * as edgeStoreSchema from './schema/edgeStore';
 import * as orderLineSchema from './schema/orderLine';
 import * as authSchema from './schema/auth';
 import * as dummyUserSchema from './schema/dummyUser';
-import { Pool } from 'pg';
 import 'dotenv/config';
 import { Logger } from 'drizzle-orm/logger';
+import { Pool } from '@neondatabase/serverless';
 
 class CustomLogger implements Logger {
   logQuery(query: string, params: unknown[]): void {
@@ -33,7 +33,7 @@ class CustomLogger implements Logger {
   }
 }
 
-const connectionString = process.env.DB_URL!;
+const connectionString = process.env.NEON_DB_URL!;
 const connection = new Pool({
   connectionString,
 });

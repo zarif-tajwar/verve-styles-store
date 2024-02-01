@@ -15,6 +15,7 @@ const ShopPage = async ({
 }: {
   searchParams: SearchParamsServer;
 }) => {
+  const start = Date.now();
   const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, searchParams];
   const queryClient = new QueryClient();
 
@@ -24,6 +25,9 @@ const ShopPage = async ({
       return await getShopProductsServer(searchParams);
     },
   });
+  const end = Date.now();
+
+  console.log(end - start, 'SHOP PAGE RENDER TIME');
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

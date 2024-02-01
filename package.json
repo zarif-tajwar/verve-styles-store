@@ -20,6 +20,7 @@
     "@edgestore/server": "^0.1.6",
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^3.3.4",
+    "@neondatabase/serverless": "^0.7.2",
     "@next/bundle-analyzer": "^14.1.0",
     "@next/eslint-plugin-next": "^14.0.4",
     "@ngneat/falso": "^7.1.1",
