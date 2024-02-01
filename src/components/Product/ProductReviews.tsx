@@ -9,6 +9,7 @@ import { desc, eq, sql } from 'drizzle-orm';
 import { Verified } from '../Svgs/icons';
 import Star from '../UI/Star';
 import ProductReviewMenu from './ProductReviewMenu';
+import { wait } from '@/lib/util';
 
 const ProductReviews = async ({ productId }: { productId: number }) => {
   const reviews = await db

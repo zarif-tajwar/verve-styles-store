@@ -97,7 +97,7 @@ const ProductAddCartRadioGroup = ({
       <RadioGroup.Root
         required
         aria-label="Cloth size options"
-        className="flex max-w-[19rem] flex-wrap gap-3 text-sm"
+        className="flex min-h-[5.25rem] max-w-[19rem] flex-wrap gap-3 text-sm"
         orientation="horizontal"
         name="size"
         id="clothing-size"
@@ -112,7 +112,7 @@ const ProductAddCartRadioGroup = ({
               variant: 'secondary',
               roundness: 'default',
               className:
-                'px-6 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
+                'h-max px-6 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
             })}
             value={sizeId.toString()}
           >

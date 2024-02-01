@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { clothing } from '@/lib/db/schema/clothing';
 import { productRating } from '@/lib/db/schema/productRating';
 import { products } from '@/lib/db/schema/products';
-import { makeValidURL } from '@/lib/util';
+import { cn, makeValidURL } from '@/lib/util';
 import { and, eq, getTableColumns, sql } from 'drizzle-orm';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -13,6 +13,7 @@ import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsRevie
 import ProductReviews from '@/components/Product/ProductReviews';
 import { SearchParamsServer } from '@/lib/types/common';
 import ProductImage from '@/components/Product/ProductImage';
+import ProductAddSkeleton from '@/components/Product/ProductAddSkeleton';
 
 // export async function generateStaticParams() {
 //   const slugs = await db
@@ -92,7 +93,7 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
               {product.description}
             </p>
             <div className="my-6 h-px w-full bg-black/10" />
-            <Suspense fallback={<div>Sizes Loading...</div>}>
+            <Suspense fallback={<ProductAddSkeleton />}>
               <ProductAdd productId={product.id} />
             </Suspense>
           </div>

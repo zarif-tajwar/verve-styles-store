@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { productEntries } from '@/lib/db/schema/productEntries';
 import { sizes } from '@/lib/db/schema/sizes';
 import { and, eq, gt } from 'drizzle-orm';
-import { wait } from '@/lib/util';
+import { cn, wait } from '@/lib/util';
 
 interface ProductAddProps {
   productId: ProductSelect['id'];
