@@ -1,18 +1,25 @@
 import { db } from '@/lib/db';
+import { ClothingSelect } from '@/lib/db/schema/clothing';
 import { productEntries } from '@/lib/db/schema/productEntries';
 import { ProductSelect } from '@/lib/db/schema/products';
 import { sizes } from '@/lib/db/schema/sizes';
 import { and, eq, gt } from 'drizzle-orm';
-import ProductAddCartRadioGroup from './ProductAddCartRadioGroup';
 import { unstable_noStore as noStore } from 'next/cache';
+import ProductAddCartRadioGroup from './ProductAddCartRadioGroup';
 
 interface ProductAddProps {
   productId: ProductSelect['id'];
   name: ProductSelect['name'];
   price: ProductSelect['price'];
+  clothing: ClothingSelect['name'];
 }
 
-const ProductAdd = async ({ productId, name, price }: ProductAddProps) => {
+const ProductAdd = async ({
+  productId,
+  name,
+  price,
+  clothing,
+}: ProductAddProps) => {
   noStore();
   const productAvailableSizes = await db
     .selectDistinct({ sizeName: sizes.name, sizeId: sizes.id })
@@ -32,6 +39,7 @@ const ProductAdd = async ({ productId, name, price }: ProductAddProps) => {
       productId={productId}
       name={name}
       price={price}
+      clothing={clothing}
     />
   );
 };

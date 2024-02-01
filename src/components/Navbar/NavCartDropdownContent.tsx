@@ -1,6 +1,6 @@
 'use client';
 import { useCartItemsQuery } from '@/lib/queries/cart';
-import { capitalize, cn, priceFormat } from '@/lib/util';
+import { capitalize, cn, makeValidURL, priceFormat } from '@/lib/util';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { Loader } from 'lucide-react';
@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Button } from '../UI/Button';
 import Divider from '../UI/Divider';
 import MessageComp from './MessageComp';
+import Image from 'next/image';
 
 const NavCartDropdownContent = () => {
   const { data: cartItems, isLoading } = useCartItemsQuery();
@@ -60,6 +61,9 @@ const NavCartDropdownContent = () => {
           <ScrollArea.Root className="h-[20rem] min-w-[24rem] rounded-lg px-4 pt-4">
             <ScrollArea.Viewport className="h-full w-full rounded-t-lg">
               {cartItems.map((cartItem, i) => {
+                const href = `/${makeValidURL(
+                  cartItem.clothing,
+                )}/${makeValidURL(cartItem.name)}-${cartItem.productId}`;
                 return (
                   <div
                     key={cartItem.name + cartItem.price}
@@ -72,12 +76,24 @@ const NavCartDropdownContent = () => {
                       )}
                     >
                       {/* IMAGE */}
-                      <div className="row-span-2 aspect-square rounded-lg bg-primary-50"></div>
+                      <div className="relative row-span-2 aspect-square overflow-hidden rounded-lg bg-primary-50">
+                        {cartItem.image && (
+                          <Image
+                            src={cartItem.image}
+                            alt={cartItem.name}
+                            fill
+                            className="object-cover"
+                          />
+                        )}
+                      </div>
                       <div className="col-span-2 flex flex-col items-start justify-start gap-1.5">
                         {/* PRODUCT NAME */}
-                        <span className="block text-base font-medium">
+                        <Link
+                          href={href}
+                          className="block text-base font-medium"
+                        >
                           {cartItem.name}
-                        </span>
+                        </Link>
                         {/* ATTRIBUTES */}
                         <span className="inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-normal tracking-wide text-primary-400 ring-1 ring-primary-100">
                           {cartItem.sizeName.length > 3

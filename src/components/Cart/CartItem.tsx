@@ -1,6 +1,6 @@
 'use client';
 
-import { capitalize, cn, priceFormat } from '@/lib/util';
+import { capitalize, cn, makeValidURL, priceFormat } from '@/lib/util';
 import CartQuantityCounter from './CartQuantityCounter';
 import { CartItemProps } from '@/lib/types/cart';
 import { useCartItemsStore } from '@/lib/store/cart-store';
@@ -19,8 +19,11 @@ import {
 } from '@/lib/actions/cart';
 import { CartItemsInsert } from '@/lib/db/schema/cartItems';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const MotionDivider = motion(Divider);
+const MotionLink = motion(Link);
 
 const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
   const cartItemState = useCartItemsStore(
@@ -106,6 +109,10 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
     },
   };
 
+  const href = `/${makeValidURL(cartItem.clothing)}/${makeValidURL(
+    cartItem.name,
+  )}-${cartItem.productId}`;
+
   useEffect(() => {
     if (countdown === 0) {
       setConfirmDelete(true);
@@ -134,24 +141,36 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
               layout
               className={cn('relative flex w-full justify-between py-6')}
             >
-              <motion.div
+              <MotionLink
                 layout
                 className={cn(
                   'relative flex w-full items-start gap-4',
                   toggleDelete && 'gap-2',
                 )}
                 animate={toggleDelete ? { opacity: 0.3 } : { opacity: 1 }}
+                href={href}
               >
                 <motion.div
                   layout
                   className={cn(
-                    'aspect-square w-[20%] max-w-[8rem] origin-top-left bg-primary-100',
+                    'aspect-square w-[20%] max-w-[8rem] origin-top-left overflow-hidden bg-primary-100',
                     toggleDelete && 'w-[10%]',
                   )}
                   style={{
                     borderRadius: 12,
                   }}
-                />
+                >
+                  {cartItem.image && (
+                    <div className="relative h-full w-full">
+                      <Image
+                        src={cartItem.image}
+                        alt={cartItem.name}
+                        className="object-cover"
+                        fill
+                      />
+                    </div>
+                  )}
+                </motion.div>
                 <motion.div layout className="flex min-h-full justify-between">
                   <motion.div
                     layout
@@ -190,7 +209,7 @@ const CartItem = memo(({ cartItem }: { cartItem: CartItemProps }) => {
                     </motion.div>
                   </motion.div>
                 </motion.div>
-              </motion.div>
+              </MotionLink>
               <motion.div
                 layout
                 className="flex min-h-full flex-col items-end justify-end"

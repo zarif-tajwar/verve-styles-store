@@ -97,6 +97,7 @@ const ProductPage = async ({ params }: PageProps) => {
                 productId={product.id}
                 name={product.name}
                 price={product.price}
+                clothing={params.category}
               />
             </Suspense>
           </div>

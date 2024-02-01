@@ -26,6 +26,8 @@ import { productEntries } from '../db/schema/productEntries';
 import { products, ProductSelect } from '../db/schema/products';
 import { sizes, SizeSelect } from '../db/schema/sizes';
 import { decodeSingleSqid, encodeSingleSqid } from './sqids';
+import { productImages } from '../db/schema/productImages';
+import { clothing } from '../db/schema/clothing';
 
 export const createCart = async (
   dbInstance?:
@@ -165,14 +167,20 @@ export const getCartItems = async ({
 }: {
   cartId: CartsSelect['id'];
   isGuestFetcher?: boolean;
-}): Promise<FetchedCartItem[]> => {
-  let conditional: SQL = eq(cartItems.cartId, cartId);
+}) => {
+  let conditionals: SQL[] = [
+    eq(cartItems.cartId, cartId),
+    eq(productImages.isDefault, true),
+  ];
 
   let query = db
-    .select({
+    .selectDistinct({
+      productId: products.id,
       name: products.name,
       price: products.price,
+      clothing: clothing.name,
       sizeName: sizes.name,
+      image: productImages.url,
       cartItemId: cartItems.id,
       quantity: cartItems.quantity,
       createdAt: cartItems.createdAt,
@@ -180,19 +188,18 @@ export const getCartItems = async ({
     .from(cartItems)
     .innerJoin(productEntries, eq(productEntries.id, cartItems.productEntryId))
     .innerJoin(products, eq(products.id, productEntries.productID))
+    .innerJoin(clothing, eq(products.clothingID, clothing.id))
     .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
+    .leftJoin(productImages, eq(products.id, productImages.productID))
     .$dynamic();
 
   if (isGuestFetcher) {
     query = query.innerJoin(carts, eq(carts.id, cartItems.cartId));
-    const condition = and(eq(cartItems.cartId, cartId), isNull(carts.userId));
-    if (condition) {
-      conditional = condition;
-    }
+    conditionals.push(isNull(carts.userId));
   }
 
   query = query
-    .where(conditional)
+    .where(and(...conditionals))
     .orderBy(sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`);
 
   const cartItemsData = (await query).map((cartItem) => ({
@@ -203,14 +210,7 @@ export const getCartItems = async ({
   return cartItemsData;
 };
 
-export type FetchedCartItem = {
-  name: ProductSelect['name'];
-  price: ProductSelect['price'];
-  sizeName: SizeSelect['name'];
-  cartItemId: string;
-  quantity: CartItemsSelect['quantity'];
-  createdAt: CartItemsSelect['createdAt'];
-};
+export type FetchedCartItem = Awaited<ReturnType<typeof getCartItems>>[number];
 
 export const fetchCartItemsFromServerComp = cache(async () => {
   const session = await dedupedAuth();

@@ -14,6 +14,8 @@ import { useEffect, useState } from 'react';
 import { errorToast } from '../UI/Toaster';
 import { FetchedCartItem } from '@/lib/server/cart';
 import { ProductSelect } from '@/lib/db/schema/products';
+import { ClothingSelect } from '@/lib/db/schema/clothing';
+import { ProductImagesSelect } from '@/lib/db/schema/productImages';
 
 type sizeOptions = {
   sizeName: string;
@@ -25,11 +27,13 @@ const ProductAddCartRadioGroup = ({
   productId,
   name,
   price,
+  clothing,
 }: {
   sizeOptions: sizeOptions;
   productId: number;
   name: ProductSelect['name'];
   price: ProductSelect['price'];
+  clothing: ClothingSelect['name'];
 }) => {
   const queryClient = useQueryClient();
 
@@ -57,29 +61,32 @@ const ProductAddCartRadioGroup = ({
         (opt) => opt.sizeId === sizeId,
       )!.sizeName;
 
-      const newCartItem: Pick<
+      const newCartItem: Omit<
         FetchedCartItem,
-        'quantity' | 'name' | 'price' | 'sizeName'
+        'createdAt' | 'cartItemId' | 'image'
       > = {
         quantity,
         name,
         price,
         sizeName,
+        clothing,
+        productId,
       };
 
       await wait(100);
 
       queryClient.setQueryData(
         CART_ITEM_DATA_QUERY_KEY,
-        (old: FetchedCartItem[]) => {
-          const isAlreadyInTheCartIndex = old.findIndex(
+        (old: FetchedCartItem[] | undefined) => {
+          const isAlreadyInTheCartIndex = old?.findIndex(
             (cart) => cart.name === name && cart.sizeName === sizeName,
           );
+          if (!old) return old;
           return isAlreadyInTheCartIndex !== -1
             ? old.map((cart, i) =>
                 i === isAlreadyInTheCartIndex ? { ...cart, quantity } : cart,
               )
-            : [...old, newCartItem];
+            : [newCartItem, ...old];
         },
       );
 
