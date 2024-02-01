@@ -133,7 +133,15 @@ const CardListItemDescription = React.forwardRef<
 
 CardListItemDescription.displayName = 'CardListItemDescription';
 
-const Skeleton = () => {
+const Skeleton = ({
+  iconClass,
+  headingClass,
+  gridClass,
+}: {
+  iconClass?: string;
+  headingClass?: string;
+  gridClass?: string;
+}) => {
   return (
     <div className="grid w-full animate-pulse grid-cols-1 gap-6">
       {[...Array(3).keys()].map((i) => {
@@ -142,9 +150,19 @@ const Skeleton = () => {
             key={i}
             className="min-h-56 rounded-xl p-5 ring-1 ring-primary-50"
           >
-            <div className="mb-2 size-10 rounded-lg bg-primary-100"></div>
-            <div className="mb-6 h-7 w-44 rounded-md bg-primary-100"></div>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+            <div
+              className={cn(
+                'mb-2 size-10 rounded-lg bg-primary-100',
+                iconClass,
+              )}
+            ></div>
+            <div
+              className={cn(
+                'mb-6 h-7 w-44 rounded-md bg-primary-100',
+                headingClass,
+              )}
+            ></div>
+            <div className={cn('grid grid-cols-2 gap-x-8 gap-y-4', gridClass)}>
               {[...Array(4).keys()].map((i) => {
                 return (
                   <div key={i}>

@@ -34,8 +34,7 @@ const CheckoutPage = async () => {
         </div>
       </div>
       <div className="container-main">
-        {false ? (
-          // {cartItems && cartItems.length > 0 ? (
+        {cartItems && cartItems.length > 0 ? (
           <div className="min-h-[140svh]">
             <div className="grid grid-cols-[1fr_0.6fr]">
               <div className="grid gap-16 py-10">
