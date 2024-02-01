@@ -1,43 +1,43 @@
 import ProductAdd from '@/components/Product/ProductAdd';
+import ProductAddSkeleton from '@/components/Product/ProductAddSkeleton';
+import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
+import ProductImage from '@/components/Product/ProductImage';
+import ProductReviews from '@/components/Product/ProductReviews';
 import Star from '@/components/UI/Star';
 import { db } from '@/lib/db';
 import { clothing } from '@/lib/db/schema/clothing';
 import { productRating } from '@/lib/db/schema/productRating';
 import { products } from '@/lib/db/schema/products';
+import { SearchParamsServer } from '@/lib/types/common';
 import { makeValidURL } from '@/lib/util';
-import { and, eq, getTableColumns, sql } from 'drizzle-orm';
-import Image from 'next/image';
+import { and, eq, getTableColumns } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
-import ProductReviews from '@/components/Product/ProductReviews';
-import { SearchParamsServer } from '@/lib/types/common';
-import ProductImage from '@/components/Product/ProductImage';
 
-// export async function generateStaticParams() {
-//   const slugs = await db
-//     .select({
-//       name: products.name,
-//       id: products.id,
-//       category: clothing.name,
-//     })
-//     .from(products)
-//     .innerJoin(clothing, eq(products.clothingID, clothing.id));
+export async function generateStaticParams() {
+  const slugs = await db
+    .select({
+      name: products.name,
+      id: products.id,
+      category: clothing.name,
+    })
+    .from(products)
+    .innerJoin(clothing, eq(products.clothingID, clothing.id));
 
-//   return slugs.map((slug) => ({
-//     category: makeValidURL(slug.category),
-//     productName: `${makeValidURL(slug.name)}-${slug.id}`,
-//   }));
-// }
+  return slugs.map((slug) => ({
+    category: makeValidURL(slug.category),
+    productName: `${makeValidURL(slug.name)}-${slug.id}`,
+  }));
+}
 
-// export const dynamicParams = false;
+export const dynamicParams = false;
 
 interface PageProps {
   params: { category: string; productName: string };
   searchParams: SearchParamsServer;
 }
 
-const ProductPage = async ({ params, searchParams }: PageProps) => {
+const ProductPage = async ({ params }: PageProps) => {
   const productColumns = getTableColumns(products);
   const productId = Number.parseInt(
     params.productName.slice(params.productName.lastIndexOf('-') + 1),
@@ -92,8 +92,12 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
               {product.description}
             </p>
             <div className="my-6 h-px w-full bg-black/10" />
-            <Suspense fallback={<div>Sizes Loading...</div>}>
-              <ProductAdd productId={product.id} />
+            <Suspense fallback={<ProductAddSkeleton />}>
+              <ProductAdd
+                productId={product.id}
+                name={product.name}
+                price={product.price}
+              />
             </Suspense>
           </div>
         </div>

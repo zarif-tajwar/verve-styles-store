@@ -33,8 +33,6 @@ const SignInButton = ({
       setIsLoading(true);
       setIsFormActive(true);
       await signInAction(provider, { redirectTo: '/shop' });
-      // await wait(1000);
-      // throw new Error('Something went wrong!');
       setErrorMessage(null);
     } catch (err: any) {
       setErrorMessage(err.message);

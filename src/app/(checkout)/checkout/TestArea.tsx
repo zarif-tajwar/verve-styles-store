@@ -69,7 +69,7 @@ const TestArea = () => {
           <span className="font-semibold text-primary-500">
             Note:&nbsp;&nbsp;
           </span>
-          You can copy and use this test card number&nbsp;
+          You can copy and use this dummy card number&nbsp;
           <span className="font-semibold">(provided by Stripe)</span> for
           testing checkout!
         </p>

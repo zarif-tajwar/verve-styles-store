@@ -31,7 +31,9 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
   const CartComp = useMemo(() => {
     if (cartItemsData && cartItemsData.length > 0)
       return cartItemsData.map((cartItem, i) => {
-        return <CartItem key={cartItem.cartItemId} cartItem={cartItem} />;
+        return (
+          <CartItem key={cartItem.name + cartItem.price} cartItem={cartItem} />
+        );
       });
     else return null;
   }, [cartItemsData]);
@@ -49,7 +51,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
 
   return (
     <main className="container-main py-20">
-      <div className="mx-auto mb-10 grid w-max grid-cols-2 justify-center gap-4 rounded-main p-4 ring-1 ring-primary-100">
+      {/* <div className="mx-auto mb-10 grid w-max grid-cols-2 justify-center gap-4 rounded-main p-4 ring-1 ring-primary-100">
         <p className="col-span-2">Temporary Buttons for Testing</p>
         <Button
           onClick={async () => {
@@ -66,7 +68,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
         >
           Clear Cart
         </Button>
-      </div>
+      </div> */}
 
       {cartItemsData && cartItemsData.length > 0 && (
         <div>

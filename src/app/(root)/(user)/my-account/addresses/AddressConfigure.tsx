@@ -7,7 +7,7 @@ const AddressPageButtons = () => {
     <div className="flex gap-2">
       <AddNewAddress />
       <ChangeDefaultAddress />
-      <GenRandAddress />
+      {/* <GenRandAddress /> */}
     </div>
   );
 };

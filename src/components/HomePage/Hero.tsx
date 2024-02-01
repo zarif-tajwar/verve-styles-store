@@ -1,7 +1,7 @@
+import Link from 'next/link';
 import React from 'react';
 import { PartnerLogo } from '../Svgs/PartnerLogo';
-import { Button, buttonVariants } from '../UI/Button';
-import Link from 'next/link';
+import { buttonVariants } from '../UI/Button';
 
 const highlightedInfos = [
   '200+ International Brands',

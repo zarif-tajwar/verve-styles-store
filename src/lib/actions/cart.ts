@@ -10,7 +10,7 @@ import {
 import { products } from '../db/schema/products';
 import { getCartId } from '../server/cart';
 import { decodeSingleSqid } from '../server/sqids';
-import { genRandomInt } from '../util';
+import { genRandomInt, wait } from '../util';
 
 export const deleteCartItemAction = async (cartItemId: string) => {
   const deleted = await db.transaction(async (tx) => {

@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/util';
 import { MinusIcon, PlusIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type CartQuantityCounterProps = {
   initial?: number;

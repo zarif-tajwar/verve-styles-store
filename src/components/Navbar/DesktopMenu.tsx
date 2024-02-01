@@ -3,6 +3,7 @@ import Link from 'next/link';
 import NavDropdownMenuWrap from './NavDropdownMenuWrap';
 import { Button } from '../UI/Button';
 import { BuildingStorefrontIcon, HomeIcon } from '@heroicons/react/16/solid';
+import { Suspense } from 'react';
 
 const DesktopMenu = () => {
   return (
@@ -11,7 +12,13 @@ const DesktopMenu = () => {
       <div className="flex flex-grow items-center justify-end">
         <SearchProduct />
       </div>
-      <NavDropdownMenuWrap />
+      <Suspense
+        fallback={
+          <span className="-mx-2 inline-block h-10 w-20 animate-pulse rounded-full bg-primary-100"></span>
+        }
+      >
+        <NavDropdownMenuWrap />
+      </Suspense>
     </div>
   );
 };
@@ -36,30 +43,6 @@ const NavLinks = () => (
           </Link>
         </Button>
       </li>
-      {/* <li className="inline-block">
-        <Link
-          className="px-3 py-2 text-black/70 transition-colors hover:text-black"
-          href={'/'}
-        >
-          On Sale
-        </Link>
-      </li>
-      <li className="inline-block">
-        <Link
-          className="px-3 py-2 text-black/70 transition-colors hover:text-black"
-          href={'/'}
-        >
-          New Arrivals
-        </Link>
-      </li>
-      <li className="inline-block">
-        <Link
-          className="px-3 py-2 text-black/70 transition-colors hover:text-black"
-          href={'/categories'}
-        >
-          Categories
-        </Link>
-      </li> */}
     </ul>
   </div>
 );

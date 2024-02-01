@@ -1,18 +1,19 @@
 import * as AddressDetailsCard from '@/components/UI/AccountDetailsCard';
-import { Button } from '@/components/UI/Button';
 import Divider from '@/components/UI/Divider';
 import { formatSizeText } from '@/components/UI/SizeBadge';
 import { db } from '@/lib/db';
 import { InvoiceSelect } from '@/lib/db/schema/invoice';
 import { orderLine } from '@/lib/db/schema/orderLine';
 import { productEntries } from '@/lib/db/schema/productEntries';
+import { productImages } from '@/lib/db/schema/productImages';
 import { products } from '@/lib/db/schema/products';
 import { sizes } from '@/lib/db/schema/sizes';
-import { cn, priceFormat, wait } from '@/lib/util';
-import { PencilIcon } from '@heroicons/react/16/solid';
+import { cn, priceFormat } from '@/lib/util';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { eq } from 'drizzle-orm';
+import Image from 'next/image';
 import React from 'react';
+import PostAReviewBtn from './PostAReviewBtn';
 
 const OrderedProducts = async ({
   orderId,
@@ -26,6 +27,7 @@ const OrderedProducts = async ({
     .from(orderLine)
     .innerJoin(productEntries, eq(productEntries.id, orderLine.productEntryId))
     .innerJoin(products, eq(products.id, productEntries.productID))
+    .leftJoin(productImages, eq(productImages.productID, products.id))
     .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
     .where(eq(orderLine.orderId, orderId))
     .orderBy(orderLine.createdAt, orderLine.id);
@@ -106,7 +108,18 @@ const OrderedProducts = async ({
                     'flex flex-col',
                   )}
                 >
-                  <span className="aspect-[1.4/1] rounded-xl bg-primary-50"></span>
+                  <div className="relative aspect-[1.4/1] overflow-hidden rounded-xl">
+                    {orderLine.product_images?.url ? (
+                      <Image
+                        alt={orderLine.products.name}
+                        src={orderLine.product_images.url}
+                        className="object-cover"
+                        fill
+                      />
+                    ) : (
+                      <span className="h-full w-full bg-primary-50"></span>
+                    )}
+                  </div>
                   <div className="flex flex-col justify-between gap-3">
                     <div className="">
                       <span className="font-base font-semibold leading-none text-primary-400">
@@ -148,14 +161,7 @@ const OrderedProducts = async ({
                         </dt>
                       </div>
                     </dl>
-                    <Button
-                      roundness={'lg'}
-                      className="gap-2"
-                      variant={'secondary'}
-                    >
-                      <PencilIcon className="size-4" />
-                      Post a review
-                    </Button>
+                    <PostAReviewBtn />
                   </div>
                 </li>
               </React.Fragment>

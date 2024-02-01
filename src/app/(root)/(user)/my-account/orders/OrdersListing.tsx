@@ -30,7 +30,6 @@ const OrdersListing = () => {
   } = useQuery({
     queryKey: [status, orderDateRange, page],
     queryFn: async () => {
-      // await wait(1000);
       if (!userId) return [];
 
       const data = await getOrdersAction(

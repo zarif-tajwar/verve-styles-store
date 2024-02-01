@@ -1,6 +1,6 @@
 'use client';
 
-import { capitalize, cn } from '@/lib/util';
+import { capitalize, cn, wait } from '@/lib/util';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { Button, buttonVariants } from '../UI/Button';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
@@ -12,6 +12,8 @@ import { BagCartIconMini } from '../Svgs/icons';
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { useEffect, useState } from 'react';
 import { errorToast } from '../UI/Toaster';
+import { FetchedCartItem } from '@/lib/server/cart';
+import { ProductSelect } from '@/lib/db/schema/products';
 
 type sizeOptions = {
   sizeName: string;
@@ -21,15 +23,20 @@ type sizeOptions = {
 const ProductAddCartRadioGroup = ({
   sizeOptions,
   productId,
+  name,
+  price,
 }: {
   sizeOptions: sizeOptions;
   productId: number;
+  name: ProductSelect['name'];
+  price: ProductSelect['price'];
 }) => {
   const queryClient = useQueryClient();
 
   const [selectedSizeValue, setSelectedSizeValue] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [isAllowedToSubmit, setIsAllowedToSubmit] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const {
     mutateAsync: addCartItemMutation,
@@ -38,35 +45,80 @@ const ProductAddCartRadioGroup = ({
     variables,
   } = useMutation({
     mutationFn: addCartItemAction,
-    onSuccess: () => {
+    onSuccess: () => {},
+    onMutate: async ({ quantity, sizeId }) => {
       setIsAllowedToSubmit(false);
+      await queryClient.cancelQueries({ queryKey: CART_ITEM_DATA_QUERY_KEY });
+      const previousCartItems = queryClient.getQueriesData({
+        queryKey: CART_ITEM_DATA_QUERY_KEY,
+      });
+
+      const sizeName = sizeOptions.find(
+        (opt) => opt.sizeId === sizeId,
+      )!.sizeName;
+
+      const newCartItem: Pick<
+        FetchedCartItem,
+        'quantity' | 'name' | 'price' | 'sizeName'
+      > = {
+        quantity,
+        name,
+        price,
+        sizeName,
+      };
+
+      await wait(100);
+
+      queryClient.setQueryData(
+        CART_ITEM_DATA_QUERY_KEY,
+        (old: FetchedCartItem[]) => {
+          const isAlreadyInTheCartIndex = old.findIndex(
+            (cart) => cart.name === name && cart.sizeName === sizeName,
+          );
+          return isAlreadyInTheCartIndex !== -1
+            ? old.map((cart, i) =>
+                i === isAlreadyInTheCartIndex ? { ...cart, quantity } : cart,
+              )
+            : [...old, newCartItem];
+        },
+      );
+
+      setShowSuccess(true);
+
+      return { previousCartItems: previousCartItems };
+    },
+    onError: (_, __, context) => {
+      queryClient.setQueryData(
+        CART_ITEM_DATA_QUERY_KEY,
+        context?.previousCartItems,
+      );
+      errorToast('Something went wrong!', {
+        description: `Failed to add ${name} to your cart!`,
+      });
+      setIsAllowedToSubmit(true);
+      setShowSuccess(false);
+    },
+    onSettled: () => {
       queryClient.refetchQueries({
         queryKey: CART_ITEM_DATA_QUERY_KEY,
       });
     },
-    onMutate: () => {
-      setIsAllowedToSubmit(false);
-    },
-    onError: () => {
-      errorToast('Something went wrong!');
-      setIsAllowedToSubmit(true);
-    },
   });
 
   useEffect(() => {
-    if (!isSuccess) return;
+    if (!showSuccess) return;
     if (
-      variables.sizeId === Number.parseInt(selectedSizeValue) &&
-      variables.quantity === selectedQuantity
+      variables?.sizeId === Number.parseInt(selectedSizeValue) &&
+      variables?.quantity === selectedQuantity
     ) {
       setIsAllowedToSubmit(false);
       return;
     }
     setIsAllowedToSubmit(true);
-  }, [selectedSizeValue, selectedQuantity, variables, isSuccess]);
+  }, [selectedSizeValue, selectedQuantity, variables, isSuccess, showSuccess]);
 
-  const showSuccess = isSuccess && !isAllowedToSubmit && !isPending;
-  const showLoading = isPending && !isAllowedToSubmit;
+  // const showSuccess = isSuccess && !isAllowedToSubmit && !isPending;
+  const showLoading = !showSuccess && !isAllowedToSubmit;
 
   return (
     <form
@@ -97,7 +149,7 @@ const ProductAddCartRadioGroup = ({
       <RadioGroup.Root
         required
         aria-label="Cloth size options"
-        className="flex max-w-[19rem] flex-wrap gap-3 text-sm"
+        className="flex min-h-[5.25rem] max-w-[19rem] flex-wrap gap-3 text-sm"
         orientation="horizontal"
         name="size"
         id="clothing-size"
@@ -112,7 +164,7 @@ const ProductAddCartRadioGroup = ({
               variant: 'secondary',
               roundness: 'default',
               className:
-                'px-6 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
+                'h-max px-6 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
             })}
             value={sizeId.toString()}
           >
@@ -134,7 +186,9 @@ const ProductAddCartRadioGroup = ({
           size={'md'}
           className={cn(
             'col-span-2 w-full transition-colors duration-200 disabled:opacity-100',
-            showSuccess && 'cursor-default bg-emerald-500 hover:bg-emerald-500',
+            showSuccess &&
+              !isAllowedToSubmit &&
+              'cursor-default bg-emerald-500 hover:bg-emerald-500',
           )}
           disabled={!isAllowedToSubmit}
           aria-disabled={!isAllowedToSubmit}
@@ -147,7 +201,7 @@ const ProductAddCartRadioGroup = ({
               </>
             )}
             {showLoading && <Spinner size={24} className="text-primary-50" />}
-            {showSuccess && (
+            {showSuccess && !isAllowedToSubmit && (
               <>
                 <CheckCircleIcon className="-ml-5 size-5" />
                 <span>Added to cart</span>

@@ -2,12 +2,16 @@
 
 import clsx from 'clsx';
 import { Search } from '../Svgs/icons';
+import { messageToast } from './Toaster';
 
 const SearchProduct = () => {
   return (
     <search className="relative w-full max-w-[608px]">
       <input
         type="text"
+        onFocus={() =>
+          messageToast('Not implemented yet!', { position: 'top-right' })
+        }
         placeholder="Search for products..."
         className={clsx(
           'peer w-full rounded-full bg-primary-50 py-3 pl-[3.25rem] pr-6 font-normal text-primary-400 outline-none transition-all duration-200',

@@ -9,7 +9,7 @@ import EditAddress from './EditAddress';
 import AddressDelete from './AddressDelete';
 import { useSession } from 'next-auth/react';
 import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
-import * as AccoundDetailsCard from '@/components/UI/AccountDetailsCard';
+import * as AccountDetailsCard from '@/components/UI/AccountDetailsCard';
 import Spinner from '@/components/UI/Spinner';
 
 const AddressList = () => {
@@ -19,9 +19,17 @@ const AddressList = () => {
 
   if (isFetching) {
     return (
-      <div className="flex w-full items-center justify-center gap-2">
-        <Spinner className="size-6" />
-        <p className="font-semibold text-primary-400">Loading...</p>
+      <div className="text-sm">
+        {[...Array(3).keys()].map((i) => {
+          return (
+            <AccountDetailsCard.Skeleton
+              key={i}
+              headingClass="mb-3"
+              gridClass="gap-y-2"
+              iconClass={'size-7'}
+            />
+          );
+        })}
       </div>
     );
   }
@@ -40,9 +48,9 @@ const AddressList = () => {
           { heading: 'Phone', description: address.phone },
         ];
         return (
-          <AccoundDetailsCard.Card key={address.id}>
-            <AccoundDetailsCard.CardHeader>
-              <AccoundDetailsCard.CardHeaderIcon>
+          <AccountDetailsCard.Card key={address.id}>
+            <AccountDetailsCard.CardHeader>
+              <AccountDetailsCard.CardHeaderIcon>
                 {address.type === 'home' && <HomeIcon className="size-4" />}
                 {address.type === 'office' && (
                   <BriefcaseIcon className="size-4" />
@@ -50,7 +58,7 @@ const AddressList = () => {
                 {address.type === 'not-relevant' && (
                   <HashtagIcon className="size-4" />
                 )}
-              </AccoundDetailsCard.CardHeaderIcon>
+              </AccountDetailsCard.CardHeaderIcon>
               <div className="flex items-center gap-2">
                 <p>{address.label}</p>
                 {address.isDefault && (
@@ -63,22 +71,22 @@ const AddressList = () => {
                 <EditAddress addressData={address} />
                 <AddressDelete addressId={address.id} />
               </div>
-            </AccoundDetailsCard.CardHeader>
-            <AccoundDetailsCard.CardList>
+            </AccountDetailsCard.CardHeader>
+            <AccountDetailsCard.CardList>
               {listItemsData.map((item) => {
                 return (
-                  <AccoundDetailsCard.CardListItem key={item.heading}>
-                    <AccoundDetailsCard.CardListItemHeading>
+                  <AccountDetailsCard.CardListItem key={item.heading}>
+                    <AccountDetailsCard.CardListItemHeading>
                       {item.heading}
-                    </AccoundDetailsCard.CardListItemHeading>
-                    <AccoundDetailsCard.CardListItemDescription>
+                    </AccountDetailsCard.CardListItemHeading>
+                    <AccountDetailsCard.CardListItemDescription>
                       {item.description}
-                    </AccoundDetailsCard.CardListItemDescription>
-                  </AccoundDetailsCard.CardListItem>
+                    </AccountDetailsCard.CardListItemDescription>
+                  </AccountDetailsCard.CardListItem>
                 );
               })}
-            </AccoundDetailsCard.CardList>
-          </AccoundDetailsCard.Card>
+            </AccountDetailsCard.CardList>
+          </AccountDetailsCard.Card>
         );
       })}
     </div>
