@@ -87,9 +87,9 @@ const ProductImageShowcase = ({
 
                       <span
                         className={cn(
-                          'absolute h-full w-full rounded-2xl bg-white bg-opacity-20 ring-0 ring-inset ring-transparent transition-all duration-200',
+                          'absolute h-full w-full rounded-2xl ring-0 ring-inset ring-transparent transition-all duration-200',
                           activeIndex === i &&
-                            'bg-opacity-0 ring-2 ring-primary-100 ring-offset-1 ring-offset-primary-200',
+                            'ring-2 ring-primary-200 ring-offset-2 ring-offset-primary-300',
                         )}
                       ></span>
                     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { capitalize, cn } from '@/lib/util';
+import { capitalize, cn, wait } from '@/lib/util';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { Button, buttonVariants } from '../UI/Button';
 import CartQuantityCounter from '../Cart/CartQuantityCounter';
@@ -67,6 +67,8 @@ const ProductAddCartRadioGroup = ({
         sizeName,
       };
 
+      await wait(100);
+
       queryClient.setQueryData(
         CART_ITEM_DATA_QUERY_KEY,
         (old: FetchedCartItem[]) => {
@@ -82,7 +84,6 @@ const ProductAddCartRadioGroup = ({
       );
 
       setShowSuccess(true);
-      setIsAllowedToSubmit(false);
 
       return { previousCartItems: previousCartItems };
     },
