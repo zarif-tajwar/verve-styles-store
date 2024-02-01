@@ -52,3 +52,13 @@
     black 100%
   );
 }
+
+.block-display {
+  display: flex;
+}
+
+@media screen and (min-width: 1280px) and (min-height: 800px) {
+  .block-display {
+    display: none;
+  }
+}

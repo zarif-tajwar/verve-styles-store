@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import IntegralCF from './_fonts/integral-cf/font';
 import Geist from './_fonts/geist/font';
 import { Toaster } from '@/components/UI/Toaster';
+import ScreenBlocker from '@/components/ScreenBlocker';
 
 export const metadata: Metadata = {
   title: 'Clothy - Shop',
@@ -21,6 +22,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster />
+        <ScreenBlocker />
       </body>
     </html>
   );
