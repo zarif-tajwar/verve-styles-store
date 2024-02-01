@@ -51,7 +51,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
 
   return (
     <main className="container-main py-20">
-      <div className="mx-auto mb-10 grid w-max grid-cols-2 justify-center gap-4 rounded-main p-4 ring-1 ring-primary-100">
+      {/* <div className="mx-auto mb-10 grid w-max grid-cols-2 justify-center gap-4 rounded-main p-4 ring-1 ring-primary-100">
         <p className="col-span-2">Temporary Buttons for Testing</p>
         <Button
           onClick={async () => {
@@ -68,7 +68,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
         >
           Clear Cart
         </Button>
-      </div>
+      </div> */}
 
       {cartItemsData && cartItemsData.length > 0 && (
         <div>
