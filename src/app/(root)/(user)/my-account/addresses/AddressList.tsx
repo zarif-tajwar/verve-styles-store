@@ -1,16 +1,15 @@
 'use client';
 
+import * as AccountDetailsCard from '@/components/UI/AccountDetailsCard';
+import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
 import {
-  HomeIcon,
   BriefcaseIcon,
   HashtagIcon,
+  HomeIcon,
 } from '@heroicons/react/16/solid';
-import EditAddress from './EditAddress';
-import AddressDelete from './AddressDelete';
 import { useSession } from 'next-auth/react';
-import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
-import * as AccountDetailsCard from '@/components/UI/AccountDetailsCard';
-import Spinner from '@/components/UI/Spinner';
+import AddressDelete from './AddressDelete';
+import EditAddress from './EditAddress';
 
 const AddressList = () => {
   const session = useSession();

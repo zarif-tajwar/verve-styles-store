@@ -60,5 +60,5 @@ export const db = drizzle(connection, {
     ...productImagesSchema,
     ...edgeStoreSchema,
   },
-  logger: new CustomLogger(),
+  // logger: new CustomLogger(),
 });
