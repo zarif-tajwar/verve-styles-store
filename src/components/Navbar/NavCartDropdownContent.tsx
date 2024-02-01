@@ -62,7 +62,7 @@ const NavCartDropdownContent = () => {
               {cartItems.map((cartItem, i) => {
                 return (
                   <div
-                    key={cartItem.cartItemId}
+                    key={cartItem.name + cartItem.price}
                     className="border-0 outline-none ring-0"
                   >
                     <div

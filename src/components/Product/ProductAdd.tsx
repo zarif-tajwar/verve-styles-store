@@ -8,9 +8,11 @@ import { cn, wait } from '@/lib/util';
 
 interface ProductAddProps {
   productId: ProductSelect['id'];
+  name: ProductSelect['name'];
+  price: ProductSelect['price'];
 }
 
-const ProductAdd = async ({ productId }: ProductAddProps) => {
+const ProductAdd = async ({ productId, name, price }: ProductAddProps) => {
   const productAvailableSizes = await db
     .selectDistinct({ sizeName: sizes.name, sizeId: sizes.id })
     .from(sizes)
@@ -27,6 +29,8 @@ const ProductAdd = async ({ productId }: ProductAddProps) => {
     <ProductAddCartRadioGroup
       sizeOptions={productAvailableSizes}
       productId={productId}
+      name={name}
+      price={price}
     />
   );
 };

@@ -94,7 +94,11 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
             </p>
             <div className="my-6 h-px w-full bg-black/10" />
             <Suspense fallback={<ProductAddSkeleton />}>
-              <ProductAdd productId={product.id} />
+              <ProductAdd
+                productId={product.id}
+                name={product.name}
+                price={product.price}
+              />
             </Suspense>
           </div>
         </div>

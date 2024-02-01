@@ -31,7 +31,9 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
   const CartComp = useMemo(() => {
     if (cartItemsData && cartItemsData.length > 0)
       return cartItemsData.map((cartItem, i) => {
-        return <CartItem key={cartItem.cartItemId} cartItem={cartItem} />;
+        return (
+          <CartItem key={cartItem.name + cartItem.price} cartItem={cartItem} />
+        );
       });
     else return null;
   }, [cartItemsData]);
