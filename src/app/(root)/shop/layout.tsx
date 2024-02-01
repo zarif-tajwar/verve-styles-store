@@ -4,7 +4,7 @@ import React, { Suspense } from 'react';
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <section className="mt-32">
+    <section className="mt-16">
       <div className="container-main">
         <div className="flex justify-between gap-8">
           <Suspense>

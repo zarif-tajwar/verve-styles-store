@@ -18,8 +18,6 @@ export const GET = auth(async function GET(req) {
       cartId = await getGuestUserCartId(true);
     }
 
-    console.log(cartId);
-
     // if theres still no cart
     if (!cartId) {
       throw new Error();
