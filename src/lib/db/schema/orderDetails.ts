@@ -7,7 +7,6 @@ import {
 } from 'drizzle-orm/pg-core';
 import { orders } from './orders';
 import { relations } from 'drizzle-orm';
-import { address } from './address';
 
 export const orderStatus = pgTable('order_status', {
   id: serial('id').primaryKey(),

@@ -1,17 +1,16 @@
+import { relations } from 'drizzle-orm';
 import {
   index,
   integer,
   pgTable,
-  primaryKey,
   serial,
   timestamp,
   unique,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { orderLine } from './orderLine';
 import { products } from './products';
 import { sizes } from './sizes';
-import { InferInsertModel, relations } from 'drizzle-orm';
-import { orderLine } from './orderLine';
 
 export const productEntries = pgTable(
   'product_entries',

@@ -2,14 +2,10 @@ import {
   integer,
   pgTable,
   timestamp,
-  serial,
   varchar,
   numeric,
-  boolean,
 } from 'drizzle-orm/pg-core';
 import { orders } from './orders';
-import { relations } from 'drizzle-orm';
-import { orderPaymentDetails } from './orderPaymentDetails';
 import { createId } from '@paralleldrive/cuid2';
 
 export const invoice = pgTable('invoice', {

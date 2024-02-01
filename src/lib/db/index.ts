@@ -9,6 +9,12 @@ import * as cartItemsSchema from './schema/cartItems';
 import * as userReviewsSchema from './schema/userReviews';
 import * as ordersSchema from './schema/orders';
 import * as orderDetailsSchema from './schema/orderDetails';
+import * as orderPaymentDetailsSchema from './schema/orderPaymentDetails';
+import * as orderCustomerDetailsSchema from './schema/orderCustomerDetails';
+import * as invoiceSchema from './schema/invoice';
+import * as addressSchema from './schema/address';
+import * as productImagesSchema from './schema/productImages';
+import * as edgeStoreSchema from './schema/edgeStore';
 import * as orderLineSchema from './schema/orderLine';
 import * as authSchema from './schema/auth';
 import * as dummyUserSchema from './schema/dummyUser';
@@ -47,6 +53,12 @@ export const db = drizzle(connection, {
     ...orderLineSchema,
     ...authSchema,
     ...dummyUserSchema,
+    ...orderCustomerDetailsSchema,
+    ...orderPaymentDetailsSchema,
+    ...invoiceSchema,
+    ...addressSchema,
+    ...productImagesSchema,
+    ...edgeStoreSchema,
   },
   // logger: new CustomLogger(),
 });

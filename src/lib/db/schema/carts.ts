@@ -1,11 +1,4 @@
-import {
-  index,
-  integer,
-  pgTable,
-  serial,
-  timestamp,
-  text,
-} from 'drizzle-orm/pg-core';
+import { index, pgTable, serial, timestamp, text } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 import { InferInsertModel, InferSelectModel, relations } from 'drizzle-orm';
 import { cartItems } from './cartItems';

@@ -4,7 +4,7 @@ import {
   text,
   primaryKey,
   integer,
-  pgEnum,
+  index,
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccount } from '@auth/core/adapters';
 import { relations } from 'drizzle-orm';
@@ -12,18 +12,26 @@ import { orders } from './orders';
 import { carts } from './carts';
 import { address } from './address';
 
-export const user = pgTable('user', {
-  id: text('id').notNull().primaryKey(),
-  name: text('name'),
-  email: text('email').notNull(),
-  emailVerified: timestamp('emailVerified', { mode: 'date' }),
-  image: text('image'),
-  role: text('role', {
-    enum: ['ADMIN', 'STAFF', 'USER', 'TEST USER'],
-  })
-    .notNull()
-    .default('USER'),
-});
+export const user = pgTable(
+  'user',
+  {
+    id: text('id').notNull().primaryKey(),
+    name: text('name'),
+    email: text('email').notNull(),
+    emailVerified: timestamp('emailVerified', { mode: 'date' }),
+    image: text('image'),
+    role: text('role', {
+      enum: ['ADMIN', 'STAFF', 'USER', 'TEST USER'],
+    })
+      .notNull()
+      .default('USER'),
+  },
+  (table) => {
+    return {
+      userIdIdx: index('user_id_idx').on(table.id),
+    };
+  },
+);
 
 export const userRelations = relations(user, ({ one, many }) => ({
   orders: many(orders),

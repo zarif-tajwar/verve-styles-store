@@ -2,7 +2,6 @@ import { pgTable, text, varchar } from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
 import { relations } from 'drizzle-orm';
 import { orders } from './orders';
-import { carts } from './carts';
 import { address } from './address';
 
 export const dummyUser = pgTable('dummy_user', {

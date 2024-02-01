@@ -1,11 +1,4 @@
-import {
-  pgTable,
-  serial,
-  text,
-  varchar,
-  timestamp,
-  integer,
-} from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, timestamp, integer } from 'drizzle-orm/pg-core';
 
 export const edgeStoreImages = pgTable('edge_store_images', {
   id: serial('id').primaryKey(),

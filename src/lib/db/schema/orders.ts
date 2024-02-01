@@ -1,12 +1,10 @@
 import {
   index,
-  integer,
   pgTable,
   serial,
   timestamp,
   text,
   varchar,
-  boolean,
 } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 import { relations } from 'drizzle-orm';

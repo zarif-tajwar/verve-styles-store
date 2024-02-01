@@ -1,14 +1,5 @@
-import {
-  integer,
-  pgTable,
-  timestamp,
-  serial,
-  varchar,
-  numeric,
-  boolean,
-} from 'drizzle-orm/pg-core';
+import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { orders } from './orders';
-import { relations } from 'drizzle-orm';
 
 export const orderPaymentDetails = pgTable('order_payment_details', {
   orderId: integer('order_id')
