@@ -1,9 +1,10 @@
 'use client';
 
-import { getShopProductsAction } from '@/lib/actions/shop';
 import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '@/lib/constants/query-keys';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { FilteredProductItem } from '@/lib/server/shop';
 import { useQuery } from '@tanstack/react-query';
+import { errorToast } from '../UI/Toaster';
 import FilterProductsStatusText from './FilterProductsStatusText';
 import ProductListing from './ProductListing';
 import ShopFilterPagination from './ShopFilterPagination';
@@ -14,13 +15,27 @@ const Shop = () => {
     (store) => store.paramsStateSerialized,
   );
 
+  const params = new URLSearchParams(
+    paramsStateSerialized as Record<string, string>,
+  ).toString();
+  const url = `/api/shop?${params}`;
   const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, paramsStateSerialized];
 
   const { data: productItems, isFetching } = useQuery({
     queryKey,
     queryFn: async () => {
-      const data = await getShopProductsAction(paramsStateSerialized);
-      return data || [];
+      let products: FilteredProductItem[] = [];
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error();
+        } else {
+          products = (await res.json()).data;
+        }
+      } catch (error) {
+        errorToast('Something went wrong while fetching the products!');
+      }
+      return products;
     },
     placeholderData: (prevData) => prevData,
   });
