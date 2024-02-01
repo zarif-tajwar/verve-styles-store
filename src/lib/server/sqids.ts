@@ -1,9 +1,10 @@
 import Sqids from 'sqids';
+import { env } from '@/lib/validation/env.mjs';
 
 // For hiding sensitive integer values
 
 export const sqids = new Sqids({
-  alphabet: process.env.SQID_SECRET,
+  alphabet: env.SQID_SECRET,
   minLength: 10,
 });
 

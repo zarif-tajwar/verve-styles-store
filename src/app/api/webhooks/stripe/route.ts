@@ -13,6 +13,7 @@ import {
   ProductEntrySelect,
   productEntries,
 } from '@/lib/db/schema/productEntries';
+import { env } from '@/lib/validation/env.mjs';
 
 export async function POST(req: Request) {
   let event: Stripe.Event;
@@ -21,8 +22,7 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(
       await (await req.blob()).text(),
       req.headers.get('stripe-signature') as string,
-      'whsec_a6cb90475fa6a7af98f1466b25eb0ac127ae29fe993c679370ce5f5857d200d0',
-      // process.env.STRIPE_WEBHOOK_SECRET as string
+      env.STRIPE_WEBHOOK_KEY,
     );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';

@@ -14,13 +14,14 @@ import { randomUUID } from 'crypto';
 import { SESSION_MAX_AGE } from './lib/constants/auth';
 import { cache } from 'react';
 import { encodeSingleSqid } from './lib/server/sqids';
+import { env } from './lib/validation/env.mjs';
 
 // export const authAdapter = DrizzleAdapter(db);
 export const authAdapter = temporaryAdapter();
 
 const getRole = (email: string): UserSelect['role'] => {
-  if (email === process.env.ADMIN_EMAIL) return 'ADMIN';
-  if (email === process.env.STAFF_EMAIL) return 'STAFF';
+  if (email === env.ADMIN_EMAIL) return 'ADMIN';
+  if (email === env.STAFF_EMAIL) return 'STAFF';
   return 'USER';
 };
 
@@ -51,14 +52,14 @@ const authConfig = {
     }),
     // EmailProvider({
     //   server: {
-    //     host: process.env.SENDGRID_HOST,
-    //     port: process.env.SENDGRID_PORT,
+    //     host: env.SENDGRID_HOST,
+    //     port: env.SENDGRID_PORT,
     //     auth: {
-    //       user: process.env.SENDGRID_USER,
-    //       pass: process.env.SENDGRID_API_KEY,
+    //       user: env.SENDGRID_USER,
+    //       pass: env.SENDGRID_API_KEY,
     //     },
     //   },
-    //   from: process.env.SENDGRID_EMAIL_FROM,
+    //   from: env.SENDGRID_EMAIL_FROM,
     // }),
     CredentialsProvider({
       authorize: async ({}) => {

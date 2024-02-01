@@ -22,6 +22,7 @@ import 'dotenv/config';
 import { Logger } from 'drizzle-orm/logger';
 // import { Pool } from '@neondatabase/serverless';
 import { Pool } from 'pg';
+import { env } from '@/lib/validation/env.mjs';
 
 class CustomLogger implements Logger {
   logQuery(query: string, params: unknown[]): void {
@@ -34,7 +35,7 @@ class CustomLogger implements Logger {
   }
 }
 
-const connectionString = process.env.NEON_DB_URL!;
+const connectionString = env.DB_URL;
 const connection = new Pool({
   connectionString,
 });
