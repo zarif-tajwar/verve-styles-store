@@ -39,7 +39,7 @@ import {
   orderDetails,
   orderStatus,
 } from './schema/orderDetails';
-import { address } from './schema/address';
+import { AddressInsert, AddressSelect, address } from './schema/address';
 import { z } from 'zod';
 import * as https from 'https';
 import * as fs from 'fs';
@@ -51,15 +51,30 @@ import { EdgeStoreImagesInsert, edgeStoreImages } from './schema/edgeStore';
 import { ProductImagesInsert, productImages } from './schema/productImages';
 import {
   rand,
+  randAddress,
   randEmail,
   randFirstName,
   randFullName,
   randImg,
   randLastName,
+  randPastDate,
+  randPhoneNumber,
+  randText,
 } from '@ngneat/falso';
-import { UserInsert, user } from './schema/auth';
+import { UserInsert, UserSelect, user } from './schema/auth';
 import { ulid } from 'ulidx';
 import { decodeSingleSqid } from '../server/sqids';
+import {
+  OrderCustomerDetailsInsert,
+  orderCustomerDetails,
+} from './schema/orderCustomerDetails';
+import {
+  OrderPaymentDetailsInsert,
+  OrderPaymentDetailsSelect,
+  orderPaymentDetails,
+} from './schema/orderPaymentDetails';
+import { InvoiceInsert, invoice } from './schema/invoice';
+import { productSalesCount } from './schema/productSalesCount';
 
 async function populateSizes() {
   await db
@@ -475,42 +490,6 @@ const makeRandomDummyOrders = async (n: number) => {
   });
 };
 
-const postFakeReviews = async (n: number = 1000) => {
-  const allOrderLines = await db
-    .select({ id: orderLine.id, date: orderLine.updatedAt })
-    .from(orderLine)
-    .leftJoin(userReviews, eq(orderLine.id, userReviews.orderLineId))
-    .where(isNull(userReviews.orderLineId));
-
-  const selectedOrderLines: typeof allOrderLines = [];
-
-  for (let i = 0; i < n; i++) {
-    const selectedOrderLine = allOrderLines.at(
-      genRandomInt(0, allOrderLines.length - 1),
-    );
-    if (
-      selectedOrderLine?.id &&
-      !selectedOrderLines.find((x) => x.id === selectedOrderLine.id)
-    ) {
-      selectedOrderLines.push(selectedOrderLine);
-    }
-  }
-
-  const generatedReviews: UserReviewsInsert[] = selectedOrderLines.map(
-    (orderLine) => ({
-      orderLineId: orderLine.id,
-      createdAt: orderLine.date,
-      updatedAt: orderLine.date,
-      rating: (genRandomInt(6, 10) / 2).toString(),
-      comment: faker.lorem.paragraph(5),
-    }),
-  );
-
-  await db.transaction(async (tx) => {
-    await tx.insert(userReviews).values(generatedReviews).onConflictDoNothing();
-  });
-};
-
 const populateOrderStatusText = async () => {
   await db
     .insert(orderStatus)
@@ -744,15 +723,289 @@ const deleteAllTestUsers = async () => {
   });
 };
 
+const populateTestUserAddresses = async () => {
+  const addressInsert: AddressInsert[] = [];
+  const testUsers = await db
+    .select()
+    .from(user)
+    .where(eq(user.role, 'TEST USER'));
+  for (let i = 0; i < testUsers.length; i++) {
+    for (let j = 0; j < genRandomInt(2, 5); j++) {
+      const fakeAddress = randAddress();
+      const insertedAddress: AddressInsert = {
+        address: fakeAddress.street,
+        city: fakeAddress.city,
+        country: fakeAddress.country!,
+        label: randText({ charCount: 10 }),
+        phone: randPhoneNumber({ countryCode: 'UK' }),
+        isSaved: true,
+        userId: testUsers.at(i)!.id,
+        type: rand(['home', 'not-relevant', 'office']),
+        isDefault: j === 0,
+      };
+      addressInsert.push(insertedAddress);
+    }
+  }
+
+  await db.insert(address).values(addressInsert);
+};
+
+const populateTestUserOrders = async () => {
+  const testUsersPromise = db
+    .select()
+    .from(user)
+    .innerJoin(address, eq(user.id, address.userId))
+    .where(and(eq(user.role, 'TEST USER'), eq(address.isDefault, true)));
+
+  const productEntriesPromise = db.select().from(productEntries);
+
+  const [testUsersData, productEntriesData] = await Promise.all([
+    testUsersPromise,
+    productEntriesPromise,
+  ]);
+
+  const promises: Promise<unknown>[] = [];
+
+  for (let i = 0; i < testUsersData.length; i++) {
+    const selectedUser = testUsersData.at(i)!;
+    const howManyOrdersShouldBeMade = genRandomInt(20, 30);
+    for (let j = 0; j < howManyOrdersShouldBeMade; j++) {
+      const howManyOrderLines = genRandomInt(3, 8);
+    }
+  }
+};
+
+const makeRandomFakeOrdersByUser = async ({
+  id,
+  isDummyUser,
+}: {
+  id: UserSelect['id'] | DummyUserSelect['id'];
+  isDummyUser?: boolean;
+}) => {
+  const userSelectPromise = isDummyUser
+    ? db
+        .select()
+        .from(dummyUser)
+        .where(eq(dummyUser.id, id))
+        .then((res) => res.at(0))
+    : db
+        .select()
+        .from(user)
+        .where(eq(user.id, id))
+        .then((res) => res.at(0));
+
+  const productEntriesSelectPromise = db
+    .select()
+    .from(productEntries)
+    .innerJoin(products, eq(productEntries.productID, products.id));
+
+  const [userData, productEntriesData] = await Promise.all([
+    userSelectPromise,
+    productEntriesSelectPromise,
+  ]);
+
+  if (!userData) return;
+
+  const howManyOrdersShouldBeMade = genRandomInt(20, 30);
+  const promises: Promise<unknown>[] = [];
+  const orderStatusIds = [2, 4, 5, 6];
+
+  for (let i = 0; i < howManyOrdersShouldBeMade; i++) {
+    const createOrderPromise = db.transaction(async (tx) => {
+      const date = randPastDate({ years: 2 });
+
+      const createdOrder = (
+        await tx
+          .insert(orders)
+          .values({ userId: id, createdAt: date })
+          .returning()
+      ).at(0);
+
+      if (!createdOrder) {
+        tx.rollback();
+        return;
+      }
+
+      const selectedStatusId = rand(orderStatusIds);
+
+      const estimatedDeliveryDate = new Date(date);
+      estimatedDeliveryDate.setDate(date.getDate() + 2);
+
+      const deliveredAt = new Date(date);
+      deliveredAt.setDate(date.getDate() + 1);
+
+      const orderDetailsInsertData: OrderDetailsInsert = {
+        orderId: createdOrder.id,
+        statusId: selectedStatusId,
+        placedAt: date,
+        deliveryDate: estimatedDeliveryDate,
+        deliveredAt: selectedStatusId === 2 ? deliveredAt : null,
+      };
+      const fakeAddress = randAddress();
+
+      const orderCustomerDetailsInsertData: OrderCustomerDetailsInsert = {
+        address: fakeAddress.street,
+        city: fakeAddress.city,
+        country: fakeAddress.country!,
+        addressLabel: randText({ charCount: 10 }),
+        phone: randPhoneNumber({ countryCode: 'UK' }),
+        addressType: rand(['home', 'not-relevant', 'office']),
+        customerName: userData.name!,
+        orderId: createdOrder.id,
+        customerEmail: userData.email,
+        createdAt: date,
+      };
+
+      const orderPaymentDetailsData: OrderPaymentDetailsInsert = {
+        orderId: createdOrder.id,
+        createdAt: date,
+        paymentMethod: 'dummy',
+      };
+
+      const howManyOrderLines = genRandomInt(4, 8);
+
+      const orderLinesData: OrderLinesInsert[] = [
+        ...Array(howManyOrderLines).keys(),
+      ].map(() => {
+        const selectedProductEntry = rand(productEntriesData);
+        return {
+          orderId: createdOrder.id,
+          pricePerUnit: selectedProductEntry.products.price,
+          productEntryId: selectedProductEntry.product_entries.id,
+          quantity: genRandomInt(2, 5),
+          discount: '0',
+        };
+      });
+
+      let subtotal = 0;
+      let totalDiscount = 0;
+
+      for (let orderLineData of orderLinesData) {
+        const sub =
+          orderLineData.quantity *
+          Number.parseFloat(orderLineData.pricePerUnit);
+
+        subtotal += sub;
+        totalDiscount +=
+          sub * (Number.parseFloat(orderLineData.discount ?? '0') / 100);
+      }
+
+      const invoiceData: InvoiceInsert = {
+        deliveryCharge: '25',
+        orderId: createdOrder.id,
+        subtotal: subtotal.toString(),
+        totalDiscountInCurrency: totalDiscount.toString(),
+      };
+
+      const promises: Promise<unknown>[] = [];
+
+      promises.push(tx.insert(orderDetails).values(orderDetailsInsertData));
+      promises.push(
+        tx.insert(orderPaymentDetails).values(orderPaymentDetailsData),
+      );
+      promises.push(
+        tx.insert(orderCustomerDetails).values(orderCustomerDetailsInsertData),
+      );
+      promises.push(tx.insert(invoice).values(invoiceData));
+      promises.push(tx.insert(orderLine).values(orderLinesData));
+
+      await Promise.all(promises);
+    });
+    promises.push(createOrderPromise);
+  }
+  await Promise.all(promises);
+};
+
+const makeRandomTestUserOrders = async () => {
+  const allTestUsers = await db
+    .select()
+    .from(user)
+    .where(eq(user.role, 'TEST USER'));
+
+  const promises: Promise<unknown>[] = [];
+
+  for (let i = 0; i < allTestUsers.length; i++) {
+    // const promisesChunk: Promise<unknown>[] = [];
+    // const testUsersChunk = allTestUsers.slice(i, i + 100);
+    // for (let j = 0; j < testUsersChunk.length; j++) {
+    //   promisesChunk.push(
+    //     makeRandomFakeOrdersByUser({ id: testUsersChunk.at(j)!.id }),
+    //   );
+    // }
+    // promises.push();
+    // await Promise.all(promisesChunk);
+    await makeRandomFakeOrdersByUser({ id: allTestUsers.at(i)!.id });
+  }
+};
+
+const deleteOrders = async () => {
+  await db.transaction(async (tx) => {
+    const orderIds = await tx
+      .select({ orderId: orders.id })
+      .from(orders)
+      .innerJoin(user, eq(orders.userId, user.id))
+      .where(eq(user.role, 'TEST USER'))
+      .then((orders) => orders.map((order) => order.orderId));
+
+    await tx
+      .delete(orderDetails)
+      .where(inArray(orderDetails.orderId, orderIds));
+    await tx
+      .delete(orderPaymentDetails)
+      .where(inArray(orderPaymentDetails.orderId, orderIds));
+    await tx
+      .delete(orderCustomerDetails)
+      .where(inArray(orderCustomerDetails.orderId, orderIds));
+    await tx.delete(invoice).where(inArray(invoice.orderId, orderIds));
+    await tx.delete(orderLine).where(inArray(orderLine.orderId, orderIds));
+    await tx.delete(orders).where(inArray(orders.id, orderIds));
+  });
+};
+
+const postFakeReviews = async (n: number = 1000) => {
+  const allOrderLines = await db
+    .select({ id: orderLine.id, date: orderLine.updatedAt })
+    .from(orderLine)
+    .leftJoin(userReviews, eq(orderLine.id, userReviews.orderLineId))
+    .where(isNull(userReviews.orderLineId));
+
+  const selectedOrderLines: typeof allOrderLines = [];
+
+  for (let i = 0; i < n; i++) {
+    const selectedOrderLine = allOrderLines.at(
+      genRandomInt(0, allOrderLines.length - 1),
+    );
+    if (
+      selectedOrderLine?.id &&
+      !selectedOrderLines.find((x) => x.id === selectedOrderLine.id)
+    ) {
+      selectedOrderLines.push(selectedOrderLine);
+    }
+  }
+
+  const generatedReviews: UserReviewsInsert[] = selectedOrderLines.map(
+    (orderLine) => ({
+      orderLineId: orderLine.id,
+      createdAt: orderLine.date,
+      updatedAt: orderLine.date,
+      rating: (genRandomInt(6, 10) / 2).toString(),
+      comment: faker.lorem.paragraph(5),
+    }),
+  );
+
+  await db.transaction(async (tx) => {
+    await tx.insert(userReviews).values(generatedReviews).onConflictDoNothing();
+  });
+};
+
 async function execute() {
   console.log('⏳ Running ...');
 
   const start = performance.now();
 
-  await insertSomeTestUsers(5);
-  // console.log(decodeSingleSqid('y5P6cUMEAe'));
-  // await deleteAllTestUsers();
-  // await deleteAllTestUsers();
+  for (let i = 0; i < 10; i++) {
+    await postFakeReviews(10000);
+  }
 
   const end = performance.now();
 

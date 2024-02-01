@@ -64,9 +64,9 @@ const TestArea = () => {
   };
 
   return (
-    <div className="rounded-xl bg-primary-50 px-6 py-8">
+    <div className="rounded-xl bg-primary-50 p-8">
       <div className="mb-6">
-        <p className="mb-2 text-sm text-primary-400">
+        <p className="mb-2 text-balance text-sm text-primary-400">
           <span className="font-semibold text-primary-500">
             Note:&nbsp;&nbsp;
           </span>
@@ -91,7 +91,7 @@ const TestArea = () => {
         </div>
       </div>
       <div>
-        <p className="mb-2 text-sm text-primary-400">
+        <p className="mb-2 text-balance text-sm text-primary-400">
           <span className="font-semibold text-primary-500">
             Skip payment test:&nbsp;&nbsp;
           </span>
@@ -121,7 +121,7 @@ const TestArea = () => {
           <Button
             size={'sm'}
             asChild
-            className="min-w-64 items-center justify-center gap-2 rounded-md bg-emerald-500 text-primary-0"
+            className="min-w-64 items-center justify-center gap-2 rounded-md bg-emerald-500 text-primary-0 hover:bg-emerald-500"
           >
             <span className="">
               <CheckCircleIcon className="size-4" />

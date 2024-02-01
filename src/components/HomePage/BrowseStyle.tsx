@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 const BrowseStyle = () => {
   return (
     <section className="mt-4">
@@ -7,18 +9,30 @@ const BrowseStyle = () => {
             Browse by Dress Style
           </h2>
           <div className="grid grid-cols-3 gap-5">
-            <div className="h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6">
-              <h3 className="text-4xl font-semibold">Casual</h3>
-            </div>
-            <div className="col-span-2 h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6">
-              <h3 className="text-4xl font-semibold">Formal</h3>
-            </div>
-            <div className="col-span-2 h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6">
-              <h3 className="text-4xl font-semibold">Party</h3>
-            </div>
-            <div className="h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6">
-              <h3 className="text-4xl font-semibold">Gym</h3>
-            </div>
+            <Link
+              href={'/shop?styles=casual'}
+              className="h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6"
+            >
+              <p className="text-4xl font-semibold">Casual</p>
+            </Link>
+            <Link
+              href={'/shop?styles=formal'}
+              className="col-span-2 h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6"
+            >
+              <p className="text-4xl font-semibold">Formal</p>
+            </Link>
+            <Link
+              href={'/shop?styles=festival'}
+              className="col-span-2 h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6"
+            >
+              <p className="text-4xl font-semibold">Festival</p>
+            </Link>
+            <Link
+              href={'/shop?styles=gym'}
+              className="h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6"
+            >
+              <p className="text-4xl font-semibold">Gym</p>
+            </Link>
           </div>
         </div>
       </div>

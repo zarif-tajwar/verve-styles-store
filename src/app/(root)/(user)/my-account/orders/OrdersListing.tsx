@@ -64,7 +64,7 @@ const OrdersListing = () => {
   return (
     <div className="rounded-main">
       {isFetching && <OrderListingSkeleton />}
-      {orders && orders.length === 0 && (
+      {orders && orders.length === 0 && !isFetching && (
         <p className="text-xl font-medium">No orders found!</p>
       )}
       {orders && !isFetching && (
