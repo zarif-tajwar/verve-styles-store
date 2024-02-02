@@ -6,6 +6,7 @@ export type UserOrderedProduct = {
   total: number;
   name: string;
   size: string;
+  image: string;
 };
 
 export type UserOrder = {

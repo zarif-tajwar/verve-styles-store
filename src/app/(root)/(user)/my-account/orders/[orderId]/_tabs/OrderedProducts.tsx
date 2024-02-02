@@ -10,7 +10,7 @@ import { products } from '@/lib/db/schema/products';
 import { sizes } from '@/lib/db/schema/sizes';
 import { cn, priceFormat } from '@/lib/util';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import Image from 'next/image';
 import React from 'react';
 import PostAReviewBtn from './PostAReviewBtn';
@@ -23,13 +23,15 @@ const OrderedProducts = async ({
   invoiceData: InvoiceSelect;
 }) => {
   const orderLineItems = await db
-    .select()
+    .selectDistinct()
     .from(orderLine)
     .innerJoin(productEntries, eq(productEntries.id, orderLine.productEntryId))
     .innerJoin(products, eq(products.id, productEntries.productID))
     .leftJoin(productImages, eq(productImages.productID, products.id))
     .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
-    .where(eq(orderLine.orderId, orderId))
+    .where(
+      and(eq(orderLine.orderId, orderId), eq(productImages.isDefault, true)),
+    )
     .orderBy(orderLine.createdAt, orderLine.id);
 
   const subtotal = Number.parseFloat(invoiceData.subtotal);
@@ -39,6 +41,8 @@ const OrderedProducts = async ({
     invoiceData.totalDiscountInCurrency ?? '0',
   );
   const total = subtotal + deliveryCharge + taxes - discount;
+
+  console.log(orderLineItems.length);
 
   return (
     <div>
