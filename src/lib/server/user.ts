@@ -5,32 +5,13 @@ import 'server-only';
 import { db } from '../db';
 import { UserSelect } from '../db/schema/auth';
 import { DummyUserSelect } from '../db/schema/dummyUser';
-import {
-  OrderDetailsInsert,
-  OrderDetailsSelect,
-  orderDetails,
-} from '../db/schema/orderDetails';
+import { OrderDetailsInsert, orderDetails } from '../db/schema/orderDetails';
 import { OrderLinesInsert, orderLine } from '../db/schema/orderLine';
-import { OrderInsert, OrderSelect, orders } from '../db/schema/orders';
+import { OrderInsert, orders } from '../db/schema/orders';
 import { productEntries } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
 import { genRandomInt } from '../util';
-
-type UserOrderedProduct = {
-  quantity: number;
-  total: number;
-  name: string;
-  size: string;
-};
-
-type UserOrder = {
-  orderId: OrderSelect['id'];
-  status: string;
-  orderDate?: OrderDetailsSelect['placedAt'];
-  deliveryDate?: OrderDetailsSelect['deliveryDate'];
-  deliveredAt?: OrderDetailsSelect['deliveredAt'];
-  orderedProducts: UserOrderedProduct[];
-};
+import { UserOrder } from '../types/user';
 
 export const getOrdersServer = async (
   userId: UserSelect['id'] | DummyUserSelect['id'],
@@ -64,6 +45,8 @@ export const getOrdersServer = async (
             ),
             'name',
             pr.name,
+            'image',
+            pimg.url,
             'size',
             s.name
           )
@@ -73,8 +56,11 @@ export const getOrdersServer = async (
         INNER JOIN product_entries pe ON pe.id = ol.product_entry_id
         INNER JOIN products pr ON pr.id = pe.product_id
         INNER JOIN sizes s ON s.id = pe.size_id
+        INNER JOIN product_images pimg ON pimg.product_id = pr.id
       WHERE
         ol.order_id = o.id
+        AND
+        pimg.is_default = TRUE
     ) AS order_lines ON TRUE
   WHERE
   `;

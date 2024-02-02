@@ -5,6 +5,7 @@ import SizeBadge from '@/components/UI/SizeBadge';
 import { UserOrderedProduct } from '@/lib/types/user';
 import { priceFormat } from '@/lib/util';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
+import Image from 'next/image';
 
 const OrderItemsListing = ({
   orderedProducts,
@@ -22,7 +23,14 @@ const OrderItemsListing = ({
             return (
               <div key={i} className="relative">
                 <div className="grid w-full grid-cols-[auto_1fr] gap-4 text-primary-400">
-                  <div className="aspect-auto size-[5.5rem] rounded-lg bg-primary-50"></div>
+                  <div className="relative aspect-auto size-[5.5rem] overflow-hidden rounded-lg bg-primary-50">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      className="object-cover"
+                      fill
+                    />
+                  </div>
                   <div className="flex flex-col justify-between">
                     <div className="flex gap-2">
                       <p className="mb-2 font-semibold">{product.name}</p>
