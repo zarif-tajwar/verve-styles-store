@@ -22,7 +22,8 @@ export default function RootLayout({
         className={cn(
           `${IntegralCF.variable} ${Geist.variable} bg-primary-0 font-geist font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`,
           // navbar height
-          '[--nav-height:6rem]',
+          'md:[--nav-height:6rem]',
+          '[--nav-height:4rem]',
         )}
       >
         {children}
