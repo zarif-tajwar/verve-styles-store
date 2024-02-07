@@ -6,6 +6,7 @@ import { productSalesCount } from '@/lib/db/schema/productSalesCount';
 import { desc, eq } from 'drizzle-orm';
 import FeaturedItem from './FeaturedItem';
 import { productImages } from '@/lib/db/schema/productImages';
+import { Container } from '../UI/Container';
 
 const Featured = async () => {
   const newArrivalsPromise = db
@@ -59,7 +60,7 @@ const Featured = async () => {
   ]);
   return (
     <section>
-      <div className="container-main mt-3 divide-y divide-black/10">
+      <Container className="mt-3 divide-y divide-primary-100">
         <FeaturedItem
           title="New Arrivals"
           href="/shop"
@@ -70,7 +71,7 @@ const Featured = async () => {
           href="/shop?sort_by=most+popular"
           products={topSelling}
         />
-      </div>
+      </Container>
     </section>
   );
 };
