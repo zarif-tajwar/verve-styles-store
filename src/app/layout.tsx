@@ -4,6 +4,7 @@ import IntegralCF from './_fonts/integral-cf/font';
 import Geist from './_fonts/geist/font';
 import { Toaster } from '@/components/UI/Toaster';
 import ScreenBlocker from '@/components/ScreenBlocker';
+import { cn } from '@/lib/util';
 
 export const metadata: Metadata = {
   title: 'Verve Styles - Clothing Store',
@@ -18,11 +19,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${IntegralCF.variable} ${Geist.variable} bg-primary-0 font-geist font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`}
+        className={cn(
+          `${IntegralCF.variable} ${Geist.variable} bg-primary-0 font-geist font-normal text-primary-900 antialiased selection:bg-primary-900 selection:text-primary-50`,
+          // navbar height
+          '[--nav-height:6rem]',
+        )}
       >
         {children}
         <Toaster />
-        <ScreenBlocker />
+        {/* <ScreenBlocker /> */}
       </body>
     </html>
   );
