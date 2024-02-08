@@ -31,7 +31,7 @@ const FeaturedItem = ({
   href: string;
 }) => {
   return (
-    <div className="py-16">
+    <div>
       <SectionHeading>{title}</SectionHeading>
       <Carousel
         opts={{

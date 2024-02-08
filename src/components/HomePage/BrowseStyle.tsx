@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { SectionHeading } from '../UI/Homepage';
 import { Container } from '../UI/Container';
+import { Section } from '../UI/Section';
 
 const BrowseStyle = () => {
   const styleOptionPairs = [
@@ -28,7 +29,7 @@ const BrowseStyle = () => {
     ],
   ];
   return (
-    <section className="mt-4">
+    <Section>
       <Container className="[@media(width<=768px)]:p-0">
         <div className="bg-offwhite px-4 py-12 md:rounded-[40px] md:px-8 md:py-12 lg:p-16">
           <SectionHeading>Browse by Dress Style</SectionHeading>
@@ -75,7 +76,7 @@ const BrowseStyle = () => {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 };
 export default BrowseStyle;

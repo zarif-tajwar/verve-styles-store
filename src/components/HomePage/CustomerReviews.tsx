@@ -23,6 +23,7 @@ import {
 } from '../UI/Carousel';
 import { Container } from '../UI/Container';
 import { SectionHeading } from '../UI/Homepage';
+import { Section } from '../UI/Section';
 
 const CustomerReviews = () => {
   const [api, setApi] = useState<CarouselApi>();
@@ -54,7 +55,7 @@ const CustomerReviews = () => {
   }, [isVisible, handleKeyboardControl]);
 
   return (
-    <section className="my-20 overflow-x-clip" id="reviews">
+    <Section className="overflow-x-clip pb-24 md:pb-32 lg:pb-40" id="reviews">
       <Container className="relative">
         <div>
           <Carousel
@@ -95,7 +96,7 @@ const CustomerReviews = () => {
           </Carousel>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 };
 export default CustomerReviews;

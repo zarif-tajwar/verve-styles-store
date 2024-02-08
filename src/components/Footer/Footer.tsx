@@ -10,7 +10,7 @@ const Footer = () => {
     <footer className="relative">
       <NewsLetterSubscription />
       <div className="bg-primary-50">
-        <Container className="divide-y divide-primary-100 pb-8 pt-10 sm:pb-20 sm:pt-16 md:pb-16">
+        <Container className="divide-y divide-primary-100 pb-8 pt-16 sm:pb-20 sm:pt-16 md:pb-16">
           <nav className="mb-12 grid grid-cols-2 justify-between gap-x-8 gap-y-16 lg:grid-cols-[repeat(5,auto)]">
             <div className="col-span-2 lg:col-span-1">
               <Link href={'/'} className="inline-block">

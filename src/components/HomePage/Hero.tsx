@@ -5,7 +5,7 @@ import React from 'react';
 import { PartnerLogo } from '../Svgs/PartnerLogo';
 import { Button } from '../UI/Button';
 import { Container } from '../UI/Container';
-import { FullScreenSection } from '../UI/Section';
+import { Section } from '../UI/Section';
 
 const highlightedInfos = [
   '200+ International Brands',
@@ -41,7 +41,11 @@ const HighlightInfo = ({
 
 const Hero = () => {
   return (
-    <FullScreenSection className="flex flex-col items-start justify-between bg-primary-50">
+    <Section
+      fullScreen
+      noVerticalPadding
+      className="flex flex-col items-start justify-between bg-primary-50"
+    >
       <Container
         className={cn(
           'relative grid flex-grow grid-cols-1 overflow-y-hidden',
@@ -127,7 +131,7 @@ const Hero = () => {
           </div>
         </Container>
       </div>
-    </FullScreenSection>
+    </Section>
   );
 };
 export default Hero;
