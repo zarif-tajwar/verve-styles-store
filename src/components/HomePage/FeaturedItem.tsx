@@ -6,6 +6,7 @@ import { SectionHeading } from '../UI/Homepage';
 import * as ProductListingItem from '../UI/ProductListingItem';
 import {
   Carousel,
+  CarouselButtons,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -81,21 +82,11 @@ const FeaturedItem = ({
         </CarouselViewport>
         <div
           className={cn(
-            'flex justify-center pt-8',
+            'flex justify-center pt-10',
             products.length <= 4 && '[@media(width>=1100px)]:hidden',
           )}
         >
-          <div className="flex rounded-full p-1 ring-1 ring-primary-50">
-            <CarouselPrevious
-              variant={'ghost'}
-              className="rounded-none rounded-l-full"
-            />
-            <span className="h-full w-px bg-primary-50"></span>
-            <CarouselNext
-              variant={'ghost'}
-              className="rounded-none rounded-r-full"
-            />
-          </div>
+          <CarouselButtons />
         </div>
       </Carousel>
       <div className="flex items-center justify-center">
