@@ -15,7 +15,7 @@ export const SectionHeading = React.forwardRef<
   return (
     <Comp
       className={cn(
-        'mb-10 text-center font-integral-cf text-3xl font-bold uppercase sm:mb-12 sm:text-4xl lg:mb-16 lg:text-5xl',
+        'mb-10 text-balance text-center font-integral-cf text-3xl font-bold uppercase sm:mb-12 sm:text-4xl lg:mb-16 lg:text-5xl',
         className,
       )}
       ref={ref}

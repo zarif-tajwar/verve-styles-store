@@ -8,6 +8,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
   CarouselViewport,
 } from '../UI/Carousel';
 
@@ -36,11 +38,11 @@ const FeaturedItem = ({
           dragFree: true,
           breakpoints: {
             '(min-width: 1100px)': {
-              active: false,
+              active: products.length > 4 ? true : false,
             },
           },
         }}
-        className="mb-16"
+        className="mb-20"
       >
         <CarouselViewport className="">
           <CarouselContent className="md:-ml-5">
@@ -77,6 +79,24 @@ const FeaturedItem = ({
             })}
           </CarouselContent>
         </CarouselViewport>
+        <div
+          className={cn(
+            'flex justify-center pt-8',
+            products.length <= 4 && '[@media(width>=1100px)]:hidden',
+          )}
+        >
+          <div className="flex rounded-full p-1 ring-1 ring-primary-50">
+            <CarouselPrevious
+              variant={'ghost'}
+              className="rounded-none rounded-l-full"
+            />
+            <span className="h-full w-px bg-primary-50"></span>
+            <CarouselNext
+              variant={'ghost'}
+              className="rounded-none rounded-r-full"
+            />
+          </div>
+        </div>
       </Carousel>
       <div className="flex items-center justify-center">
         <Button variant={'outline'} size={'xl'} asChild className="">
