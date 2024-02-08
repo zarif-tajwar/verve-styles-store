@@ -28,7 +28,7 @@ const buttonVariants = cva(
         xs: 'py-1 leading-none px-3 text-sm',
         md: 'px-4 py-2.5 text-base',
         lg: 'h-11 px-8',
-        xl: 'py-4 px-14 text-base duration-200',
+        xl: 'py-3 px-10 md:py-4 md:px-14 text-base font-medium duration-200',
         square: 'h-10 text-sm w-10',
       },
       roundness: {

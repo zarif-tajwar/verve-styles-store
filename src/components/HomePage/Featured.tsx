@@ -59,7 +59,7 @@ const Featured = async () => {
     topSellingPromise,
   ]);
   return (
-    <section>
+    <section className="overflow-x-clip">
       <Container className="mt-3 divide-y divide-primary-100">
         <FeaturedItem
           title="New Arrivals"

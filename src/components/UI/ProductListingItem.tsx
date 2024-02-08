@@ -1,69 +1,130 @@
-import { cn, makeValidURL } from '@/lib/util';
 import React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
 import Image from 'next/image';
 import Star from './Star';
+import { cn } from '@/lib/util';
 
 export interface ProductListingItemProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  product: {
-    productId: number;
-    productName: string;
-    productPrice: string;
-    rating: string | null;
-    category: string;
-    image: string;
-  };
+  children: React.ReactNode;
+  asChild?: boolean;
 }
 
 export const ProductListingItem = React.forwardRef<
   HTMLDivElement,
   ProductListingItemProps
->(({ className, product, ...props }, ref) => {
-  const ratingStr = product.rating || '0.0';
-  const ratingFloat = Number.parseFloat(ratingStr);
-  const href = `/${makeValidURL(product.category)}/${makeValidURL(
-    product.productName,
-  )}-${product.productId}`;
+>(({ className, asChild, ...props }, ref) => {
+  const Comp = asChild ? Slot : 'div';
   return (
-    <div key={product.productId} className={className} ref={ref} {...props}>
-      <Link href={href} className="aspect-square w-full rounded-2xl">
-        <div key={href} className="relative z-0 origin-top-left">
-          <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-main">
-            {product.image && (
-              <Image
-                src={product.image}
-                alt={`Verve's ${product.productName} named clothing item in ${product.category} category.`}
-                className="object-cover grayscale"
-                fill
-              />
-            )}
-          </div>
-          <div>
-            <h3 className="mb-2 text-xl font-medium capitalize">
-              {product.productName}
-            </h3>
-          </div>
-          <div className="mb-2 flex gap-3">
-            <Star rating={ratingFloat} size="sm" />
-            <p className="flex text-sm font-medium text-primary-300">
-              <span className="block w-[3ch] text-primary-500">
-                {ratingStr}/
-              </span>
-              <span className="block">5.0</span>
-            </p>
-          </div>
-          <p className="inline-block text-2xl font-semibold">
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            }).format(Number.parseFloat(product.productPrice))}
-          </p>
-        </div>
-      </Link>
-    </div>
+    <Comp
+      ref={ref}
+      className={cn('aspect-square rounded-2xl @container/item', className)}
+      {...props}
+    />
   );
 });
 
 ProductListingItem.displayName = 'ProductListingItem';
+
+interface ProductRatingProps extends React.HTMLAttributes<HTMLDivElement> {
+  asChild?: boolean;
+  rating: number;
+}
+
+const ProductRating = React.forwardRef<HTMLDivElement, ProductRatingProps>(
+  ({ className, rating, asChild, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'div';
+    return (
+      <Comp
+        ref={ref}
+        className={cn('-ml-1 mb-4 flex gap-3  @[15rem]/item:mb-5', className)}
+        {...props}
+      >
+        <Star rating={rating} size="sm" />
+        <p className="flex text-sm font-semibold text-primary-300">
+          <span className="block w-[3ch] text-primary-500">
+            {rating.toFixed(1)}/
+          </span>
+          <span className="block">5.0</span>
+        </p>
+      </Comp>
+    );
+  },
+);
+
+ProductRating.displayName = 'ProductRating';
+
+interface ProductImageProps extends React.HTMLAttributes<HTMLDivElement> {
+  asChild?: boolean;
+  alt: string;
+  src: string;
+}
+
+const ProductImage = React.forwardRef<HTMLDivElement, ProductImageProps>(
+  ({ className, asChild, alt, src, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'div';
+    return (
+      <Comp
+        ref={ref}
+        className={cn(
+          'relative mb-3 aspect-square w-full overflow-hidden rounded-main @[15rem]/item:mb-4',
+          className,
+        )}
+        {...props}
+      >
+        <Image src={src} alt={alt} className="object-cover grayscale" fill />
+      </Comp>
+    );
+  },
+);
+
+ProductImage.displayName = 'ProductImage';
+
+interface ProductNameProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  asChild?: boolean;
+  children: React.ReactNode;
+}
+
+const ProductName = React.forwardRef<HTMLHeadingElement, ProductNameProps>(
+  ({ className, asChild, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'h3';
+    return (
+      <Comp
+        ref={ref}
+        className={cn(
+          'mb-0 line-clamp-1 text-lg font-semibold capitalize @[15rem]/item:mb-1  @[15rem]/item:text-xl',
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);
+
+ProductName.displayName = 'ProductName';
+
+interface ProductPriceProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  asChild?: boolean;
+  children: React.ReactNode;
+}
+
+const ProductPrice = React.forwardRef<HTMLParagraphElement, ProductPriceProps>(
+  ({ className, asChild, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'p';
+    return (
+      <Comp
+        ref={ref}
+        className={cn(
+          'inline-block text-xl font-semibold @[15rem]/item:text-2xl',
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);
+
+ProductPrice.displayName = 'ProductPrice';
+
+export { ProductPrice, ProductName, ProductRating, ProductImage };

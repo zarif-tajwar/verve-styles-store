@@ -8,7 +8,7 @@ const NewsLetterSubscription = () => {
   return (
     <div className="relative">
       <Container className="relative z-20 @container">
-        <div className="flex flex-col gap-8 rounded-main bg-primary-900 px-4 py-8 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-16 lg:py-9">
+        <div className="flex flex-col gap-8 rounded-main bg-primary-900 px-6 py-6 sm:px-8 sm:py-8 lg:flex-row lg:items-center lg:justify-between lg:px-16 lg:py-9">
           <p className="flex flex-col text-balance font-integral-cf text-2xl font-bold uppercase leading-[1.125] text-primary-0 selection:bg-primary-50 selection:text-primary-900 sm:text-3xl xl:text-4xl">
             <span>Stay upto date about</span>
             <span>our latest offers</span>
