@@ -11,12 +11,15 @@ const Logo = ({
   return (
     <span
       className={cn(
-        'inline-flex flex-col gap-x-2 font-geist text-xl/none font-black uppercase sm:text-2xl/none md:flex-row md:text-3xl/none',
+        'inline-flex flex-col gap-x-2 font-geist text-2xl/none font-black uppercase md:text-3xl/none [@media(width>=370px)]:flex-row',
         className,
       )}
       {...props}
     >
-      Verve <span className="ml-px text-primary-400 md:ml-0">Styles</span>
+      Verve{' '}
+      <span className="ml-px text-primary-400 [@media(width>=370px)]:ml-0">
+        Styles
+      </span>
     </span>
   );
 };

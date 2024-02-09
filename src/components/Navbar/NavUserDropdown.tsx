@@ -2,7 +2,7 @@
 
 import { signOutAction } from '@/lib/actions/auth';
 import { cn } from '@/lib/util';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, UserIcon } from '@heroicons/react/24/outline';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { FileClock, LogIn, LogOut, User2 } from 'lucide-react';
 import Link from 'next/link';
@@ -35,7 +35,11 @@ const NavUserDropdown = () => {
           className="text-primary-500 ring-offset-0 data-[state=open]:bg-primary-50"
           aria-label="Trigger User Dropdown Menu"
         >
-          <UserCircleIcon className="size-[1.6rem]" strokeWidth="1.9" />
+          <User2
+            className="size-[22px]"
+            strokeWidth={2}
+            absoluteStrokeWidth={false}
+          />
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -54,8 +58,8 @@ const NavUserDropdown = () => {
               asChild
             >
               <Link href={'/auth/sign-in'}>
-                <LogIn className="h-5 w-5" />
-                <span>Login</span>
+                <LogIn className="size-5" />
+                <span>Sign In</span>
               </Link>
             </DropdownMenu.DropdownMenuItem>
           ) : (
@@ -112,7 +116,7 @@ const NavUserDropdown = () => {
                 >
                   <Link href={'/my-account'}>
                     <User2 className="h-5 w-5" />
-                    <span>My Account</span>
+                    <span>View Account</span>
                   </Link>
                 </DropdownMenu.DropdownMenuItem>
                 <DropdownMenu.DropdownMenuItem

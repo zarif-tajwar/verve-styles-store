@@ -31,7 +31,7 @@ const BrowseStyle = () => {
   return (
     <Section>
       <Container className="[@media(width<=768px)]:p-0">
-        <div className="bg-offwhite px-4 py-12 md:rounded-[40px] md:px-8 md:py-12 lg:p-16">
+        <div className="rounded-[2.5rem] bg-offwhite px-4 py-12 md:px-8 md:py-12 lg:p-16">
           <SectionHeading>Browse by Dress Style</SectionHeading>
           <div className="space-y-4 md:space-y-5">
             {styleOptionPairs.map((styleOptions, pairIndex) => {

@@ -863,3 +863,41 @@ export const UserCircle = ({ className, ...props }: SvgIconProps) => (
     ></path>
   </svg>
 );
+export const Hamburger = ({ className, ...props }: SvgIconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="2"
+    className={className}
+    {...props}
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M3 17h18M3 12h18M3 7h18"
+    ></path>
+  </svg>
+);
+export const SearchIcon = ({ className, ...props }: SvgIconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="2"
+    className={className}
+    {...props}
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15 15l6 6m-11-4a7 7 0 110-14 7 7 0 010 14z"
+    ></path>
+  </svg>
+);
