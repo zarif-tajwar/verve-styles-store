@@ -1,12 +1,12 @@
 'use client';
 
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { Button } from '../UI/Button';
-import Link from 'next/link';
-import { cn } from '@/lib/util';
-import { FileClock, LogIn, LogOut, User2 } from 'lucide-react';
 import { signOutAction } from '@/lib/actions/auth';
-import React from 'react';
+import { cn } from '@/lib/util';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { FileClock, LogIn, LogOut, User2 } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '../UI/Button';
 import Divider from '../UI/Divider';
 
 import { useSession } from 'next-auth/react';
@@ -35,18 +35,7 @@ const NavUserDropdown = () => {
           className="text-primary-500 ring-offset-0 data-[state=open]:bg-primary-50"
           aria-label="Trigger User Dropdown Menu"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="h-[1.4375rem] w-[1.4375rem]"
-          >
-            <path
-              fillRule="evenodd"
-              d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <UserCircleIcon className="size-[1.6rem]" strokeWidth="1.9" />
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>

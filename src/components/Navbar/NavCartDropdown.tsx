@@ -2,14 +2,15 @@
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
-import { Button } from '../UI/Button';
-import NavCartDropdownContent from './NavCartDropdownContent';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/util';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import MessageComp from './MessageComp';
+import { Cart } from '../Svgs/icons';
+import { Button } from '../UI/Button';
 import CartCount from './CartCount';
-import { BagCartIcon } from '../Svgs/icons';
+import MessageComp from './MessageComp';
+import NavCartDropdownContent from './NavCartDropdownContent';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 const NavCartDropdown = () => {
   const path = usePathname();
@@ -28,24 +29,11 @@ const NavCartDropdown = () => {
           <span className="relative z-10 justify-center">
             {!isMenuOpen && (
               <>
-                <BagCartIcon />
+                <Cart />
                 <CartCount />
               </>
             )}
-            {isMenuOpen && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            )}
+            {isMenuOpen && <XMarkIcon className="size-6" strokeWidth={2} />}
           </span>
         </Button>
       </DropdownMenu.Trigger>
