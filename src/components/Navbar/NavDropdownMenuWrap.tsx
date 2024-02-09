@@ -7,10 +7,8 @@ const NavDropdownMenuWrap = async () => {
   const session = await dedupedAuth();
   return (
     <div className="-mx-2 flex items-center">
-      <ClientSessionProvider session={session}>
-        <NavCartDropdown />
-        <NavUserDropdown />
-      </ClientSessionProvider>
+      <NavCartDropdown />
+      <NavUserDropdown user={session?.user} />
     </div>
   );
 };

@@ -2,14 +2,13 @@
 
 import { signOutAction } from '@/lib/actions/auth';
 import { cn } from '@/lib/util';
-import { UserCircleIcon, UserIcon } from '@heroicons/react/24/outline';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { FileClock, LogIn, LogOut, User2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../UI/Button';
 import Divider from '../UI/Divider';
 
-import { useSession } from 'next-auth/react';
+import { Session } from 'next-auth/types';
 import Image from 'next/image';
 
 const navDropdownItemClasses = cn(
@@ -21,11 +20,7 @@ const navDropdownItemClasses = cn(
 const truncateStr = (str: string, length: number) =>
   str.length > length ? str.slice(0, length - 1) + '...' : str;
 
-const NavUserDropdown = () => {
-  const session = useSession();
-  const isLoggedIn = session.status === 'authenticated';
-  const user = session.data?.user;
-
+const NavUserDropdown = ({ user }: { user: Session['user'] | undefined }) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -52,7 +47,7 @@ const NavUserDropdown = () => {
           )}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          {!isLoggedIn || !user ? (
+          {!user ? (
             <DropdownMenu.DropdownMenuItem
               className={navDropdownItemClasses}
               asChild
