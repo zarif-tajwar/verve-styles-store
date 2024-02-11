@@ -1,6 +1,7 @@
 'use client';
 
 import CartItem from '@/components/Cart/CartItem';
+import CartItem2 from '@/components/Cart/CartItem2';
 import OrderSummary from '@/components/Cart/OrderSummary';
 import { clearCartItems, generateCartItems } from '@/lib/actions/cart';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
@@ -51,7 +52,7 @@ const CartItemsListing = ({
     if (cartItems.length > 0)
       return cartItems.map((cartItem, i) => {
         return (
-          <CartItem
+          <CartItem2
             key={cartItem.name + cartItem.price}
             cartItem={cartItem}
             totalCartItems={cartItems.length}
@@ -82,11 +83,14 @@ const CartItemsListing = ({
             ref={cusRef}
             className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1rem] sm:[--vertical-padding:1.25rem] md:[--vertical-padding:1.5rem] lg:col-span-3"
           >
-            <div className="px-2">
-              <ScrollArea scrollBarClassName="w-2">
+            <div className="px-1 sm:px-2">
+              <ScrollArea
+                type="always"
+                scrollBarClassName="w-2 translate-x-0.5 sm:translate-x-0"
+              >
                 <motion.div
                   style={{ height: heightFinal }}
-                  className="flex flex-col px-2 sm:px-3 md:px-4"
+                  className="flex flex-col px-3 sm:px-3 md:px-4"
                 >
                   <LayoutGroup>{CartComp}</LayoutGroup>
                 </motion.div>

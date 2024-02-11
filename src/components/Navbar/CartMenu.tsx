@@ -31,7 +31,7 @@ const CartMenu = () => {
           </span>
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="h-[calc(95svh-var(--close-size))] w-screen rounded-t-main [--close-size:3rem] portrait:h-[calc(100svh-var(--close-size))]">
+      <DrawerContent className="h-[calc(95svh-var(--close-size))] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem] portrait:h-[calc(100svh-var(--close-size))]">
         <Container className="h-full px-2">
           <div className="relative grid h-full w-full grid-cols-1 grid-rows-[auto_1fr]">
             <DrawerClose className="absolute right-0 top-0 inline-flex size-[var(--close-size)] -translate-y-full items-center justify-center rounded-full text-primary-0 transition-transform duration-200 hover:scale-125">
