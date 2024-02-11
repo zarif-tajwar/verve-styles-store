@@ -35,6 +35,8 @@ const CartItem = memo(
     totalCartItems: number;
     index: number;
   }) => {
+    console.log('CART ITEM RENDRED');
+
     const cartItemState = useCartItemsStore(
       useShallow((state) =>
         state.cartItems.find(
@@ -144,7 +146,7 @@ const CartItem = memo(
               }}
               animate={{ opacity: 1, height: 'auto' }}
               key={'cartItemMainContainer'}
-              className="group relative"
+              className="group relative bg-orange-200"
             >
               <motion.div
                 layout

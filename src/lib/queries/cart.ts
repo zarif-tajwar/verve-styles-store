@@ -5,6 +5,7 @@ import { CART_ITEM_DATA_QUERY_KEY } from '../constants/query-keys';
 import { useCartItemsStore } from '../store/cart-store';
 import { FetchedCartItem } from '../server/cart';
 import { errorToast } from '@/components/UI/Toaster';
+import { wait } from '../util';
 
 export const useCartItemsQuery = () => {
   const insertCartItemsClient = useCartItemsStore(

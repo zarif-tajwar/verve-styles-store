@@ -28,7 +28,7 @@ const OrderSummary = ({
   const total = subtotal + deliveryCharge - discount;
 
   return (
-    <div className="col-span-2 h-max rounded-main border border-primary-100 p-6 @container">
+    <div className="h-max rounded-main border border-primary-100 p-6 @container lg:col-span-2">
       <h2 className="mb-6 font-geist text-2xl font-semibold capitalize">
         Order Summary
       </h2>

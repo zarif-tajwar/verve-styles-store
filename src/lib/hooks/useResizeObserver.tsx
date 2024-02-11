@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 type ObserverRect = Omit<DOMRectReadOnly, 'toJSON'>;
 
@@ -39,7 +39,7 @@ export function useResizeObserver<T extends HTMLElement = any>() {
     [],
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (ref.current) {
       observer?.observe(ref.current);
     }
