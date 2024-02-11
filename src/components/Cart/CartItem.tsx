@@ -11,7 +11,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { AnimatePresence, MotionConfig, Variants, motion } from 'framer-motion';
 import Divider from '../UI/Divider';
 import { Button, buttonVariants } from '../UI/Button';
-import { History, Trash } from 'lucide-react';
+import { History, MinusIcon, PlusIcon, Trash } from 'lucide-react';
 import { useCountDown } from '@/lib/hooks/useCountdown';
 import {
   deleteCartItemAction,
@@ -21,6 +21,8 @@ import { CartItemsInsert } from '@/lib/db/schema/cartItems';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 import Image from 'next/image';
 import Link from 'next/link';
+import SizeBadge from '../UI/SizeBadge';
+// import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid';
 
 const MotionDivider = motion(Divider);
 const MotionLink = motion(Link);
@@ -168,7 +170,7 @@ const CartItem = memo(
                   <motion.div
                     layout
                     className={cn(
-                      'aspect-square h-32 origin-top-left overflow-hidden bg-primary-100',
+                      'aspect-square h-24 origin-top-left overflow-hidden bg-primary-100 sm:h-32',
                       toggleDelete && 'h-16',
                     )}
                     style={{
@@ -196,8 +198,8 @@ const CartItem = memo(
                     >
                       <motion.p
                         className={cn(
-                          'origin-top-left text-xl font-medium',
-                          toggleDelete && 'text-base',
+                          'origin-top-left text-base font-medium sm:text-lg md:text-xl',
+                          toggleDelete && 'text-sm md:text-base',
                         )}
                         layout
                       >
@@ -210,19 +212,14 @@ const CartItem = memo(
                         <motion.span
                           layout
                           className={cn(
-                            'absolute bottom-0 left-0 inline-block origin-top-left text-xl font-medium',
+                            'absolute bottom-0 left-0 inline-block origin-top-left text-base font-semibold sm:text-lg md:text-xl md:font-medium',
                             toggleDelete && 'static text-base',
                           )}
                         >
                           {totalPrice}
                         </motion.span>
-                        <motion.span
-                          layout
-                          className="inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-normal tracking-wide text-primary-400 ring-1 ring-primary-100"
-                        >
-                          {cartItem.sizeName.length > 3
-                            ? capitalize(cartItem.sizeName)
-                            : cartItem.sizeName.toUpperCase()}
+                        <motion.span layout>
+                          <SizeBadge sizeText={cartItem.sizeName} />
                         </motion.span>
                       </motion.div>
                     </motion.div>
@@ -333,7 +330,6 @@ const CartItem = memo(
                         <CartQuantityCounter
                           initial={cartItem.quantity}
                           onChange={handleQuantityChange}
-                          className="max-h-[2.5rem] min-w-[8.25rem]"
                         />
                       </motion.div>
                     </motion.div>

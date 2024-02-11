@@ -30,7 +30,7 @@ const OrderSummary = ({
 
   return (
     <div className="h-max rounded-main border border-primary-100 p-4 sm:p-5 md:p-6 lg:col-span-2">
-      <h3 className="mb-4 font-geist text-xl font-semibold capitalize sm:text-2xl lg:mb-8">
+      <h3 className="mb-4 font-geist text-xl font-bold capitalize sm:text-2xl lg:mb-8">
         Order Summary
       </h3>
       <div className="grid gap-4 text-sm font-medium sm:text-base md:grid-cols-[1fr_auto_1fr] md:gap-6 lg:grid-cols-1 lg:text-lg lg:font-normal">

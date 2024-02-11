@@ -3,6 +3,7 @@
 import { cn } from '@/lib/util';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '../UI/Button';
 
 type CartQuantityCounterProps = {
   initial?: number;
@@ -47,66 +48,44 @@ const CartQuantityCounter = ({
     }
   };
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (quantity < min) {
-  //       handleChange(min);
-  //     }
-
-  //     if (quantity > max) {
-  //       handleChange(max);
-  //     }
-  //   }, 500);
-
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [quantity, max, min]);
-
   return (
     <div
       className={cn(
-        'grid h-12 max-w-[160px] grid-cols-3 gap-1 overflow-hidden rounded-full bg-primary-50 p-1.5 text-primary-900',
+        'grid grid-cols-[repeat(3,auto)] gap-1.5 overflow-hidden rounded-full bg-primary-50 p-1.5',
         className,
       )}
     >
-      <button
-        className={cn(
-          'flex h-full w-full items-center justify-center rounded-full',
-          'transition-all duration-200 hover:bg-primary-100 active:bg-primary-200',
-          btnClassName,
-        )}
+      <Button
         onClick={(e) => {
           e.preventDefault();
           handleChange(quantity - 1);
         }}
         type="button"
+        variant={'secondary'}
+        size={'xs'}
       >
         <MinusIcon className="h-5 w-5" />
-      </button>
+      </Button>
       <input
         type="number"
-        className="h-full w-full border-none bg-transparent text-center outline-none"
+        className="h-full min-w-[2ch] border-none bg-transparent text-center outline-none"
         max={max}
         min={min}
         value={quantity}
-        onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
         name={inputName ? inputName : 'quantity'}
+        readOnly
       />
-      <button
-        className={cn(
-          'flex h-full w-full items-center justify-center rounded-full',
-          'transition-all duration-200 hover:bg-primary-100 active:bg-primary-200',
-          btnClassName,
-        )}
+      <Button
         onClick={(e) => {
           e.preventDefault();
           handleChange(quantity + 1);
         }}
         type="button"
+        variant={'secondary'}
+        size={'xs'}
       >
         <PlusIcon className="h-5 w-5" />
-      </button>
+      </Button>
     </div>
   );
 };
