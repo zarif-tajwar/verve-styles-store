@@ -51,7 +51,7 @@ const OrderSummary = ({
             </dd>
             <dt className="font-semibold">{priceFormat(deliveryCharge)}</dt>
           </div>
-          <div className="flex items-center justify-between text-lg sm:text-xl lg:text-2xl">
+          <div className="flex items-center justify-between text-lg sm:text-xl lg:pt-2 lg:text-2xl">
             <dd className="font-semibold lg:font-medium">Total</dd>
             <dt className="font-semibold">{priceFormat(total)}</dt>
           </div>

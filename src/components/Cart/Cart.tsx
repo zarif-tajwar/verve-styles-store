@@ -66,7 +66,7 @@ const CartItemsListing = ({
 
   return (
     <div className="grid h-full grid-cols-1 grid-rows-[auto_1fr]">
-      <h2 className="mb-6 px-4 font-integral-cf text-3xl sm:px-5 md:px-0 md:text-4xl">
+      <h2 className="mb-3 px-4 font-integral-cf text-3xl sm:mb-5 sm:px-5 md:mb-6 md:px-0 md:text-4xl">
         My Cart
       </h2>
       <div>
@@ -80,13 +80,13 @@ const CartItemsListing = ({
         >
           <div
             ref={cusRef}
-            className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1.5rem] lg:col-span-3"
+            className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1rem] sm:[--vertical-padding:1.25rem] md:[--vertical-padding:1.5rem] lg:col-span-3"
           >
             <div className="px-2">
               <ScrollArea scrollBarClassName="w-2">
                 <motion.div
                   style={{ height: heightFinal }}
-                  className="flex flex-col px-4"
+                  className="flex flex-col px-2 sm:px-3 md:px-4"
                 >
                   <LayoutGroup>{CartComp}</LayoutGroup>
                 </motion.div>

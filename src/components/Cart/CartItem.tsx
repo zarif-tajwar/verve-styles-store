@@ -151,9 +151,9 @@ const CartItem = memo(
               <motion.div
                 layout
                 className={cn(
-                  'relative flex w-full justify-between pb-6 pt-6',
-                  index === 0 && 'pt-0',
-                  index === totalCartItems - 1 && 'pb-0',
+                  'relative flex w-full justify-between',
+                  index > 0 && 'pt-4 sm:pt-5 md:pt-6',
+                  index < totalCartItems - 1 && 'pb-4 sm:pb-5 md:pb-6',
                 )}
               >
                 <MotionLink
@@ -168,8 +168,8 @@ const CartItem = memo(
                   <motion.div
                     layout
                     className={cn(
-                      'aspect-square w-[20%] max-w-[8rem] origin-top-left overflow-hidden bg-primary-100',
-                      toggleDelete && 'w-[10%]',
+                      'aspect-square h-32 origin-top-left overflow-hidden bg-primary-100',
+                      toggleDelete && 'h-16',
                     )}
                     style={{
                       borderRadius: 12,
