@@ -3,21 +3,21 @@
 import CartItem from '@/components/Cart/CartItem';
 import OrderSummary from '@/components/Cart/OrderSummary';
 import { clearCartItems, generateCartItems } from '@/lib/actions/cart';
-import { useElementSize } from '@/lib/hooks/useResizeObserver';
+import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 import { useCartItemsQuery } from '@/lib/queries/cart';
 import { FetchedCartItem } from '@/lib/server/cart';
 import { cn } from '@/lib/util';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  QueryClient,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { LayoutGroup } from 'framer-motion';
-import { useMemo, useState } from 'react';
+  LayoutGroup,
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+} from 'framer-motion';
+import { useEffect, useMemo, useRef } from 'react';
+import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
 import Spinner from '../UI/Spinner';
-import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
-import { Button } from '../UI/Button';
 
 const CartItemsListing = ({
   cartItems,
@@ -26,7 +26,25 @@ const CartItemsListing = ({
   cartItems: FetchedCartItem[];
   deliveryCharge: number;
 }) => {
-  const { ref, height: scrollAreaHeight } = useElementSize();
+  const height = useMotionValue(1);
+  const heightFinal = useMotionTemplate`calc(${height}px - var(--vertical-padding))`;
+  const cusRef = useRef(null);
+
+  useEffect(() => {
+    if (!cusRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      const element = entries.at(0);
+      if (!element) return;
+      height.set(element.contentRect.height);
+    });
+
+    observer.observe(cusRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [cusRef, height]);
 
   const CartComp = useMemo(() => {
     if (cartItems.length > 0)
@@ -47,10 +65,7 @@ const CartItemsListing = ({
 
   return (
     <div className="grid h-full grid-cols-1 grid-rows-[auto_1fr]">
-      <h2 className="mb-6 font-integral-cf text-4xl">
-        My Cart
-        <span>{scrollAreaHeight}</span>
-      </h2>
+      <h2 className="mb-6 font-integral-cf text-4xl">My Cart</h2>
       <div className="bg-green-50">
         <div
           className={cn(
@@ -60,22 +75,17 @@ const CartItemsListing = ({
           )}
         >
           <div
-            ref={ref}
+            ref={cusRef}
             className="rounded-main border border-primary-100 bg-yellow-50 pt-[var(--vertical-padding)] [--vertical-padding:1.5rem] lg:col-span-3"
           >
             <div className="px-2">
-              <ScrollArea
-                style={{
-                  height: !scrollAreaHeight
-                    ? '30vh'
-                    : `calc(${scrollAreaHeight}px - var(--vertical-padding))`,
-                }}
-                className="bg-indigo-400"
-                scrollBarClassName="w-2"
-              >
-                <div className="flex flex-col px-4">
+              <ScrollArea className="bg-indigo-400" scrollBarClassName="w-2">
+                <motion.div
+                  style={{ height: heightFinal }}
+                  className="flex flex-col px-4"
+                >
                   <LayoutGroup>{CartComp}</LayoutGroup>
-                </div>
+                </motion.div>
               </ScrollArea>
             </div>
           </div>
