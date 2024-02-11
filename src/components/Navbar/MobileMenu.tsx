@@ -7,6 +7,7 @@ import SearchMenu from './SearchMenu';
 import MobileUserMenu from './MobileUserMenu';
 import MobileUserMenuWrapper from './MobileUserMenuWrapper';
 import { Suspense } from 'react';
+import CartMenu from './CartMenu';
 
 const MobileMenu = async () => {
   return (
@@ -20,7 +21,8 @@ const MobileMenu = async () => {
       <Logo className="absolute left-1/2 -translate-x-1/2" />
       <div className="-mr-2">
         <SearchMenu />
-        <NavCartDropdown />
+        {/* <NavCartDropdown /> */}
+        <CartMenu />
       </div>
     </div>
   );
