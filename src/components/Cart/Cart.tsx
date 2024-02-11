@@ -18,6 +18,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
 import Spinner from '../UI/Spinner';
+import { SectionHeading } from '../UI/Homepage';
 
 const CartItemsListing = ({
   cartItems,
@@ -65,21 +66,24 @@ const CartItemsListing = ({
 
   return (
     <div className="grid h-full grid-cols-1 grid-rows-[auto_1fr]">
-      <h2 className="mb-6 font-integral-cf text-4xl">My Cart</h2>
-      <div className="bg-green-50">
+      <h2 className="mb-6 px-4 font-integral-cf text-3xl sm:px-5 md:px-0 md:text-4xl">
+        My Cart
+      </h2>
+      <div>
         <div
           className={cn(
-            'grid h-full gap-5',
+            'grid h-full gap-x-5',
             'grid-cols-1 grid-rows-[1fr_auto]',
             'lg:grid-cols-5 lg:grid-rows-none',
+            'gap-y-4 sm:gap-y-5 md:gap-y-6',
           )}
         >
           <div
             ref={cusRef}
-            className="rounded-main border border-primary-100 bg-yellow-50 pt-[var(--vertical-padding)] [--vertical-padding:1.5rem] lg:col-span-3"
+            className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1.5rem] lg:col-span-3"
           >
             <div className="px-2">
-              <ScrollArea className="bg-indigo-400" scrollBarClassName="w-2">
+              <ScrollArea scrollBarClassName="w-2">
                 <motion.div
                   style={{ height: heightFinal }}
                   className="flex flex-col px-4"
@@ -116,7 +120,7 @@ const TemporaryButtons = () => {
   });
 
   return (
-    <div className="absolute right-0 top-0 mx-auto mb-10 grid w-max grid-cols-2 justify-center gap-4 rounded-main bg-primary-0 p-4 ring-1 ring-primary-100">
+    <div className="absolute right-0 top-0 mx-auto mb-10 grid w-max -translate-y-full grid-cols-2 justify-center gap-4 rounded-main bg-primary-0 p-4 ring-1 ring-primary-100">
       <p className="col-span-2">Temporary Buttons for Testing</p>
       <Button
         onClick={async () => {
@@ -157,7 +161,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
 
   return (
     <div className="relative h-full">
-      <TemporaryButtons />
+      {/* <TemporaryButtons /> */}
       {cartItemsData && cartItemsData.length > 0 && (
         <CartItemsListing
           cartItems={cartItemsData}

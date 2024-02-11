@@ -146,7 +146,7 @@ const CartItem = memo(
               }}
               animate={{ opacity: 1, height: 'auto' }}
               key={'cartItemMainContainer'}
-              className="group relative bg-orange-200"
+              className="group relative"
             >
               <motion.div
                 layout

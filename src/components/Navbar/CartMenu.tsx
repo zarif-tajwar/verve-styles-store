@@ -31,8 +31,8 @@ const CartMenu = () => {
           </span>
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="w-screen rounded-t-main [--close-size:3rem] portrait:h-[calc(95svh-var(--close-size))] landscape:h-[calc(92svh-var(--close-size))]">
-        <Container className="h-full">
+      <DrawerContent className="w-screen rounded-t-main [--close-size:3rem] portrait:h-[calc(95svh-var(--close-size))] landscape:h-[calc(95svh-var(--close-size))]">
+        <Container className="h-full px-2">
           <div className="relative grid h-full w-full grid-cols-1 grid-rows-[auto_1fr]">
             <DrawerClose className="absolute right-0 top-0 inline-flex size-[var(--close-size)] -translate-y-full items-center justify-center rounded-full text-primary-0 transition-transform duration-200 hover:scale-125">
               <XMarkIcon className="size-[75%]" strokeWidth={2} />
@@ -40,7 +40,7 @@ const CartMenu = () => {
             <div className="flex justify-center pt-5">
               <span className="mx-auto inline-block h-3 w-36 rounded-full bg-primary-100"></span>
             </div>
-            <div className="bg-red-50 pb-6 pt-8">
+            <div className="pb-2 pt-8 md:pb-6">
               <Cart deliveryCharge={25} />
             </div>
           </div>
