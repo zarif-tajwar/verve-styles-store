@@ -10,6 +10,7 @@ import {
   DrawerTrigger,
 } from '../UI/Drawer';
 import CartCount from './CartCount';
+import { cn } from '@/lib/util';
 
 const CartMenu = () => {
   return (
@@ -31,12 +32,26 @@ const CartMenu = () => {
           </span>
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="h-[calc(95svh-var(--close-size))] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem] portrait:h-[calc(100svh-var(--close-size))]">
-        <Container className="h-full px-2">
-          <div className="relative grid h-full w-full grid-cols-1 grid-rows-[auto_1fr]">
+      <DrawerContent
+        className={cn(
+          'h-[calc(95svh-var(--close-size))] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem] portrait:h-[calc(100svh-var(--close-size))]',
+          'landscape:[@media(height<720px)]:h-[calc(100svh-var(--close-size))]',
+        )}
+      >
+        <Container>
+          <div className="relative">
             <DrawerClose className="absolute right-0 top-0 inline-flex size-[var(--close-size)] -translate-y-full items-center justify-center rounded-full text-primary-0 transition-transform duration-200 hover:scale-125">
               <XMarkIcon className="size-[75%]" strokeWidth={2} />
             </DrawerClose>
+          </div>
+        </Container>
+        <Container className="h-full px-2 landscape:[@media(height<625px)]:overflow-auto">
+          <div
+            className={cn(
+              'relative grid h-full w-full grid-cols-1 grid-rows-[auto_1fr]',
+              'landscape:[@media(height<625px)]:block',
+            )}
+          >
             <div className="flex justify-center pt-2.5 sm:pt-4 md:pt-5">
               <span className="mx-auto inline-block h-2.5 w-24 rounded-full bg-primary-100 sm:h-3 sm:w-28 md:w-36"></span>
             </div>

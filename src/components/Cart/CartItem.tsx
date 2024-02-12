@@ -1,6 +1,6 @@
 'use client';
 
-import { capitalize, cn, makeValidURL, priceFormat } from '@/lib/util';
+import { capitalize, cn, makeValidURL, priceFormat, wait } from '@/lib/util';
 import CartQuantityCounter from './CartQuantityCounter';
 import { CartItemProps } from '@/lib/types/cart';
 import { useCartItemsStore } from '@/lib/store/cart-store';
@@ -58,6 +58,8 @@ const CartItem2 = memo(
 
     const queryClient = useQueryClient();
 
+    const exitAnimationDurationInSeconds = 0.2;
+
     const { mutateAsync: deleteMutation } = useMutation({
       mutationFn: deleteCartItemAction,
     });
@@ -91,6 +93,7 @@ const CartItem2 = memo(
     const handleCartItemDelete = useCallback(async () => {
       await deleteMutation(cartItemId);
       deleteCartItem(cartItemId);
+      await wait(exitAnimationDurationInSeconds * 1000);
       queryClient.refetchQueries({
         queryKey: CART_ITEM_DATA_QUERY_KEY,
       });
@@ -150,6 +153,7 @@ const CartItem2 = memo(
               // transition={{ duration: 2 }}
               key={'cartItemMainContainer'}
               className="group relative"
+              transition={{ duration: exitAnimationDurationInSeconds }}
             >
               <div
                 className={cn(

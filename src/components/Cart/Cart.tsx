@@ -30,6 +30,7 @@ const CartItemsListing = ({
 
   const height = useMotionValue(1);
   const heightFinal = useMotionTemplate`calc(${height}px - var(--vertical-padding))`;
+  // const heightFinal = useMotionTemplate`max(${height}px - var(--vertical-padding), var(--min-height))`;
   const cusRef = useRef(null);
 
   const resizeObserver = useMemo(() => {
@@ -83,7 +84,7 @@ const CartItemsListing = ({
         >
           <div
             ref={cusRef}
-            className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1rem] sm:[--vertical-padding:1.25rem] md:[--vertical-padding:1.5rem] lg:col-span-3"
+            className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1rem] sm:[--vertical-padding:1.25rem] md:[--vertical-padding:1.5rem] lg:col-span-3 landscape:[@media(height<625px)]:[--min-height:384px]"
           >
             <div className="px-1 sm:px-2">
               <ScrollArea
@@ -93,7 +94,7 @@ const CartItemsListing = ({
                 <motion.div
                   style={{ height: heightFinal }}
                   className={cn(
-                    'flex flex-col px-3 sm:px-3 md:px-4',
+                    'flex min-h-[var(--min-height)] flex-col px-3 sm:px-3 md:px-4',
                     '-translate-y-4 sm:-translate-y-5 md:-translate-y-6',
                   )}
                 >
@@ -170,7 +171,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
 
   return (
     <div className="relative h-full">
-      <TemporaryButtons />
+      {/* <TemporaryButtons /> */}
       {cartItemsData && cartItemsData.length > 0 && (
         <CartItemsListing
           cartItems={cartItemsData}
