@@ -1,14 +1,11 @@
 'use client';
 
 import { revalidatePathAction } from '@/lib/actions/checkout';
-import { useCartItemsStore } from '@/lib/store/cart-store';
 import { CartItemProps } from '@/lib/types/cart';
 import { priceFormat } from '@/lib/util';
 import { MoveRight } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../UI/Button';
-import Divider from '../UI/Divider';
-import { SectionHeading } from '../UI/Homepage';
 
 const OrderSummary = ({
   cartItemsData,
@@ -17,10 +14,7 @@ const OrderSummary = ({
   cartItemsData: CartItemProps[];
   deliveryCharge: number;
 }) => {
-  const cartItemsState = useCartItemsStore((store) => store.cartItems);
-  const cartItems = cartItemsState.length > 0 ? cartItemsState : cartItemsData;
-
-  const subtotal = cartItems.reduce(
+  const subtotal = cartItemsData.reduce(
     (acc, curr) => acc + Number.parseFloat(curr.price) * curr.quantity,
     0,
   );

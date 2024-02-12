@@ -30,7 +30,6 @@ const CartItemsListing = ({
 
   const height = useMotionValue(1);
   const heightFinal = useMotionTemplate`calc(${height}px - var(--vertical-padding))`;
-  // const heightFinal = useMotionTemplate`max(${height}px - var(--vertical-padding), var(--min-height))`;
   const cusRef = useRef(null);
 
   const resizeObserver = useMemo(() => {
@@ -171,7 +170,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
 
   return (
     <div className="relative h-full">
-      {/* <TemporaryButtons /> */}
+      <TemporaryButtons />
       {cartItemsData && cartItemsData.length > 0 && (
         <CartItemsListing
           cartItems={cartItemsData}

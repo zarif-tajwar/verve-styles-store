@@ -2,15 +2,15 @@
 
 import { and, eq, gt, gte } from 'drizzle-orm';
 import { db } from '../db';
-import { cartItems, CartItemsInsert } from '../db/schema/cartItems';
+import { CartItemsInsert, cartItems } from '../db/schema/cartItems';
 import {
-  productEntries,
   ProductEntryInsert,
+  productEntries,
 } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
 import { getCartId } from '../server/cart';
 import { decodeSingleSqid } from '../server/sqids';
-import { genRandomInt, wait } from '../util';
+import { genRandomInt } from '../util';
 
 export const deleteCartItemAction = async (cartItemId: string) => {
   const deleted = await db.transaction(async (tx) => {

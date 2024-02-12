@@ -1,31 +1,18 @@
 'use client';
 
-import { capitalize, cn, makeValidURL, priceFormat, wait } from '@/lib/util';
-import CartQuantityCounter from './CartQuantityCounter';
-import { CartItemProps } from '@/lib/types/cart';
-import { useCartItemsStore } from '@/lib/store/cart-store';
-import useDebounce from '@/lib/hooks/useDebounce';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { memo, useCallback, useEffect, useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
-import { AnimatePresence, MotionConfig, Variants, motion } from 'framer-motion';
-import Divider from '../UI/Divider';
-import { Button, buttonVariants } from '../UI/Button';
-import { History, MinusIcon, PlusIcon, Trash } from 'lucide-react';
 import { useCountDown } from '@/lib/hooks/useCountdown';
-import {
-  deleteCartItemAction,
-  updateCartItemQuantityAction,
-} from '@/lib/actions/cart';
-import { CartItemsInsert } from '@/lib/db/schema/cartItems';
-import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
+import { useCartItemsMutations } from '@/lib/queries/cart';
+import { CartItemProps } from '@/lib/types/cart';
+import { cn, makeValidURL, priceFormat } from '@/lib/util';
+import { AnimatePresence, MotionConfig, Variants, motion } from 'framer-motion';
+import { History, Trash } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { memo, useEffect, useState } from 'react';
+import { Button } from '../UI/Button';
+import Divider from '../UI/Divider';
 import SizeBadge from '../UI/SizeBadge';
-// import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid';
-
-const MotionDivider = motion(Divider);
-const MotionLink = motion(Link);
+import CartQuantityCounter from './CartQuantityCounter';
 
 const CartItem2 = memo(
   ({
@@ -39,65 +26,17 @@ const CartItem2 = memo(
   }) => {
     console.log('CART ITEM RENDRED');
 
-    const cartItemState = useCartItemsStore(
-      useShallow((state) =>
-        state.cartItems.find(
-          (cartItemState) => cartItemState.cartItemId === cartItem.cartItemId,
-        ),
-      ),
-    );
-    const updateQuantity = useCartItemsStore((state) => state.updateQuantity);
-    const deleteCartItem = useCartItemsStore((state) => state.deleteCartItem);
-
     const [toggleDelete, setToggleDelete] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [countdown, startCountdown, _, resetCountdown] = useCountDown(4);
 
-    const cartItemData = cartItemState ? cartItemState : cartItem;
-    const cartItemId = cartItemData.cartItemId;
-
-    const queryClient = useQueryClient();
+    const cartItemId = cartItem.cartItemId;
 
     const exitAnimationDurationInSeconds = 0.2;
 
-    const { mutateAsync: deleteMutation } = useMutation({
-      mutationFn: deleteCartItemAction,
-    });
-
-    const { mutateAsync: updateMutation } = useMutation({
-      mutationFn: updateCartItemQuantityAction,
-    });
-
-    const debouncedUpdateQuantity = useDebounce(
-      async (newQuantity: CartItemsInsert['quantity']) => {
-        await updateMutation({
-          cartItemId: cartItemId,
-          newQuantity,
-        });
-        queryClient.refetchQueries({
-          queryKey: CART_ITEM_DATA_QUERY_KEY,
-        });
-      },
-      500,
-    );
-
     const totalPrice = priceFormat(
-      Number.parseFloat(cartItemData.price || '0') * cartItemData.quantity,
+      Number.parseFloat(cartItem.price || '0') * cartItem.quantity,
     );
-
-    const handleQuantityChange = async (newQuantity: number) => {
-      updateQuantity(cartItemId, newQuantity);
-      await debouncedUpdateQuantity(newQuantity);
-    };
-
-    const handleCartItemDelete = useCallback(async () => {
-      await deleteMutation(cartItemId);
-      deleteCartItem(cartItemId);
-      await wait(exitAnimationDurationInSeconds * 1000);
-      queryClient.refetchQueries({
-        queryKey: CART_ITEM_DATA_QUERY_KEY,
-      });
-    }, [cartItemId, deleteCartItem, deleteMutation, queryClient]);
 
     const deleteVariants: Variants = {
       hidden: {
@@ -125,6 +64,11 @@ const CartItem2 = memo(
       },
     };
 
+    const { handleQuantityUpdate, handleDelete } = useCartItemsMutations({
+      cartItemId,
+      refetchDelayAfterDeleteInMs: exitAnimationDurationInSeconds * 1000,
+    });
+
     const href = `/${makeValidURL(cartItem.clothing)}/${makeValidURL(
       cartItem.name,
     )}-${cartItem.productId}`;
@@ -132,9 +76,9 @@ const CartItem2 = memo(
     useEffect(() => {
       if (countdown === 0) {
         setConfirmDelete(true);
-        handleCartItemDelete();
+        handleDelete();
       }
-    }, [countdown, handleCartItemDelete]);
+    }, [countdown, handleDelete]);
 
     return (
       <MotionConfig
@@ -150,19 +94,11 @@ const CartItem2 = memo(
                 height: '0px',
               }}
               animate={{ opacity: 1, height: 'auto' }}
-              // transition={{ duration: 2 }}
               key={'cartItemMainContainer'}
               className="group relative"
               transition={{ duration: exitAnimationDurationInSeconds }}
             >
-              <div
-                className={cn(
-                  'relative',
-                  // index > 0 && 'pt-4 sm:pt-5 md:pt-6',
-                  // index < totalCartItems - 1 && 'pb-4 sm:pb-5 md:pb-6',
-                  'py-4 sm:py-5 md:py-6',
-                )}
-              >
+              <div className={cn('relative', 'py-4 sm:py-5 md:py-6')}>
                 <div className="grid w-full grid-cols-[auto_1fr] gap-x-4 gap-y-4 rounded-xl sm:grid-cols-[auto_1fr_auto]">
                   <motion.div
                     className={cn(
@@ -189,13 +125,14 @@ const CartItem2 = memo(
                     className="flex flex-col justify-between"
                   >
                     <div>
-                      <p
+                      <Link
+                        href={href}
                         className={cn(
                           'line-clamp-1 text-lg font-semibold text-primary-500 sm:line-clamp-none sm:text-xl',
                         )}
                       >
                         {cartItem.name}
-                      </p>
+                      </Link>
                       <SizeBadge sizeText={cartItem.sizeName} />
                     </div>
                     <p className={cn('text-xl font-semibold sm:text-2xl')}>
@@ -294,7 +231,9 @@ const CartItem2 = memo(
                     >
                       <CartQuantityCounter
                         initial={cartItem.quantity}
-                        onChange={handleQuantityChange}
+                        onChange={(newQuantity) => {
+                          handleQuantityUpdate({ newQuantity });
+                        }}
                         className="p-1 sm:p-1.5"
                       />
                     </motion.div>
