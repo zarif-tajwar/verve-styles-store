@@ -1,8 +1,6 @@
 import { dedupedAuth } from '@/auth';
-import ClientSessionProvider from '@/lib/provider/client-session-provider';
-import NavCartDropdown from './NavCartDropdown';
-import NavUserDropdown from './NavUserDropdown';
 import CartMenu from './CartMenu';
+import NavUserDropdown from './NavUserDropdown';
 
 const NavDropdownMenuWrap = async () => {
   const session = await dedupedAuth();

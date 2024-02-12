@@ -1,4 +1,8 @@
+'use client';
+
+import { cn } from '@/lib/util';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Suspense } from 'react';
 import Cart from '../Cart/Cart';
 import { Cart as CartIcon } from '../Svgs/icons';
 import { Button } from '../UI/Button';
@@ -10,9 +14,8 @@ import {
   DrawerTrigger,
 } from '../UI/Drawer';
 import CartCount from './CartCount';
-import { cn } from '@/lib/util';
 
-const CartMenu = () => {
+const CartMenuClient = () => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -37,6 +40,7 @@ const CartMenu = () => {
           'h-[calc(95svh-var(--close-size))] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem] portrait:h-[calc(100svh-var(--close-size))]',
           'landscape:[@media(height<720px)]:h-[calc(100svh-var(--close-size))]',
         )}
+        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <Container>
           <div className="relative">
@@ -64,4 +68,13 @@ const CartMenu = () => {
     </Drawer>
   );
 };
+
+const CartMenu = () => {
+  return (
+    <Suspense>
+      <CartMenuClient />
+    </Suspense>
+  );
+};
+
 export default CartMenu;

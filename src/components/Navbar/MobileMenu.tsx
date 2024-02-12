@@ -1,12 +1,8 @@
-import { User2 } from 'lucide-react';
-import { Button } from '../UI/Button';
+import { Suspense } from 'react';
 import Logo from '../UI/Logo';
 import HamburgerMenu from './HamburgerMenu';
-import NavCartDropdown from './NavCartDropdown';
-import SearchMenu from './SearchMenu';
-import MobileUserMenu from './MobileUserMenu';
 import MobileUserMenuWrapper from './MobileUserMenuWrapper';
-import { Suspense } from 'react';
+import SearchMenu from './SearchMenu';
 import CartMenu from './CartMenu';
 
 const MobileMenu = async () => {
