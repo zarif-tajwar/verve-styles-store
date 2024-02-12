@@ -469,27 +469,6 @@ export const BagCartIconMini = ({ className, ...props }: SvgIconProps) => {
   );
 };
 
-export const CartIcon = ({ ...props }: SvgIconProps) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-    {...props}
-  >
-    <path d="M22 18H6a2 2 0 01-2-2V7a2 2 0 00-2-2"></path>
-    <path d="M17 14V4a2 2 0 00-2-2h-1a2 2 0 00-2 2v10"></path>
-    <rect width="13" height="8" x="8" y="6" rx="1"></rect>
-    <circle cx="18" cy="20" r="2"></circle>
-    <circle cx="9" cy="20" r="2"></circle>
-  </svg>
-);
-
 export const GoogleIcon = ({ className, ...props }: SvgIconProps) => {
   return (
     <svg
@@ -824,7 +803,7 @@ export const SaveIcon = ({ className, ...props }: SvgIconProps) => (
     />
   </svg>
 );
-export const Cart = ({ className, ...props }: SvgIconProps) => (
+export const CartIcon = ({ className, ...props }: SvgIconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"

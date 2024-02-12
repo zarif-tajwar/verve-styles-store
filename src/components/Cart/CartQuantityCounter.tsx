@@ -51,7 +51,7 @@ const CartQuantityCounter = ({
   return (
     <div
       className={cn(
-        'grid grid-cols-[auto_minmax(2ch,1fr)_auto] gap-1.5 overflow-hidden rounded-full bg-primary-50 p-1.5',
+        'grid grid-cols-[auto_minmax(2ch,auto)_auto] gap-1.5 overflow-hidden rounded-full bg-primary-50 p-1.5 sm:grid-cols-[auto_3ch_auto]',
         className,
       )}
     >

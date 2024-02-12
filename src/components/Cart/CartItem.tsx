@@ -14,7 +14,7 @@ import Divider from '../UI/Divider';
 import SizeBadge from '../UI/SizeBadge';
 import CartQuantityCounter from './CartQuantityCounter';
 
-const CartItem2 = memo(
+const CartItem = memo(
   ({
     cartItem,
     totalCartItems,
@@ -24,7 +24,7 @@ const CartItem2 = memo(
     totalCartItems: number;
     index: number;
   }) => {
-    console.log('CART ITEM RENDRED');
+    console.log(`CART ITEM RENDRED ${cartItem.name} ${cartItem.sizeName}`);
 
     const [toggleDelete, setToggleDelete] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -251,6 +251,6 @@ const CartItem2 = memo(
   },
 );
 
-CartItem2.displayName = 'CartItem2';
+CartItem.displayName = 'CartItem';
 
-export default CartItem2;
+export default CartItem;

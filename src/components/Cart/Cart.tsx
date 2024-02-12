@@ -18,6 +18,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
 import Spinner from '../UI/Spinner';
+import CartSkeleton from './CartSkeleton';
+import { CartIcon } from '../Svgs/icons';
 
 const CartItemsListing = ({
   cartItems,
@@ -55,7 +57,10 @@ const CartItemsListing = ({
       return cartItems.map((cartItem, i) => {
         return (
           <CartItem
-            key={cartItem.name + cartItem.price}
+            key={
+              cartItem.cartItemId ??
+              cartItem.name + cartItem.sizeName + cartItem.price
+            }
             cartItem={cartItem}
             totalCartItems={totalCartItems}
             index={i}
@@ -68,46 +73,36 @@ const CartItemsListing = ({
   console.log('CART LISTING PARENT RENDERED');
 
   return (
-    <div className="grid h-full grid-cols-1 grid-rows-[auto_1fr]">
-      <h2 className="mb-3 px-4 font-integral-cf text-3xl sm:mb-5 sm:px-5 md:mb-6 md:px-0 md:text-4xl">
-        My Cart
-      </h2>
-      <div>
-        <div
-          className={cn(
-            'grid h-full gap-x-5',
-            'grid-cols-1 grid-rows-[1fr_auto]',
-            'lg:grid-cols-5 lg:grid-rows-none',
-            'gap-y-4 sm:gap-y-5 md:gap-y-6',
-          )}
-        >
-          <div
-            ref={cusRef}
-            className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1rem] sm:[--vertical-padding:1.25rem] md:[--vertical-padding:1.5rem] lg:col-span-3 landscape:[@media(height<625px)]:[--min-height:384px]"
+    <div
+      className={cn(
+        'grid h-full gap-x-5',
+        'grid-cols-1 grid-rows-[1fr_auto]',
+        'lg:grid-cols-5 lg:grid-rows-none',
+        'gap-y-4 sm:gap-y-5 md:gap-y-6',
+      )}
+    >
+      <div
+        ref={cusRef}
+        className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1rem] sm:[--vertical-padding:1.25rem] md:[--vertical-padding:1.5rem] lg:col-span-3 landscape:[@media(height<625px)]:[--min-height:384px]"
+      >
+        <div className="px-1 sm:px-2">
+          <ScrollArea
+            scrollBarClassName="w-2 translate-x-0.5 sm:translate-x-0"
+            data-vaul-no-drag
           >
-            <div className="px-1 sm:px-2">
-              <ScrollArea
-                scrollBarClassName="w-2 translate-x-0.5 sm:translate-x-0"
-                data-vaul-no-drag
-              >
-                <motion.div
-                  style={{ height: heightFinal }}
-                  className={cn(
-                    'flex min-h-[var(--min-height)] flex-col px-3 sm:px-3 md:px-4',
-                    '-translate-y-4 sm:-translate-y-5 md:-translate-y-6',
-                  )}
-                >
-                  <LayoutGroup>{CartComp}</LayoutGroup>
-                </motion.div>
-              </ScrollArea>
-            </div>
-          </div>
-          <OrderSummary
-            deliveryCharge={deliveryCharge}
-            cartItemsData={cartItems}
-          />
+            <motion.div
+              style={{ height: heightFinal }}
+              className={cn(
+                'flex min-h-[var(--min-height)] flex-col px-3 sm:px-3 md:px-4',
+                '-translate-y-4 sm:-translate-y-5 md:-translate-y-6',
+              )}
+            >
+              <LayoutGroup>{CartComp}</LayoutGroup>
+            </motion.div>
+          </ScrollArea>
         </div>
       </div>
+      <OrderSummary deliveryCharge={deliveryCharge} cartItemsData={cartItems} />
     </div>
   );
 };
@@ -155,32 +150,41 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
 
   const cartItemsData = data;
 
-  if (isLoading) {
-    return (
-      <main className="container-main py-20">
-        <div className="flex h-[70svh] w-full items-center justify-center gap-4">
-          <Spinner className="size-10" />
-          <p className="text-xl font-medium text-primary-400">Loading...</p>
-        </div>
-      </main>
-    );
-  }
-
   console.log('CART PARENT RENDERED');
 
   return (
     <div className="relative h-full">
-      <TemporaryButtons />
-      {cartItemsData && cartItemsData.length > 0 && (
-        <CartItemsListing
-          cartItems={cartItemsData}
-          deliveryCharge={deliveryCharge}
-        />
-      )}
-      {isFetched && cartItemsData && cartItemsData.length === 0 && (
-        <div className="text-2xl font-bold">Your cart is empty!</div>
-      )}
+      <div className="grid h-full grid-cols-1 grid-rows-[auto_1fr]">
+        <h2 className="mb-3 px-4 font-integral-cf text-3xl sm:mb-5 sm:px-5 md:mb-6 md:px-0 md:text-4xl">
+          My Cart
+        </h2>
+        <div>
+          {!isLoading && cartItemsData && cartItemsData.length > 0 && (
+            <CartItemsListing
+              cartItems={cartItemsData}
+              deliveryCharge={deliveryCharge}
+            />
+          )}
+          {isLoading && <CartSkeleton />}
+          {isFetched && cartItemsData && cartItemsData.length === 0 && (
+            <EmptyCart />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 export default Cart;
+
+const EmptyCart = () => {
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="flex items-center gap-4 rounded-xl bg-primary-50 p-4 sm:p-5 md:p-6">
+        <CartIcon className="size-[2rem] text-primary-200 md:size-[2.5rem]" />
+        <p className="text-lg font-semibold text-primary-300 md:text-xl">
+          Your shopping cart is empty!
+        </p>
+      </div>
+    </div>
+  );
+};

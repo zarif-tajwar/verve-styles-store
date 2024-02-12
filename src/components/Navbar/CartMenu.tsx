@@ -4,7 +4,7 @@ import { cn } from '@/lib/util';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Suspense } from 'react';
 import Cart from '../Cart/Cart';
-import { Cart as CartIcon } from '../Svgs/icons';
+import { CartIcon } from '../Svgs/icons';
 import { Button } from '../UI/Button';
 import { Container } from '../UI/Container';
 import {
