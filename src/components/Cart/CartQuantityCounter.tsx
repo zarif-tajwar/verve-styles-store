@@ -51,7 +51,7 @@ const CartQuantityCounter = ({
   return (
     <div
       className={cn(
-        'grid grid-cols-[repeat(3,auto)] gap-1.5 overflow-hidden rounded-full bg-primary-50 p-1.5',
+        'grid grid-cols-[auto_minmax(2ch,1fr)_auto] gap-1.5 overflow-hidden rounded-full bg-primary-50 p-1.5',
         className,
       )}
     >
@@ -68,7 +68,7 @@ const CartQuantityCounter = ({
       </Button>
       <input
         type="number"
-        className="h-full min-w-[2ch] border-none bg-transparent text-center outline-none"
+        className="h-full min-w-0 border-none bg-transparent text-center outline-none"
         max={max}
         min={min}
         value={quantity}

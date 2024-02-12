@@ -1,7 +1,6 @@
 'use client';
 
 import CartItem from '@/components/Cart/CartItem';
-import CartItem2 from '@/components/Cart/CartItem2';
 import OrderSummary from '@/components/Cart/OrderSummary';
 import { clearCartItems, generateCartItems } from '@/lib/actions/cart';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
@@ -19,7 +18,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
 import Spinner from '../UI/Spinner';
-import { SectionHeading } from '../UI/Homepage';
 
 const CartItemsListing = ({
   cartItems,
@@ -28,40 +26,44 @@ const CartItemsListing = ({
   cartItems: FetchedCartItem[];
   deliveryCharge: number;
 }) => {
+  const totalCartItems = cartItems.length;
+
   const height = useMotionValue(1);
   const heightFinal = useMotionTemplate`calc(${height}px - var(--vertical-padding))`;
   const cusRef = useRef(null);
 
-  useEffect(() => {
-    if (!cusRef.current) return;
-
-    const observer = new ResizeObserver((entries) => {
+  const resizeObserver = useMemo(() => {
+    return new ResizeObserver((entries) => {
       const element = entries.at(0);
       if (!element) return;
       height.set(element.contentRect.height);
     });
+  }, [height]);
 
-    observer.observe(cusRef.current);
+  useEffect(() => {
+    if (!cusRef.current) return;
+
+    resizeObserver.observe(cusRef.current);
 
     return () => {
-      observer.disconnect();
+      resizeObserver.disconnect();
     };
-  }, [cusRef, height]);
+  }, [cusRef, resizeObserver]);
 
   const CartComp = useMemo(() => {
     if (cartItems.length > 0)
       return cartItems.map((cartItem, i) => {
         return (
-          <CartItem2
+          <CartItem
             key={cartItem.name + cartItem.price}
             cartItem={cartItem}
-            totalCartItems={cartItems.length}
+            totalCartItems={totalCartItems}
             index={i}
           />
         );
       });
     else return null;
-  }, [cartItems]);
+  }, [cartItems, totalCartItems]);
 
   console.log('CART LISTING PARENT RENDERED');
 
@@ -85,12 +87,15 @@ const CartItemsListing = ({
           >
             <div className="px-1 sm:px-2">
               <ScrollArea
-                type="always"
                 scrollBarClassName="w-2 translate-x-0.5 sm:translate-x-0"
+                data-vaul-no-drag
               >
                 <motion.div
                   style={{ height: heightFinal }}
-                  className="flex flex-col px-3 sm:px-3 md:px-4"
+                  className={cn(
+                    'flex flex-col px-3 sm:px-3 md:px-4',
+                    '-translate-y-4 sm:-translate-y-5 md:-translate-y-6',
+                  )}
                 >
                   <LayoutGroup>{CartComp}</LayoutGroup>
                 </motion.div>
@@ -165,7 +170,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
 
   return (
     <div className="relative h-full">
-      {/* <TemporaryButtons /> */}
+      <TemporaryButtons />
       {cartItemsData && cartItemsData.length > 0 && (
         <CartItemsListing
           cartItems={cartItemsData}
