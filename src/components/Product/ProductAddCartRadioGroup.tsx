@@ -3,7 +3,6 @@
 import { capitalize, cn, wait } from '@/lib/util';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { Button, buttonVariants } from '../UI/Button';
-import CartQuantityCounter from '../Cart/CartQuantityCounter';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addCartItemAction } from '@/lib/actions/cart';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
@@ -16,6 +15,11 @@ import { FetchedCartItem } from '@/lib/server/cart';
 import { ProductSelect } from '@/lib/db/schema/products';
 import { ClothingSelect } from '@/lib/db/schema/clothing';
 import { ProductImagesSelect } from '@/lib/db/schema/productImages';
+import {
+  CartQuantityChangeBtn,
+  CartQuantityInput,
+  CartQuantityCounter,
+} from '../Cart/CartQuantityCounter';
 
 type sizeOptions = {
   sizeName: string;
@@ -183,11 +187,19 @@ const ProductAddCartRadioGroup = ({
       </RadioGroup.Root>
       <div className="my-6 h-px w-full bg-black/10" />
       <div className="grid h-[3.25rem] w-full grid-cols-3 gap-5 font-medium">
-        <CartQuantityCounter
+        {/* <CartQuantityCounter
           initial={selectedQuantity}
           onChange={setSelectedQuantity}
           className="h-full w-full max-w-none"
-        />
+        /> */}
+        <CartQuantityCounter
+          value={selectedQuantity}
+          onValueChange={setSelectedQuantity}
+        >
+          <CartQuantityChangeBtn controlType="decrease" />
+          <CartQuantityInput />
+          <CartQuantityChangeBtn controlType="increase" />
+        </CartQuantityCounter>
         <Button
           type="submit"
           size={'md'}

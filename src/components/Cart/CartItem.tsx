@@ -12,7 +12,11 @@ import { memo, useEffect, useState } from 'react';
 import { Button } from '../UI/Button';
 import Divider from '../UI/Divider';
 import SizeBadge from '../UI/SizeBadge';
-import CartQuantityCounter from './CartQuantityCounter';
+import {
+  CartQuantityCounter,
+  CartQuantityChangeBtn,
+  CartQuantityInput,
+} from './CartQuantityCounter';
 
 const CartItem = memo(
   ({
@@ -230,12 +234,16 @@ const CartItem = memo(
                       }
                     >
                       <CartQuantityCounter
-                        initial={cartItem.quantity}
-                        onChange={(newQuantity) => {
-                          handleQuantityUpdate({ newQuantity });
+                        defaultValue={cartItem.quantity}
+                        onValueChange={(value) => {
+                          handleQuantityUpdate({ newQuantity: value });
                         }}
-                        className="p-1 sm:p-1.5"
-                      />
+                        className="h-11"
+                      >
+                        <CartQuantityChangeBtn controlType="decrease" />
+                        <CartQuantityInput />
+                        <CartQuantityChangeBtn controlType="increase" />
+                      </CartQuantityCounter>
                     </motion.div>
                   </div>
                 </div>

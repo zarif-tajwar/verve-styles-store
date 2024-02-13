@@ -1,6 +1,6 @@
 'use client';
 
-import CartQuantityCounter from './CartQuantityCounter';
+import CartQuantityCounter from './CartQuantityCounterOld';
 
 const CartItemQuantityUpdate = ({
   quantity,
