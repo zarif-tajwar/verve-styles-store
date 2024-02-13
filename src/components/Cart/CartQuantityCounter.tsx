@@ -96,7 +96,10 @@ const CartQuantityChangeBtn = React.forwardRef<
   return (
     <Button
       ref={ref}
-      className={cn('px-4', className)}
+      className={cn(
+        'px-4 [--icon-size:1rem] sm:[--icon-size:1.25rem]',
+        className,
+      )}
       // size={'sm'}
       variant={'secondary'}
       onClick={handleClick}
@@ -106,8 +109,12 @@ const CartQuantityChangeBtn = React.forwardRef<
       }
       {...props}
     >
-      {controlType === 'increase' && <PlusIcon className="size-5" />}
-      {controlType === 'decrease' && <MinusIcon className="size-5" />}
+      {controlType === 'increase' && (
+        <PlusIcon className="size-[var(--icon-size)]" />
+      )}
+      {controlType === 'decrease' && (
+        <MinusIcon className="size-[var(--icon-size)]" />
+      )}
       <span className="sr-only">{`${controlType === 'increase' ? 'Increase' : 'Decrease'} quantity by 1`}</span>
     </Button>
   );

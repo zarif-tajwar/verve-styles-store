@@ -1,12 +1,11 @@
 'use client';
 
 import { usePagination } from '@/lib/hooks/mantine/usePagination';
+import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { TotalProducts } from '@/lib/types/ShopFilter';
 import { cn } from '@/lib/util';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { Button } from '../UI/Button';
-import { useShopFilter } from '@/lib/hooks/useShopFilter';
-import { TotalProducts } from '@/lib/types/ShopFilter';
-import { useEffect } from 'react';
 
 const ShopFilterPagination = ({
   totalProducts,
