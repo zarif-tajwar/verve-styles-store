@@ -20,6 +20,8 @@ import {
   CartQuantityInput,
   CartQuantityCounter,
 } from '../Cart/CartQuantityCounter';
+import { useQueryState } from 'nuqs';
+import useCartDrawerOpen from '@/lib/hooks/useCartDrawerOpen';
 
 type sizeOptions = {
   sizeName: string;
@@ -45,6 +47,8 @@ const ProductAddCartRadioGroup = ({
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [isAllowedToSubmit, setIsAllowedToSubmit] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const { handleOpenChange: setCartDrawerOpen } = useCartDrawerOpen();
 
   const {
     mutateAsync: addCartItemMutation,
@@ -95,6 +99,7 @@ const ProductAddCartRadioGroup = ({
       );
 
       setShowSuccess(true);
+      setCartDrawerOpen(true);
 
       return { previousCartItems: previousCartItems };
     },

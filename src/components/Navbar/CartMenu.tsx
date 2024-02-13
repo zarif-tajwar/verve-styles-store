@@ -1,5 +1,6 @@
 'use client';
 
+import useCartDrawerOpen from '@/lib/hooks/useCartDrawerOpen';
 import { cn } from '@/lib/util';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Suspense } from 'react';
@@ -16,8 +17,9 @@ import {
 import CartCount from './CartCount';
 
 const CartMenuClient = () => {
+  const { isOpen, handleOpenChange } = useCartDrawerOpen();
   return (
-    <Drawer>
+    <Drawer open={isOpen} onOpenChange={handleOpenChange}>
       <DrawerTrigger asChild>
         <Button
           size={'square'}
@@ -37,8 +39,8 @@ const CartMenuClient = () => {
       </DrawerTrigger>
       <DrawerContent
         className={cn(
-          'h-[calc(95svh-var(--close-size))] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem] portrait:h-[calc(100svh-var(--close-size))]',
-          'landscape:[@media(height<720px)]:h-[calc(100svh-var(--close-size))]',
+          'h-[calc(95dvh-var(--close-size))] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem] portrait:h-[calc(100dvh-var(--close-size))]',
+          'landscape:[@media(height<720px)]:h-[calc(100dvh-var(--close-size))]',
         )}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >

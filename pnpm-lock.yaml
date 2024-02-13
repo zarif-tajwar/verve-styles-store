@@ -77,6 +77,9 @@ dependencies:
   '@radix-ui/react-use-controllable-state':
     specifier: ^1.0.1
     version: 1.0.1(@types/react@18.2.55)(react@18.2.0)
+  '@smastrom/react-rating':
+    specifier: ^1.5.0
+    version: 1.5.0(react-dom@18.2.0)(react@18.2.0)
   '@stripe/react-stripe-js':
     specifier: ^2.4.0
     version: 2.4.0(@stripe/stripe-js@2.4.0)(react-dom@18.2.0)(react@18.2.0)
@@ -2464,6 +2467,16 @@ packages:
 
   /@rushstack/eslint-patch@1.7.2:
     resolution: {integrity: sha512-RbhOOTCNoCrbfkRyoXODZp75MlpiHMgbE5MEBZAnnnLyQNgrigEj4p0lzsMDyc1zVsJDLrivB58tgg3emX0eEA==}
+    dev: false
+
+  /@smastrom/react-rating@1.5.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-7vg3NRgO0tpvEunq8BEWA8qckNSd7x3dVGqaNEfLs3Ow4ibU2EEXJtnd7Yl44xOujWIzXM5Bk2VZm2DVm065Qw==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /@stripe/react-stripe-js@2.4.0(@stripe/stripe-js@2.4.0)(react-dom@18.2.0)(react@18.2.0):
