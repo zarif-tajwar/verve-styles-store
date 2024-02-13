@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Button } from '../UI/Button';
 
 const NavLinks = () => (
-  <div className="-mx-3">
+  <div className="-mx-3 hidden lg:block">
     <ul className="flex items-center">
       <li>
         <Button

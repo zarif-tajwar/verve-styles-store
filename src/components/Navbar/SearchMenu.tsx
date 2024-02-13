@@ -3,9 +3,11 @@ import { Button } from '../UI/Button';
 
 const SearchMenu = () => {
   return (
-    <Button variant={'ghost'} size={'square'} className="text-primary-500">
-      <SearchIcon />
-    </Button>
+    <div className="lg:hidden">
+      <Button variant={'ghost'} size={'square'} className="text-primary-500">
+        <SearchIcon />
+      </Button>
+    </div>
   );
 };
 
