@@ -11,7 +11,7 @@ import { clothing } from '@/lib/db/schema/clothing';
 import { productRating } from '@/lib/db/schema/productRating';
 import { products } from '@/lib/db/schema/products';
 import { SearchParamsServer } from '@/lib/types/common';
-import { makeValidURL } from '@/lib/util';
+import { cn, makeValidURL } from '@/lib/util';
 import { and, eq, getTableColumns } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -71,7 +71,11 @@ const ProductPage = async ({ params }: PageProps) => {
     <Container asChild className="pt-20">
       <main>
         <section>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-[0.8fr_1fr] xl:grid-cols-2 xl:gap-16">
+          <div
+            className={
+              'grid grid-cols-1 gap-8 md:grid-cols-[0.9fr_1fr] lg:grid-cols-2 lg:gap-10 xl:gap-16'
+            }
+          >
             {/* <ProductImage productId={product.id} /> */}
             <ProductImageShowcase2 />
             <div>

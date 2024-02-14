@@ -9,14 +9,9 @@ import {
   CarouselViewport,
 } from '../UI/Carousel';
 import { useCallback, useEffect, useState } from 'react';
-import { Button } from '../UI/Button';
 
 const ProductImageShowcase2 = () => {
   const numbers = [...Array(5).keys()].map((_, i) => i + 1);
-
-  const [orientation, setOrientation] = useState<'horizontal' | 'vertical'>(
-    'vertical',
-  );
 
   const [mainCarouselApi, setMainCarouselApi] = useState<CarouselApi>();
   const [thumbnailCarouselApi, setThumbnailCarouselApi] =
@@ -47,31 +42,31 @@ const ProductImageShowcase2 = () => {
   }, [handleSelect, mainCarouselApi]);
 
   return (
-    <div className="relative @container">
-      <Button
-        className="absolute z-[99999]"
-        onClick={() => setOrientation('horizontal')}
-      >
-        Make it horizontal
-      </Button>
-      <div className="grid h-full grid-cols-1 grid-rows-[1fr_auto] gap-[var(--gap)] bg-red-100 text-2xl font-semibold [--gap:1rem] [--thumbnail-size:9rem] @lg:h-max @lg:grid-cols-[var(--thumbnail-size)_1fr] @lg:grid-rows-1">
+    <div className="">
+      <div className="grid h-full grid-cols-1 grid-rows-[1fr_auto] gap-[var(--gap)] bg-red-100 text-2xl font-semibold [--gap:0.625rem] [--thumbnail-size:7rem] sm:[--gap:0.75rem] md:[--gap:1rem] md:[--thumbnail-size:8rem] xl:h-max xl:grid-cols-[var(--thumbnail-size)_1fr] xl:grid-rows-1 xl:[--thumbnail-size:9rem]">
         <Carousel
           setApi={setThumbnailCarouselApi}
-          className="row-start-2 row-end-2 h-full overflow-clip bg-green-100 @lg:row-start-auto @lg:row-end-auto"
-          orientation={orientation}
+          className="row-start-2 row-end-2 h-full overflow-clip bg-green-100 xl:row-start-auto xl:row-end-auto"
+          orientation={'horizontal'}
           opts={{
             skipSnaps: true,
             dragFree: true,
+            breakpoints: {
+              '(min-width:1280px)': {
+                axis: 'y',
+              },
+            },
           }}
         >
           <CarouselViewport className="h-full">
-            <CarouselContent className="-ml-[var(--gap)] h-full flex-row @lg:-mt-[var(--gap)] @lg:ml-0 @lg:h-[calc(100%+var(--gap))] @lg:flex-col">
+            <CarouselContent className="-ml-[var(--gap)] h-full flex-row xl:-mt-[var(--gap)] xl:ml-0 xl:h-[calc(100%+var(--gap))] xl:flex-col">
               {numbers.map((num, i) => {
                 return (
                   <CarouselItem
                     key={num}
                     className={cn(
-                      'h-[var(--thumbnail-size)] basis-[max(var(--thumbnail-size)+var(--gap),1%)]  pl-[var(--gap)] @lg:pl-0 @lg:pt-[var(--gap)]',
+                      'h-[var(--thumbnail-size)] basis-[max(var(--thumbnail-size)+var(--gap),1%)]  pl-[var(--gap)] xl:pl-0 xl:pt-[var(--gap)]',
+                      'basis-[clamp(var(--thumbnail-size)+var(--gap),33.333%,var(--thumbnail-size)+var(--gap)+1rem)]',
                     )}
                     onClick={() => {
                       handleThumbClick(i);
@@ -91,20 +86,30 @@ const ProductImageShowcase2 = () => {
             </CarouselContent>
           </CarouselViewport>
         </Carousel>
-        <div className="">
+        <div className="max-w-[25.25rem] md:max-w-none">
           <Carousel
             setApi={setMainCarouselApi}
             className="h-full overflow-clip bg-blue-100 text-4xl"
           >
             <CarouselViewport className="h-full">
-              <CarouselContent className="h-full">
+              <CarouselContent className="-ml-[var(--gap)] h-full">
                 {numbers.map((num) => {
                   return (
                     <CarouselItem
                       key={num}
-                      className="h-full @lg:aspect-square @lg:h-auto"
+                      className={cn(
+                        'pl-[var(--gap)]',
+                        'h-full xl:aspect-square xl:h-auto',
+                        // 'aspect-square h-full',
+                      )}
                     >
-                      <div className="flex aspect-square h-full w-full items-center justify-center bg-blue-200 sm:aspect-auto sm:min-h-[20rem] md:aspect-auto">
+                      <div
+                        className={cn(
+                          'flex h-full min-h-[20rem] w-full items-center justify-center bg-blue-200',
+                          'sm:aspect-auto md:aspect-auto',
+                          //   'aspect-square',
+                        )}
+                      >
                         <span>{num}</span>
                       </div>
                     </CarouselItem>
