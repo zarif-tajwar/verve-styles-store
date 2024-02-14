@@ -2,7 +2,7 @@ import ProductAdd from '@/components/Product/ProductAdd';
 import ProductAddSkeleton from '@/components/Product/ProductAddSkeleton';
 import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
 import ProductImage from '@/components/Product/ProductImage';
-import ProductImageShowcase2 from '@/components/Product/ProductImageShowcase2';
+import ProductImageShowcase2 from '@/components/Product/ProductImageShowcase';
 import ProductReviews from '@/components/Product/ProductReviews';
 import { Container } from '@/components/UI/Container';
 import Star from '@/components/UI/Star';
@@ -76,8 +76,7 @@ const ProductPage = async ({ params }: PageProps) => {
               'grid grid-cols-1 gap-8 md:grid-cols-[0.9fr_1fr] lg:grid-cols-2 lg:gap-10 xl:gap-16'
             }
           >
-            {/* <ProductImage productId={product.id} /> */}
-            <ProductImageShowcase2 />
+            <ProductImage productId={product.id} />
             <div>
               <h1 className="mb-3.5 text-balance font-integral-cf text-4xl font-bold">
                 {product.name}

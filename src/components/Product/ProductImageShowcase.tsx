@@ -1,8 +1,6 @@
 'use client';
 
-import { ProductImagesSelect } from '@/lib/db/schema/productImages';
-import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { cn } from '@/lib/util';
 import {
   Carousel,
   CarouselApi,
@@ -10,7 +8,9 @@ import {
   CarouselItem,
   CarouselViewport,
 } from '../UI/Carousel';
-import { cn } from '@/lib/util';
+import { useCallback, useEffect, useState } from 'react';
+import { ProductImagesSelect } from '@/lib/db/schema/productImages';
+import Image from 'next/image';
 
 const ProductImageShowcase = ({
   images,
@@ -22,12 +22,11 @@ const ProductImageShowcase = ({
   }[];
 }) => {
   const defaultImageIndex = images.findIndex((img) => img.isDefault) || 0;
+  const [activeIndex, setActiveIndex] = useState(defaultImageIndex);
 
   const [mainCarouselApi, setMainCarouselApi] = useState<CarouselApi>();
   const [thumbnailCarouselApi, setThumbnailCarouselApi] =
     useState<CarouselApi>();
-
-  const [activeIndex, setActiveIndex] = useState(defaultImageIndex);
 
   const handleThumbClick = useCallback(
     (index: number) => {
@@ -52,40 +51,40 @@ const ProductImageShowcase = ({
   }, [handleSelect, mainCarouselApi]);
 
   return (
-    <div>
-      <div className="grid h-full grid-rows-[1fr_9rem] gap-[var(--gap)] [--gap:1rem] lg:grid-cols-[9rem_1fr] lg:grid-rows-none">
+    <div className="max-w-[25.25rem] md:max-w-none">
+      <div className="grid h-full grid-cols-1 grid-rows-[1fr_auto] gap-[var(--gap)] text-2xl font-semibold [--gap:0.625rem] [--thumbnail-size:7rem] md:[--thumbnail-size:8rem] xl:h-max xl:grid-cols-[var(--thumbnail-size)_1fr] xl:grid-rows-1 xl:[--gap:1rem] xl:[--thumbnail-size:9rem]">
         <Carousel
           setApi={setThumbnailCarouselApi}
-          className="row-start-2 row-end-2 h-full overflow-hidden lg:row-start-1 lg:row-end-1"
-          orientation="vertical"
+          className="row-start-2 row-end-2 h-full overflow-clip xl:row-start-auto xl:row-end-auto"
+          orientation={'horizontal'}
           opts={{
             skipSnaps: true,
             dragFree: true,
             breakpoints: {
-              '(max-width:1024px)': {
-                axis: 'x',
+              '(min-width:1280px)': {
+                axis: 'y',
               },
             },
           }}
         >
           <CarouselViewport className="h-full">
-            <CarouselContent className="-ml-[var(--gap)] h-full flex-row lg:-mt-[var(--gap)] lg:ml-0 lg:h-[calc(100%+var(--gap))] lg:flex-col">
-              {[...images, ...images].map((img, i) => {
+            <CarouselContent className="-ml-[var(--gap)] h-full flex-row xl:-mt-[var(--gap)] xl:ml-0 xl:h-[calc(100%+var(--gap))] xl:flex-col">
+              {images.map((img, i) => {
                 return (
                   <CarouselItem
+                    key={i}
+                    className={cn(
+                      'h-[var(--thumbnail-size)] pl-[var(--gap)] xl:pl-0 xl:pt-[var(--gap)]',
+                      'basis-[max(var(--thumbnail-size)+var(--gap),33.333%)]',
+                    )}
                     onClick={() => {
                       handleThumbClick(i);
                     }}
-                    key={i}
-                    className={cn(
-                      'h-full basis-[max(33.33%,9rem)] pl-[var(--gap)] lg:basis-[max(33.33%,9rem)] lg:pl-0 lg:pt-[var(--gap)]',
-                    )}
                   >
                     <div
                       className={cn(
-                        'relative h-full w-full overflow-hidden rounded-2xl',
-                        // 'opacity-30 transition-opacity duration-200',
-                        // activeIndex === i && 'opacity-100',
+                        'relative h-full w-full overflow-clip rounded-2xl transition-opacity duration-200',
+                        i !== activeIndex && 'opacity-50',
                       )}
                     >
                       <Image
@@ -94,95 +93,52 @@ const ProductImageShowcase = ({
                         className="object-cover grayscale"
                         fill
                       />
-
-                      <span
+                    </div>
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+          </CarouselViewport>
+        </Carousel>
+        <div className="">
+          <Carousel
+            setApi={setMainCarouselApi}
+            className="h-full overflow-clip"
+          >
+            <CarouselViewport className="h-full">
+              <CarouselContent className="-ml-[var(--gap)] h-full">
+                {images.map((img, i) => {
+                  return (
+                    <CarouselItem
+                      key={i}
+                      className={cn(
+                        'pl-[var(--gap)]',
+                        'h-full xl:aspect-square xl:h-auto',
+                      )}
+                    >
+                      <div
                         className={cn(
-                          'absolute h-full w-full rounded-2xl ring-0 ring-inset ring-transparent transition-all duration-200',
-                          activeIndex === i && 'ring-4 ring-primary-400',
+                          'relative h-full min-h-[20rem] w-full overflow-clip rounded-main',
+                          'sm:aspect-auto md:aspect-auto',
                         )}
-                      ></span>
-                    </div>
-                  </CarouselItem>
-                );
-              })}
-            </CarouselContent>
-          </CarouselViewport>
-        </Carousel>
-        <Carousel
-          opts={{
-            startIndex: defaultImageIndex,
-          }}
-          className="h-full overflow-hidden"
-          setApi={setMainCarouselApi}
-        >
-          <CarouselViewport className="h-full">
-            <CarouselContent className="-ml-4 h-full">
-              {images.map((img, i) => {
-                return (
-                  <CarouselItem key={i} className="h-full pl-4">
-                    <div className="relative h-full w-full overflow-hidden rounded-main">
-                      <Image
-                        src={img.url}
-                        alt={img.alt}
-                        // width={444}
-                        // height={666}
-                        className="object-cover grayscale"
-                        fill
-                      />
-                    </div>
-                  </CarouselItem>
-                );
-              })}
-            </CarouselContent>
-          </CarouselViewport>
-        </Carousel>
+                      >
+                        <Image
+                          src={img.url}
+                          alt={img.alt}
+                          className="object-cover grayscale"
+                          fill
+                        />
+                      </div>
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+            </CarouselViewport>
+          </Carousel>
+        </div>
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="grid max-h-[34rem] grid-cols-[10rem_1fr] gap-4">
-  //     <div className="grid h-full grid-cols-1 grid-rows-3 gap-4">
-  //       {images.map((img, i) => {
-  //         return (
-  //           <div
-  //             key={i}
-  //             className="relative overflow-hidden rounded-main bg-primary-50"
-  //           >
-  //             <Image
-  //               src={img.url}
-  //               alt={img.alt}
-  //               // width={444}
-  //               // height={666}
-  //               className="object-cover grayscale"
-  //               fill
-  //             />
-  //           </div>
-  //         );
-  //       })}
-  //     </div>
-  //     <div className="aspect-square flex-grow rounded-main">
-  //       <Carousel className="h-full w-full overflow-hidden">
-  //         <CarouselContent className="h-full">
-  //           {images.map((img, i) => {
-  //             return (
-  //               <CarouselItem key={i} className="h-full">
-  //                 <div className="relative h-full w-full overflow-hidden rounded-main bg-red-50">
-  //                   {/* <Image
-  //                     src={img.url}
-  //                     alt={img.alt}
-  //                     className=" object-cover grayscale"
-  //                     fill
-  //                   /> */}
-  //                   <div className="min-h-full min-w-full"></div>
-  //                 </div>
-  //               </CarouselItem>
-  //             );
-  //           })}
-  //         </CarouselContent>
-  //       </Carousel>
-  //     </div>
-  //   </div>
-  // );
 };
+
 export default ProductImageShowcase;
