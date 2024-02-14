@@ -2,7 +2,9 @@ import ProductAdd from '@/components/Product/ProductAdd';
 import ProductAddSkeleton from '@/components/Product/ProductAddSkeleton';
 import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
 import ProductImage from '@/components/Product/ProductImage';
+import ProductImageShowcase2 from '@/components/Product/ProductImageShowcase2';
 import ProductReviews from '@/components/Product/ProductReviews';
+import { Container } from '@/components/UI/Container';
 import Star from '@/components/UI/Star';
 import { db } from '@/lib/db';
 import { clothing } from '@/lib/db/schema/clothing';
@@ -66,55 +68,58 @@ const ProductPage = async ({ params }: PageProps) => {
   const ratingFloat = Number.parseFloat(ratingStr);
 
   return (
-    <main className="container-main pt-20">
-      <section>
-        <div className="grid grid-cols-2 gap-16">
-          <ProductImage productId={product.id} />
-          <div>
-            <h1 className="mb-3.5 font-integral-cf text-4xl font-bold">
-              {product.name}
-            </h1>
-            <div className="mb-5 flex gap-4">
-              <Star rating={ratingFloat} />
-              <span className="inline-block font-medium text-black/60">
-                <span className="text-black">{ratingStr}</span>/5.0
-              </span>
-            </div>
-            <div className="mb-5">
-              <span className="text-2xl font-bold">
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                }).format(Number.parseFloat(product.price))}
-              </span>
-            </div>
-            <p className="text-lg text-black/60 [text-wrap:balance]">
-              {product.description}
-            </p>
-            <div className="my-6 h-px w-full bg-black/10" />
-            <Suspense fallback={<ProductAddSkeleton />}>
-              <ProductAdd
-                productId={product.id}
-                name={product.name}
-                price={product.price}
-                clothing={params.category}
-              />
-            </Suspense>
-          </div>
-        </div>
-      </section>
-      <section className="mt-20">
-        <Suspense fallback={<div>Loading...</div>}>
-          <ProductDetailsReviewFaqTab
-            ReviewsComp={
-              <Suspense fallback={<p>Loading Reviews...</p>}>
-                <ProductReviews productId={productId} />
+    <Container asChild className="pt-20">
+      <main>
+        <section>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-[0.8fr_1fr] xl:grid-cols-2 xl:gap-16">
+            {/* <ProductImage productId={product.id} /> */}
+            <ProductImageShowcase2 />
+            <div>
+              <h1 className="mb-3.5 text-balance font-integral-cf text-4xl font-bold">
+                {product.name}
+              </h1>
+              <div className="mb-5 flex gap-4">
+                <Star rating={ratingFloat} />
+                <span className="inline-block font-medium text-black/60">
+                  <span className="text-black">{ratingStr}</span>/5.0
+                </span>
+              </div>
+              <div className="mb-5">
+                <span className="text-2xl font-bold">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  }).format(Number.parseFloat(product.price))}
+                </span>
+              </div>
+              <p className="text-lg text-black/60 [text-wrap:balance]">
+                {product.description}
+              </p>
+              <div className="my-6 h-px w-full bg-black/10" />
+              <Suspense fallback={<ProductAddSkeleton />}>
+                <ProductAdd
+                  productId={product.id}
+                  name={product.name}
+                  price={product.price}
+                  clothing={params.category}
+                />
               </Suspense>
-            }
-          />
-        </Suspense>
-      </section>
-    </main>
+            </div>
+          </div>
+        </section>
+        <section className="mt-20">
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProductDetailsReviewFaqTab
+              ReviewsComp={
+                <Suspense fallback={<p>Loading Reviews...</p>}>
+                  <ProductReviews productId={productId} />
+                </Suspense>
+              }
+            />
+          </Suspense>
+        </section>
+      </main>
+    </Container>
   );
 };
 

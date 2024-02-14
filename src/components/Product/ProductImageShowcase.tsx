@@ -53,23 +53,33 @@ const ProductImageShowcase = ({
 
   return (
     <div>
-      <div className="grid h-full grid-cols-[9rem_1fr] gap-4">
+      <div className="grid h-full grid-rows-[1fr_9rem] gap-[var(--gap)] [--gap:1rem] lg:grid-cols-[9rem_1fr] lg:grid-rows-none">
         <Carousel
           setApi={setThumbnailCarouselApi}
-          className="h-full overflow-hidden"
+          className="row-start-2 row-end-2 h-full overflow-hidden lg:row-start-1 lg:row-end-1"
           orientation="vertical"
-          opts={{ skipSnaps: true, dragFree: true }}
+          opts={{
+            skipSnaps: true,
+            dragFree: true,
+            breakpoints: {
+              '(max-width:1024px)': {
+                axis: 'x',
+              },
+            },
+          }}
         >
           <CarouselViewport className="h-full">
-            <CarouselContent className="-mt-4 h-[calc(100%+1rem)]">
-              {images.map((img, i) => {
+            <CarouselContent className="-ml-[var(--gap)] h-full flex-row lg:-mt-[var(--gap)] lg:ml-0 lg:h-[calc(100%+var(--gap))] lg:flex-col">
+              {[...images, ...images].map((img, i) => {
                 return (
                   <CarouselItem
                     onClick={() => {
                       handleThumbClick(i);
                     }}
                     key={i}
-                    className={cn('h-full basis-1/3 pt-4')}
+                    className={cn(
+                      'h-full basis-[max(33.33%,9rem)] pl-[var(--gap)] lg:basis-[max(33.33%,9rem)] lg:pl-0 lg:pt-[var(--gap)]',
+                    )}
                   >
                     <div
                       className={cn(
@@ -88,8 +98,7 @@ const ProductImageShowcase = ({
                       <span
                         className={cn(
                           'absolute h-full w-full rounded-2xl ring-0 ring-inset ring-transparent transition-all duration-200',
-                          activeIndex === i &&
-                            'ring-2 ring-primary-200 ring-offset-2 ring-offset-primary-300',
+                          activeIndex === i && 'ring-4 ring-primary-400',
                         )}
                       ></span>
                     </div>
