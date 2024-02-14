@@ -67,24 +67,29 @@ const ProductPage = async ({ params }: PageProps) => {
   const ratingStr = product.averageRating || '0.0';
   const ratingFloat = Number.parseFloat(ratingStr);
 
+  //   font-size: 1.5rem;
+  // font-size: clamp(1.5rem, 0.7261904761904763rem + 3.1746031746031744vw, 2.25rem);
+  //   font-size: 1.75rem;
+  // font-size: clamp(1.75rem, 0.9761904761904763rem + 3.1746031746031744vw, 2.5rem);
+
   return (
-    <Container asChild className="pt-20">
-      <main>
+    <main className="border-t border-primary-100">
+      <Container className="py-4 md:py-8 lg:py-16 xl:py-20">
         <section>
           <div
             className={
-              'grid grid-cols-1 gap-8 md:grid-cols-[0.9fr_1fr] lg:grid-cols-2 lg:gap-10 xl:gap-16'
+              'grid grid-cols-1 gap-8 md:grid-cols-[0.9fr_1fr] lg:grid-cols-[0.8fr_1fr] lg:gap-10 xl:grid-cols-2 xl:gap-16'
             }
           >
             <ProductImage productId={product.id} />
             <div>
-              <h1 className="mb-3.5 text-balance font-integral-cf text-4xl font-bold">
+              <h1 className="mb-3.5 text-balance font-integral-cf text-[clamp(1.75rem,0.9761904761904763rem+3.1746031746031744vw,2.5rem)] font-bold leading-none">
                 {product.name}
               </h1>
               <div className="mb-5 flex gap-4">
                 <Star rating={ratingFloat} />
-                <span className="inline-block font-medium text-black/60">
-                  <span className="text-black">{ratingStr}</span>/5.0
+                <span className="inline-block font-medium text-primary-400">
+                  <span className="text-primary-900">{ratingStr}</span>/5.0
                 </span>
               </div>
               <div className="mb-5">
@@ -95,10 +100,10 @@ const ProductPage = async ({ params }: PageProps) => {
                   }).format(Number.parseFloat(product.price))}
                 </span>
               </div>
-              <p className="text-lg text-black/60 [text-wrap:balance]">
+              <p className="text-balance text-base text-primary-400 md:text-lg">
                 {product.description}
               </p>
-              <div className="my-6 h-px w-full bg-black/10" />
+              <div className="my-6 h-px w-full bg-primary-100" />
               <Suspense fallback={<ProductAddSkeleton />}>
                 <ProductAdd
                   productId={product.id}
@@ -121,8 +126,8 @@ const ProductPage = async ({ params }: PageProps) => {
             />
           </Suspense>
         </section>
-      </main>
-    </Container>
+      </Container>
+    </main>
   );
 };
 
