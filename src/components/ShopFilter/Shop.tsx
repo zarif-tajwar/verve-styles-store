@@ -6,7 +6,7 @@ import { FilteredProductItem } from '@/lib/server/shop';
 import { useQuery } from '@tanstack/react-query';
 import { errorToast } from '../UI/Toaster';
 import FilterProductsStatusText from './FilterProductsStatusText';
-import ProductListing from './ProductListing';
+import { ProductListing } from './ProductListing';
 import ShopFilterPagination from './ShopFilterPagination';
 import { ProductListingSkeleton } from './Skeleton';
 
@@ -48,17 +48,8 @@ const Shop = () => {
         <FilterProductsStatusText totalProducts={totalProducts} />
       </div>
       <div className="relative col-span-2 h-max">
-        {!isFetching && (
-          <div
-            key={'products'}
-            className="relative z-0 grid grid-cols-3 gap-x-5 gap-y-9"
-          >
-            {productItems?.map((product, i) => {
-              const uniqueKey =
-                product.name + product.price + product.categoryName;
-              return <ProductListing key={uniqueKey} i={i} product={product} />;
-            })}
-          </div>
+        {!isFetching && productItems && (
+          <ProductListing products={productItems} />
         )}
         {isFetching && (
           <div
@@ -70,7 +61,7 @@ const Shop = () => {
             ))}
           </div>
         )}
-        <div className="sticky bottom-4 z-50 pt-16">
+        <div className="sticky bottom-4 z-50 hidden pt-16">
           <ShopFilterPagination totalProducts={totalProducts} />
         </div>
       </div>

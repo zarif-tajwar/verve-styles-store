@@ -1,11 +1,12 @@
 import { FilterSidebar } from '@/components/ShopFilter/FilterSidebar';
 import SortBySelect from '@/components/ShopFilter/SortBySelect';
+import { Container } from '@/components/UI/Container';
 import React, { Suspense } from 'react';
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <section className="mt-16">
-      <div className="container-main">
+      <Container>
         <div className="flex justify-between gap-8">
           <Suspense>
             <FilterSidebar />
@@ -21,7 +22,7 @@ const ShopLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

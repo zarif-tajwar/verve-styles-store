@@ -7,7 +7,7 @@ import { Sliders } from 'lucide-react';
 
 export const FilterSidebar = () => {
   return (
-    <div className="sticky top-20 h-max">
+    <div className="sticky top-20 hidden h-max lg:block">
       <div className="w-max max-w-[18.5rem]">
         <div className="rounded-main border border-primary-50 px-6 pb-8 pt-8">
           <div className="flex items-center justify-between">

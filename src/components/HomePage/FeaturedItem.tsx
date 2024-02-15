@@ -45,7 +45,7 @@ const FeaturedItem = ({
         }}
         className="mb-20"
       >
-        <CarouselViewport className="">
+        <CarouselViewport className="@container">
           <CarouselContent className="md:-ml-5">
             {products.map((product, i) => {
               const ratingStr = product.rating || '0.0';
@@ -60,8 +60,8 @@ const FeaturedItem = ({
                   key={i}
                   className="basis-[max(25%,16rem)] md:pl-5"
                 >
-                  <ProductListingItem.ProductListingItem asChild>
-                    <Link href={href}>
+                  <Link href={href}>
+                    <ProductListingItem.ProductListingItem>
                       <ProductListingItem.ProductImage
                         alt={alt}
                         src={product.image}
@@ -73,8 +73,8 @@ const FeaturedItem = ({
                       <ProductListingItem.ProductPrice>
                         {priceFormat(Number.parseFloat(product.productPrice))}
                       </ProductListingItem.ProductPrice>
-                    </Link>
-                  </ProductListingItem.ProductListingItem>
+                    </ProductListingItem.ProductListingItem>
+                  </Link>
                 </CarouselItem>
               );
             })}

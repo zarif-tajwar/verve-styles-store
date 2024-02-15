@@ -19,7 +19,7 @@ export const ProductListingItem = React.forwardRef<
   return (
     <Comp
       ref={ref}
-      className={cn('aspect-square rounded-2xl @container/item', className)}
+      className={cn('rounded-2xl @container/item', className)}
       {...props}
     />
   );
@@ -38,7 +38,10 @@ const ProductRating = React.forwardRef<HTMLDivElement, ProductRatingProps>(
     return (
       <Comp
         ref={ref}
-        className={cn('-ml-1 mb-4 flex gap-3  @[15rem]/item:mb-5', className)}
+        className={cn(
+          '-ml-1 mb-4 flex items-center gap-3  @[15rem]/item:mb-5',
+          className,
+        )}
         {...props}
       >
         <Star rating={rating} size="sm" />
@@ -93,7 +96,7 @@ const ProductName = React.forwardRef<HTMLHeadingElement, ProductNameProps>(
       <Comp
         ref={ref}
         className={cn(
-          'mb-0 line-clamp-1 text-lg font-semibold capitalize @[15rem]/item:mb-1  @[15rem]/item:text-xl',
+          'mb-0 line-clamp-1 text-lg font-semibold capitalize @[15rem]/item:mb-1  @[15rem]/item:text-xl  @[18rem]/item:mb-1.5 @[18rem]/item:text-2xl',
           className,
         )}
         {...props}
@@ -116,7 +119,7 @@ const ProductPrice = React.forwardRef<HTMLParagraphElement, ProductPriceProps>(
       <Comp
         ref={ref}
         className={cn(
-          'inline-block text-xl font-semibold @[15rem]/item:text-2xl',
+          'inline-block text-xl font-semibold @[15rem]/item:text-2xl @[18rem]/item:text-3xl',
           className,
         )}
         {...props}
