@@ -7,7 +7,7 @@ import { Container } from '../UI/Container';
 
 const Footer = () => {
   return (
-    <footer className="relative">
+    <footer className="relative mt-8">
       <NewsLetterSubscription />
       <div className="bg-primary-50">
         <Container className="divide-y divide-primary-100 pb-8 pt-16 sm:pb-20 sm:pt-16 md:pb-16">

@@ -3,8 +3,10 @@
 import { cn, isValueInArray } from '@/lib/util';
 import * as Tabs from '@radix-ui/react-tabs';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import WIP from '../UI/WIP';
+import { Button } from '../UI/Button';
+import { Container } from '../UI/Container';
 
 const ProductDetails = () => (
   <div>
@@ -25,9 +27,12 @@ const TabOptions = [
   { value: 'detail', label: 'Product Details' },
   { value: 'review', label: 'Rating & Reviews' },
   { value: 'faq', label: 'FAQs' },
-];
+] as const;
 
 const values = TabOptions.map((o) => o.value);
+
+type Value = (typeof values)[number];
+
 const defaultValue = values.at(0)!;
 
 const ProductDetailsReviewFaqTab = ({
@@ -36,54 +41,57 @@ const ProductDetailsReviewFaqTab = ({
   ReviewsComp: React.ReactNode;
 }) => {
   const [tabValue, setTabValue] = useQueryState(
-    'tab',
+    'view',
     parseAsStringEnum(values),
   );
 
-  useEffect(() => {
-    if (!isValueInArray(tabValue, values)) {
-      setTabValue(null);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const handleValueChange = useCallback(
+    (value: Value) => {
+      setTabValue(value === defaultValue ? null : value);
+    },
+    [setTabValue],
+  );
 
   return (
     <Tabs.Root
       value={tabValue || defaultValue}
-      onValueChange={(v) => setTabValue(v === defaultValue ? null : v)}
+      onValueChange={(value) => handleValueChange(value as Value)}
     >
-      <Tabs.List className="relative mb-8 grid w-full grid-cols-3 items-center justify-between">
-        {TabOptions.map((tabOption) => (
-          <Tabs.Trigger
-            key={tabOption.value}
-            value={tabOption.value}
-            className={cn(
-              'text-cneter group relative py-6 text-lg text-primary-400',
-              'data-[state=active]:font-semibold data-[state=active]:text-primary-900',
-              'transition-all duration-100',
-              'hover:text-primary-500',
-            )}
-          >
-            {tabOption.label}
-            <span
-              className={cn(
-                'absolute -bottom-0.5 block h-0.5 w-full bg-primary-50',
-                'group-data-[state=active]:bg-primary-400',
-                'group-hover:bg-primary-100',
-                'transition-colors duration-200',
-              )}
-            />
-          </Tabs.Trigger>
-        ))}
-      </Tabs.List>
-      <Tabs.TabsContent value={'detail'} key={'detail'}>
-        <ProductDetails />
-      </Tabs.TabsContent>
-      <Tabs.TabsContent value={'review'} key={'review'}>
-        {ReviewsComp}
-      </Tabs.TabsContent>
-      <Tabs.TabsContent value={'faq'} key={'faq'}>
-        <ProductFAQs />
-      </Tabs.TabsContent>
+      <Container className="px-2">
+        <Tabs.List className="relative mb-8 grid w-full grid-cols-3 gap-0 rounded-lg border border-primary-50 p-2 sm:gap-2 md:rounded-xl">
+          {TabOptions.map((tabOption) => {
+            const isSelected = tabValue
+              ? tabValue === tabOption.value
+              : defaultValue === tabOption.value;
+
+            return (
+              <Tabs.Trigger
+                key={tabOption.value}
+                value={tabOption.value}
+                className={cn(
+                  'center relative inline-flex rounded-lg px-4 py-3 text-left text-sm font-semibold text-primary-400 transition-colors duration-200 hover:bg-primary-50  sm:items-center sm:justify-center sm:text-base md:rounded-xl md:py-4 lg:py-5 lg:text-lg',
+                  // 'border-b-2 border-primary-50',
+                  // tabValue === tabOption.value && 'border-primary-500',
+                  isSelected && 'bg-primary-50 text-primary-500',
+                )}
+              >
+                {tabOption.label}
+              </Tabs.Trigger>
+            );
+          })}
+        </Tabs.List>
+      </Container>
+      <Container>
+        <Tabs.TabsContent value={'detail'} key={'detail'}>
+          <ProductDetails />
+        </Tabs.TabsContent>
+        <Tabs.TabsContent value={'review'} key={'review'}>
+          {ReviewsComp}
+        </Tabs.TabsContent>
+        <Tabs.TabsContent value={'faq'} key={'faq'}>
+          <ProductFAQs />
+        </Tabs.TabsContent>
+      </Container>
     </Tabs.Root>
   );
 };

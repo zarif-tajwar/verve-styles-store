@@ -74,7 +74,7 @@ const ProductPage = async ({ params }: PageProps) => {
 
   return (
     <main className="border-t border-primary-100">
-      <Container className="py-4 md:py-8 lg:py-16 xl:py-20">
+      <Container asChild className="py-4 md:py-8 lg:py-16 xl:py-20">
         <section>
           <div
             className={
@@ -115,18 +115,18 @@ const ProductPage = async ({ params }: PageProps) => {
             </div>
           </div>
         </section>
-        <section className="mt-20">
-          <Suspense fallback={<div>Loading...</div>}>
-            <ProductDetailsReviewFaqTab
-              ReviewsComp={
-                <Suspense fallback={<p>Loading Reviews...</p>}>
-                  <ProductReviews productId={productId} />
-                </Suspense>
-              }
-            />
-          </Suspense>
-        </section>
       </Container>
+      <section className="py-8 lg:py-16 xl:py-20">
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProductDetailsReviewFaqTab
+            ReviewsComp={
+              <Suspense fallback={<p>Loading Reviews...</p>}>
+                <ProductReviews productId={productId} />
+              </Suspense>
+            }
+          />
+        </Suspense>
+      </section>
     </main>
   );
 };
