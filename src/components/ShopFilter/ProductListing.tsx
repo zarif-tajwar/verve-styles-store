@@ -46,7 +46,7 @@ export const ProductListing = ({
               )}
             </div>
             <div>
-              <h3 className="mb-1 text-lg font-semibold capitalize leading-tight sm:mb-2 sm:text-xl lg:text-2xl">
+              <h3 className="mb-1 text-lg font-semibold capitalize leading-tight sm:text-xl lg:text-2xl">
                 {product.name}
               </h3>
             </div>

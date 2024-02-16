@@ -5,10 +5,10 @@ import React, { Suspense } from 'react';
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <section className="mt-16">
+    <main className="mt-10">
       <Container>
-        <div className="flex justify-between gap-8">
-          <Suspense>
+        <div className="grid gap-x-8 lg:grid-cols-[auto_1fr]">
+          <Suspense fallback={<div className="h-[30rem] w-[18.5rem]"></div>}>
             <FilterSidebar />
           </Suspense>
           <div className="relative flex-grow">
@@ -23,7 +23,7 @@ const ShopLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </Container>
-    </section>
+    </main>
   );
 };
 export default ShopLayout;

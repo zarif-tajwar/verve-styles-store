@@ -61,7 +61,7 @@ const Shop = () => {
             ))}
           </div>
         )}
-        <div className="sticky bottom-4 z-50 hidden pt-16">
+        <div className="sticky bottom-4 z-50 pt-16">
           <ShopFilterPagination totalProducts={totalProducts} />
         </div>
       </div>

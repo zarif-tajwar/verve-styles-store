@@ -6,6 +6,10 @@ import { TotalProducts } from '@/lib/types/ShopFilter';
 import { cn } from '@/lib/util';
 import { FILTER_PRODUCTS_PER_PAGE } from '@/lib/validation/constants';
 import { Button } from '../UI/Button';
+import {
+  ChevronLeftIcon,
+  EllipsisHorizontalIcon,
+} from '@heroicons/react/20/solid';
 
 const ShopFilterPagination = ({
   totalProducts,
@@ -20,11 +24,12 @@ const ShopFilterPagination = ({
     total: totalPages,
     initialPage: 1,
     page: currentPage,
+    boundaries: 1,
   });
 
   return (
     <div className="flex w-full items-center justify-center">
-      <div className="rounded-xl bg-primary-0 px-3.5 py-2.5 text-sm font-medium ring-1 ring-primary-50">
+      <div className="rounded-xl bg-primary-0 p-2 text-sm font-medium ring-1 ring-primary-50">
         <div className="flex gap-2">
           <Button
             onClick={() => {
@@ -39,37 +44,16 @@ const ShopFilterPagination = ({
               'hover:bg-primary-50',
             )}
           >
-            <svg
-              width="7"
-              height="13"
-              viewBox="0 0 7 13"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="rotate-180"
-            >
-              <path
-                d="M1 12.1589L5.59317 7.56569C6.13561 7.02325 6.13561 6.13561 5.59317 5.59317L1 1"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <ChevronLeftIcon className="size-5" />
           </Button>
           {range.map((value) => {
             return typeof value !== 'number' ? (
-              <div
+              <span
                 key={Math.random()}
-                className="-mx-2 flex h-10 w-10 items-center justify-center gap-0.5 rounded-lg pt-2 tracking-wider"
+                className="-mx-2 inline-flex h-10 w-10 items-center justify-center gap-0.5 rounded-lg text-primary-300"
               >
-                {[...Array(4).keys()].map((_, i) => (
-                  <span
-                    key={i}
-                    className="h-0.5 w-0.5 rounded-full bg-black"
-                  ></span>
-                ))}
-              </div>
+                <EllipsisHorizontalIcon className="size-5" />
+              </span>
             ) : (
               <Button
                 key={value}
@@ -106,22 +90,7 @@ const ShopFilterPagination = ({
               'hover:bg-primary-50',
             )}
           >
-            <svg
-              width="7"
-              height="13"
-              viewBox="0 0 7 13"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 12.1589L5.59317 7.56569C6.13561 7.02325 6.13561 6.13561 5.59317 5.59317L1 1"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <ChevronLeftIcon className="size-5 rotate-180" />
           </Button>
         </div>
       </div>

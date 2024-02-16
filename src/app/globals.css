@@ -62,3 +62,11 @@
     display: none;
   }
 }
+
+#nprogress .bar {
+  /* display: none !important; */
+}
+
+#nprogress .peg {
+  display: none !important;
+}
