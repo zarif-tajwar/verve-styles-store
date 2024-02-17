@@ -17,8 +17,8 @@ const FilterProductsStatusText = ({
   ];
 
   return (
-    <p className="flex-grow pb-2 text-black/60">
-      Showing {range.at(0)}-{range.at(1)} of {totalProducts} Products
+    <p className="flex-grow leading-none text-primary-400">
+      Showing {range.at(0)}-{range.at(1)} of {totalProducts} Results
     </p>
   );
 };

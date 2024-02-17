@@ -12,7 +12,7 @@ const ShopLayout = ({ children }: { children: React.ReactNode }) => {
             <FilterSidebar />
           </Suspense>
           <div className="relative flex-grow">
-            <div className="mb-2 grid w-full grid-cols-2 items-end justify-end gap-4">
+            <div className="mb-2 grid w-full grid-cols-2 items-end justify-end gap-4 gap-y-5">
               <div className="col-start-2">
                 <Suspense>
                   <SortBySelect />
