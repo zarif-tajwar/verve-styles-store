@@ -9,11 +9,7 @@ const ClothingCheckbox = () => {
   const multipleOptionCheck = useShopFilter(
     (store) => store.multipleOptionCheck,
   );
-
-  const { checkedOptions, handleCheck } = multipleOptionCheck(
-    clothingItemsOptions.map((x) => x.value),
-    'clothing',
-  );
+  const { checkedValues, handleCheck } = multipleOptionCheck('clothing');
 
   return (
     <div className="grid grid-cols-2 gap-2.5 text-sm font-normal">
@@ -22,11 +18,6 @@ const ClothingCheckbox = () => {
           key={option.value}
           name={option.label}
           value={option.value}
-          title={
-            checkedOptions.size < 1
-              ? `Select ${option.label}`
-              : `Also select ${option.label}`
-          }
           className={buttonVariants({
             align: 'left',
             variant: 'secondary',
@@ -34,7 +25,7 @@ const ClothingCheckbox = () => {
             className:
               'py-2.5 data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
           })}
-          checked={checkedOptions.has(option.value)}
+          checked={!!checkedValues?.includes(option.value)}
           onCheckedChange={(checked) => {
             if (checked === 'indeterminate') return;
             handleCheck(checked, option.value);

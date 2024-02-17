@@ -5,15 +5,13 @@ import { defaultPriceRange } from '@/lib/validation/constants';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import { useState } from 'react';
 
-const DoubleRangeSlider = () => {
+const PriceRangeSlider = () => {
   const rangeSlider = useShopFilter((store) => store.rangeSlider);
 
-  const { currentRange, handleValueChange } = rangeSlider(
-    defaultPriceRange,
-    'price_range',
+  const { currentRange, handleValueChange } = rangeSlider('price_range');
+  const [currentRangeImmediate, setCurrentRangeImmediate] = useState(
+    currentRange ?? defaultPriceRange,
   );
-  const [currentRangeImmediate, setCurrentRangeImmediate] =
-    useState(currentRange);
   const [min, max] = currentRangeImmediate;
 
   return (
@@ -60,4 +58,4 @@ const DoubleRangeSlider = () => {
     </div>
   );
 };
-export default DoubleRangeSlider;
+export default PriceRangeSlider;

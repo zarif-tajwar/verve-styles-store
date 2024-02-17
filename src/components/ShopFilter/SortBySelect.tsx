@@ -28,10 +28,8 @@ export default SortBySelect;
 const SelectMain = () => {
   const singleOptionCheck = useShopFilter((store) => store.singleOptionCheck);
 
-  const { currentOptionValue, handleValueChange } = singleOptionCheck(
-    defaultSortOptionValue,
-    'sort_by',
-  );
+  const { currentOptionValue, handleValueChange } =
+    singleOptionCheck('sort_by');
 
   return (
     <Select.Root

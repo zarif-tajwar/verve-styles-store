@@ -1,6 +1,7 @@
 import { ClothingIcons } from '@/components/Svgs/icons';
 
 export const defaultPriceRange = [0, 10000] as [number, number];
+export const PRICE_RANGE = { min: 0, max: 10000 } as const;
 
 export const dressStylesOptions = [
   { id: 1, value: 'casual', label: 'Casual' },
@@ -9,7 +10,7 @@ export const dressStylesOptions = [
   { id: 4, value: 'gym', label: 'Gym' },
 ];
 
-export const dressStylesColumnNames = dressStylesOptions.map((o) => o.value);
+export const dressStylesValues = dressStylesOptions.map((o) => o.value);
 
 export const sizesOptions = [
   { id: 1, value: 'small', label: 'Small' },
@@ -19,7 +20,7 @@ export const sizesOptions = [
   { id: 5, value: '2xl', label: '2XL' },
 ];
 
-export const sizesColumnNames = sizesOptions.map((o) => o.value);
+export const sizesValues = sizesOptions.map((o) => o.value);
 
 export const clothingItemsOptions = [
   { id: 1, value: 'tshirts', label: 'T-Shirts', icon: ClothingIcons.tshirts },
@@ -29,7 +30,7 @@ export const clothingItemsOptions = [
   { id: 5, value: 'jeans', label: 'Jeans', icon: ClothingIcons.jeans },
 ];
 
-export const clothingColumnNames = clothingItemsOptions.map((o) => o.value);
+export const clothingValues = clothingItemsOptions.map((o) => o.value);
 
 export const sortOptions = [
   { value: 'most recent', title: 'Most Recent' },

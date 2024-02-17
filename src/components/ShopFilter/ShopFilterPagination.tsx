@@ -17,7 +17,7 @@ const ShopFilterPagination = ({
   totalProducts: TotalProducts;
 }) => {
   const totalPages = Math.ceil((totalProducts || 0) / FILTER_PRODUCTS_PER_PAGE);
-  const currentPage = useShopFilter((store) => store.currentPage);
+  const currentPage = useShopFilter((store) => store.queryStates.page) ?? 1;
   const handlePageChange = useShopFilter((store) => store.handlePageChange);
 
   const { active, range } = usePagination({

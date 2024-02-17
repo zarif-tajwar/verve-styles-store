@@ -7,7 +7,7 @@ const FilterProductsStatusText = ({
 }: {
   totalProducts: TotalProducts;
 }) => {
-  const currentPage = useShopFilter((store) => store.currentPage);
+  const currentPage = useShopFilter((store) => store.queryStates.page) ?? 1;
 
   if (!totalProducts || totalProducts < 1) return null;
 

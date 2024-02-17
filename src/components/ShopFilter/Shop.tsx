@@ -9,17 +9,21 @@ import FilterProductsStatusText from './FilterProductsStatusText';
 import { ProductListing } from './ProductListing';
 import ShopFilterPagination from './ShopFilterPagination';
 import { ProductListingSkeleton } from './Skeleton';
+import FilterSelectedTags from './FilterSelectedTags';
 
 const Shop = () => {
-  const paramsStateSerialized = useShopFilter(
-    (store) => store.paramsStateSerialized,
+  const filterUseQueryKey = useShopFilter((store) => store.filterUseQueryKey);
+
+  const filterParamsSerialized = useShopFilter(
+    (store) => store.filterParamsSerialized,
   );
 
-  const params = new URLSearchParams(
-    paramsStateSerialized as Record<string, string>,
-  ).toString();
-  const url = `/api/shop?${params}`;
-  const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, paramsStateSerialized];
+  const url = `/api/shop${filterParamsSerialized}`;
+
+  const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, filterUseQueryKey];
+
+  console.log(url, 'API URL');
+  console.log(queryKey, 'REACT QUERY KEY');
 
   const { data: productItems, isFetching } = useQuery({
     queryKey,
@@ -45,6 +49,7 @@ const Shop = () => {
   return (
     <>
       <div className="col-start-1 row-start-1">
+        <FilterSelectedTags />
         <FilterProductsStatusText totalProducts={totalProducts} />
       </div>
       <div className="relative col-span-2 h-max">

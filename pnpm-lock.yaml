@@ -180,8 +180,8 @@ dependencies:
     specifier: ^0.2.0
     version: 0.2.0
   nuqs:
-    specifier: ^1.16.1
-    version: 1.16.1(next@14.1.0)
+    specifier: ^1.17.0
+    version: 1.17.0(next@14.1.0)
   pg:
     specifier: ^8.11.3
     version: 8.11.3
@@ -4960,8 +4960,8 @@ packages:
     resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
     dev: false
 
-  /nuqs@1.16.1(next@14.1.0):
-    resolution: {integrity: sha512-R3muf8sXJTj/Lu56Cd+qBmzfZUxSiIvpoytf58/0+8xEtCBCENJn3a6aHokHCWop3q3c/DyVx7blDTX5Pu1hyA==}
+  /nuqs@1.17.0(next@14.1.0):
+    resolution: {integrity: sha512-Lp2qLETMb7AAYhDtRtx20oAZNkYYTPApZcaX7Q5nQz7bfy893TCIe92IYVIfl9ZUqQLTsl9855KGEsA57dylPQ==}
     peerDependencies:
       next: '>=13.4 <14.0.2 || ^14.0.3'
     dependencies:

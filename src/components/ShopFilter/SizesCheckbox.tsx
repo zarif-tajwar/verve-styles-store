@@ -9,11 +9,7 @@ const SizesCheckbox = () => {
   const multipleOptionCheck = useShopFilter(
     (store) => store.multipleOptionCheck,
   );
-
-  const { checkedOptions, handleCheck } = multipleOptionCheck(
-    sizesOptions.map((x) => x.value),
-    'sizes',
-  );
+  const { checkedValues, handleCheck } = multipleOptionCheck('sizes');
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -22,7 +18,7 @@ const SizesCheckbox = () => {
           key={option.value}
           name={option.value}
           value={option.value}
-          checked={checkedOptions.has(option.value)}
+          checked={!!checkedValues?.includes(option.value)}
           onCheckedChange={(checked) => {
             if (checked === 'indeterminate') return;
             handleCheck(checked, option.value);

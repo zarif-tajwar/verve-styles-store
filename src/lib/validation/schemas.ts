@@ -2,11 +2,11 @@ import { z } from 'zod';
 import { isValueInArray, quickSortByReference } from '../util';
 import {
   URL_QUERY_SEPERATORS,
-  clothingColumnNames,
+  clothingValues,
   defaultPriceRange,
   defaultSortOptionValue,
-  dressStylesColumnNames,
-  sizesColumnNames,
+  dressStylesValues,
+  sizesValues,
   sortOptionValues,
 } from './constants';
 
@@ -77,9 +77,9 @@ export const zParsePageNumber = () =>
 
 export const FilterSearchQueryValuesSchema = z
   .object({
-    sizes: zParseMultiOptionSearchQuery(sizesColumnNames),
-    styles: zParseMultiOptionSearchQuery(dressStylesColumnNames),
-    clothing: zParseMultiOptionSearchQuery(clothingColumnNames),
+    sizes: zParseMultiOptionSearchQuery(sizesValues),
+    styles: zParseMultiOptionSearchQuery(dressStylesValues),
+    clothing: zParseMultiOptionSearchQuery(clothingValues),
     price_range: zParsePriceRangeSearchQuery(),
     sort_by: zParseSingleOptionSearchQuery(
       sortOptionValues,
