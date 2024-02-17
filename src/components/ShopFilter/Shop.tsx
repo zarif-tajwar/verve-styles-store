@@ -12,6 +12,7 @@ import { ProductListingSkeleton } from './Skeleton';
 import FilterSelectedTags from './FilterSelectedTags';
 import ShopFiltersDrawer from './ShopFiltersDrawer';
 import { cn } from '@/lib/util';
+import ShopFilterStickyMenuMobile from './ShopFilterStickyMenuMobile';
 
 const Shop = () => {
   const filterUseQueryKey = useShopFilter((store) => store.filterUseQueryKey);
@@ -68,14 +69,12 @@ const Shop = () => {
             ))}
           </div>
         )}
-        <div className="sticky bottom-4 z-50 pt-16">
-          <div
-            className={cn('flex items-center justify-center gap-2', 'grid ')}
-          >
-            <ShopFiltersDrawer />
+        <div className="sticky bottom-4 z-10 hidden pt-16 lg:block">
+          <div className={cn('flex items-center justify-center gap-2')}>
             <ShopFilterPagination totalProducts={totalProducts} />
           </div>
         </div>
+        <ShopFilterStickyMenuMobile totalProducts={totalProducts} />
       </div>
     </>
   );

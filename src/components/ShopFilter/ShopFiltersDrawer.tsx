@@ -23,7 +23,7 @@ const ShopFiltersDrawer = () => {
     <div className="block lg:hidden">
       <Drawer>
         <DrawerTrigger asChild>
-          <Button size={'md'} roundness={'lg'} className="gap-2">
+          <Button size={'md'} roundness={'lg'} className="w-full gap-2">
             <SliderIcon className="size-5" />
             Filters
           </Button>

@@ -14,7 +14,7 @@ const Badge = ({
   return (
     <span
       className={cn(
-        'inline-flex min-w-11 items-center justify-center rounded-full border border-primary-100 px-2 py-0.5 text-xs font-medium text-primary-400',
+        'font-base inline-flex min-w-11 items-center justify-center rounded-full border border-primary-100 px-2 py-0.5 text-sm text-primary-400',
         className,
       )}
     >
@@ -32,7 +32,7 @@ const FilterSelectedTags = () => {
 
   return (
     <div className="mb-6 grid gap-2 lg:hidden">
-      <p className="text-sm text-primary-400">Selected Filters</p>
+      <p className="text-base text-primary-400">Selected Filters</p>
       <div className="-ml-2 flex flex-wrap items-center gap-1.5">
         {queryStates.sort_by && <Badge>{queryStates.sort_by}</Badge>}
         {queryStates.clothing?.map((value) => {

@@ -25,6 +25,7 @@ const ShopFilterPagination = ({
     initialPage: 1,
     page: currentPage,
     boundaries: 1,
+    siblings: 1,
   });
 
   return (
