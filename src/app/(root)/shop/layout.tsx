@@ -5,7 +5,7 @@ import React, { Suspense } from 'react';
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="mt-10">
+    <main className="mt-4 lg:mt-10">
       <Container>
         <div className="grid gap-x-8 lg:grid-cols-[auto_1fr]">
           <Suspense fallback={<div className="h-[30rem] w-[18.5rem]"></div>}>
@@ -13,7 +13,7 @@ const ShopLayout = ({ children }: { children: React.ReactNode }) => {
           </Suspense>
           <div className="relative flex-grow">
             <div className="mb-2 grid w-full grid-cols-2 items-end justify-end gap-4 gap-y-5">
-              <div className="col-start-2">
+              <div className="col-start-2 hidden lg:block">
                 <Suspense>
                   <SortBySelect />
                 </Suspense>

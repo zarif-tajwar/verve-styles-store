@@ -16,7 +16,7 @@ export const ProductListing = ({
     <div
       key={'products'}
       className={cn(
-        'relative z-0 grid gap-x-4 gap-y-9 @container sm:gap-x-5',
+        'relative grid gap-x-4 gap-y-9 @container sm:gap-x-5',
         'grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3',
         '[@media(width<23.75rem)]:grid-cols-1',
         'auto-rows-auto',

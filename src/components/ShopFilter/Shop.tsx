@@ -10,6 +10,8 @@ import { ProductListing } from './ProductListing';
 import ShopFilterPagination from './ShopFilterPagination';
 import { ProductListingSkeleton } from './Skeleton';
 import FilterSelectedTags from './FilterSelectedTags';
+import ShopFiltersDrawer from './ShopFiltersDrawer';
+import { cn } from '@/lib/util';
 
 const Shop = () => {
   const filterUseQueryKey = useShopFilter((store) => store.filterUseQueryKey);
@@ -48,7 +50,7 @@ const Shop = () => {
 
   return (
     <>
-      <div className="col-start-1 row-start-1">
+      <div className="col-span-2 col-start-1 row-start-1 lg:col-span-1">
         <FilterSelectedTags />
         <FilterProductsStatusText totalProducts={totalProducts} />
       </div>
@@ -67,7 +69,12 @@ const Shop = () => {
           </div>
         )}
         <div className="sticky bottom-4 z-50 pt-16">
-          <ShopFilterPagination totalProducts={totalProducts} />
+          <div
+            className={cn('flex items-center justify-center gap-2', 'grid ')}
+          >
+            <ShopFiltersDrawer />
+            <ShopFilterPagination totalProducts={totalProducts} />
+          </div>
         </div>
       </div>
     </>

@@ -28,7 +28,7 @@ const ShopFilterPagination = ({
   });
 
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="">
       <div className="rounded-xl bg-primary-0 p-2 text-sm font-medium ring-1 ring-primary-50">
         <div className="flex gap-2">
           <Button
