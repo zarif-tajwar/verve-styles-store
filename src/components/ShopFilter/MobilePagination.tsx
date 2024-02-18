@@ -29,7 +29,7 @@ const MobilePagination = ({
       >
         <ChevronLeftIcon className="size-5" />
       </Button>
-      <div className="-mt-1 inline-flex items-center justify-center px-4 leading-none">
+      <div className="-mt-1 inline-flex min-w-24 items-center justify-center px-4 leading-none">
         {`Page ${currentPage}`}
       </div>
       <Button

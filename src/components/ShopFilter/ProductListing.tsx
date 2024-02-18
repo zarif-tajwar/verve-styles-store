@@ -53,10 +53,10 @@ export const ProductListing = ({
             <div className="mb-4 flex items-center gap-2 sm:gap-3">
               <Star rating={ratingFloat} size="sm" />
               <p className="flex text-sm font-medium text-primary-300 md:text-base">
-                <span className="block w-[3ch] text-primary-500">
-                  {ratingStr}/
+                <span className="block w-[2ch] text-primary-500">
+                  {ratingStr}
                 </span>
-                <span className="block">5.0</span>
+                <span className="block">/5.0</span>
               </p>
             </div>
             <p className="inline-block text-xl font-bold leading-none sm:text-2xl lg:font-bold">

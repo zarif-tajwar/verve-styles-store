@@ -42,8 +42,6 @@ const OrderedProducts = async ({
   );
   const total = subtotal + deliveryCharge + taxes - discount;
 
-  console.log(orderLineItems.length);
-
   return (
     <div>
       <AddressDetailsCard.Card>

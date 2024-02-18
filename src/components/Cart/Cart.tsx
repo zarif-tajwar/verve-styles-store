@@ -70,8 +70,6 @@ const CartItemsListing = ({
     else return null;
   }, [cartItems, totalCartItems]);
 
-  console.log('CART LISTING PARENT RENDERED');
-
   return (
     <div
       className={cn(
@@ -149,8 +147,6 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
   const { data, isLoading, isFetched } = useCartItemsQuery();
 
   const cartItemsData = data;
-
-  console.log('CART PARENT RENDERED');
 
   return (
     <div className="relative h-full">

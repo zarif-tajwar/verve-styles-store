@@ -23,7 +23,11 @@ import {
   useQueryStates,
 } from 'nuqs';
 import { useCallback, useMemo } from 'react';
-import { quickSortByReference } from '../util';
+import { quickSortByReference, wait } from '../util';
+import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '../constants/query-keys';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { FilteredProductItem } from '../server/shop';
+import { errorToast } from '@/components/UI/Toaster';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
@@ -177,7 +181,6 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
       const allValues = multiCheckOptionValues[paramKey];
 
       const handleCheck = (isChecked: boolean, value: string) => {
-        console.log('HANDLE CHECK CALLED');
         let newCheckedValues: string[] = checkedValues || [];
         if (isChecked) {
           newCheckedValues = [value, ...newCheckedValues];
@@ -271,4 +274,36 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
   const returnCallBack = callback(store);
 
   return returnCallBack;
+};
+
+export const useShopQuery = () => {
+  const filterUseQueryKey = useShopFilter((store) => store.filterUseQueryKey);
+
+  const filterParamsSerialized = useShopFilter(
+    (store) => store.filterParamsSerialized,
+  );
+
+  const url = `/api/shop${filterParamsSerialized}`;
+
+  const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, filterUseQueryKey];
+
+  return useQuery({
+    queryKey,
+    queryFn: async () => {
+      await wait(3000);
+      let products: FilteredProductItem[] = [];
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error();
+        } else {
+          products = (await res.json()).data;
+        }
+      } catch (error) {
+        errorToast('Something went wrong while fetching the products!');
+      }
+      return products;
+    },
+    placeholderData: keepPreviousData,
+  });
 };

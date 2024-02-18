@@ -28,8 +28,6 @@ const CartItem = memo(
     totalCartItems: number;
     index: number;
   }) => {
-    console.log(`CART ITEM RENDRED ${cartItem.name} ${cartItem.sizeName}`);
-
     const [toggleDelete, setToggleDelete] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [countdown, startCountdown, _, resetCountdown] = useCountDown(4);

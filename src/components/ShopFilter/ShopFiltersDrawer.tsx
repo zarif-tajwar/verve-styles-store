@@ -56,23 +56,23 @@ const ShopFiltersDrawer = () => {
                     Sort By
                   </h3>
                   <SortByRadioGroup />
-                  <Divider className="my-[var(--divider-margin)]" />
+                  <Divider className="my-[var(--divider-margin)] bg-primary-50" />
                   <h3 className="mb-[var(--heading-margin)] text-lg font-semibold capitalize">
                     Clothing
                   </h3>
                   <ClothingCheckbox />
 
-                  <Divider className="my-[var(--divider-margin)]" />
+                  <Divider className="my-[var(--divider-margin)] bg-primary-50" />
                   <h3 className="mb-[var(--heading-margin)] text-lg font-semibold capitalize">
                     Price
                   </h3>
                   <PriceRangeSlider />
-                  <Divider className="my-[var(--divider-margin)]" />
+                  <Divider className="my-[var(--divider-margin)] bg-primary-50" />
                   <h3 className="mb-[var(--heading-margin)] text-lg font-semibold capitalize">
                     Size
                   </h3>
                   <SizesCheckbox />
-                  <Divider className="my-[var(--divider-margin)]" />
+                  <Divider className="my-[var(--divider-margin)] bg-primary-50" />
                   <h3 className="mb-[var(--heading-margin)] text-lg font-semibold capitalize">
                     Dress Style
                   </h3>
