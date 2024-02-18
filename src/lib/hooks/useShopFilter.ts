@@ -1,5 +1,6 @@
 'use client';
 
+import { errorToast } from '@/components/UI/Toaster';
 import {
   PRICE_RANGE,
   URL_QUERY_SEPERATORS,
@@ -11,6 +12,7 @@ import {
   sortOptionValues,
 } from '@/lib/validation/constants';
 import { shopFilterKeys } from '@/lib/validation/schemas';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   ParserBuilder,
   SetValues,
@@ -23,11 +25,9 @@ import {
   useQueryStates,
 } from 'nuqs';
 import { useCallback, useMemo } from 'react';
-import { quickSortByReference, wait } from '../util';
 import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '../constants/query-keys';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { FilteredProductItem } from '../server/shop';
-import { errorToast } from '@/components/UI/Toaster';
+import { quickSortByReference } from '../util';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
@@ -290,7 +290,6 @@ export const useShopQuery = () => {
   return useQuery({
     queryKey,
     queryFn: async () => {
-      await wait(3000);
       let products: FilteredProductItem[] = [];
       try {
         const res = await fetch(url);

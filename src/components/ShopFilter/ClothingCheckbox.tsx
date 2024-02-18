@@ -4,6 +4,7 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import { clothingItemsOptions } from '@/lib/validation/constants';
 import { buttonVariants } from '../UI/Button';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
+import { useTransition } from 'react';
 
 const ClothingCheckbox = () => {
   const multipleOptionCheck = useShopFilter(

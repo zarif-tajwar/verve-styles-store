@@ -25,8 +25,13 @@ const Badge = ({
 
 const FilterSelectedTags = () => {
   const queryStates = useShopFilter((store) => store.queryStates);
+
   const isAnyFiltersActive =
-    useShopFilter((store) => store.filterParamsSerialized) !== '';
+    queryStates.clothing ||
+    queryStates.price_range ||
+    queryStates.sizes ||
+    queryStates.sort_by ||
+    queryStates.styles;
 
   if (!isAnyFiltersActive) return null;
 
