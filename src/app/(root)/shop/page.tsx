@@ -29,9 +29,9 @@ const ShopPage = async ({
   console.log(end - start, 'SHOP PAGE RENDER TIME');
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Shop />
-    </HydrationBoundary>
+    // <HydrationBoundary state={dehydrate(queryClient)}>
+    <Shop />
+    // </HydrationBoundary>
   );
 };
 

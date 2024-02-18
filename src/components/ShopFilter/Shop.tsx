@@ -6,11 +6,19 @@ import FilterSelectedTags from './FilterSelectedTags';
 import { ProductListing } from './ProductListing';
 import ShopFilterBottomMenu from './ShopFilterBottomMenu';
 import { ProductListingSkeleton } from './Skeleton';
+import NoProductsFound from './NoProductsFound';
 
 const Shop = () => {
   const { data: productItems, isFetching } = useShopQuery();
 
   const totalProducts = productItems?.at(0)?.totalCount;
+
+  const showProducts = !isFetching && productItems && productItems.length > 0;
+
+  const showLoading = isFetching;
+
+  const showNoProductsFound =
+    !isFetching && productItems && productItems.length === 0;
 
   return (
     <>
@@ -19,11 +27,12 @@ const Shop = () => {
         <FilterProductsStatusText totalProducts={totalProducts} />
       </div>
       <div className="relative col-span-2 h-max">
-        {!isFetching && productItems && (
-          <ProductListing products={productItems} />
+        {showProducts && <ProductListing products={productItems} />}
+        {showLoading && <ProductListingSkeleton />}
+        {showNoProductsFound && <NoProductsFound />}
+        {!showNoProductsFound && (
+          <ShopFilterBottomMenu totalProducts={totalProducts} />
         )}
-        {isFetching && <ProductListingSkeleton />}
-        <ShopFilterBottomMenu totalProducts={totalProducts} />
       </div>
     </>
   );

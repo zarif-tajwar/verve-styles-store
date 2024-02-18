@@ -10,6 +10,7 @@ import {
   ChevronLeftIcon,
   EllipsisHorizontalIcon,
 } from '@heroicons/react/20/solid';
+import { useEffect } from 'react';
 
 const ShopFilterPagination = ({
   totalProducts,

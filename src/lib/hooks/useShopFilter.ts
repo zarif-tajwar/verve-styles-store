@@ -64,8 +64,12 @@ type Store = {
     handleValueChange: (newRange: number[]) => void;
   };
   handlePageChange: (pageNum: number, totalPages: number) => void;
+  resetAllFilters: () => void;
   filterUseQueryKey: Partial<Record<ParamKey, string | undefined>>;
   filterParamsSerialized: string;
+  findIsAnyFilterActive: (
+    exclude?: Partial<Record<ParamKey, boolean>>,
+  ) => boolean;
 };
 
 const multiCheckOptionValues: Record<MultiOptionCheckKeys, string[]> = {
@@ -260,6 +264,30 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
     setQueryStates({ page: pageNum });
   };
 
+  const resetAllFilters = useCallback(() => {
+    setQueryStates({
+      clothing: null,
+      page: null,
+      price_range: null,
+      sizes: null,
+      sort_by: null,
+      styles: null,
+    });
+  }, [setQueryStates]);
+
+  const findIsAnyFilterActive = useCallback(
+    (exclude?: Partial<Record<ParamKey, boolean>>) => {
+      const entries = Object.entries(queryStates);
+
+      for (let [key, value] of entries) {
+        if (exclude && exclude[key as ParamKey]) continue;
+        if (value !== null) return true;
+      }
+      return false;
+    },
+    [queryStates],
+  );
+
   const store: Store = {
     queryStates,
     setQueryStates,
@@ -269,6 +297,8 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
     rangeSlider,
     filterUseQueryKey,
     filterParamsSerialized,
+    resetAllFilters,
+    findIsAnyFilterActive,
   };
 
   const returnCallBack = callback(store);
