@@ -3,6 +3,10 @@ import { redirect } from 'next/navigation';
 import AddressList from './AddressList';
 import AddressConfigure from './AddressConfigure';
 import ClientSessionProvider from '@/lib/provider/client-session-provider';
+import {
+  AccountHeader,
+  AccountHeading,
+} from '@/components/account/AccountCommon';
 
 const AddressesPage = async () => {
   const session = await dedupedAuth();
@@ -11,9 +15,9 @@ const AddressesPage = async () => {
   }
   return (
     <div className="w-full">
-      <div className="mb-12">
-        <h1 className="text-3xl font-semibold">Address Book</h1>
-      </div>
+      <AccountHeader>
+        <AccountHeading>Address Book</AccountHeading>
+      </AccountHeader>
       <ClientSessionProvider session={session}>
         <div className="grid gap-12">
           <div>

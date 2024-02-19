@@ -3,6 +3,10 @@ import ClientSessionProvider from '@/lib/provider/client-session-provider';
 import { redirect } from 'next/navigation';
 import OrderFilters from './OrderFilters';
 import OrdersListing from './OrdersListing';
+import {
+  AccountHeader,
+  AccountHeading,
+} from '@/components/account/AccountCommon';
 
 const OrdersPage = async () => {
   const session = await dedupedAuth();
@@ -13,10 +17,9 @@ const OrdersPage = async () => {
   return (
     <ClientSessionProvider session={session}>
       <div className="w-full">
-        <div className="relative mb-8">
-          <h1 className="text-3xl font-semibold">Order History</h1>
-          {/* <GenRanOrderBtn /> */}
-        </div>
+        <AccountHeader>
+          <AccountHeading>Order History</AccountHeading>
+        </AccountHeader>
         <OrderFilters />
         <OrdersListing />
       </div>

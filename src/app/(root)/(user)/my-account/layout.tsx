@@ -1,5 +1,9 @@
 import Breadcumb from '@/components/UI/Breadcumb';
+import { Button } from '@/components/UI/Button';
+import { Container } from '@/components/UI/Container';
+import AccountMenuMobile from '@/components/account/AccountMenuMobile';
 import AccountSidebar from '@/components/account/accountSidebar';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
 
 const labels = new Map([
   ['My account', 'Account'],
@@ -8,15 +12,16 @@ const labels = new Map([
 
 const AccountLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="container-main flex gap-12 pt-12">
-      <div className="pt-4">
+    <Container className="grid gap-8 overflow-x-clip pt-8 lg:grid-cols-[auto_1fr] xl:pt-12 2xl:gap-12">
+      <div className="hidden pt-4 lg:block">
         <AccountSidebar />
       </div>
-      <div className="flex-grow">
+      <AccountMenuMobile />
+      <div>
         <Breadcumb customLabels={labels} />
-        <div className="w-full pt-4">{children}</div>
+        <div className="w-full pt-3 sm:pt-4">{children}</div>
       </div>
-    </div>
+    </Container>
   );
 };
 

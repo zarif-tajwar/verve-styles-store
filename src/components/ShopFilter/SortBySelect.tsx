@@ -1,23 +1,16 @@
 'use client';
 
-import React from 'react';
-// import * as Select from '@radix-ui/react-select';
-import { cn } from '@/lib/util';
-import { CheckMini } from '../Svgs/icons';
 import {
   defaultSortOptionValue,
   sortOptions,
 } from '@/lib/validation/constants';
 
-import { Button } from '../UI/Button';
-import { ChevronDown } from 'lucide-react';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '../UI/Select';

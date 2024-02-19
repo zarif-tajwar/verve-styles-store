@@ -10,7 +10,10 @@ import NavLinks from './NavLinks';
 
 const Navbar = () => {
   return (
-    <header>
+    <header
+      id="navbar"
+      className="top-0 z-10 bg-primary-0 [&:not(:has(~_*_[data-no-sticky-nav]),:has(~_[data-no-sticky-nav]))]:sticky"
+    >
       <Container asChild className="h-[var(--nav-height)]">
         <nav>
           <div className="flex h-full items-center justify-between lg:justify-start lg:gap-10">

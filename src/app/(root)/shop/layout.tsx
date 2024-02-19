@@ -1,12 +1,11 @@
 import { FilterSidebar } from '@/components/ShopFilter/FilterSidebar';
-import ShopFilterStickyMenuMobile from '@/components/ShopFilter/ShopFilterStickyMenuMobile';
 import SortBySelect from '@/components/ShopFilter/SortBySelect';
 import { Container } from '@/components/UI/Container';
 import React, { Suspense } from 'react';
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="mt-4 lg:mt-10">
+    <main className="mt-4 lg:mt-10" data-no-sticky-nav>
       <Container className="relative h-max">
         <div className="grid gap-x-8 lg:grid-cols-[auto_1fr]">
           <Suspense fallback={<div className="h-[30rem] w-[18.5rem]"></div>}>

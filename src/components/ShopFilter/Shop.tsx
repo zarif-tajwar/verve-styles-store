@@ -24,7 +24,9 @@ const Shop = () => {
     <>
       <div className="col-span-2 col-start-1 row-start-1 lg:col-span-1">
         <FilterSelectedTags />
-        <FilterProductsStatusText totalProducts={totalProducts} />
+        {showProducts && (
+          <FilterProductsStatusText totalProducts={totalProducts} />
+        )}
       </div>
       <div className="relative col-span-2 h-max">
         {showProducts && <ProductListing products={productItems} />}

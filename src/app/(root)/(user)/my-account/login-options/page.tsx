@@ -4,6 +4,10 @@ import { Suspense } from 'react';
 import LoadingState from './LoadingState';
 import { dedupedAuth } from '@/auth';
 import { redirect } from 'next/navigation';
+import {
+  AccountHeader,
+  AccountHeading,
+} from '@/components/account/AccountCommon';
 
 const LoginOptions = async () => {
   const session = await dedupedAuth();
@@ -13,11 +17,9 @@ const LoginOptions = async () => {
 
   return (
     <div className="w-full">
-      <div>
-        <h1 className="text-3xl font-semibold">
-          Configure emails and accounts
-        </h1>
-      </div>
+      <AccountHeader>
+        <AccountHeading>Configure emails and accounts</AccountHeading>
+      </AccountHeader>
 
       <div className="my-4 h-36 w-full rounded-lg bg-primary-50"></div>
 
