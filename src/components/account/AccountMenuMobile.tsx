@@ -45,12 +45,12 @@ const AccountMenuMobile = () => {
               return (
                 <CarouselItem
                   key={linkOption.href}
-                  className="basis-[max(25%,10rem)] pl-[var(--gap)] sm:basis-[max(25%,11rem)]"
+                  className="basis-[max(25%,11rem)] pl-[var(--gap)]"
                 >
                   <Button
                     variant={'outline'}
                     className={cn(
-                      'grid w-full grid-cols-1 items-start justify-start whitespace-nowrap break-keep px-3 text-left text-sm font-medium sm:px-4 sm:text-base',
+                      'grid w-full grid-cols-1 items-start justify-start whitespace-nowrap break-keep px-4 text-left text-base font-medium',
                       activeLinkIndex === i &&
                         'bg-primary-50 font-medium ring-2 ring-primary-400 hover:ring-2 hover:ring-primary-400',
                     )}
@@ -59,11 +59,32 @@ const AccountMenuMobile = () => {
                     asChild
                   >
                     <Link href={linkOption.href}>
-                      <linkOption.icon className="size-5 opacity-70 sm:size-6" />
+                      <linkOption.icon className="size-6 opacity-70" />
                       <span>{linkOption.text}</span>
                     </Link>
                   </Button>
                 </CarouselItem>
+                // <CarouselItem
+                //   key={linkOption.href}
+                //   className="basis-[max(25%,10rem)] pl-[var(--gap)] sm:basis-[max(25%,11rem)]"
+                // >
+                //   <Button
+                //     variant={'outline'}
+                //     className={cn(
+                //       'grid w-full grid-cols-1 items-start justify-start whitespace-nowrap break-keep px-3 text-left text-sm font-medium sm:px-4 sm:text-base',
+                //       activeLinkIndex === i &&
+                //         'bg-primary-50 font-medium ring-2 ring-primary-400 hover:ring-2 hover:ring-primary-400',
+                //     )}
+                //     size={'md'}
+                //     roundness={'xl'}
+                //     asChild
+                //   >
+                //     <Link href={linkOption.href}>
+                //       <linkOption.icon className="size-5 opacity-70 sm:size-6" />
+                //       <span>{linkOption.text}</span>
+                //     </Link>
+                //   </Button>
+                // </CarouselItem>
               );
             })}
           </CarouselContent>

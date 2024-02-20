@@ -105,12 +105,12 @@ const OrderDetailsPage = async ({
           <p className="font-semibold text-primary-500">{priceFormat(total)}</p>
         </div>
       </div>
-      <div className="mb-6 grid grid-cols-1 gap-1 rounded-xl bg-primary-0 p-1 ring-1 ring-inset ring-primary-50 sm:gap-2 sm:p-2 [@media(width>=360px)]:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-1 rounded-xl bg-primary-0 p-1 ring-1 ring-inset ring-primary-50 sm:gap-2 sm:p-2 [@media(width>=380px)]:grid-cols-3">
         {tabWindows.map((tab) => {
           return (
             <Link
               className={cn(
-                'inline-flex min-h-12 items-center justify-center gap-2 text-sm font-semibold text-primary-400 transition-colors duration-200 sm:text-base',
+                'inline-flex min-h-12 items-center justify-center gap-2 text-base font-semibold text-primary-400 transition-colors duration-200',
                 'rounded-lg',
                 'hover:bg-primary-50',
                 tab.value === view &&

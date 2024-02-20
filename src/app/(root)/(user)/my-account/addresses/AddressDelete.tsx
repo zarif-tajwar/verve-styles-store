@@ -4,9 +4,11 @@ import { Button } from '@/components/UI/Button';
 import { errorToast, messageToast } from '@/components/UI/Toaster';
 import { deleteAddressAction } from '@/lib/actions/address';
 import { AddressSelect } from '@/lib/db/schema/address';
-import { TrashIcon, XMarkIcon } from '@heroicons/react/16/solid';
+import { cn } from '@/lib/util';
+import { XMarkIcon } from '@heroicons/react/16/solid';
 import * as Popover from '@radix-ui/react-popover';
 import { useQueryClient } from '@tanstack/react-query';
+import { Trash } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 
@@ -35,7 +37,7 @@ const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
           variant={'secondary'}
           aria-label="Delete Address"
         >
-          <TrashIcon className="size-4" />
+          <Trash className="size-4" strokeWidth={2.3} />
         </Button>
       </Popover.Trigger>
       <Popover.Portal>
@@ -44,8 +46,13 @@ const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
           onCloseAutoFocus={(e) => e.preventDefault()}
           align="end"
           side="top"
-          className="rounded-xl bg-primary-0 p-4 shadow-sm ring-1 ring-primary-50"
-          sideOffset={8}
+          className={cn(
+            'origin-bottom-right rounded-xl bg-primary-0 p-4 shadow-sm ring-1 ring-primary-50',
+            'data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-90 data-[state=open]:slide-in-from-right-1',
+            'data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-90 data-[state=closed]:slide-out-to-right-1',
+            'ease-subtleSpring',
+          )}
+          sideOffset={10}
         >
           <p className="mb-3 text-sm font-medium">Click confirm to delete</p>
           <div className="flex items-center gap-2">
@@ -58,7 +65,7 @@ const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
                 setIsOpen(false);
               }}
             >
-              <TrashIcon className="size-4" />
+              <Trash strokeWidth={2.3} className="size-4" />
               Confirm
             </Button>
 

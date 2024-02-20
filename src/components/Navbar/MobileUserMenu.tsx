@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
 import { signOutAction } from '@/lib/actions/auth';
+import { cn } from '@/lib/util';
 
 const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   return (
@@ -27,7 +28,12 @@ const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.DialogOverlay className="h-full w-full" />
-        <Dialog.Content className="fixed left-0 top-[var(--nav-height)] h-[calc(100svh-var(--nav-height))] w-screen border-t border-primary-100 bg-primary-0">
+        <Dialog.Content
+          className={cn(
+            'fixed left-0 top-[var(--nav-height)] z-50 h-[calc(100dvh-var(--nav-height))] w-screen border-t border-primary-100 bg-primary-0',
+            'data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 origin-top data-[state=closed]:duration-200 data-[state=open]:duration-300',
+          )}
+        >
           <ScrollArea className="h-full max-h-[calc(100svh-var(--nav-height))] w-full">
             <div className="h-full w-full px-4 py-10 md:px-8">
               <div className="h-full w-full">

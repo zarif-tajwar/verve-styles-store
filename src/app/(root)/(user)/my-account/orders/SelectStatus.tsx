@@ -23,7 +23,7 @@ const SelectStatus = () => {
         <SelectTrigger className="min-w-48 capitalize">
           <SelectValue placeholder="Choose Order Status" />
         </SelectTrigger>
-        <SelectContent side="bottom" align="center">
+        <SelectContent side="bottom" align="center" sideOffset={8}>
           <SelectGroup>
             <SelectLabel>Order Status</SelectLabel>
             {selectValues.map((option) => {
