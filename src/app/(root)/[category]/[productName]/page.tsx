@@ -73,7 +73,7 @@ const ProductPage = async ({ params }: PageProps) => {
   // font-size: clamp(1.75rem, 0.9761904761904763rem + 3.1746031746031744vw, 2.5rem);
 
   return (
-    <main className="border-t border-primary-100">
+    <main>
       <Container asChild className="py-4 md:py-8 lg:py-16 xl:py-20">
         <section>
           <div

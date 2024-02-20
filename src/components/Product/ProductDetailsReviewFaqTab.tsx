@@ -58,7 +58,7 @@ const ProductDetailsReviewFaqTab = ({
       onValueChange={(value) => handleValueChange(value as Value)}
     >
       <Container className="px-2">
-        <Tabs.List className="relative mb-8 grid w-full grid-cols-3 gap-0 rounded-lg border border-primary-50 p-2 sm:gap-2 md:rounded-xl">
+        <Tabs.List className="relative mb-8 grid w-full gap-1 rounded-lg border border-primary-50 p-1 sm:gap-2 sm:p-2 md:rounded-xl [@media(width>=500px)]:grid-cols-3">
           {TabOptions.map((tabOption) => {
             const isSelected = tabValue
               ? tabValue === tabOption.value
@@ -69,10 +69,11 @@ const ProductDetailsReviewFaqTab = ({
                 key={tabOption.value}
                 value={tabOption.value}
                 className={cn(
-                  'center relative inline-flex rounded-lg px-4 py-3 text-left text-sm font-semibold text-primary-400 transition-colors duration-200 hover:bg-primary-50  sm:items-center sm:justify-center sm:text-base md:rounded-xl md:py-4 lg:py-5 lg:text-lg',
+                  'center relative inline-flex items-center justify-center rounded-lg px-4 py-3 text-left text-sm font-semibold text-primary-400 transition-colors duration-200 hover:bg-primary-50 sm:text-base md:rounded-xl md:py-4 lg:py-5 lg:text-lg',
                   // 'border-b-2 border-primary-50',
                   // tabValue === tabOption.value && 'border-primary-500',
-                  isSelected && 'bg-primary-50 text-primary-500',
+                  isSelected &&
+                    'bg-primary-100 text-primary-900 text-primary-900 hover:bg-primary-100',
                 )}
               >
                 {tabOption.label}

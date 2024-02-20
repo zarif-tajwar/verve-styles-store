@@ -7,7 +7,10 @@ const Card = React.forwardRef<HTMLDivElement, AccounDetailsCardProps>(
   ({ className, children, ...props }, ref) => {
     return (
       <div
-        className={cn('rounded-xl p-5 ring-1 ring-primary-50', className)}
+        className={cn(
+          'rounded-xl p-4 ring-1 ring-primary-50 sm:p-5',
+          className,
+        )}
         ref={ref}
         {...props}
       >
@@ -70,7 +73,7 @@ const CardList = React.forwardRef<HTMLDListElement, CardListProps>(
     return (
       <dl
         className={cn(
-          'grid grid-cols-2 gap-x-8 gap-y-4 font-medium',
+          'grid auto-rows-auto grid-cols-1 gap-x-6 gap-y-4 font-medium sm:gap-x-8 sm:gap-y-5 [@media(width>=550px)]:grid-cols-2',
           className,
         )}
         ref={ref}
@@ -89,7 +92,11 @@ interface CardListItemProps extends React.HTMLAttributes<HTMLDivElement> {}
 const CardListItem = React.forwardRef<HTMLDivElement, CardListItemProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div className={cn('space-y-1.5', className)} ref={ref} {...props}>
+      <div
+        className={cn('row-span-2 grid grid-rows-subgrid gap-y-1.5', className)}
+        ref={ref}
+        {...props}
+      >
         {children}
       </div>
     );
@@ -162,7 +169,12 @@ const Skeleton = ({
                 headingClass,
               )}
             ></div>
-            <div className={cn('grid grid-cols-2 gap-x-8 gap-y-4', gridClass)}>
+            <div
+              className={cn(
+                'grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2',
+                gridClass,
+              )}
+            >
               {[...Array(4).keys()].map((i) => {
                 return (
                   <div key={i}>

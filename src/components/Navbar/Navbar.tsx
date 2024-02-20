@@ -12,7 +12,7 @@ const Navbar = () => {
   return (
     <header
       id="navbar"
-      className="top-0 z-10 bg-primary-0 [&:not(:has(~_*_[data-no-sticky-nav]),:has(~_[data-no-sticky-nav]))]:sticky"
+      className="[&:not(:has(~_*_[data-no-nav-border),:has(~_[data-no-nav-border))]:border-none top-0 z-10 border-b  border-primary-50 bg-primary-0 [&:not(:has(~_*_[data-no-sticky-nav]),:has(~_[data-no-sticky-nav]))]:sticky"
     >
       <Container asChild className="h-[var(--nav-height)]">
         <nav>

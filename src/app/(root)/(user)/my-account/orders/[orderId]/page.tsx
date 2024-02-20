@@ -92,7 +92,7 @@ const OrderDetailsPage = async ({
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-y-4 [@media(width>450px)]:flex-row [@media(width>450px)]:items-center [@media(width>450px)]:justify-between">
         <div className="flex items-center gap-5">
           <h1 className="text-2xl font-semibold">{`Order #${orderId}`}</h1>
           <OrderStatus
@@ -100,20 +100,21 @@ const OrderDetailsPage = async ({
             status={orderData.orderStatus}
           />
         </div>
-        <div className="flex flex-col items-end justify-end text-sm">
+        <div className="flex flex-col text-sm [@media(width>450px)]:items-end [@media(width>450px)]:justify-end">
           <p className="font-medium text-primary-400">Total</p>
           <p className="font-semibold text-primary-500">{priceFormat(total)}</p>
         </div>
       </div>
-      <div className="mb-6 grid grid-cols-3 gap-2 rounded-xl bg-primary-0 p-2 ring-1 ring-inset ring-primary-50">
+      <div className="mb-6 grid grid-cols-1 gap-1 rounded-xl bg-primary-0 p-1 ring-1 ring-inset ring-primary-50 sm:gap-2 sm:p-2 [@media(width>=360px)]:grid-cols-3">
         {tabWindows.map((tab) => {
           return (
             <Link
               className={cn(
-                'inline-flex min-h-12 items-center justify-center gap-2 font-medium text-primary-500 transition-colors duration-200',
+                'inline-flex min-h-12 items-center justify-center gap-2 text-sm font-semibold text-primary-400 transition-colors duration-200 sm:text-base',
                 'rounded-lg',
                 'hover:bg-primary-50',
-                tab.value === view && 'bg-primary-50 text-primary-900',
+                tab.value === view &&
+                  'bg-primary-100 text-primary-900 hover:bg-primary-100 hover:text-primary-900',
               )}
               key={tab.value}
               href={`/my-account/orders/${orderId}${

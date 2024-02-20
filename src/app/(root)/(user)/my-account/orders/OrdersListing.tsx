@@ -22,23 +22,17 @@ const OrdersListing = () => {
   const page = useOrderFilterStore((store) => store.page);
   const orderDateRange = useOrderFilterStore((store) => store.orderDateRange);
 
-  const {
-    data: orders,
-    isFetching,
-    isLoading,
-    isFetched,
-  } = useQuery({
+  const { data: orders, isFetching } = useQuery({
     queryKey: [status, orderDateRange, page],
     queryFn: async () => {
       if (!userId) return [];
 
-      const data = await getOrdersAction(
+      const data = await getOrdersAction({
         userId,
-        false,
-        status,
         orderDateRange,
+        status,
         page,
-      );
+      });
 
       return data || [];
     },
@@ -48,14 +42,6 @@ const OrdersListing = () => {
   if (!userId) {
     return null;
   }
-  // if (isFetching) {
-  //   return <OrderListingSkeleton />;
-  // }
-  // if (!orders) {
-  //   return null;
-  // }
-
-  // const orders = await getOrdersServer(userId, false);
 
   return (
     <div className="rounded-main">

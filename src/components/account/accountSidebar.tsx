@@ -34,7 +34,7 @@ const sidebarAreas = [
 const AccountSidebar = () => {
   const pathname = usePathname();
   return (
-    <aside className="border-r border-primary-50 py-8 pr-6 xl:min-w-[16rem] 2xl:pr-8">
+    <aside className="top-[var(--nav-height)] border-r border-primary-50 py-8 pr-6 xl:min-w-[16rem] 2xl:pr-8 [@media(height>=460px)]:sticky">
       <div className="flex flex-col gap-8">
         {sidebarAreas.map((area) => {
           return (

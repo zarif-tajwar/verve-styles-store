@@ -1,9 +1,7 @@
 import Breadcumb from '@/components/UI/Breadcumb';
-import { Button } from '@/components/UI/Button';
 import { Container } from '@/components/UI/Container';
 import AccountMenuMobile from '@/components/account/AccountMenuMobile';
 import AccountSidebar from '@/components/account/accountSidebar';
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
 
 const labels = new Map([
   ['My account', 'Account'],
