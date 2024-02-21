@@ -39,7 +39,7 @@ const SelectStatus = () => {
       {status && (
         <button
           onClick={() => setStatus('')}
-          className="absolute -top-0.5 right-1.5 inline-flex -translate-y-full text-primary-400"
+          className="absolute -top-0.5 right-2 inline-flex -translate-y-full text-primary-400"
         >
           <XIcon size={20} />
         </button>

@@ -4,7 +4,7 @@ import GenRandAddress from './GenRandAddress';
 
 const AddressPageButtons = () => {
   return (
-    <div className="flex gap-2">
+    <div className="grid gap-2 [@media(width>=400px)]:flex">
       <AddNewAddress />
       <ChangeDefaultAddress />
       {/* <GenRandAddress /> */}

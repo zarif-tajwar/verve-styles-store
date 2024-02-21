@@ -69,7 +69,7 @@ const AddressInputForm = React.forwardRef<
       >
         <AddressInputFormFields formHookObject={formHookObject} />
         {!removeSaveButton && (
-          <div className="flex justify-end pt-12">
+          <div className="flex justify-end pt-8 sm:pt-10 md:pt-12">
             <Button
               type="submit"
               className="min-w-24 gap-1.5"
@@ -130,7 +130,7 @@ export const AddressInputFormFields = React.forwardRef<
             <Label
               required={true}
               htmlFor="address"
-              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+              className="w-max text-sm font-medium text-primary-400 @xl:text-base"
             >
               Your Address
             </Label>
@@ -151,7 +151,7 @@ export const AddressInputFormFields = React.forwardRef<
           <div className="relative flex flex-col gap-1">
             <Label
               htmlFor="city"
-              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+              className="w-max text-sm font-medium text-primary-400 @xl:text-base"
             >
               City
             </Label>
@@ -172,7 +172,7 @@ export const AddressInputFormFields = React.forwardRef<
           <div className="relative flex flex-col gap-1">
             <Label
               htmlFor="country"
-              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+              className="w-max text-sm font-medium text-primary-400 @xl:text-base"
             >
               Country
             </Label>
@@ -194,7 +194,7 @@ export const AddressInputFormFields = React.forwardRef<
           <div className="relative flex flex-col gap-1">
             <Label
               htmlFor="phone"
-              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+              className="w-max text-sm font-medium text-primary-400 @xl:text-base"
             >
               Phone
             </Label>
@@ -218,7 +218,7 @@ export const AddressInputFormFields = React.forwardRef<
             <Label
               required={false}
               htmlFor="address-label"
-              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+              className="w-max text-sm font-medium text-primary-400 @xl:text-base"
             >
               Address Label
             </Label>
@@ -246,7 +246,7 @@ export const AddressInputFormFields = React.forwardRef<
             <Label
               htmlFor="addressType"
               required={false}
-              className="w-max text-sm font-medium @xl:text-base @xl:font-normal"
+              className="w-max text-sm font-medium text-primary-400 @xl:text-base"
             >
               Address Type
             </Label>

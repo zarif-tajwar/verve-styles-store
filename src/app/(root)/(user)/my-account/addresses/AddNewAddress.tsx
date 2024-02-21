@@ -7,8 +7,10 @@ import { addNewAddressAction } from '@/lib/actions/address';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import AddressInputForm from './AddressInputForm';
+import { useMotionTemplate, useMotionValue, motion } from 'framer-motion';
+import { ScrollArea } from '@/components/UI/ScrollArea';
 
 const AddNewAddress = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +29,7 @@ const AddNewAddress = () => {
       }
     },
   });
+
   return (
     <Dialog open={isOpen} onOpenChange={(o) => setIsOpen(o)}>
       <DialogTrigger asChild>
@@ -39,10 +42,12 @@ const AddNewAddress = () => {
           Add New Address
         </Button>
       </DialogTrigger>
-      <DialogContent className="p-8 sm:max-w-3xl">
-        <div className="relative mb-12">
-          <h2 className="mb-1 text-xl font-semibold">Add New Address</h2>
-          <p className="text-primary-400">{`Type your address here. Click save when you're done.`}</p>
+      <DialogContent className="p-6 sm:max-w-3xl sm:p-8">
+        <div className="relative mb-8 sm:mb-10 md:mb-12">
+          <h2 className="mb-1 text-lg font-semibold sm:text-xl">
+            Add New Address
+          </h2>
+          <p className="text-sm text-primary-400 sm:text-base">{`Type your address here. Click save when you're done.`}</p>
         </div>
         <AddressInputForm
           afterFormSubmit={async (values) => {
