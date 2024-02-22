@@ -16,13 +16,13 @@ export default async function CheckoutLayout({
 
   return (
     <div className="flex min-h-[100svh] flex-col bg-primary-0">
-      <div className="mb-10 border-b-2 border-primary-50">
+      <div className="border-b-2 border-primary-50">
         <Container>
-          <div className="relative flex h-[var(--nav-height)] items-center">
+          <div className="relative flex h-[var(--nav-height)] items-center justify-between">
             <Button
               variant={'outline'}
               roundness={'lg'}
-              className="ml-1 font-medium"
+              className="-ml-2 font-medium md:ml-0 lg:ml-1"
               asChild
             >
               <Link href={'/shop'}>
@@ -32,7 +32,7 @@ export default async function CheckoutLayout({
             </Button>
             <Link
               href={'/shop'}
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              className="sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
             >
               <Logo />
             </Link>

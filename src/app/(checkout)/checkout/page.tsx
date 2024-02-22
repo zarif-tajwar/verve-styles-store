@@ -24,16 +24,16 @@ const CheckoutPage = async () => {
   });
 
   return (
-    <div>
-      <Container>
+    <div className="py-6 md:py-10">
+      <Container className="p-2">
         {cartItems && cartItems.length > 0 ? (
           <div className="min-h-[140svh]">
-            <div className="grid grid-cols-[1fr_minmax(400px,0.6fr)] gap-10">
-              <div className="grid gap-10 rounded-main">
+            <div className="grid gap-10 lg:grid-cols-[1fr_minmax(400px,0.6fr)]">
+              <div className="space-y-10 rounded-main">
                 <ShippingAddress />
                 <CheckoutCartItems cartItems={cartItems} />
               </div>
-              <div className="grid">
+              <div className="space-y-16">
                 <PaymentSection cartItems={cartItems} />
                 <TestArea />
               </div>

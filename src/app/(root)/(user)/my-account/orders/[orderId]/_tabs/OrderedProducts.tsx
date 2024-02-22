@@ -111,7 +111,7 @@ const OrderedProducts = async ({
                   )}
                 >
                   <div>
-                    <div className="relative mb-3 aspect-[1.2/1] max-h-min w-full overflow-hidden rounded-xl">
+                    <div className="relative mb-3 aspect-[1.2/1] max-h-min w-full overflow-hidden rounded-xl saturate-0">
                       {orderLine.product_images?.url ? (
                         <Image
                           alt={orderLine.products.name}

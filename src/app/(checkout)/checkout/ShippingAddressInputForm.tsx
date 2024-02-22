@@ -2,6 +2,7 @@
 
 import { AddressInputFormFields } from '@/app/(root)/(user)/my-account/addresses/AddressInputForm';
 import { useCheckoutStore } from '@/lib/store/checkout-store';
+import { cn } from '@/lib/util';
 import {
   AddressFormSchema,
   AddressFormSchemaType,
@@ -59,7 +60,7 @@ const ShippingAddressInputForm = ({
   const onSubmit = async (values: AddressFormSchemaType) => {};
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={className}>
+    <form onSubmit={handleSubmit(onSubmit)} className={cn('p-1', className)}>
       <AddressInputFormFields formHookObject={form} />
     </form>
   );

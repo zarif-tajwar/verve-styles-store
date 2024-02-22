@@ -11,79 +11,89 @@ const CheckoutCartItems = ({
   cartItems: CartItemsForCheckout;
 }) => {
   return (
-    <div className="rounded-main border-2 border-primary-50 p-6 xl:p-8">
-      <div className="mb-12">
-        <h2 className="text-2xl font-semibold">Your shopping cart</h2>
+    <div className="rounded-main border-2 border-primary-50 p-6 @container xl:p-8">
+      <div className="">
+        <h2 className="text-xl font-semibold sm:text-2xl">
+          Your shopping cart
+        </h2>
         <p className="text-primary-400">
           {`View the products you're going to order`}
         </p>
       </div>
-      <ul className="grid auto-rows-auto grid-cols-[5rem_repeat(5,auto)] gap-x-4 rounded-lg">
-        {cartItems?.map((cartItem, i) => {
-          // const discount = 99;
-          const discount = Number.parseFloat(cartItem.discount ?? '0');
+      <div className="mb-8 mt-6 h-px w-full bg-primary-100"></div>
+      <ul className="grid auto-rows-auto gap-x-5 gap-y-8 @sm:grid-cols-2 @sm:gap-y-10 @xl:grid-cols-3 @xl:gap-y-12">
+        {cartItems.map((cartItem, i) => {
+          const pricePerUnit = Number.parseFloat(cartItem.price);
+          const discountInPercentage = Number.parseFloat(
+            cartItem.discount ?? '0',
+          );
+          const total =
+            pricePerUnit * cartItem.quantity * (1 - discountInPercentage / 100);
           return (
-            <React.Fragment key={cartItem.cartItemId}>
-              <li className="col-span-6 row-span-2 grid grid-cols-subgrid grid-rows-subgrid gap-x-4 gap-y-0 text-xs">
-                <div className="relative row-span-2 aspect-square size-[5rem] overflow-clip rounded-lg bg-primary-50 saturate-0">
-                  {cartItem.image && (
-                    <Image
-                      src={cartItem.image}
-                      alt={`${cartItem.name} in ${cartItem.sizeName}`}
-                      fill
-                    />
-                  )}
-                </div>
-                <div className="col-span-5 row-span-2 grid grid-cols-subgrid gap-y-4">
-                  <div className="col-span-5">
-                    <h4 className="text-base font-medium text-primary-500">
+            <React.Fragment key={i}>
+              <li
+                className={cn(
+                  'row-span-2 grid grid-cols-1 grid-rows-subgrid gap-x-0 gap-y-0',
+                  // 'flex flex-col',
+                )}
+              >
+                <div>
+                  <div className="relative mb-3 aspect-[1.2/1] max-h-min w-full overflow-hidden rounded-xl saturate-0">
+                    {cartItem.image ? (
+                      <Image
+                        alt={`${cartItem.name} in ${cartItem.sizeName}`}
+                        src={cartItem.image}
+                        className="object-cover"
+                        fill
+                      />
+                    ) : (
+                      <span className="h-full w-full bg-primary-50"></span>
+                    )}
+                  </div>
+                  <div className="mb-5">
+                    <h4 className="text-base font-semibold leading-none text-primary-400">
                       {cartItem.name}
                     </h4>
                   </div>
+                </div>
+                <div className="flex flex-col justify-between gap-3">
                   <dl
                     className={cn(
-                      'col-span-5 grid grid-cols-subgrid grid-rows-2 gap-x-4 gap-y-0',
+                      'grid grid-cols-2 gap-x-4 gap-y-3 text-sm',
                       '[&_dd]:font-medium [&_dd]:text-primary-400',
-                      '[&_dt]:font-semibold [&_dt]:leading-none [&_dt]:text-primary-500',
+                      '[&_dt]:font-semibold [&_dt]:text-primary-500',
                     )}
                   >
-                    <div className="row-span-2 grid grid-rows-subgrid gap-y-1.5">
+                    <div className="space-y-1">
                       <dd>Size</dd>
                       <dt>{formatSizeText(cartItem.sizeName)}</dt>
                     </div>
-                    <div className="row-span-2 grid grid-rows-subgrid gap-y-1.5">
-                      <dd>Price Per Unit</dd>
-                      <dt>{priceFormat(Number.parseFloat(cartItem.price))}</dt>
-                    </div>
-                    <div className="row-span-2 grid grid-rows-subgrid gap-y-1.5">
+                    <div className="space-y-1">
                       <dd>Quantity</dd>
                       <dt>{cartItem.quantity}</dt>
                     </div>
+                    <div className="space-y-1">
+                      <dd>Price Per Unit</dd>
+                      <dt>{priceFormat(pricePerUnit)}</dt>
+                    </div>
 
-                    <div className="row-span-2 grid grid-rows-subgrid gap-y-1.5">
-                      {discount > 0 && (
+                    {discountInPercentage > 0 && (
+                      <div className="space-y-1">
                         <>
                           <dd>Discount</dd>
-                          <dt>{discount}%</dt>
+                          <dt>{discountInPercentage}%</dt>
                         </>
-                      )}
-                    </div>
-                    <div className="row-span-2 grid grid-rows-subgrid gap-y-1.5">
+                      </div>
+                    )}
+                    <div className="space-y-1">
                       <dd>Total</dd>
                       <dt className="!font-semibold text-primary-500">
-                        {priceFormat(
-                          Number.parseFloat(cartItem.price) *
-                            cartItem.quantity *
-                            (1 -
-                              Number.parseFloat(cartItem.discount ?? '0') /
-                                100),
-                        )}
+                        {priceFormat(total)}
                       </dt>
                     </div>
                   </dl>
                 </div>
               </li>
-              <Divider className="col-span-6 my-4 bg-primary-100 last:hidden" />
             </React.Fragment>
           );
         })}
