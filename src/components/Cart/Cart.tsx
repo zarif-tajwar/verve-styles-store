@@ -24,9 +24,11 @@ import { CartIcon } from '../Svgs/icons';
 const CartItemsListing = ({
   cartItems,
   deliveryCharge,
+  isLoggedIn,
 }: {
   cartItems: FetchedCartItem[];
   deliveryCharge: number;
+  isLoggedIn: boolean;
 }) => {
   const totalCartItems = cartItems.length;
 
@@ -100,7 +102,11 @@ const CartItemsListing = ({
           </ScrollArea>
         </div>
       </div>
-      <OrderSummary deliveryCharge={deliveryCharge} cartItemsData={cartItems} />
+      <OrderSummary
+        isLoggedIn={isLoggedIn}
+        deliveryCharge={deliveryCharge}
+        cartItemsData={cartItems}
+      />
     </div>
   );
 };
@@ -143,7 +149,13 @@ const TemporaryButtons = () => {
   );
 };
 
-const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
+const Cart = ({
+  deliveryCharge,
+  isLoggedIn,
+}: {
+  deliveryCharge: number;
+  isLoggedIn: boolean;
+}) => {
   const { data, isLoading, isFetched } = useCartItemsQuery();
 
   const cartItemsData = data;
@@ -159,6 +171,7 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
             <CartItemsListing
               cartItems={cartItemsData}
               deliveryCharge={deliveryCharge}
+              isLoggedIn={isLoggedIn}
             />
           )}
           {isLoading && <CartSkeleton />}

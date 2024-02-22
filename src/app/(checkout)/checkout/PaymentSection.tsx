@@ -15,15 +15,16 @@ const PaymentSection = ({
     calcPricingDetails(cartItems);
 
   return (
-    <div className="h-max rounded-2xl p-8 shadow-lg">
-      <div className="mb-4 space-y-1">
+    <div className="h-max rounded-2xl border border-primary-50 p-8 shadow-sm">
+      <div className="space-y-1">
         <h2 className="text-2xl font-semibold">Payment</h2>
-        <p className="min-h-[2lh] text-primary-400">
+        <p className="text-primary-400">
           View price details and make payment to confirm your order
         </p>
       </div>
+      <div className="my-6 h-px w-full bg-primary-100"></div>
       <div className="">
-        <div className="mb-8">
+        <div className="">
           <h3 className="mb-4 text-xl font-semibold">Summary</h3>
           <div className="text-sm">
             <dl className="flex flex-col gap-2">
@@ -64,6 +65,7 @@ const PaymentSection = ({
             </dl>
           </div>
         </div>
+        <div className="my-6 h-px w-full bg-primary-100"></div>
         <div>
           <PaymentElements amount={total} />
         </div>

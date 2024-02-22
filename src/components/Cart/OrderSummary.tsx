@@ -10,9 +10,11 @@ import { Button } from '../UI/Button';
 const OrderSummary = ({
   cartItemsData,
   deliveryCharge,
+  isLoggedIn,
 }: {
   cartItemsData: CartItemProps[];
   deliveryCharge: number;
+  isLoggedIn: boolean;
 }) => {
   const subtotal = cartItemsData.reduce(
     (acc, curr) => acc + Number.parseFloat(curr.price) * curr.quantity,
@@ -52,17 +54,26 @@ const OrderSummary = ({
         </dl>
         <div className="hidden h-full w-px bg-primary-50 md:block lg:hidden"></div>
         <div className="flex items-center justify-center">
-          <Button
-            asChild
-            size={'xl'}
-            className="w-full gap-3"
-            onClick={() => revalidatePathAction('/checkout')}
-          >
-            <Link href={'/checkout'}>
-              Go to checkout
-              <MoveRight />
-            </Link>
-          </Button>
+          {isLoggedIn ? (
+            <Button
+              asChild
+              size={'xl'}
+              className="w-full gap-3"
+              onClick={() => revalidatePathAction('/checkout')}
+            >
+              <Link href={'/checkout'}>
+                Go to checkout
+                <MoveRight />
+              </Link>
+            </Button>
+          ) : (
+            <Button asChild size={'xl'} className="w-full gap-3">
+              <Link href={'/auth/sign-in'}>
+                Sign in to Checkout
+                <MoveRight />
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </div>

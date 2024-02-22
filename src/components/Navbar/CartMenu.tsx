@@ -16,7 +16,7 @@ import {
 } from '../UI/Drawer';
 import CartCount from './CartCount';
 
-const CartMenuClient = () => {
+const CartMenuClient = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const { isOpen, handleOpenChange } = useCartDrawerOpen();
   return (
     <Drawer open={isOpen} onOpenChange={handleOpenChange}>
@@ -62,7 +62,7 @@ const CartMenuClient = () => {
               <span className="mx-auto inline-block h-2.5 w-24 rounded-full bg-primary-100 sm:h-3 sm:w-28 md:w-36"></span>
             </div>
             <div className="pb-2 pt-4 sm:pt-5 md:pb-6 md:pt-6 xl:pt-8">
-              <Cart deliveryCharge={25} />
+              <Cart deliveryCharge={25} isLoggedIn={isLoggedIn} />
             </div>
           </div>
         </Container>
@@ -71,10 +71,10 @@ const CartMenuClient = () => {
   );
 };
 
-const CartMenu = () => {
+const CartMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   return (
     <Suspense>
-      <CartMenuClient />
+      <CartMenuClient isLoggedIn={isLoggedIn} />
     </Suspense>
   );
 };
