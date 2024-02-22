@@ -24,6 +24,8 @@ import {
 } from '@radix-ui/react-select';
 import React, { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import * as ScrollArea from '@radix-ui/react-scroll-area';
+import { ScrollBar } from '@/components/UI/ScrollArea';
 
 const ShippingAddressSelect = ({
   savedAddresses,
@@ -59,12 +61,12 @@ const ShippingAddressSelect = ({
       <AccordionItem
         value="select"
         className={cn(
-          'rounded-xl bg-primary-0 shadow-sm transition-colors duration-300',
+          'rounded-2xl border border-primary-50 bg-primary-0 transition-colors duration-300',
           !isActive && 'hover:bg-primary-50',
         )}
       >
-        <AccordionTrigger className="w-full px-6">
-          <div className="w-full py-6 text-left">
+        <AccordionTrigger className="w-full p-6">
+          <div className="w-full text-left">
             <h3 className="text-lg font-semibold">Saved Addresses</h3>
             <p className="text-sm text-primary-500">
               Choose from your saved addresses
@@ -73,11 +75,10 @@ const ShippingAddressSelect = ({
         </AccordionTrigger>
         <AccordionContent
           className={cn(
-            'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
-            !isActive && 'overflow-clip',
+            'overflow-y-clip data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
           )}
         >
-          <div className="px-6 pb-6">
+          <div className="max-w-lg px-6 pb-6">
             <Select
               value={selectValue}
               onValueChange={setValue}
@@ -100,33 +101,44 @@ const ShippingAddressSelect = ({
                 </SelectIcon>
               </SelectTrigger>
               <SelectPortal>
-                <SelectContent className="">
-                  <SelectViewport className="rounded-lg bg-primary-0 p-3 shadow-drop">
-                    {savedAddresses.map((address) => {
-                      return (
-                        <React.Fragment key={address.id}>
-                          <SelectItem
-                            value={address.id.toString()}
-                            className={cn(
-                              'block rounded-lg py-2 pl-3 pr-9',
-                              'relative w-full cursor-default select-none rounded-md text-sm outline-none focus:bg-primary-50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-                            )}
-                          >
-                            <SelectItemText>
-                              <AddressItem includeLabel address={address} />
-                            </SelectItemText>
-                            <SelectItemIndicator
-                              className="absolute right-3 top-1/2 -translate-y-1/2"
-                              asChild
-                            >
-                              <CheckIcon className="size-6" />
-                            </SelectItemIndicator>
-                          </SelectItem>
-                          <SelectSeparator className="mx-auto my-3 h-px w-[96%] bg-primary-50 last:hidden" />
-                        </React.Fragment>
-                      );
-                    })}
-                  </SelectViewport>
+                <SelectContent
+                  onCloseAutoFocus={(e) => e.preventDefault()}
+                  className=""
+                >
+                  <ScrollArea.Root className="w-full">
+                    <SelectViewport
+                      asChild
+                      className="h-full max-h-[80dvh] w-full rounded-lg bg-primary-0 p-3 shadow-drop"
+                    >
+                      <ScrollArea.Viewport>
+                        {savedAddresses.map((address) => {
+                          return (
+                            <React.Fragment key={address.id}>
+                              <SelectItem
+                                value={address.id.toString()}
+                                className={cn(
+                                  'block rounded-lg py-2 pl-3 pr-9',
+                                  'relative w-full cursor-default select-none rounded-md text-sm outline-none focus:bg-primary-50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                                )}
+                              >
+                                <SelectItemText>
+                                  <AddressItem includeLabel address={address} />
+                                </SelectItemText>
+                                <SelectItemIndicator
+                                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                                  asChild
+                                >
+                                  <CheckIcon className="size-6" />
+                                </SelectItemIndicator>
+                              </SelectItem>
+                              <SelectSeparator className="mx-auto my-3 h-px w-[96%] bg-primary-50 last:hidden" />
+                            </React.Fragment>
+                          );
+                        })}
+                      </ScrollArea.Viewport>
+                    </SelectViewport>
+                    <ScrollBar className="w-2" />
+                  </ScrollArea.Root>
                 </SelectContent>
               </SelectPortal>
             </Select>

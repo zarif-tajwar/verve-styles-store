@@ -150,15 +150,14 @@ const OrderedProducts = async ({
                         <dt>{priceFormat(pricePerUnit)}</dt>
                       </div>
 
-                      {discountInPercentage > 0 ||
-                        ((i + 1) % 2 !== 0 && (
-                          <div className="space-y-1">
-                            <>
-                              <dd>Discount</dd>
-                              <dt>{discountInPercentage}%</dt>
-                            </>
-                          </div>
-                        ))}
+                      {discountInPercentage > 0 && (
+                        <div className="space-y-1">
+                          <>
+                            <dd>Discount</dd>
+                            <dt>{discountInPercentage}%</dt>
+                          </>
+                        </div>
+                      )}
                       <div className="space-y-1">
                         <dd>Total</dd>
                         <dt className="!font-semibold text-primary-500">

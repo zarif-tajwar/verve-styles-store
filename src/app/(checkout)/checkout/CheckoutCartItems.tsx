@@ -11,21 +11,21 @@ const CheckoutCartItems = ({
   cartItems: CartItemsForCheckout;
 }) => {
   return (
-    <div>
+    <div className="rounded-main border-2 border-primary-50 p-6 xl:p-8">
       <div className="mb-12">
         <h2 className="text-2xl font-semibold">Your shopping cart</h2>
         <p className="text-primary-400">
           {`View the products you're going to order`}
         </p>
       </div>
-      <ul className="grid max-w-2xl gap-8 rounded-lg">
-        {cartItems?.map((cartItem) => {
+      <ul className="grid auto-rows-auto grid-cols-[5rem_repeat(5,auto)] gap-x-4 rounded-lg">
+        {cartItems?.map((cartItem, i) => {
           // const discount = 99;
           const discount = Number.parseFloat(cartItem.discount ?? '0');
           return (
             <React.Fragment key={cartItem.cartItemId}>
-              <li className="grid grid-cols-[5rem_1fr] gap-4 text-xs">
-                <div className="relative aspect-square overflow-clip rounded-lg bg-primary-50 saturate-0">
+              <li className="col-span-6 row-span-2 grid grid-cols-subgrid grid-rows-subgrid gap-x-4 gap-y-0 text-xs">
+                <div className="relative row-span-2 aspect-square size-[5rem] overflow-clip rounded-lg bg-primary-50 saturate-0">
                   {cartItem.image && (
                     <Image
                       src={cartItem.image}
@@ -34,17 +34,17 @@ const CheckoutCartItems = ({
                     />
                   )}
                 </div>
-                <div className="flex flex-col justify-between">
-                  <div className="flex items-center gap-2 text-sm font-medium">
-                    <h4 className="text-base text-primary-500">
+                <div className="col-span-5 row-span-2 grid grid-cols-subgrid gap-y-4">
+                  <div className="col-span-5">
+                    <h4 className="text-base font-medium text-primary-500">
                       {cartItem.name}
                     </h4>
                   </div>
                   <dl
                     className={cn(
-                      'grid auto-rows-auto grid-cols-[0.7fr_1.3fr_1fr_1fr_1fr] gap-x-4',
+                      'col-span-5 grid grid-cols-subgrid grid-rows-2 gap-x-4 gap-y-0',
                       '[&_dd]:font-medium [&_dd]:text-primary-400',
-                      '[&_dt]:font-semibold [&_dt]:text-primary-500',
+                      '[&_dt]:font-semibold [&_dt]:leading-none [&_dt]:text-primary-500',
                     )}
                   >
                     <div className="row-span-2 grid grid-rows-subgrid gap-y-1.5">
@@ -83,7 +83,7 @@ const CheckoutCartItems = ({
                   </dl>
                 </div>
               </li>
-              {/* <Divider className="bg-primary-50 last:hidden" /> */}
+              <Divider className="col-span-6 my-4 bg-primary-100 last:hidden" />
             </React.Fragment>
           );
         })}

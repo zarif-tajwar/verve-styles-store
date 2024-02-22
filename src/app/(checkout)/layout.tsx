@@ -16,13 +16,13 @@ export default async function CheckoutLayout({
 
   return (
     <div className="flex min-h-[100svh] flex-col bg-primary-0">
-      <div className="mb-8 border-b border-primary-50">
+      <div className="mb-10 border-b-2 border-primary-50">
         <Container>
           <div className="relative flex h-[var(--nav-height)] items-center">
             <Button
-              variant={'inverse'}
+              variant={'outline'}
               roundness={'lg'}
-              className="font-medium"
+              className="ml-1 font-medium"
               asChild
             >
               <Link href={'/shop'}>

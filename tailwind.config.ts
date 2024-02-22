@@ -36,6 +36,8 @@ const config: Config = {
       boxShadow: {
         drop: '0px 0px 8px 0px rgba(0, 0, 0, 0.1)',
         'light-drop': '0px 0px 10px 0px rgba(0, 0, 0, 0.03)',
+        ghosting:
+          '5px 5px hsl(0,0%,0%), 10px 10px hsl(0,0%,20%), 15px 15px hsl(0,0%,40%), 20px 20px hsl(0,0%,60%), 25px 25px hsl(0,0%,80%)',
       },
       keyframes: {
         scaleFromTopRight: {

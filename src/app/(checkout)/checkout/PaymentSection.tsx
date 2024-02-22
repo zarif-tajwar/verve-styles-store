@@ -4,7 +4,7 @@ import {
   CartItemsForCheckout,
   calcPricingDetails,
 } from '@/lib/server/checkout';
-import { priceFormat } from '@/lib/util';
+import { cn, priceFormat } from '@/lib/util';
 
 const PaymentSection = ({
   cartItems,
@@ -15,7 +15,12 @@ const PaymentSection = ({
     calcPricingDetails(cartItems);
 
   return (
-    <div className="h-max rounded-2xl border border-primary-50 p-8 shadow-sm">
+    <div
+      className={cn(
+        'shadow-ghosting h-max rounded-main border-2 border-[hsl(0,0%,0%)] p-6 xl:p-8',
+        // 'bg-primary-400 [&_*]:text-primary-0',
+      )}
+    >
       <div className="space-y-1">
         <h2 className="text-2xl font-semibold">Payment</h2>
         <p className="text-primary-400">
