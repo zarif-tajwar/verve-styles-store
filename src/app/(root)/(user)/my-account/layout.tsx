@@ -10,7 +10,7 @@ const labels = new Map([
 
 const AccountLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <Container className="grid gap-8 overflow-x-clip pt-8 lg:grid-cols-[auto_1fr] xl:pt-12 2xl:gap-12">
+    <Container className="grid gap-8 overflow-x-clip pb-16 pt-8 lg:grid-cols-[auto_1fr] lg:pb-20 xl:pt-12 2xl:gap-12">
       <div className="hidden pt-4 lg:block">
         <AccountSidebar />
       </div>

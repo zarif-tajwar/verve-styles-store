@@ -111,7 +111,7 @@ const ProductPage = async ({ params }: PageProps) => {
           </div>
         </section>
       </Container>
-      <section className="py-8 lg:py-16 xl:py-20">
+      <section className="py-20 lg:py-16 xl:py-20">
         <Suspense fallback={<div>Loading...</div>}>
           <ProductDetailsReviewFaqTab
             ReviewsComp={

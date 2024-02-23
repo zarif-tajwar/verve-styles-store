@@ -5,7 +5,7 @@ import React, { Suspense } from 'react';
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="mt-4 lg:mt-10" data-no-sticky-nav>
+    <main className="mt-4 pb-16 lg:mt-10 lg:pb-20" data-no-sticky-nav>
       <Container className="relative h-max">
         <div className="grid gap-x-8 lg:grid-cols-[auto_1fr]">
           <Suspense fallback={<div className="h-[30rem] w-[18.5rem]"></div>}>

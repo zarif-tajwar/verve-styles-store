@@ -51,7 +51,7 @@ const ProductImageShowcase = ({
   }, [handleSelect, mainCarouselApi]);
 
   return (
-    <div className="max-w-[25.25rem] md:max-w-none">
+    <div className="">
       <div className="grid h-full grid-cols-1 grid-rows-[1fr_auto] gap-[var(--gap)] text-2xl font-semibold [--gap:0.625rem] [--thumbnail-size:7rem] md:[--thumbnail-size:8rem] xl:h-max xl:grid-cols-[var(--thumbnail-size)_1fr] xl:grid-rows-1 xl:[--gap:1rem] xl:[--thumbnail-size:9rem]">
         <Carousel
           setApi={setThumbnailCarouselApi}
