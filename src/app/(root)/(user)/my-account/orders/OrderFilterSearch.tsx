@@ -10,6 +10,7 @@ const OrderFilterSearch = () => {
       onFocus={() =>
         messageToast('Not implemented yet!', {
           position: 'top-center',
+          duration: 1000,
         })
       }
     >
