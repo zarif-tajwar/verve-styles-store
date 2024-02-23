@@ -7,13 +7,15 @@ import { Container } from '@/components/UI/Container';
 import Star from '@/components/UI/Star';
 import { db } from '@/lib/db';
 import { clothing } from '@/lib/db/schema/clothing';
+import { productImages } from '@/lib/db/schema/productImages';
 import { productRating } from '@/lib/db/schema/productRating';
 import { products } from '@/lib/db/schema/products';
 import { SearchParamsServer } from '@/lib/types/common';
 import { makeValidURL } from '@/lib/util';
 import { and, eq, getTableColumns } from 'drizzle-orm';
+import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, cache } from 'react';
 
 // export async function generateStaticParams() {
 //   const slugs = await db
@@ -38,31 +40,69 @@ interface PageProps {
   searchParams: SearchParamsServer;
 }
 
+const getProduct = cache(
+  async ({ params }: { params: PageProps['params'] }) => {
+    const productColumns = getTableColumns(products);
+    const productId = Number.parseInt(
+      params.productName.slice(params.productName.lastIndexOf('-') + 1),
+    );
+
+    if (Number.isNaN(productId)) {
+      notFound();
+    }
+
+    const product = await db
+      .select({
+        ...productColumns,
+        averageRating: productRating.averageRating,
+        image: productImages.url,
+      })
+      .from(products)
+      .innerJoin(clothing, eq(products.clothingID, clothing.id))
+      .leftJoin(productRating, eq(products.id, productRating.productId))
+      .leftJoin(productImages, eq(products.id, productImages.productID))
+      .where(
+        and(
+          eq(clothing.name, params.category),
+          eq(products.id, productId),
+          eq(productImages.isDefault, true),
+        ),
+      )
+      .limit(1)
+      .then((res) => res.at(0));
+
+    if (
+      product === undefined ||
+      `${makeValidURL(product.name)}-${product.id}` !== params.productName
+    ) {
+      notFound();
+    }
+
+    return product;
+  },
+);
+
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const product = await getProduct({ params });
+
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: `${product.name} - Verve Styles`,
+    description: product.description,
+    openGraph: {
+      title: `${product.name} - Verve Styles`,
+      description: product.description ?? undefined,
+      images: product.image ? [...previousImages, product.image] : undefined,
+    },
+  };
+}
+
 const ProductPage = async ({ params }: PageProps) => {
-  const productColumns = getTableColumns(products);
-  const productId = Number.parseInt(
-    params.productName.slice(params.productName.lastIndexOf('-') + 1),
-  );
-
-  if (Number.isNaN(productId)) {
-    notFound();
-  }
-
-  const product = await db
-    .select({ ...productColumns, averageRating: productRating.averageRating })
-    .from(products)
-    .innerJoin(clothing, eq(products.clothingID, clothing.id))
-    .leftJoin(productRating, eq(products.id, productRating.productId))
-    .where(and(eq(clothing.name, params.category), eq(products.id, productId)))
-    .limit(1)
-    .then((res) => res.at(0));
-
-  if (
-    product === undefined ||
-    `${makeValidURL(product.name)}-${product.id}` !== params.productName
-  ) {
-    notFound();
-  }
+  const product = await getProduct({ params });
 
   const ratingStr = product.averageRating || '0.0';
   const ratingFloat = Number.parseFloat(ratingStr);
@@ -116,7 +156,7 @@ const ProductPage = async ({ params }: PageProps) => {
           <ProductDetailsReviewFaqTab
             ReviewsComp={
               <Suspense fallback={<p>Loading Reviews...</p>}>
-                <ProductReviews productId={productId} />
+                <ProductReviews productId={product.id} />
               </Suspense>
             }
           />
