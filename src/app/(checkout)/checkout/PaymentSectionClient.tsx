@@ -26,7 +26,7 @@ const PaymentSectionClient = ({
     <div
       ref={ref}
       className={cn(
-        'shadow-ghosting h-max rounded-main border-2 border-[hsl(0,0%,0%)] p-6 xl:p-8',
+        'h-max rounded-main border-2 border-[hsl(0,0%,0%)] p-6 shadow-ghosting xl:p-8',
         // 'bg-primary-400 [&_*]:text-primary-0',
       )}
     >
@@ -40,6 +40,7 @@ const PaymentSectionClient = ({
             className="fixed bottom-4 left-1/2 z-50 !transition-none lg:hidden"
             asChild
             key={'scroll-button'}
+            roundness={'lg'}
           >
             <motion.button
               initial={{ y: 100, x: '-50%', opacity: 0 }}

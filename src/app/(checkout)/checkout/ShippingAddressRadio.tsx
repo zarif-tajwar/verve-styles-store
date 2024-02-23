@@ -11,12 +11,12 @@ const animVariants: Variants = {
   hidden: {
     height: 0,
     opacity: 0,
-    transition: { ease: 'backOut', duration: 0.6 },
+    transition: { ease: 'easeOut', duration: 0.3 },
   },
   reveal: {
     height: 'auto',
     opacity: 1,
-    transition: { ease: 'backIn', duration: 0.6 },
+    transition: { ease: 'easeIn', duration: 0.3 },
   },
 };
 
@@ -48,7 +48,7 @@ const ShippingAddressRadio = ({
               value="select"
               className="relative inline-flex size-5 flex-shrink-0 items-center justify-center rounded-full border-2 border-primary-50 data-[state=checked]:border-primary-500"
             >
-              <RadioGroup.Indicator className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500" />
+              <RadioGroup.Indicator className="absolute left-1/2 top-1/2 inline-block size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500" />
             </RadioGroup.Item>
             <label htmlFor="select">
               <p className="text-base font-semibold sm:text-lg">
@@ -65,7 +65,7 @@ const ShippingAddressRadio = ({
               value="input"
               className="relative inline-flex size-5 flex-shrink-0 items-center justify-center rounded-full border-2 border-primary-50 data-[state=checked]:border-primary-500"
             >
-              <RadioGroup.Indicator className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500" />
+              <RadioGroup.Indicator className="absolute left-1/2 top-1/2 inline-block size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500" />
             </RadioGroup.Item>
             <label htmlFor="input">
               <p className="text-base font-semibold sm:text-lg">
@@ -80,7 +80,7 @@ const ShippingAddressRadio = ({
       </RadioGroup.Root>
       <div className="my-5 h-px w-full bg-primary-50"></div>
       <div className="">
-        <AnimatePresence initial={false}>
+        <AnimatePresence initial={false} mode="wait">
           {shippingAddressMode === 'input' && (
             <motion.div
               variants={animVariants}

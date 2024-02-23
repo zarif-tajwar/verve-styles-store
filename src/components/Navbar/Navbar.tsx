@@ -17,7 +17,7 @@ const Navbar = () => {
       <Container asChild className="h-[var(--nav-height)]">
         <nav>
           <div className="flex h-full items-center justify-between lg:justify-start lg:gap-10">
-            <div className="-ml-2 lg:hidden">
+            <div className="-ml-2 flex items-center lg:hidden">
               <HamburgerMenu />
               <Suspense
                 fallback={
