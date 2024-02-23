@@ -35,12 +35,12 @@ export const ProductListing = ({
             key={uniqueKey}
             className="row-span-4 grid grid-rows-subgrid gap-x-0 gap-y-0"
           >
-            <div className="relative mb-3 aspect-square w-full overflow-hidden rounded-main sm:mb-4">
+            <div className="relative z-10 mb-3 aspect-square w-full overflow-hidden rounded-main sm:mb-4">
               {product.imageUrl && (
                 <Image
                   src={product.imageUrl}
                   alt={`${product.name}`}
-                  className="object-cover grayscale"
+                  className="z-[11] object-cover grayscale"
                   fill
                 />
               )}

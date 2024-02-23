@@ -36,7 +36,7 @@ const PaymentForm = () => {
     const shippingAddress = getCheckoutAddress();
 
     if (!shippingAddress) {
-      errorToast('Something went wrong with the address!');
+      // errorToast('Something went wrong with the address!');
       return;
     }
 

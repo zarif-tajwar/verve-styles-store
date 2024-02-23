@@ -41,7 +41,7 @@ const ShippingAddressRadio = ({
         }}
         value={shippingAddressMode}
       >
-        <div className="grid items-center justify-start gap-x-4 gap-y-6 sm:grid-cols-2">
+        <div className="grid items-center justify-start gap-x-4 gap-y-6 sm:grid-cols-[1.35fr_1fr]">
           <div className="flex items-center gap-3">
             <RadioGroup.Item
               id="select"

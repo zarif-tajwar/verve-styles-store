@@ -22,7 +22,7 @@ export default async function CheckoutLayout({
             <Button
               variant={'outline'}
               roundness={'lg'}
-              className="-ml-2 font-medium md:ml-0 lg:ml-1"
+              className="-ml-2 font-medium md:ml-0"
               asChild
             >
               <Link href={'/shop'}>

@@ -2,7 +2,6 @@ import ProductAdd from '@/components/Product/ProductAdd';
 import ProductAddSkeleton from '@/components/Product/ProductAddSkeleton';
 import ProductDetailsReviewFaqTab from '@/components/Product/ProductDetailsReviewFaqTab';
 import ProductImage from '@/components/Product/ProductImage';
-import ProductImageShowcase2 from '@/components/Product/ProductImageShowcase';
 import ProductReviews from '@/components/Product/ProductReviews';
 import { Container } from '@/components/UI/Container';
 import Star from '@/components/UI/Star';
@@ -11,7 +10,7 @@ import { clothing } from '@/lib/db/schema/clothing';
 import { productRating } from '@/lib/db/schema/productRating';
 import { products } from '@/lib/db/schema/products';
 import { SearchParamsServer } from '@/lib/types/common';
-import { cn, makeValidURL } from '@/lib/util';
+import { makeValidURL } from '@/lib/util';
 import { and, eq, getTableColumns } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -49,13 +48,14 @@ const ProductPage = async ({ params }: PageProps) => {
     notFound();
   }
 
-  const [product] = await db
+  const product = await db
     .select({ ...productColumns, averageRating: productRating.averageRating })
     .from(products)
     .innerJoin(clothing, eq(products.clothingID, clothing.id))
     .leftJoin(productRating, eq(products.id, productRating.productId))
     .where(and(eq(clothing.name, params.category), eq(products.id, productId)))
-    .limit(1);
+    .limit(1)
+    .then((res) => res.at(0));
 
   if (
     product === undefined ||
@@ -66,11 +66,6 @@ const ProductPage = async ({ params }: PageProps) => {
 
   const ratingStr = product.averageRating || '0.0';
   const ratingFloat = Number.parseFloat(ratingStr);
-
-  //   font-size: 1.5rem;
-  // font-size: clamp(1.5rem, 0.7261904761904763rem + 3.1746031746031744vw, 2.25rem);
-  //   font-size: 1.75rem;
-  // font-size: clamp(1.75rem, 0.9761904761904763rem + 3.1746031746031744vw, 2.5rem);
 
   return (
     <main>

@@ -21,6 +21,7 @@ const ShippingAddressInputForm = ({
   const form = useForm<AddressFormSchemaType>({
     resolver: zodResolver(AddressFormSchema),
     mode: 'all',
+    shouldFocusError: true,
   });
   const { handleSubmit, control, watch, formState, trigger, getValues } = form;
   const setAddressInputFormTrigger = useCheckoutStore(
@@ -57,10 +58,10 @@ const ShippingAddressInputForm = ({
     setDataGetter(getValues);
   }, [getValues, setDataGetter]);
 
-  const onSubmit = async (values: AddressFormSchemaType) => {};
+  // const onSubmit = async (values: AddressFormSchemaType) => {};
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={cn('p-1', className)}>
+    <form className={cn('p-1', className)}>
       <AddressInputFormFields formHookObject={form} />
     </form>
   );
