@@ -21,7 +21,7 @@ const Navbar = () => {
               <HamburgerMenu />
               <Suspense
                 fallback={
-                  <span className="inline-block size-10 animate-pulse rounded-full bg-primary-100"></span>
+                  <div className="size-10 animate-pulse rounded-full bg-primary-100"></div>
                 }
               >
                 <MobileUserMenuWrapper />
@@ -37,7 +37,7 @@ const Navbar = () => {
               </div>
               <Suspense
                 fallback={
-                  <span className="-mx-2 inline-block h-10 w-20 animate-pulse rounded-full bg-primary-100"></span>
+                  <span className="div h-10 w-20 animate-pulse rounded-full bg-primary-100 lg:-mx-2"></span>
                 }
               >
                 <NavDropdownMenuWrap />
