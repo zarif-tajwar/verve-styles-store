@@ -45,7 +45,7 @@ const SignInPage = async ({
           priority
         />
       </div>
-      <div className="min-h-[20rem] p-4 sm:min-h-0 sm:p-8">
+      <div className="min-h-[20rem] p-2 sm:min-h-0 sm:p-8">
         <div className="relative flex h-full w-full flex-col justify-center gap-12 sm:gap-8">
           {errorMessage && (
             <div className="absolute left-0 top-0 grid grid-cols-[auto_1fr] gap-2 rounded-xl bg-red-100 py-2 pl-3 pr-4 text-sm text-red-800">

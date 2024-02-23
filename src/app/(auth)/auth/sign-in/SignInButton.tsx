@@ -68,7 +68,7 @@ const SignInButton = ({
         <span>{text}</span>
         <span
           className={cn(
-            'flex flex-grow -translate-x-2 justify-end opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100',
+            'hidden flex-grow -translate-x-2 justify-end opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 [@media(width>380px)]:flex',
             isCurrentButtonActive && 'translate-x-0 opacity-100',
           )}
         >
