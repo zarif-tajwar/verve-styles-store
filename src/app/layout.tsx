@@ -9,7 +9,6 @@ import { cn } from '@/lib/util';
 export const metadata: Metadata = {
   title: 'Verve Styles - Cloth Store',
   description: 'Find Cloths That Matches Your Style',
-  metadataBase: new URL('http://localhost:3000'),
   openGraph: {
     images: '/opg.jpg',
   },

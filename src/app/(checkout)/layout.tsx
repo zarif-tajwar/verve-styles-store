@@ -16,7 +16,7 @@ export default async function CheckoutLayout({
 
   return (
     <div className="flex min-h-[100svh] flex-col bg-primary-0">
-      <div className="border-b-2 border-primary-50">
+      <div className="border-b border-primary-100">
         <Container>
           <div className="relative flex h-[var(--nav-height)] items-center justify-between">
             <Button

@@ -8,7 +8,7 @@ const ShippingAddress = async () => {
   const savedAddresses = (await getSavedAddressesServer()) ?? [];
   const savedAddressesLength = savedAddresses.length;
   return (
-    <div className="rounded-main border-2 border-primary-50 p-6 xl:p-8">
+    <div className="rounded-main border border-primary-100 p-6 xl:p-8">
       <div className="mb-8 space-y-1">
         <h2 className="text-xl font-semibold sm:text-2xl">Shipping Address</h2>
         <p className="max-w-sm text-primary-400">

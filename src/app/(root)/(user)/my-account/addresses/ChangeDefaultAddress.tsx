@@ -20,8 +20,11 @@ import { ScrollArea } from '@/components/UI/ScrollArea';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useAction } from 'next-safe-action/hooks';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
+import { AddressItem } from '@/app/(checkout)/checkout/ShippingAddressSelect';
 
 const ChangeDefaultAddress = () => {
   const session = useSession();
@@ -80,66 +83,61 @@ const ChangeDefaultAddress = () => {
       </DialogTrigger>
       <DialogContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="p-6 sm:max-w-2xl sm:p-8"
+        className="p-6 sm:max-w-xl sm:p-8"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <div className="relative mb-8 sm:mb-10 md:mb-12">
+            <div className="relative mb-4 sm:mb-6 md:mb-8">
               <h2 className="mb-1 text-lg font-semibold sm:text-xl">
                 Change Default Address
               </h2>
-              <p className="text-sm text-primary-400 sm:text-base">{`Select your default address here. Click Save Changes when you're finished.`}</p>
+              <p className="text-balance text-sm text-primary-400 sm:text-base">{`Select your default address here. Click Save Changes when you're finished.`}</p>
             </div>
-            <ScrollArea
-              type="always"
-              className="h-[200px] pr-4"
-              scrollBarClassName="w-2"
-            >
-              {addresses && (
-                <Controller
-                  control={control}
-                  name="addressId"
-                  render={({ field }) => {
-                    return (
-                      <RadioGroup.Root
-                        onValueChange={field.onChange}
-                        {...field}
-                        value={field.value?.toString()}
-                      >
-                        <div className="grid gap-4">
-                          {addresses.map((address) => {
-                            return (
-                              <label
-                                key={address.id}
-                                htmlFor={`address-${address.id}`}
-                                className={cn(
-                                  'items-center gap-4 rounded-lg px-3 py-2 ring-1 ring-inset ring-primary-50',
-                                  'has-[:checked]:ring-2 has-[:checked]:ring-primary-400',
-                                  'grid grid-cols-[1.25rem_1fr]',
-                                )}
-                              >
-                                <RadioGroup.Item
-                                  id={`address-${address.id}`}
-                                  value={address.id.toString()}
-                                  className="relative size-5 rounded-full ring-2 ring-inset ring-primary-50 data-[state=checked]:ring-primary-400"
-                                >
-                                  <RadioGroup.Indicator className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400" />
-                                </RadioGroup.Item>
-                                <div className="text-sm">
-                                  <p className="font-medium">{address.label}</p>
-                                  <p>{`${address.address}, ${address.city}, ${address.country}, ${address.phone}`}</p>
-                                </div>
-                              </label>
-                            );
-                          })}
-                        </div>
-                      </RadioGroup.Root>
-                    );
-                  }}
-                ></Controller>
-              )}
-            </ScrollArea>
-            <div className="flex justify-end pt-8">
+            <div className="mb-4 w-full rounded-xl border border-primary-100 sm:mb-6">
+              <ScrollArea scrollBarClassName="w-2" className="h-[300px] w-full">
+                {addresses && (
+                  <Controller
+                    control={control}
+                    name="addressId"
+                    render={({ field }) => {
+                      return (
+                        <RadioGroup.Root
+                          onValueChange={field.onChange}
+                          {...field}
+                          value={field.value?.toString()}
+                        >
+                          <div className="grid px-4">
+                            {addresses.map((address) => {
+                              return (
+                                <React.Fragment key={address.id}>
+                                  <label
+                                    htmlFor={address.id.toString()}
+                                    className="grid cursor-pointer grid-cols-[1.5rem_auto] gap-x-2.5 py-4"
+                                  >
+                                    <RadioGroup.Item
+                                      value={address.id.toString()}
+                                      className="group flex flex-col justify-start"
+                                      id={address.id.toString()}
+                                    >
+                                      <CheckCircleIcon className="size-6 text-primary-100 group-data-[state=checked]:hidden" />
+                                      <CheckCircleIconSolid className="hidden size-6 text-primary-900 group-data-[state=checked]:block" />
+                                    </RadioGroup.Item>
+                                    <AddressItem address={address} />
+                                  </label>
+                                  <div className="h-px w-full bg-primary-50 last:hidden"></div>
+                                </React.Fragment>
+                              );
+                            })}
+                          </div>
+                        </RadioGroup.Root>
+                      );
+                    }}
+                  ></Controller>
+                )}
+              </ScrollArea>
+            </div>
+
+            <div className="flex justify-end">
               <Button
                 type="submit"
                 disabled={!isDirty || isSubmitting}
