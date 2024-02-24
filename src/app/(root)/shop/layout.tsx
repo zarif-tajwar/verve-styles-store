@@ -1,9 +1,15 @@
 import { FilterSidebar } from '@/components/ShopFilter/FilterSidebar';
 import SortBySelect from '@/components/ShopFilter/SortBySelect';
 import { Container } from '@/components/UI/Container';
+import { Metadata } from 'next';
 import React, { Suspense } from 'react';
 
-const ShopLayout = ({ children }: { children: React.ReactNode }) => {
+export const metadata: Metadata = {
+  title: 'Shopping Page - Verve Styles',
+  description: 'Browse and Find Your Dream Cloths!',
+};
+
+const ShopLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="mt-4 lg:mt-10" data-no-sticky-nav>
       <Container className="relative h-max">
