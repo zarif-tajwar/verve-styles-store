@@ -11,7 +11,7 @@ const CheckoutCartItems = ({
   cartItems: CartItemsForCheckout;
 }) => {
   return (
-    <div className="rounded-main border-2 border-primary-50 p-6 @container xl:p-8">
+    <div className="rounded-main border border-primary-100 p-6 @container xl:p-8">
       <div className="">
         <h2 className="text-xl font-semibold sm:text-2xl">
           Your shopping cart

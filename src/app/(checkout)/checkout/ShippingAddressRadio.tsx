@@ -6,6 +6,8 @@ import ShippingAddressInputForm from './ShippingAddressInputForm';
 import ShippingAddressSelect from './ShippingAddressSelect';
 import { AddressSelect } from '@/lib/db/schema/address';
 import { AnimatePresence, Variants, motion } from 'framer-motion';
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 
 const animVariants: Variants = {
   hidden: {
@@ -44,11 +46,12 @@ const ShippingAddressRadio = ({
         <div className="grid items-center justify-start gap-x-4 gap-y-6 sm:grid-cols-[1.35fr_1fr]">
           <div className="flex items-center gap-3">
             <RadioGroup.Item
-              id="select"
-              value="select"
-              className="relative inline-flex size-5 flex-shrink-0 items-center justify-center rounded-full border-2 border-primary-50 data-[state=checked]:border-primary-500"
+              value={'select'}
+              className="group flex flex-shrink-0 flex-col justify-start"
+              id={'select'}
             >
-              <RadioGroup.Indicator className="absolute left-1/2 top-1/2 inline-block size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500" />
+              <CheckCircleIcon className="size-6 text-primary-100 group-data-[state=checked]:hidden sm:size-7" />
+              <CheckCircleIconSolid className="hidden size-6 text-primary-900 group-data-[state=checked]:block sm:size-7" />
             </RadioGroup.Item>
             <label htmlFor="select">
               <p className="text-base font-semibold sm:text-lg">
@@ -61,11 +64,12 @@ const ShippingAddressRadio = ({
           </div>
           <div className="flex items-center gap-3">
             <RadioGroup.Item
-              id="input"
-              value="input"
-              className="relative inline-flex size-5 flex-shrink-0 items-center justify-center rounded-full border-2 border-primary-50 data-[state=checked]:border-primary-500"
+              value={'input'}
+              className="group flex flex-shrink-0 flex-col justify-start"
+              id={'input'}
             >
-              <RadioGroup.Indicator className="absolute left-1/2 top-1/2 inline-block size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500" />
+              <CheckCircleIcon className="size-6 text-primary-100 group-data-[state=checked]:hidden sm:size-7" />
+              <CheckCircleIconSolid className="hidden size-6 text-primary-900 group-data-[state=checked]:block sm:size-7" />
             </RadioGroup.Item>
             <label htmlFor="input">
               <p className="text-base font-semibold sm:text-lg">
@@ -78,7 +82,7 @@ const ShippingAddressRadio = ({
           </div>
         </div>
       </RadioGroup.Root>
-      <div className="my-5 h-px w-full bg-primary-50"></div>
+      <div className="my-5 h-px w-full bg-primary-100"></div>
       <div className="">
         <AnimatePresence initial={false} mode="wait">
           {shippingAddressMode === 'input' && (
