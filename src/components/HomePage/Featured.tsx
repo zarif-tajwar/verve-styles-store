@@ -6,6 +6,9 @@ import { productSalesCount } from '@/lib/db/schema/productSalesCount';
 import { desc, eq } from 'drizzle-orm';
 import FeaturedItem from './FeaturedItem';
 import { productImages } from '@/lib/db/schema/productImages';
+import { Container, containerVariants } from '../UI/Container';
+import { Section } from '../UI/Section';
+import { cn } from '@/lib/util';
 
 const Featured = async () => {
   const newArrivalsPromise = db
@@ -58,20 +61,29 @@ const Featured = async () => {
     topSellingPromise,
   ]);
   return (
-    <section>
-      <div className="container-main mt-3 divide-y divide-black/10">
-        <FeaturedItem
-          title="New Arrivals"
-          href="/shop"
-          products={newArrivals}
-        />
-        <FeaturedItem
-          title="Top Selling"
-          href="/shop?sort_by=most+popular"
-          products={topSelling}
-        />
+    <div className="pt-12 md:pt-16 lg:pt-20">
+      <Section className="relative overflow-x-clip">
+        <Container>
+          <FeaturedItem
+            title="New Arrivals"
+            href="/shop"
+            products={newArrivals}
+          />
+        </Container>
+      </Section>
+      <div className={containerVariants()}>
+        <div className="h-px bg-primary-100"></div>
       </div>
-    </section>
+      <Section className="overflow-x-clip">
+        <Container>
+          <FeaturedItem
+            title="Top Selling"
+            href="/shop?sort_by=most+popular"
+            products={topSelling}
+          />
+        </Container>
+      </Section>
+    </div>
   );
 };
 

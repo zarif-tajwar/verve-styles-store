@@ -42,8 +42,6 @@ const OrderedProducts = async ({
   );
   const total = subtotal + deliveryCharge + taxes - discount;
 
-  console.log(orderLineItems.length);
-
   return (
     <div>
       <AddressDetailsCard.Card>
@@ -52,7 +50,7 @@ const OrderedProducts = async ({
             <ShoppingBagIcon className="size-6" />
           </AddressDetailsCard.CardHeaderIcon>
           <div>
-            <h2 className="text-lg font-semibold text-primary-500">
+            <h2 className="text-lg font-bold text-primary-500">
               Ordered Products <br />
               with Price Summary
             </h2>
@@ -93,7 +91,7 @@ const OrderedProducts = async ({
           </AddressDetailsCard.CardListItem>
         </AddressDetailsCard.CardList>
         <Divider className="my-6 bg-primary-50" />
-        <ul className="grid grid-cols-3 gap-x-6 gap-y-12">
+        <ul className="grid auto-rows-auto grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 xl:grid-cols-3">
           {orderLineItems.map((orderLine, i) => {
             const pricePerUnit = Number.parseFloat(
               orderLine.order_line.pricePerUnit,
@@ -108,65 +106,67 @@ const OrderedProducts = async ({
               <React.Fragment key={i}>
                 <li
                   className={cn(
-                    'grid max-w-[39.4rem] grid-cols-[7rem_1fr] gap-4',
-                    'flex flex-col',
+                    'row-span-3 grid grid-cols-1 grid-rows-subgrid gap-x-0 gap-y-0',
+                    // 'flex flex-col',
                   )}
                 >
-                  <div className="relative aspect-[1.4/1] overflow-hidden rounded-xl">
-                    {orderLine.product_images?.url ? (
-                      <Image
-                        alt={orderLine.products.name}
-                        src={orderLine.product_images.url}
-                        className="object-cover"
-                        fill
-                      />
-                    ) : (
-                      <span className="h-full w-full bg-primary-50"></span>
-                    )}
-                  </div>
-                  <div className="flex flex-col justify-between gap-3">
-                    <div className="">
-                      <span className="font-base font-semibold leading-none text-primary-400">
-                        {orderLine.products.name}
-                      </span>
+                  <div>
+                    <div className="relative mb-3 aspect-[1.2/1] max-h-min w-full overflow-hidden rounded-xl saturate-0">
+                      {orderLine.product_images?.url ? (
+                        <Image
+                          alt={orderLine.products.name}
+                          src={orderLine.product_images.url}
+                          className="object-cover"
+                          fill
+                        />
+                      ) : (
+                        <span className="h-full w-full bg-primary-50"></span>
+                      )}
                     </div>
+                    <div className="mb-5">
+                      <h4 className="text-lg font-semibold leading-none text-primary-400">
+                        {orderLine.products.name}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="mb-5 flex flex-col justify-between gap-3">
                     <dl
                       className={cn(
-                        'mb-2 grid grid-cols-2 gap-x-4 gap-y-2 text-sm',
+                        'grid grid-cols-2 gap-x-4 gap-y-3 text-sm',
                         '[&_dd]:font-medium [&_dd]:text-primary-400',
                         '[&_dt]:font-semibold [&_dt]:text-primary-500',
                       )}
                     >
-                      <div className="space-y-0.5">
+                      <div className="space-y-1">
                         <dd>Size</dd>
                         <dt>{formatSizeText(orderLine.sizes.name)}</dt>
                       </div>
-                      <div className="space-y-0.5">
+                      <div className="space-y-1">
                         <dd>Quantity</dd>
                         <dt>{orderLine.order_line.quantity}</dt>
                       </div>
-                      <div className="space-y-0.5">
+                      <div className="space-y-1">
                         <dd>Price Per Unit</dd>
                         <dt>{priceFormat(pricePerUnit)}</dt>
                       </div>
 
                       {discountInPercentage > 0 && (
-                        <div className="space-y-0.5">
+                        <div className="space-y-1">
                           <>
                             <dd>Discount</dd>
                             <dt>{discountInPercentage}%</dt>
                           </>
                         </div>
                       )}
-                      <div className="space-y-0.5">
+                      <div className="space-y-1">
                         <dd>Total</dd>
                         <dt className="!font-semibold text-primary-500">
                           {priceFormat(total)}
                         </dt>
                       </div>
                     </dl>
-                    <PostAReviewBtn />
                   </div>
+                  <PostAReviewBtn />
                 </li>
               </React.Fragment>
             );

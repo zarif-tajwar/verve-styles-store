@@ -3,8 +3,11 @@
 import { cn, isValueInArray } from '@/lib/util';
 import * as Tabs from '@radix-ui/react-tabs';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import WIP from '../UI/WIP';
+import { Button } from '../UI/Button';
+import { Container } from '../UI/Container';
+import { motion } from 'framer-motion';
 
 const ProductDetails = () => (
   <div>
@@ -25,9 +28,12 @@ const TabOptions = [
   { value: 'detail', label: 'Product Details' },
   { value: 'review', label: 'Rating & Reviews' },
   { value: 'faq', label: 'FAQs' },
-];
+] as const;
 
 const values = TabOptions.map((o) => o.value);
+
+type Value = (typeof values)[number];
+
 const defaultValue = values.at(0)!;
 
 const ProductDetailsReviewFaqTab = ({
@@ -36,54 +42,73 @@ const ProductDetailsReviewFaqTab = ({
   ReviewsComp: React.ReactNode;
 }) => {
   const [tabValue, setTabValue] = useQueryState(
-    'tab',
+    'view',
     parseAsStringEnum(values),
   );
 
-  useEffect(() => {
-    if (!isValueInArray(tabValue, values)) {
-      setTabValue(null);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const selectedIndex = TabOptions.findIndex((o) =>
+    tabValue ? o.value === tabValue : o.value === defaultValue,
+  );
+
+  const handleValueChange = useCallback(
+    (value: Value) => {
+      setTabValue(value === defaultValue ? null : value);
+    },
+    [setTabValue],
+  );
 
   return (
     <Tabs.Root
       value={tabValue || defaultValue}
-      onValueChange={(v) => setTabValue(v === defaultValue ? null : v)}
+      onValueChange={(value) => handleValueChange(value as Value)}
     >
-      <Tabs.List className="relative mb-8 grid w-full grid-cols-3 items-center justify-between">
-        {TabOptions.map((tabOption) => (
-          <Tabs.Trigger
-            key={tabOption.value}
-            value={tabOption.value}
-            className={cn(
-              'text-cneter group relative py-6 text-lg text-primary-400',
-              'data-[state=active]:font-semibold data-[state=active]:text-primary-900',
-              'transition-all duration-100',
-              'hover:text-primary-500',
-            )}
-          >
-            {tabOption.label}
-            <span
-              className={cn(
-                'absolute -bottom-0.5 block h-0.5 w-full bg-primary-50',
-                'group-data-[state=active]:bg-primary-400',
-                'group-hover:bg-primary-100',
-                'transition-colors duration-200',
-              )}
-            />
-          </Tabs.Trigger>
-        ))}
-      </Tabs.List>
-      <Tabs.TabsContent value={'detail'} key={'detail'}>
-        <ProductDetails />
-      </Tabs.TabsContent>
-      <Tabs.TabsContent value={'review'} key={'review'}>
-        {ReviewsComp}
-      </Tabs.TabsContent>
-      <Tabs.TabsContent value={'faq'} key={'faq'}>
-        <ProductFAQs />
-      </Tabs.TabsContent>
+      <Container className="px-2">
+        <div className="mb-8 rounded-[1.75rem] border border-primary-50 p-1 sm:rounded-[2rem] sm:p-2 md:rounded-[2.26rem] lg:rounded-full">
+          <Tabs.List className="relative grid w-full gap-[var(--gap)] [--gap:0.25rem] [--movement:calc(100%+var(--gap))] sm:gap-[var(--gap)] sm:[--gap:0.5rem] lg:grid-cols-3">
+            {TabOptions.map((tabOption) => {
+              const isSelected = tabValue
+                ? tabValue === tabOption.value
+                : defaultValue === tabOption.value;
+
+              return (
+                <Tabs.Trigger
+                  key={tabOption.value}
+                  value={tabOption.value}
+                  className={cn(
+                    'center inline-flex items-center justify-center rounded-full px-4 py-3 text-left text-base font-medium text-primary-400 transition-all duration-200 hover:font-semibold hover:text-primary-900 md:py-4 lg:py-5 lg:text-lg',
+                    isSelected && 'font-semibold text-primary-900',
+                  )}
+                >
+                  {tabOption.label}
+                </Tabs.Trigger>
+              );
+            })}
+
+            <motion.span
+              initial={{
+                x: `calc(${selectedIndex} * var(--translate-x))`,
+                y: `calc(${selectedIndex} * var(--translate-y))`,
+              }}
+              animate={{
+                x: `calc(${selectedIndex} * var(--translate-x))`,
+                y: `calc(${selectedIndex} * var(--translate-y))`,
+              }}
+              className="absolute inset-0 -z-10 inline-block h-[var(--length)] w-full rounded-full bg-primary-50 [--length:calc((100%-var(--gap)*2)/3)] [--translate-x:0px] [--translate-y:var(--movement)] lg:h-full lg:w-[var(--length)] lg:[--translate-x:var(--movement)] lg:[--translate-y:0px]"
+            ></motion.span>
+          </Tabs.List>
+        </div>
+      </Container>
+      <Container>
+        <Tabs.TabsContent value={'detail'} key={'detail'}>
+          <ProductDetails />
+        </Tabs.TabsContent>
+        <Tabs.TabsContent value={'review'} key={'review'}>
+          {ReviewsComp}
+        </Tabs.TabsContent>
+        <Tabs.TabsContent value={'faq'} key={'faq'}>
+          <ProductFAQs />
+        </Tabs.TabsContent>
+      </Container>
     </Tabs.Root>
   );
 };

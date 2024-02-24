@@ -37,7 +37,7 @@ const SocialAccounts = async ({ session }: { session: Session }) => {
     .where(and(eq(accounts.userId, session.user.id)));
 
   return (
-    <div className="grid w-full grid-cols-2 gap-16">
+    <div className="grid w-full gap-x-16 gap-y-8 sm:grid-cols-2">
       {providers.map((provider) => {
         const linkedSocialProvider = linkedSocialProviders.find(
           (linked) => linked.provider === provider.provider,
@@ -45,7 +45,7 @@ const SocialAccounts = async ({ session }: { session: Session }) => {
         return (
           <div
             key={provider.label}
-            className="flex items-start justify-between gap-2 font-semibold"
+            className="flex items-center justify-between gap-2 font-semibold sm:items-start"
           >
             <div className="flex items-start gap-4">
               <provider.icon />

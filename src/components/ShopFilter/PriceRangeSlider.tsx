@@ -5,28 +5,31 @@ import { defaultPriceRange } from '@/lib/validation/constants';
 import { useShopFilter } from '@/lib/hooks/useShopFilter';
 import { useState } from 'react';
 
-const DoubleRangeSlider = () => {
+const PriceRangeSlider = () => {
   const rangeSlider = useShopFilter((store) => store.rangeSlider);
 
-  const { currentRange, handleValueChange } = rangeSlider(
-    defaultPriceRange,
-    'price_range',
-  );
-  const [currentRangeImmediate, setCurrentRangeImmediate] =
-    useState(currentRange);
-  const [min, max] = currentRangeImmediate;
+  const { currentRange, handleValueChange } = rangeSlider('price_range');
+  const [currentRangeImmediate, setCurrentRangeImmediate] = useState<
+    number[] | null
+  >(null);
+
+  const currentValue =
+    currentRangeImmediate ?? currentRange ?? defaultPriceRange;
+
+  const [min, max] = currentValue;
 
   return (
     <div>
       <Slider.Root
         className="relative mb-2 flex h-5 w-full touch-none select-none items-center"
-        value={currentRangeImmediate}
+        value={currentValue}
         min={defaultPriceRange[0]}
         max={defaultPriceRange[1]}
         step={1}
         onValueChange={(values) => setCurrentRangeImmediate(values)}
         onValueCommit={(values) => {
           handleValueChange(values);
+          setCurrentRangeImmediate(null);
         }}
       >
         <Slider.Track className="relative h-1.5 grow cursor-pointer rounded-full bg-primary-50">
@@ -60,4 +63,4 @@ const DoubleRangeSlider = () => {
     </div>
   );
 };
-export default DoubleRangeSlider;
+export default PriceRangeSlider;

@@ -41,10 +41,10 @@ const EditAddress = ({ addressData }: EditAddressProps) => {
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent className="p-8 sm:max-w-3xl">
-        <div className="relative mb-12">
+      <DialogContent className="p-6 sm:max-w-3xl sm:p-8">
+        <div className="relative mb-8 sm:mb-10 md:mb-12">
           <h2 className="mb-1 text-xl font-semibold">Edit Address</h2>
-          <p className="text-primary-400">
+          <p className="text-sm text-primary-400 sm:text-base">
             Make changes to your address here.
             <br />
             {`Click save changes when you're done.`}

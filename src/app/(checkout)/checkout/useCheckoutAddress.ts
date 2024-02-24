@@ -1,8 +1,7 @@
 'use client';
 
-import { errorToast, successToast } from '@/components/UI/Toaster';
+import { errorToast } from '@/components/UI/Toaster';
 import { PerformCheckoutSchemaType } from '@/lib/actions/checkout';
-import { CustomError } from '@/lib/errors/custom-error';
 import { useCheckoutStore } from '@/lib/store/checkout-store';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -46,7 +45,7 @@ export const useCheckoutAddress = () => {
         return;
       }
       if (!isValid) {
-        trigger();
+        trigger(undefined, { shouldFocus: true });
         return;
       }
       const values = dataGetter();

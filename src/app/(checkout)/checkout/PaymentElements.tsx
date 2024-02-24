@@ -1,13 +1,13 @@
 'use client';
+import getStripe from '@/lib/stripe/client-side';
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from './PaymentForm';
-import getStripe from '@/lib/stripe/client-side';
 
 const PaymentElements = ({ amount }: { amount: number }) => {
   return (
     <div>
       <div className="mb-8 space-y-1">
-        <h3 className="text-xl font-semibold">Payment Details</h3>
+        <h3 className="text-lg font-semibold sm:text-xl">Payment Details</h3>
         <p className="text-sm text-primary-400">
           Enter your payment information and click place order
         </p>

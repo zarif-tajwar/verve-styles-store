@@ -63,7 +63,7 @@ const TestArea = () => {
   };
 
   return (
-    <div className="rounded-xl bg-primary-50 p-8">
+    <div className="rounded-xl bg-primary-50 p-6 xl:p-8">
       <div className="mb-6">
         <p className="mb-2 text-balance text-sm text-primary-400">
           <span className="font-semibold text-primary-500">

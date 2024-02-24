@@ -1,115 +1,223 @@
 'use client';
 
+import { errorToast } from '@/components/UI/Toaster';
+import {
+  PRICE_RANGE,
+  URL_QUERY_SEPERATORS,
+  clothingValues,
+  defaultPriceRange,
+  defaultSortOptionValue,
+  dressStylesValues,
+  sizesValues,
+  sortOptionValues,
+} from '@/lib/validation/constants';
+import { shopFilterKeys } from '@/lib/validation/schemas';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   ParserBuilder,
-  parseAsString,
-  useQueryStates,
-  Values,
   SetValues,
+  Values,
+  createParser,
+  createSerializer,
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsStringEnum,
+  useQueryStates,
 } from 'nuqs';
-import { shopFilterKeys } from '@/lib/validation/schemas';
-import { URL_QUERY_SEPERATORS } from '@/lib/validation/constants';
+import { useCallback, useMemo } from 'react';
+import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '../constants/query-keys';
+import { FilteredProductItem } from '../server/shop';
 import { quickSortByReference } from '../util';
-import { SearchParamsServer } from '../types/common';
 
 export type ParamKey = (typeof shopFilterKeys)[number];
 
-export type StateSchema = Record<ParamKey, ParserBuilder<string>>;
+type MultiOptionCheckKeys = Extract<ParamKey, 'sizes' | 'styles' | 'clothing'>;
+type SingleOptionCheckKeys = Extract<ParamKey, 'sort_by'>;
+type RangeKeys = Extract<ParamKey, 'price_range'>;
 
-export type ParamsState = Values<StateSchema>;
+type StateSchema2 = {
+  clothing: ParserBuilder<string[]>;
+  sizes: ParserBuilder<string[]>;
+  styles: ParserBuilder<string[]>;
+  price_range: ParserBuilder<number[]>;
+  sort_by: ParserBuilder<string>;
+  page: ParserBuilder<number>;
+};
 
-type SetParamsState = SetValues<StateSchema>;
+type QueryStates = Values<StateSchema2>;
+
+type SetQueryStates = SetValues<StateSchema2>;
 
 type Store = {
-  paramsState: Values<StateSchema>;
-  setParamsState: SetParamsState;
-  multipleOptionCheck: (
-    values: string[],
-    paramKey: ParamKey,
-  ) => {
-    checkedOptions: Set<string>;
-    handleCheck: (checked: boolean, value: string) => void;
+  queryStates: QueryStates;
+  setQueryStates: SetQueryStates;
+  multipleOptionCheck: (paramKey: MultiOptionCheckKeys) => {
+    checkedValues: string[] | null;
+    handleCheck: (isChecked: boolean, value: string) => void;
   };
-  singleOptionCheck: (
-    defaultOptionValue: string,
-    paramKey: 'sort_by',
-  ) => {
+  singleOptionCheck: (paramKey: SingleOptionCheckKeys) => {
     currentOptionValue: string | null;
     handleValueChange: (value: string) => void;
   };
-  rangeSlider: (
-    defaultRange: number[],
-    paramKey: 'price_range',
-  ) => {
-    currentRange: number[];
+  rangeSlider: (paramKey: RangeKeys) => {
+    currentRange: number[] | null;
     handleValueChange: (newRange: number[]) => void;
   };
   handlePageChange: (pageNum: number, totalPages: number) => void;
-  currentPage: number;
-  paramsStateSerialized: SearchParamsServer;
+  resetAllFilters: () => void;
+  filterUseQueryKey: Partial<Record<ParamKey, string | undefined>>;
+  filterParamsSerialized: string;
+  findIsAnyFilterActive: (
+    exclude?: Partial<Record<ParamKey, boolean>>,
+  ) => boolean;
 };
 
+const multiCheckOptionValues: Record<MultiOptionCheckKeys, string[]> = {
+  clothing: clothingValues,
+  sizes: sizesValues,
+  styles: dressStylesValues,
+};
+
+const singleCheckOptionValues: Record<
+  SingleOptionCheckKeys,
+  { default: string; values: string[] }
+> = {
+  sort_by: { default: defaultSortOptionValue, values: sortOptionValues },
+};
+
+const rangeOptionValues: Record<
+  RangeKeys,
+  { min: number; max: number; defaultRange: [number, number] }
+> = {
+  price_range: {
+    min: PRICE_RANGE.min,
+    max: PRICE_RANGE.max,
+    defaultRange: defaultPriceRange,
+  },
+};
+
+const rangeParser = (
+  min: number,
+  max: number,
+  defaultRange: [number, number],
+) => {
+  return createParser({
+    parse: (value) => {
+      const currentRange = value
+        .split(URL_QUERY_SEPERATORS.range)
+        .map((str) => Number.parseInt(str))
+        .filter((v) => !Number.isNaN(v));
+
+      if (currentRange.length !== 2) return null;
+
+      const [currentMin, currentMax] = currentRange;
+
+      if (currentMin === undefined || currentMax === undefined) return null;
+
+      const isValidRange =
+        currentMin <= currentMax &&
+        currentMin >= min &&
+        currentMax <= max &&
+        !(currentMin === defaultRange[0] && currentMax === defaultRange[1]);
+
+      if (!isValidRange) return null;
+
+      return currentRange;
+    },
+    serialize: (value) => {
+      return value.join(URL_QUERY_SEPERATORS.range);
+    },
+  });
+};
+
+const queryStateParsers = {
+  clothing: parseAsArrayOf(
+    parseAsStringEnum(multiCheckOptionValues['clothing']),
+    URL_QUERY_SEPERATORS.multipleOption,
+  ),
+  sizes: parseAsArrayOf(
+    parseAsStringEnum(multiCheckOptionValues['sizes']),
+    URL_QUERY_SEPERATORS.multipleOption,
+  ),
+  styles: parseAsArrayOf(
+    parseAsStringEnum(multiCheckOptionValues['styles']),
+    URL_QUERY_SEPERATORS.multipleOption,
+  ),
+  price_range: rangeParser(
+    rangeOptionValues.price_range.min,
+    rangeOptionValues.price_range.max,
+    rangeOptionValues.price_range.defaultRange,
+  ),
+  sort_by: parseAsStringEnum(sortOptionValues),
+  page: parseAsInteger,
+};
+
+const serializer = createSerializer(queryStateParsers);
+
 export const useShopFilter = <T>(callback: (store: Store) => T) => {
-  const stateSchema = Object.fromEntries(
-    shopFilterKeys.map((key) => [key, parseAsString]),
-  ) as StateSchema;
+  const [queryStates, setQueryStates]: [QueryStates, SetQueryStates] =
+    useQueryStates(queryStateParsers);
 
-  const [paramsState, setParamsState]: [ParamsState, SetParamsState] =
-    useQueryStates(stateSchema);
+  const { clothing, page, price_range, sizes, sort_by, styles } = queryStates;
 
-  const paramsStateSerialized = Object.fromEntries(
-    Object.entries(paramsState).filter(
-      ([_, val]) => val !== null && val !== '',
-    ),
-  ) as SearchParamsServer;
-
-  const currentPage = Number(paramsState.page || 1);
-
-  const multipleOptionCheck = (values: string[], paramKey: ParamKey) => {
-    const optionQueryState = paramsState[paramKey];
-    const checkedOptions = new Set(
-      optionQueryState
-        ? optionQueryState.split(URL_QUERY_SEPERATORS.multipleOption)
-        : [],
+  const filterUseQueryKey: Partial<Record<ParamKey, string | undefined>> =
+    useMemo(
+      () => ({
+        clothing:
+          clothing?.join(URL_QUERY_SEPERATORS.multipleOption) ?? undefined,
+        styles: styles?.join(URL_QUERY_SEPERATORS.multipleOption) ?? undefined,
+        sizes: sizes?.join(URL_QUERY_SEPERATORS.multipleOption) ?? undefined,
+        price_range: price_range?.join(URL_QUERY_SEPERATORS.range) ?? undefined,
+        sort_by: sort_by ?? undefined,
+        page: page?.toString() ?? undefined,
+      }),
+      [clothing, page, price_range, sizes, sort_by, styles],
     );
 
-    const handleCheck = (checked: boolean, value: string) => {
-      let checkedOptionsCopy = new Set(checkedOptions);
+  const filterParamsSerialized = useMemo(
+    () => serializer(queryStates),
+    [queryStates],
+  );
 
-      if (checked === true) {
-        if (checkedOptionsCopy.size + 1 === values.length) {
-          checkedOptionsCopy.clear();
+  const multipleOptionCheck = useCallback(
+    (paramKey: MultiOptionCheckKeys) => {
+      const checkedValues = queryStates[paramKey];
+      const allValues = multiCheckOptionValues[paramKey];
+
+      const handleCheck = (isChecked: boolean, value: string) => {
+        let newCheckedValues: string[] = checkedValues || [];
+        if (isChecked) {
+          newCheckedValues = [value, ...newCheckedValues];
+          if (newCheckedValues.length === allValues.length) {
+            setQueryStates({ [paramKey]: null, page: null });
+            return;
+          }
         } else {
-          checkedOptionsCopy.add(value);
+          newCheckedValues = newCheckedValues.filter(
+            (option) => option !== value,
+          );
+          if (newCheckedValues.length === 0) {
+            setQueryStates({ [paramKey]: null, page: null });
+            return;
+          }
         }
-      }
+        setQueryStates({
+          [paramKey]: quickSortByReference(newCheckedValues, allValues),
+          page: null,
+        });
+      };
 
-      if (checked === false) {
-        checkedOptionsCopy.delete(value);
-      }
+      return { checkedValues, handleCheck };
+    },
+    [queryStates, setQueryStates],
+  );
 
-      const newQueryValueSorted = quickSortByReference(
-        Array.from(checkedOptionsCopy),
-        values,
-      ).join(URL_QUERY_SEPERATORS.multipleOption);
-
-      setParamsState({
-        [paramKey]: newQueryValueSorted !== '' ? newQueryValueSorted : null,
-        page: null,
-      });
-    };
-
-    return { checkedOptions, handleCheck };
-  };
-
-  const singleOptionCheck = (
-    defaultOptionValue: string,
-    paramKey: 'sort_by',
-  ) => {
-    const currentOptionValue = paramsState[paramKey];
+  const singleOptionCheck = (paramKey: SingleOptionCheckKeys) => {
+    const currentOptionValue = queryStates[paramKey];
+    const defaultOptionValue = singleCheckOptionValues[paramKey].default;
 
     const handleValueChange = (value: string) => {
-      setParamsState({
+      setQueryStates({
         [paramKey]: value !== defaultOptionValue ? value : null,
         page: null,
       });
@@ -118,44 +226,113 @@ export const useShopFilter = <T>(callback: (store: Store) => T) => {
     return { currentOptionValue, handleValueChange };
   };
 
-  const rangeSlider = (defaultRange: number[], paramKey: 'price_range') => {
-    const currentRangeQueryState = paramsState.price_range;
-    const currentRange = currentRangeQueryState
-      ? currentRangeQueryState.split(URL_QUERY_SEPERATORS.range).map(Number)
-      : defaultRange;
+  const rangeSlider = useCallback(
+    (paramKey: RangeKeys) => {
+      const currentRange = queryStates[paramKey];
+      const defaultRange = rangeOptionValues[paramKey].defaultRange;
 
-    const handleValueChange = (newRange: number[]) => {
-      if (newRange[0] === defaultRange[0] && newRange[1] === defaultRange[1]) {
-        setParamsState({ [paramKey]: null });
-        return;
-      }
-      const newRangeStr = newRange.join(URL_QUERY_SEPERATORS.range);
-      setParamsState({
-        [paramKey]: newRangeStr,
-        page: null,
-      });
-    };
+      const handleValueChange = (newRange: number[]) => {
+        const [currentMin, currentMax] = newRange;
 
-    return { currentRange, handleValueChange };
-  };
+        const isValidRange =
+          currentMin !== undefined &&
+          currentMax !== undefined &&
+          !(currentMin === defaultRange[0] && currentMax === defaultRange[1]);
+
+        if (!isValidRange) {
+          setQueryStates({ [paramKey]: null, page: null });
+          return;
+        }
+
+        setQueryStates({
+          [paramKey]: newRange,
+          page: null,
+        });
+      };
+
+      return { currentRange, handleValueChange };
+    },
+    [queryStates, setQueryStates],
+  );
 
   const handlePageChange = (pageNum: number, totalPages: number) => {
-    if (pageNum < 1 || pageNum === currentPage || pageNum > totalPages) return;
-    setParamsState({ page: pageNum.toString() });
+    const currentPage = queryStates.page;
+    if (pageNum <= 1 || pageNum === currentPage || pageNum > totalPages) {
+      setQueryStates({ page: null });
+      return;
+    }
+    setQueryStates({ page: pageNum });
   };
 
+  const resetAllFilters = useCallback(() => {
+    setQueryStates({
+      clothing: null,
+      page: null,
+      price_range: null,
+      sizes: null,
+      sort_by: null,
+      styles: null,
+    });
+  }, [setQueryStates]);
+
+  const findIsAnyFilterActive = useCallback(
+    (exclude?: Partial<Record<ParamKey, boolean>>) => {
+      const entries = Object.entries(queryStates);
+
+      for (let [key, value] of entries) {
+        if (exclude && exclude[key as ParamKey]) continue;
+        if (value !== null) return true;
+      }
+      return false;
+    },
+    [queryStates],
+  );
+
   const store: Store = {
-    paramsState,
-    setParamsState,
-    multipleOptionCheck,
-    rangeSlider,
+    queryStates,
+    setQueryStates,
     singleOptionCheck,
     handlePageChange,
-    currentPage,
-    paramsStateSerialized,
+    multipleOptionCheck,
+    rangeSlider,
+    filterUseQueryKey,
+    filterParamsSerialized,
+    resetAllFilters,
+    findIsAnyFilterActive,
   };
 
   const returnCallBack = callback(store);
 
   return returnCallBack;
+};
+
+export const useShopQuery = () => {
+  const filterUseQueryKey = useShopFilter((store) => store.filterUseQueryKey);
+
+  const filterParamsSerialized = useShopFilter(
+    (store) => store.filterParamsSerialized,
+  );
+
+  const url = `/api/shop${filterParamsSerialized}`;
+
+  const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, filterUseQueryKey];
+
+  return useQuery({
+    queryKey,
+    queryFn: async () => {
+      let products: FilteredProductItem[] = [];
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error();
+        } else {
+          products = (await res.json()).data;
+        }
+      } catch (error) {
+        errorToast('Something went wrong while fetching the products!');
+      }
+      return products;
+    },
+    placeholderData: keepPreviousData,
+  });
 };

@@ -13,13 +13,19 @@ import { products } from '../db/schema/products';
 import { genRandomInt } from '../util';
 import { UserOrder } from '../types/user';
 
-export const getOrdersServer = async (
-  userId: UserSelect['id'] | DummyUserSelect['id'],
-  isDummyUser: boolean = false,
-  status: string | undefined,
-  orderDateRange: DateRange | undefined,
-  page: number,
-) => {
+export const getOrdersServer = async ({
+  userId,
+  isDummyUser = false,
+  status,
+  orderDateRange,
+  page,
+}: {
+  userId: UserSelect['id'] | DummyUserSelect['id'];
+  isDummyUser?: boolean;
+  status: string | undefined;
+  orderDateRange: DateRange | undefined;
+  page: number;
+}) => {
   let query = sql`
   SELECT
     o.id AS "orderId",

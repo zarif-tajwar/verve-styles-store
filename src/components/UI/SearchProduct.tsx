@@ -10,7 +10,10 @@ const SearchProduct = () => {
       <input
         type="text"
         onFocus={() =>
-          messageToast('Not implemented yet!', { position: 'top-right' })
+          messageToast('Not implemented yet!', {
+            position: 'top-center',
+            duration: 1000,
+          })
         }
         placeholder="Search for products..."
         className={clsx(

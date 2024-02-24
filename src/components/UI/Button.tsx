@@ -17,7 +17,7 @@ const buttonVariants = cva(
         ghost:
           'hover:bg-primary-50 text-primary-400 focus-visible:ring-offset-0',
         inverse:
-          'bg-primary-0 text-primary-900 hover:bg-primary-50 focus-visible:ring-offset-primary-900 focus-visible:ring-primary-50',
+          'bg-primary-0 text-primary-500 hover:bg-primary-50 focus-visible:ring-offset-primary-900 focus-visible:ring-primary-50',
         destructive:
           'text-red-500 ring-1 ring-inset hover:bg-red-500 hover:text-primary-0 ring-red-500',
         // link: 'text-primary underline-offset-4 hover:underline',
@@ -28,7 +28,7 @@ const buttonVariants = cva(
         xs: 'py-1 leading-none px-3 text-sm',
         md: 'px-4 py-2.5 text-base',
         lg: 'h-11 px-8',
-        xl: 'py-4 px-14 text-base duration-200',
+        xl: 'py-3 px-10 md:py-4 md:px-14 text-base font-medium duration-200',
         square: 'h-10 text-sm w-10',
       },
       roundness: {
@@ -65,7 +65,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         className={cn(
-          buttonVariants({ variant, size, roundness, align, className }),
+          buttonVariants({
+            variant,
+            size,
+            roundness,
+            align,
+            className,
+          }),
         )}
         ref={ref}
         {...props}

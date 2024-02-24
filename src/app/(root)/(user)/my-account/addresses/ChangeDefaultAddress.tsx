@@ -15,7 +15,8 @@ import {
 import { LinkIcon } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import * as ScrollArea from '@radix-ui/react-scroll-area';
+// import * as ScrollArea from '@radix-ui/react-scroll-area';
+import { ScrollArea } from '@/components/UI/ScrollArea';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useAction } from 'next-safe-action/hooks';
@@ -79,71 +80,65 @@ const ChangeDefaultAddress = () => {
       </DialogTrigger>
       <DialogContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="p-8 sm:max-w-2xl"
+        className="p-6 sm:max-w-2xl sm:p-8"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <div className="relative mb-8">
-              <h2 className="mb-1 text-xl font-semibold">
+            <div className="relative mb-8 sm:mb-10 md:mb-12">
+              <h2 className="mb-1 text-lg font-semibold sm:text-xl">
                 Change Default Address
               </h2>
-              <p className="text-primary-400">{`Select your default address here. Click Save Changes when you're finished.`}</p>
+              <p className="text-sm text-primary-400 sm:text-base">{`Select your default address here. Click Save Changes when you're finished.`}</p>
             </div>
-            <ScrollArea.Root className="h-full min-w-[24rem] rounded-xl transition-opacity">
-              <ScrollArea.Viewport className="h-full max-h-[15rem] w-full rounded-lg p-4 shadow-inner">
-                {addresses && (
-                  <Controller
-                    control={control}
-                    name="addressId"
-                    render={({ field }) => {
-                      return (
-                        <RadioGroup.Root
-                          onValueChange={field.onChange}
-                          {...field}
-                          value={field.value?.toString()}
-                        >
-                          <div className="grid gap-4">
-                            {addresses.map((address) => {
-                              return (
-                                <label
-                                  key={address.id}
-                                  htmlFor={`address-${address.id}`}
-                                  className={cn(
-                                    'flex items-center gap-4 rounded-lg px-3 py-2 ring-1 ring-inset ring-primary-50',
-                                    'has-[:checked]:ring-2 has-[:checked]:ring-primary-400',
-                                  )}
+            <ScrollArea
+              type="always"
+              className="h-[200px] pr-4"
+              scrollBarClassName="w-2"
+            >
+              {addresses && (
+                <Controller
+                  control={control}
+                  name="addressId"
+                  render={({ field }) => {
+                    return (
+                      <RadioGroup.Root
+                        onValueChange={field.onChange}
+                        {...field}
+                        value={field.value?.toString()}
+                      >
+                        <div className="grid gap-4">
+                          {addresses.map((address) => {
+                            return (
+                              <label
+                                key={address.id}
+                                htmlFor={`address-${address.id}`}
+                                className={cn(
+                                  'items-center gap-4 rounded-lg px-3 py-2 ring-1 ring-inset ring-primary-50',
+                                  'has-[:checked]:ring-2 has-[:checked]:ring-primary-400',
+                                  'grid grid-cols-[1.25rem_1fr]',
+                                )}
+                              >
+                                <RadioGroup.Item
+                                  id={`address-${address.id}`}
+                                  value={address.id.toString()}
+                                  className="relative size-5 rounded-full ring-2 ring-inset ring-primary-50 data-[state=checked]:ring-primary-400"
                                 >
-                                  <RadioGroup.Item
-                                    id={`address-${address.id}`}
-                                    value={address.id.toString()}
-                                    className="relative size-5 rounded-full ring-2 ring-inset ring-primary-50 data-[state=checked]:ring-primary-400"
-                                  >
-                                    <RadioGroup.Indicator className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400" />
-                                  </RadioGroup.Item>
-                                  <div className="text-sm">
-                                    <p className="font-medium">
-                                      {address.label}
-                                    </p>
-                                    <p>{`${address.address}, ${address.city}, ${address.country}, ${address.phone}`}</p>
-                                  </div>
-                                </label>
-                              );
-                            })}
-                          </div>
-                        </RadioGroup.Root>
-                      );
-                    }}
-                  ></Controller>
-                )}
-              </ScrollArea.Viewport>
-              <ScrollArea.Scrollbar
-                className="flex w-2.5 touch-none select-none rounded-lg bg-primary-50 p-0.5 transition-colors duration-[160ms] ease-out hover:bg-primary-100"
-                orientation="vertical"
-              >
-                <ScrollArea.Thumb className="relative flex-1 rounded-[10px] bg-primary-200 before:absolute before:left-1/2 before:top-1/2 before:h-full before:min-h-[44px] before:w-full before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']" />
-              </ScrollArea.Scrollbar>
-            </ScrollArea.Root>
-
+                                  <RadioGroup.Indicator className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400" />
+                                </RadioGroup.Item>
+                                <div className="text-sm">
+                                  <p className="font-medium">{address.label}</p>
+                                  <p>{`${address.address}, ${address.city}, ${address.country}, ${address.phone}`}</p>
+                                </div>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </RadioGroup.Root>
+                    );
+                  }}
+                ></Controller>
+              )}
+            </ScrollArea>
             <div className="flex justify-end pt-8">
               <Button
                 type="submit"

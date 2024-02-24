@@ -2,6 +2,7 @@
 
 import { AddressInputFormFields } from '@/app/(root)/(user)/my-account/addresses/AddressInputForm';
 import { useCheckoutStore } from '@/lib/store/checkout-store';
+import { cn } from '@/lib/util';
 import {
   AddressFormSchema,
   AddressFormSchemaType,
@@ -20,6 +21,7 @@ const ShippingAddressInputForm = ({
   const form = useForm<AddressFormSchemaType>({
     resolver: zodResolver(AddressFormSchema),
     mode: 'all',
+    shouldFocusError: true,
   });
   const { handleSubmit, control, watch, formState, trigger, getValues } = form;
   const setAddressInputFormTrigger = useCheckoutStore(
@@ -56,10 +58,10 @@ const ShippingAddressInputForm = ({
     setDataGetter(getValues);
   }, [getValues, setDataGetter]);
 
-  const onSubmit = async (values: AddressFormSchemaType) => {};
+  // const onSubmit = async (values: AddressFormSchemaType) => {};
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={className}>
+    <form className={cn('p-1', className)}>
       <AddressInputFormFields formHookObject={form} />
     </form>
   );

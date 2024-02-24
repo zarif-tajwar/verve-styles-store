@@ -3,7 +3,6 @@
 import { capitalize, cn, wait } from '@/lib/util';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { Button, buttonVariants } from '../UI/Button';
-import CartQuantityCounter from '../Cart/CartQuantityCounter';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addCartItemAction } from '@/lib/actions/cart';
 import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
@@ -16,6 +15,13 @@ import { FetchedCartItem } from '@/lib/server/cart';
 import { ProductSelect } from '@/lib/db/schema/products';
 import { ClothingSelect } from '@/lib/db/schema/clothing';
 import { ProductImagesSelect } from '@/lib/db/schema/productImages';
+import {
+  CartQuantityChangeBtn,
+  CartQuantityInput,
+  CartQuantityCounter,
+} from '../Cart/CartQuantityCounter';
+import { useQueryState } from 'nuqs';
+import useCartDrawerOpen from '@/lib/hooks/useCartDrawerOpen';
 
 type sizeOptions = {
   sizeName: string;
@@ -41,6 +47,8 @@ const ProductAddCartRadioGroup = ({
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [isAllowedToSubmit, setIsAllowedToSubmit] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const { handleOpenChange: setCartDrawerOpen } = useCartDrawerOpen();
 
   const {
     mutateAsync: addCartItemMutation,
@@ -91,6 +99,7 @@ const ProductAddCartRadioGroup = ({
       );
 
       setShowSuccess(true);
+      setCartDrawerOpen(true);
 
       return { previousCartItems: previousCartItems };
     },
@@ -129,6 +138,7 @@ const ProductAddCartRadioGroup = ({
 
   return (
     <form
+      className="@container"
       onSubmit={async (e) => {
         e.preventDefault();
 
@@ -149,14 +159,14 @@ const ProductAddCartRadioGroup = ({
     >
       <label
         htmlFor="clothing-size"
-        className="mb-4 block font-medium leading-none text-black/60"
+        className="mb-4 block font-semibold leading-none text-primary-400"
       >
         Choose Size
       </label>
       <RadioGroup.Root
         required
         aria-label="Cloth size options"
-        className="flex min-h-[5.25rem] max-w-[19rem] flex-wrap gap-3 text-sm"
+        className="flex max-w-[19rem] flex-wrap gap-3 text-sm"
         orientation="horizontal"
         name="size"
         id="clothing-size"
@@ -181,18 +191,27 @@ const ProductAddCartRadioGroup = ({
           </RadioGroup.Item>
         ))}
       </RadioGroup.Root>
-      <div className="my-6 h-px w-full bg-black/10" />
-      <div className="grid h-[3.25rem] w-full grid-cols-3 gap-5 font-medium">
+      <div className="my-6 h-px w-full bg-primary-100" />
+      <div className="grid w-full grid-rows-2 gap-5 font-medium @lg:grid-cols-[0.5fr_1fr] @lg:grid-rows-1">
         <CartQuantityCounter
-          initial={selectedQuantity}
-          onChange={setSelectedQuantity}
-          className="h-full w-full max-w-none"
-        />
+          value={selectedQuantity}
+          onValueChange={setSelectedQuantity}
+        >
+          <CartQuantityChangeBtn
+            controlType="decrease"
+            className="[--icon-size:1.25rem]"
+          />
+          <CartQuantityInput className="min-w-[100px] @md:min-w-[200px] @lg:min-w-0" />
+          <CartQuantityChangeBtn
+            controlType="increase"
+            className="[--icon-size:1.25rem]"
+          />
+        </CartQuantityCounter>
         <Button
           type="submit"
           size={'md'}
           className={cn(
-            'col-span-2 w-full transition-colors duration-200 disabled:opacity-100',
+            'w-full transition-colors duration-200 disabled:opacity-100',
             showSuccess &&
               !isAllowedToSubmit &&
               'cursor-default bg-emerald-500 hover:bg-emerald-500',

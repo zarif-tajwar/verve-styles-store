@@ -22,23 +22,17 @@ const OrdersListing = () => {
   const page = useOrderFilterStore((store) => store.page);
   const orderDateRange = useOrderFilterStore((store) => store.orderDateRange);
 
-  const {
-    data: orders,
-    isFetching,
-    isLoading,
-    isFetched,
-  } = useQuery({
+  const { data: orders, isFetching } = useQuery({
     queryKey: [status, orderDateRange, page],
     queryFn: async () => {
       if (!userId) return [];
 
-      const data = await getOrdersAction(
+      const data = await getOrdersAction({
         userId,
-        false,
-        status,
         orderDateRange,
+        status,
         page,
-      );
+      });
 
       return data || [];
     },
@@ -48,14 +42,6 @@ const OrdersListing = () => {
   if (!userId) {
     return null;
   }
-  // if (isFetching) {
-  //   return <OrderListingSkeleton />;
-  // }
-  // if (!orders) {
-  //   return null;
-  // }
-
-  // const orders = await getOrdersServer(userId, false);
 
   return (
     <div className="rounded-main">
@@ -68,10 +54,10 @@ const OrdersListing = () => {
           {orders.map((order, i) => {
             return (
               <React.Fragment key={i}>
-                <li className="grid grid-cols-[1.2fr_auto_1fr] gap-4 rounded-xl p-4 ring-1 ring-primary-50">
+                <li className="grid gap-4 rounded-xl p-4 ring-1 ring-primary-50 xl:grid-cols-[1.2fr_auto_1fr]">
                   <div className="">
-                    <dl className="mb-6 grid grid-flow-col grid-cols-2 grid-rows-3 gap-6 text-sm">
-                      <div className="col-span-2 flex items-center gap-4 rounded-lg bg-primary-50 px-4 py-3 font-semibold text-primary-400">
+                    <dl className="mb-6 gap-4 text-sm sm:grid-cols-2 sm:gap-6">
+                      <div className="flex items-center gap-4 rounded-lg bg-primary-50 px-4 py-3 font-semibold text-primary-400">
                         <span className="inline-flex size-10 items-center justify-center rounded-lg bg-primary-0">
                           <Package
                             size={24}
@@ -84,53 +70,55 @@ const OrdersListing = () => {
                           <dd className="text-base">{order.orderId}</dd>
                         </div>
                       </div>
-                      <div className="space-y-2 px-4 pt-4">
-                        <dt className="font-semibold text-primary-300">
-                          Total Amount
-                        </dt>
-                        <dd className="font-semibold text-primary-400">
-                          {priceFormat(
-                            order.orderedProducts?.reduce(
-                              (acc, curr) => acc + curr.total,
-                              0,
-                            ),
-                          )}
-                        </dd>
-                      </div>
-                      <div className="space-y-1 px-4">
-                        <dt className="font-semibold text-primary-300">
-                          Status
-                        </dt>
-                        <dd>
-                          <OrderStatus status={order.status} />
-                        </dd>
-                      </div>
-                      {order.orderDate && (
+                      <div className="grid grid-cols-[auto_auto] gap-x-4 gap-y-6 py-6">
                         <div className="space-y-2 px-4 pt-4">
                           <dt className="font-semibold text-primary-300">
-                            Order Date
+                            Total Amount
                           </dt>
-                          <dd className="font-medium text-primary-400">
-                            {new Intl.DateTimeFormat('en-us', {
-                              dateStyle: 'long',
-                            }).format(new Date(order.orderDate))}
+                          <dd className="font-semibold text-primary-400">
+                            {priceFormat(
+                              order.orderedProducts?.reduce(
+                                (acc, curr) => acc + curr.total,
+                                0,
+                              ),
+                            )}
                           </dd>
                         </div>
-                      )}
-                      {order.deliveredAt && (
-                        <div className="space-y-2 px-4">
+                        {order.orderDate && (
+                          <div className="space-y-2 px-4 pt-4">
+                            <dt className="font-semibold text-primary-300">
+                              Order Date
+                            </dt>
+                            <dd className="font-medium text-primary-400">
+                              {new Intl.DateTimeFormat('en-us', {
+                                dateStyle: 'long',
+                              }).format(new Date(order.orderDate))}
+                            </dd>
+                          </div>
+                        )}
+                        <div className="space-y-1 px-4">
                           <dt className="font-semibold text-primary-300">
-                            Delivered at
+                            Status
                           </dt>
-                          <dd className="font-medium text-primary-400">
-                            {new Intl.DateTimeFormat('en-us', {
-                              dateStyle: 'long',
-                            }).format(new Date(order.deliveredAt))}
+                          <dd>
+                            <OrderStatus status={order.status} />
                           </dd>
                         </div>
-                      )}
+                        {order.deliveredAt && (
+                          <div className="space-y-2 px-4">
+                            <dt className="font-semibold text-primary-300">
+                              Delivered at
+                            </dt>
+                            <dd className="font-medium text-primary-400">
+                              {new Intl.DateTimeFormat('en-us', {
+                                dateStyle: 'long',
+                              }).format(new Date(order.deliveredAt))}
+                            </dd>
+                          </div>
+                        )}
+                      </div>
                     </dl>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-x-4 gap-y-2 sm:grid-cols-2">
                       <Button
                         className="py-1.5 text-primary-400 ring-primary-50"
                         variant={'outline'}
@@ -155,7 +143,7 @@ const OrdersListing = () => {
                       </Button>
                     </div>
                   </div>
-                  <Divider className="h-full w-px bg-primary-50" />
+                  <Divider className="h-px w-full bg-primary-50 xl:h-full xl:w-px" />
                   <OrderItemsListing orderedProducts={order.orderedProducts} />
                 </li>
               </React.Fragment>

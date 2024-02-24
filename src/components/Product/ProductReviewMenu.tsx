@@ -10,7 +10,12 @@ const ProductReviewMenu = () => {
       <Button
         size={'md'}
         variant={'secondary'}
-        onClick={() => messageToast('Not implemented yet!')}
+        onClick={() =>
+          messageToast('Not implemented yet!', {
+            position: 'top-center',
+            duration: 1000,
+          })
+        }
         className="gap-3 text-sm"
       >
         {/* <span className="h-5 w-5"> */}

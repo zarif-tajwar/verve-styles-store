@@ -16,10 +16,14 @@ import { Verified } from '../Svgs/icons';
 import {
   Carousel,
   CarouselApi,
+  CarouselButtons,
   CarouselContent,
   CarouselItem,
   CarouselViewport,
 } from '../UI/Carousel';
+import { Container } from '../UI/Container';
+import { SectionHeading } from '../UI/Homepage';
+import { Section } from '../UI/Section';
 
 const CustomerReviews = () => {
   const [api, setApi] = useState<CarouselApi>();
@@ -51,34 +55,9 @@ const CustomerReviews = () => {
   }, [isVisible, handleKeyboardControl]);
 
   return (
-    <section className="mt-20 overflow-x-hidden" id="reviews">
-      <div className="container-main">
-        <div className="flex w-full items-end justify-between">
-          <h2 className="font-integral-cf text-5xl font-bold uppercase">
-            Our Happy Customers
-          </h2>
-          <div className="flex select-none items-center gap-2">
-            <Button
-              variant={'outline'}
-              size={'square'}
-              className="rotate-180 select-none"
-              onClick={scrollPrev}
-              aria-label="Go right"
-            >
-              <ArrowRight />
-            </Button>
-            <Button
-              variant={'outline'}
-              size={'square'}
-              aria-label="Go left"
-              onClick={scrollNext}
-              className="select-none"
-            >
-              <ArrowRight />
-            </Button>
-          </div>
-        </div>
-        <div className="pt-16">
+    <Section className="overflow-x-clip pb-24 md:pb-32 lg:pb-40" id="reviews">
+      <Container className="relative">
+        <div>
           <Carousel
             opts={{
               align: 'center',
@@ -94,6 +73,9 @@ const CustomerReviews = () => {
             setApi={setApi}
             ref={carouselRef}
           >
+            <SectionHeading className="text-left">
+              Our Happy Customers
+            </SectionHeading>
             <CarouselViewport>
               <CarouselContent className="-ml-5 cursor-grab">
                 {Reviews.map((review, i) => {
@@ -108,10 +90,13 @@ const CustomerReviews = () => {
                 })}
               </CarouselContent>
             </CarouselViewport>
+            <div className="mt-10 flex justify-center">
+              <CarouselButtons className="right-0 top-1.5 md:absolute" />
+            </div>
           </Carousel>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 };
 export default CustomerReviews;
@@ -183,19 +168,21 @@ const ReviewCard = ({ review, className, ...props }: ReviewCardProps) => {
   return (
     <div
       className={cn(
-        'rounded-main border border-primary-100 px-8 py-7',
+        'rounded-main border border-primary-100 @container/card',
         className,
       )}
       {...props}
     >
-      <Star rating={5} />
-      <div className="mt-5 flex items-center gap-2">
-        <p className="font-bold">{review.name}</p>
-        <Verified />
+      <div className="p-6 @[400px]/card:p-8">
+        <Star rating={5} />
+        <div className="mt-5 flex items-center gap-2">
+          <p className="font-bold">{review.name}</p>
+          <Verified />
+        </div>
+        <blockquote className="mt-2 line-clamp-5 leading-relaxed text-primary-400">
+          {review.quote}
+        </blockquote>
       </div>
-      <blockquote className="mt-2 line-clamp-5 leading-relaxed text-primary-400">
-        {review.quote}
-      </blockquote>
     </div>
   );
 };

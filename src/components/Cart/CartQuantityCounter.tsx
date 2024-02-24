@@ -1,113 +1,154 @@
-'use client';
-
 import { cn } from '@/lib/util';
+import React from 'react';
+import { Button } from '../UI/Button';
 import { MinusIcon, PlusIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useControllableState } from '@radix-ui/react-use-controllable-state';
+import { Slot } from '@radix-ui/react-slot';
 
 type CartQuantityCounterProps = {
-  initial?: number;
-  min?: number;
-  max?: number;
-  onChange?: (quantity: number) => void;
-  className?: string;
-  btnClassName?: string;
-  inputName?: string;
+  value?: number;
+  defaultValue?: number;
+  onValueChange?: (value: number) => void;
+  minValue?: number;
+  maxValue?: number;
+  asChild?: boolean;
 };
 
-const CartQuantityCounter = ({
-  initial = 1,
-  min = 1,
-  max = 10,
-  onChange,
-  className,
-  btnClassName,
-  inputName,
-}: CartQuantityCounterProps) => {
-  const [quantity, setQuantity] = useState(initial);
+type CartQuantityContextProps = {
+  value?: number;
+  setValue?: (value: number) => void;
+} & Pick<CartQuantityCounterProps, 'minValue' | 'maxValue'>;
 
-  const handleChange = (newQuantity: number) => {
-    let newQuantityCopy = newQuantity;
+const CartQuantityCounterContext =
+  React.createContext<CartQuantityContextProps | null>(null);
 
-    if (Number.isNaN(quantity)) {
-      newQuantityCopy = initial;
-    }
+const useCartQuantityCounter = () => {
+  const context = React.useContext(CartQuantityCounterContext);
+  if (!context)
+    throw new Error(
+      'useCartQuantityCounter was used outside of CartQuantityCounterContext!',
+    );
 
-    if (newQuantityCopy < min) {
-      newQuantityCopy = min;
-    }
+  return context;
+};
 
-    if (newQuantityCopy > max) {
-      newQuantityCopy = max;
-    }
+const CartQuantityCounter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & CartQuantityCounterProps
+>(
+  (
+    {
+      className,
+      asChild,
+      value: valueProp,
+      defaultValue = 1,
+      children,
+      onValueChange,
+      minValue = 1,
+      maxValue = 10,
+      ...props
+    },
+    ref,
+  ) => {
+    const Comp = asChild ? Slot : 'div';
 
-    setQuantity(newQuantityCopy);
+    const [value, setValue] = useControllableState({
+      prop: valueProp,
+      defaultProp: defaultValue,
+      onChange: onValueChange,
+    });
 
-    if (onChange) {
-      onChange(newQuantityCopy);
-    }
-  };
+    return (
+      <CartQuantityCounterContext.Provider
+        value={{ value, setValue, minValue, maxValue }}
+      >
+        <Comp
+          ref={ref}
+          className={cn(
+            'grid grid-cols-[repeat(3,auto)] grid-rows-1 rounded-full bg-primary-50 p-1.5 md:grid-cols-[auto_minmax(auto,3rem)_auto]',
+            className,
+          )}
+          {...props}
+        >
+          {children}
+        </Comp>
+      </CartQuantityCounterContext.Provider>
+    );
+  },
+);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (quantity < min) {
-  //       handleChange(min);
-  //     }
+CartQuantityCounter.displayName = 'CartQuantityCounter';
 
-  //     if (quantity > max) {
-  //       handleChange(max);
-  //     }
-  //   }, 500);
+const CartQuantityChangeBtn = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button> & {
+    controlType: 'increase' | 'decrease';
+  }
+>(({ className, type, controlType, ...props }, ref) => {
+  const { value, setValue, maxValue, minValue } = useCartQuantityCounter();
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [quantity, max, min]);
+  const handleClick = React.useCallback(() => {
+    if (!value || !setValue) return;
+    if (controlType === 'increase') setValue(value + 1);
+    if (controlType === 'decrease') setValue(value - 1);
+  }, [value, setValue, controlType]);
 
   return (
-    <div
+    <Button
+      ref={ref}
       className={cn(
-        'grid h-12 max-w-[160px] grid-cols-3 gap-1 overflow-hidden rounded-full bg-primary-50 p-1.5 text-primary-900',
+        'px-4 [--icon-size:1rem] sm:[--icon-size:1.25rem]',
         className,
       )}
+      // size={'sm'}
+      variant={'secondary'}
+      onClick={handleClick}
+      type="button"
+      disabled={
+        controlType === 'increase' ? value === maxValue : value === minValue
+      }
+      {...props}
     >
-      <button
-        className={cn(
-          'flex h-full w-full items-center justify-center rounded-full',
-          'transition-all duration-200 hover:bg-primary-100 active:bg-primary-200',
-          btnClassName,
-        )}
-        onClick={(e) => {
-          e.preventDefault();
-          handleChange(quantity - 1);
-        }}
-        type="button"
-      >
-        <MinusIcon className="h-5 w-5" />
-      </button>
-      <input
-        type="number"
-        className="h-full w-full border-none bg-transparent text-center outline-none"
-        max={max}
-        min={min}
-        value={quantity}
-        onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
-        name={inputName ? inputName : 'quantity'}
-      />
-      <button
-        className={cn(
-          'flex h-full w-full items-center justify-center rounded-full',
-          'transition-all duration-200 hover:bg-primary-100 active:bg-primary-200',
-          btnClassName,
-        )}
-        onClick={(e) => {
-          e.preventDefault();
-          handleChange(quantity + 1);
-        }}
-        type="button"
-      >
-        <PlusIcon className="h-5 w-5" />
-      </button>
-    </div>
+      {controlType === 'increase' && (
+        <PlusIcon className="size-[var(--icon-size)]" />
+      )}
+      {controlType === 'decrease' && (
+        <MinusIcon className="size-[var(--icon-size)]" />
+      )}
+      <span className="sr-only">{`${controlType === 'increase' ? 'Increase' : 'Decrease'} quantity by 1`}</span>
+    </Button>
   );
-};
-export default CartQuantityCounter;
+});
+
+CartQuantityChangeBtn.displayName = 'CartQuantityChangeBtn';
+
+const CartQuantityInput = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(({ className, children, type, readOnly, ...props }, ref) => {
+  const { value, setValue } = useCartQuantityCounter();
+
+  return (
+    <input
+      ref={ref}
+      value={value}
+      className={cn(
+        'min-w-0 border-none bg-transparent text-center outline-none',
+        className,
+      )}
+      type="number"
+      min={1}
+      max={10}
+      onChange={(e) => {
+        setValue?.(Number.parseInt(e.target.value));
+      }}
+      readOnly={readOnly === undefined ? true : readOnly}
+      {...props}
+    >
+      {children}
+    </input>
+  );
+});
+CartQuantityInput.displayName = 'CartQuantityInput';
+
+export { CartQuantityCounter, CartQuantityInput, CartQuantityChangeBtn };

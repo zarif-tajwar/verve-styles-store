@@ -21,7 +21,7 @@ const ShippingAddressInput = () => {
       <AccordionItem
         value="input"
         className={cn(
-          'relative rounded-xl bg-primary-0 shadow-sm transition-colors duration-300',
+          'relative rounded-2xl border border-primary-50 bg-primary-0 transition-colors duration-300',
           !isActive && 'hover:bg-primary-50',
         )}
       >
@@ -35,8 +35,7 @@ const ShippingAddressInput = () => {
         </AccordionTrigger>
         <AccordionContent
           className={cn(
-            'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
-            !isActive && 'overflow-clip',
+            'overflow-y-clip data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
           )}
         >
           <ShippingAddressInputForm className="px-6 pb-6" />

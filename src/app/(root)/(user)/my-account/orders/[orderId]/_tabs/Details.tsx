@@ -50,7 +50,7 @@ const Details = async ({
             <ClockIcon className="size-6" />
           </AddressDetailsCard.CardHeaderIcon>
           <div>
-            <h2 className="text-lg font-semibold text-primary-500">
+            <h2 className="text-lg font-bold text-primary-500">
               Order Time & Status
             </h2>
           </div>
@@ -95,7 +95,7 @@ const Details = async ({
             <CreditCardIcon className="size-6" />
           </AddressDetailsCard.CardHeaderIcon>
           <div>
-            <h2 className="text-lg font-semibold text-primary-500">
+            <h2 className="text-lg font-bold text-primary-500">
               Payment Details
             </h2>
           </div>
@@ -133,7 +133,7 @@ const Details = async ({
             <UserIcon className="size-6" />
           </AddressDetailsCard.CardHeaderIcon>
           <div>
-            <h2 className="text-lg font-semibold text-primary-500">
+            <h2 className="text-lg font-bold text-primary-500">
               Customer Details
             </h2>
           </div>

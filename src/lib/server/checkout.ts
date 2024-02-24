@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { DELIVERY_CHARGE } from '../constants/dummy-values';
 import { db } from '../db';
 import { cartItems } from '../db/schema/cartItems';
@@ -8,6 +8,7 @@ import { InvoiceSelect } from '../db/schema/invoice';
 import { productEntries } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
 import { sizes } from '../db/schema/sizes';
+import { productImages } from '../db/schema/productImages';
 
 export const getCartItemsForCheckout = async ({
   cartId,
@@ -22,6 +23,7 @@ export const getCartItemsForCheckout = async ({
       price: products.price,
       sizeName: sizes.name,
       cartItemId: cartItems.id,
+      image: productImages.url,
       quantity: cartItems.quantity,
       createdAt: cartItems.createdAt,
       discount: products.discount,
@@ -32,7 +34,8 @@ export const getCartItemsForCheckout = async ({
     .innerJoin(productEntries, eq(productEntries.id, cartItems.productEntryId))
     .innerJoin(products, eq(products.id, productEntries.productID))
     .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
-    .where(eq(cartItems.cartId, cartId))
+    .leftJoin(productImages, eq(productImages.productID, products.id))
+    .where(and(eq(cartItems.cartId, cartId), eq(productImages.isDefault, true)))
     .$dynamic();
   if (sort) {
     query = query.orderBy(

@@ -11,6 +11,7 @@ import TestArea from './TestArea';
 import Logo from '@/components/UI/Logo';
 import { Button } from '@/components/UI/Button';
 import { ArrowLeftIcon } from '@heroicons/react/16/solid';
+import { Container } from '@/components/UI/Container';
 
 const CheckoutPage = async () => {
   const session = await dedupedAuth();
@@ -23,25 +24,16 @@ const CheckoutPage = async () => {
   });
 
   return (
-    <div>
-      <div className="">
-        <div className="container-main">
-          <div className="-mx-7 w-max rounded-main px-6 py-8 shadow-sm">
-            <Link href={'/shop'}>
-              <Logo />
-            </Link>
-          </div>
-        </div>
-      </div>
-      <div className="container-main">
+    <div className="py-6 md:py-10">
+      <Container className="p-2">
         {cartItems && cartItems.length > 0 ? (
           <div className="min-h-[140svh]">
-            <div className="grid grid-cols-[1fr_0.6fr]">
-              <div className="grid gap-16 py-10">
+            <div className="grid gap-10 lg:grid-cols-[1fr_minmax(400px,0.6fr)]">
+              <div className="space-y-10 rounded-main">
                 <ShippingAddress />
                 <CheckoutCartItems cartItems={cartItems} />
               </div>
-              <div className="grid gap-16 py-2">
+              <div className="space-y-16">
                 <PaymentSection cartItems={cartItems} />
                 <TestArea />
               </div>
@@ -62,7 +54,7 @@ const CheckoutPage = async () => {
             </Button>
           </div>
         )}
-      </div>
+      </Container>
     </div>
   );
 };

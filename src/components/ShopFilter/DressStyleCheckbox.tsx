@@ -10,11 +10,7 @@ const DressStyleCheckbox = () => {
   const multipleOptionCheck = useShopFilter(
     (store) => store.multipleOptionCheck,
   );
-
-  const { checkedOptions, handleCheck } = multipleOptionCheck(
-    dressStylesOptions.map((x) => x.value),
-    'styles',
-  );
+  const { checkedValues, handleCheck } = multipleOptionCheck('styles');
 
   return (
     <div>
@@ -31,7 +27,7 @@ const DressStyleCheckbox = () => {
               className:
                 'data-[state=checked]:bg-primary-900 data-[state=checked]:text-primary-0',
             })}
-            checked={checkedOptions.has(option.value)}
+            checked={!!checkedValues?.includes(option.value)}
             onCheckedChange={(checked) => {
               if (checked === 'indeterminate') return;
               handleCheck(checked, option.value);

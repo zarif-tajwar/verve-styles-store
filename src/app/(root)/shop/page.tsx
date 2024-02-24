@@ -1,14 +1,13 @@
+import { getShopProductsServer } from '@/lib/server/shop';
 import {
   HydrationBoundary,
   QueryClient,
   dehydrate,
 } from '@tanstack/react-query';
-import { getShopProductsServer } from '@/lib/server/shop';
 
 import Shop from '@/components/ShopFilter/Shop';
 import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '@/lib/constants/query-keys';
 import { SearchParamsServer } from '@/lib/types/common';
-import { wait } from '@/lib/util';
 
 const ShopPage = async ({
   searchParams,
@@ -30,9 +29,9 @@ const ShopPage = async ({
   console.log(end - start, 'SHOP PAGE RENDER TIME');
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Shop />
-    </HydrationBoundary>
+    // <HydrationBoundary state={dehydrate(queryClient)}>
+    <Shop />
+    // </HydrationBoundary>
   );
 };
 

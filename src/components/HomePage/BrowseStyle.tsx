@@ -1,42 +1,82 @@
+import { cn } from '@/lib/util';
+import Image from 'next/image';
 import Link from 'next/link';
+import { SectionHeading } from '../UI/Homepage';
+import { Container } from '../UI/Container';
+import { Section } from '../UI/Section';
 
 const BrowseStyle = () => {
+  const styleOptionPairs = [
+    [
+      {
+        text: 'Casual',
+        image: '/casual-model.png',
+        href: '/shop?styles=casual',
+      },
+      {
+        text: 'Formal',
+        image: '/formal-model.png',
+        href: '/shop?styles=formal',
+      },
+    ],
+    [
+      {
+        text: 'Festival',
+        image: '/festival-model.png',
+        href: '/shop?styles=festival',
+      },
+      { text: 'Gym', image: '/gym-model.png', href: '/shop?styles=gym' },
+    ],
+  ];
   return (
-    <section className="mt-4">
-      <div className="container-main">
-        <div className="rounded-[2.5rem] bg-offwhite px-16 py-16">
-          <h2 className="mb-16 text-center font-integral-cf text-5xl font-bold uppercase">
-            Browse by Dress Style
-          </h2>
-          <div className="grid grid-cols-3 gap-5">
-            <Link
-              href={'/shop?styles=casual'}
-              className="h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6"
-            >
-              <p className="text-4xl font-semibold">Casual</p>
-            </Link>
-            <Link
-              href={'/shop?styles=formal'}
-              className="col-span-2 h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6"
-            >
-              <p className="text-4xl font-semibold">Formal</p>
-            </Link>
-            <Link
-              href={'/shop?styles=festival'}
-              className="col-span-2 h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6"
-            >
-              <p className="text-4xl font-semibold">Festival</p>
-            </Link>
-            <Link
-              href={'/shop?styles=gym'}
-              className="h-[290px] rounded-[1.25rem] bg-white pl-9 pt-6"
-            >
-              <p className="text-4xl font-semibold">Gym</p>
-            </Link>
+    <Section>
+      <Container className="[@media(width<=768px)]:p-0">
+        <div className="rounded-[2.5rem] bg-offwhite px-4 py-12 md:px-8 md:py-12 lg:p-16">
+          <SectionHeading>Browse by Dress Style</SectionHeading>
+          <div className="space-y-4 md:space-y-5">
+            {styleOptionPairs.map((styleOptions, pairIndex) => {
+              return (
+                <div
+                  key={pairIndex}
+                  className={cn(
+                    'grid gap-4 md:gap-5',
+                    (pairIndex + 1) % 2 !== 0
+                      ? 'lg:grid-cols-[minmax(400px,auto)_1fr]'
+                      : 'lg:grid-cols-[1fr_minmax(400px,auto)]',
+                    'md:grid-cols-2',
+                  )}
+                >
+                  {styleOptions.map((option, optionIndex) => {
+                    return (
+                      <Link
+                        href={option.href}
+                        key={optionIndex}
+                        className={cn(
+                          'relative grid h-[244px] overflow-hidden rounded-[1.25rem] bg-white p-5 lg:h-[290px] lg:px-9 lg:py-6',
+                          '',
+                        )}
+                      >
+                        <p className="text-3xl font-semibold lg:text-4xl">
+                          {option.text}
+                        </p>
+                        <div className="absolute -right-20 top-0 aspect-[1.2/1] h-full">
+                          <Image
+                            src={option.image}
+                            alt={`A handsome young man wearing verve's ${option.text} clothing`}
+                            fill
+                            className="object-cover object-left-bottom"
+                          />
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 };
 export default BrowseStyle;

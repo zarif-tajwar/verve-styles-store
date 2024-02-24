@@ -30,7 +30,7 @@ const ProductReviews = async ({ productId }: { productId: number }) => {
 
   return (
     <div>
-      <div className="mb-6 flex items-start justify-between">
+      <div className="mb-6 flex items-center justify-between xl:items-start">
         <div className="flex items-end gap-2">
           <h2 className="font-inter text-2xl font-bold capitalize leading-none">
             All Reviews
@@ -44,7 +44,7 @@ const ProductReviews = async ({ productId }: { productId: number }) => {
         </div>
         <ProductReviewMenu />
       </div>
-      <div className="grid grid-cols-3 gap-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:gap-5 xl:grid-cols-3">
         {reviews.map((review, i) => (
           <ProductReviewCard review={review} key={i} />
         ))}
@@ -65,7 +65,7 @@ const ProductReviewCard = ({ review }: { review: Review }) => {
       ? `${review.review?.slice(0, 130)}...`
       : review.review;
   return (
-    <div className="w-full rounded-main p-8 ring-1 ring-primary-50">
+    <div className="w-full rounded-main p-6 ring-1 ring-primary-50 lg:p-8">
       <div className="mb-2 flex items-center gap-2">
         <Star rating={rating} size="sm" />
         <span className="text-sm font-medium leading-none">
@@ -74,15 +74,15 @@ const ProductReviewCard = ({ review }: { review: Review }) => {
         </span>
       </div>
       <div className="mb-3 flex items-center gap-2">
-        <span className="block text-lg font-semibold">
+        <span className="block font-semibold lg:text-lg">
           {review.reviewerName}
         </span>
         <Verified />
       </div>
-      <blockquote className="mb-6 block text-primary-400">
+      <blockquote className="mb-2 block text-sm text-primary-400 sm:mb-4 md:mb-6 md:text-base">
         &ldquo;{comment}&rdquo;
       </blockquote>
-      <span className="block text-sm font-medium text-primary-400">
+      <span className="block text-sm font-medium text-primary-300">
         Posted on{' '}
         {new Intl.DateTimeFormat('en-us', { dateStyle: 'long' }).format(
           review.postDate!,

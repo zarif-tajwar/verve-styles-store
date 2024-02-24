@@ -1,4 +1,6 @@
 import Breadcumb from '@/components/UI/Breadcumb';
+import { Container } from '@/components/UI/Container';
+import AccountMenuMobile from '@/components/account/AccountMenuMobile';
 import AccountSidebar from '@/components/account/accountSidebar';
 
 const labels = new Map([
@@ -8,15 +10,16 @@ const labels = new Map([
 
 const AccountLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="container-main flex gap-12 pt-12">
-      <div className="pt-4">
+    <Container className="grid gap-8 overflow-x-clip pb-16 pt-8 lg:grid-cols-[auto_1fr] lg:pb-20 xl:pt-12 2xl:gap-12">
+      <div className="hidden pt-4 lg:block">
         <AccountSidebar />
       </div>
-      <div className="flex-grow">
+      <AccountMenuMobile />
+      <div>
         <Breadcumb customLabels={labels} />
-        <div className="w-full pt-4">{children}</div>
+        <div className="w-full pt-3 sm:pt-4">{children}</div>
       </div>
-    </div>
+    </Container>
   );
 };
 
