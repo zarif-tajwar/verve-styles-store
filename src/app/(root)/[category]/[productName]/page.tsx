@@ -94,9 +94,7 @@ export async function generateMetadata(
     title: `${product.name} - Verve Styles`,
     description: product.description,
     openGraph: {
-      title: `${product.name} - Verve Styles`,
-      description: product.description ?? undefined,
-      images: product.image ? [...previousImages, product.image] : undefined,
+      images: product.image ? [product.image, ...previousImages] : undefined,
     },
   };
 }

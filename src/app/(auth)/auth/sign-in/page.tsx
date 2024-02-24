@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 import { SearchParamsServer } from '@/lib/types/common';
 import { SignInPageErrorParam } from '@auth/core/types';
 import { ShieldAlert } from 'lucide-react';
+import { Metadata } from 'next';
 
 const signinErrors: Record<SignInPageErrorParam | 'default', string> = {
   default: 'Unable to sign in.',
@@ -23,6 +24,11 @@ const signinErrors: Record<SignInPageErrorParam | 'default', string> = {
   CredentialsSignin:
     'Sign in failed. Check the details you provided are correct.',
   SessionRequired: 'Please sign in to access this page.',
+};
+
+export const metadata: Metadata = {
+  title: `Sign In to Verve Styles`,
+  description: `Don't keep your dream wardrobe waiting. Sign In NOW!`,
 };
 
 const SignInPage = async ({
