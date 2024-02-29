@@ -6,7 +6,7 @@ import {
   text,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { user } from './auth';
+// import { user } from './auth';
 import { relations } from 'drizzle-orm';
 import { orderLine } from './orderLine';
 import { dummyUser } from './dummyUser';
@@ -19,7 +19,7 @@ export const orders = pgTable(
   'orders',
   {
     id: serial('id').primaryKey(),
-    userId: text('user_id').references(() => user.id),
+    userId: text('user_id'),
     dummyUserId: varchar('dummy_user_id', { length: 128 }),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
@@ -31,10 +31,10 @@ export const orders = pgTable(
 );
 
 export const orderRelations = relations(orders, ({ one, many }) => ({
-  users: one(user, {
-    fields: [orders.userId],
-    references: [user.id],
-  }),
+  // users: one(user, {
+  //   fields: [orders.userId],
+  //   references: [user.id],
+  // }),
   dummyUsers: one(dummyUser, {
     fields: [orders.userId],
     references: [dummyUser.id],

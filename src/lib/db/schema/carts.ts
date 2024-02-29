@@ -1,5 +1,5 @@
 import { index, pgTable, serial, timestamp, text } from 'drizzle-orm/pg-core';
-import { user } from './auth';
+// import { user } from './auth';
 import { InferInsertModel, InferSelectModel, relations } from 'drizzle-orm';
 import { cartItems } from './cartItems';
 
@@ -7,9 +7,7 @@ export const carts = pgTable(
   'carts',
   {
     id: serial('id').primaryKey(),
-    userId: text('user_id')
-      .references(() => user.id, { onDelete: 'cascade' })
-      .unique(),
+    userId: text('user_id').unique(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },
@@ -21,10 +19,10 @@ export const carts = pgTable(
 
 export const cartRelations = relations(carts, ({ one, many }) => ({
   cartItems: many(cartItems),
-  user: one(user, {
-    fields: [carts.userId],
-    references: [user.id],
-  }),
+  // user: one(user, {
+  //   fields: [carts.userId],
+  //   references: [user.id],
+  // }),
 }));
 
 export type CartsInsert = InferInsertModel<typeof carts>;

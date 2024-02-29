@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   openGraph: {
     images: '/opg.jpg',
   },
+  metadataBase: !!process.env.VERCEL
+    ? undefined
+    : new URL('http://localhost:3000'),
 };
 
 export default function RootLayout({

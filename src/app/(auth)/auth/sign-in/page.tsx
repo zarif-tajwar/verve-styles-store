@@ -9,6 +9,10 @@ import { SearchParamsServer } from '@/lib/types/common';
 import { SignInPageErrorParam } from '@auth/core/types';
 import { ShieldAlert } from 'lucide-react';
 import { Metadata } from 'next';
+import { Argon2id } from 'oslo/password';
+import { validateRequest } from '@/lib/server/auth';
+import Link from 'next/link';
+import SignOutButton from './SignOutButton';
 
 const signinErrors: Record<SignInPageErrorParam | 'default', string> = {
   default: 'Unable to sign in.',
@@ -41,8 +45,14 @@ const SignInPage = async ({
       ? signinErrors[searchParams.error as keyof typeof signinErrors]
       : undefined;
 
+  const auth = await validateRequest();
+
   return (
-    <main className="grid max-w-4xl gap-4 rounded-main bg-primary-0 p-4 shadow md:grid-cols-[1fr_1.2fr] lg:grid-cols-2">
+    <main className="relative grid max-w-screen-xl gap-4 rounded-main bg-primary-0 p-4 shadow md:grid-cols-[1fr_1.2fr] lg:grid-cols-[1.3fr_1fr]">
+      <div className="absolute">
+        <p>{JSON.stringify(auth)}</p>
+        <SignOutButton />
+      </div>
       <div className="hidden overflow-hidden rounded-main shadow-inner md:block">
         <Image
           src={bgImage}

@@ -6,7 +6,7 @@ import {
   timestamp,
   boolean,
 } from 'drizzle-orm/pg-core';
-import { user } from './auth';
+// import { user } from './auth';
 import { dummyUser } from './dummyUser';
 import { relations } from 'drizzle-orm';
 
@@ -20,7 +20,7 @@ export const address = pgTable('address', {
   type: varchar('type', { enum: ['not-relevant', 'home', 'office'] })
     .default('not-relevant')
     .notNull(),
-  userId: text('user_id').references(() => user.id, { onDelete: 'no action' }),
+  userId: text('user_id'),
   dummyUserId: varchar('dummy_user_id').references(() => dummyUser.id),
   isDefault: boolean('is_default').default(false),
   isSaved: boolean('is_saved').default(false),
@@ -32,10 +32,10 @@ export type AddressSelect = typeof address.$inferSelect;
 export type AddressInsert = typeof address.$inferInsert;
 
 export const addressRelations = relations(address, ({ one }) => ({
-  user: one(user, {
-    fields: [address.userId],
-    references: [user.id],
-  }),
+  // user: one(user, {
+  //   fields: [address.userId],
+  //   references: [user.id],
+  // }),
   dummyUser: one(dummyUser, {
     fields: [address.dummyUserId],
     references: [dummyUser.id],
