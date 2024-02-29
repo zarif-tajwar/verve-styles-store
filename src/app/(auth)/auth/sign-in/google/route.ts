@@ -1,9 +1,11 @@
 import { googleOauth } from '@/auth2';
+import { authCookieNames } from '@/lib/constants/auth';
+import { setRedirectCookie } from '@/lib/server/auth';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
 
@@ -13,7 +15,7 @@ export async function GET(): Promise<NextResponse> {
     { scopes: ['profile', 'email'] },
   );
 
-  cookies().set('oauth_state_google', state, {
+  cookies().set(authCookieNames.OAUTH_STATE_GOOGLE, state, {
     path: '/',
     secure: false,
     httpOnly: true,
@@ -21,7 +23,7 @@ export async function GET(): Promise<NextResponse> {
     sameSite: 'lax',
   });
 
-  cookies().set('oauth_code_verifier_google', codeVerifier, {
+  cookies().set(authCookieNames.OAUTH_CODE_VERIFIER_GOOGLE, codeVerifier, {
     path: '/',
     secure: false,
     httpOnly: true,
@@ -29,5 +31,7 @@ export async function GET(): Promise<NextResponse> {
     sameSite: 'lax',
   });
 
-  return NextResponse.redirect(oauthUrl, 302);
+  setRedirectCookie(req.nextUrl.searchParams);
+
+  return NextResponse.redirect(oauthUrl);
 }

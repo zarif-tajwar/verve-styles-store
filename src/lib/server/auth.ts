@@ -5,6 +5,7 @@ import type { Session, User } from 'lucia';
 import { cookies } from 'next/headers';
 import { lucia } from '@/auth2';
 import { redirect } from 'next/navigation';
+import { authCookieNames } from '../constants/auth';
 
 export const validateRequest = cache(
   async (): Promise<
@@ -41,3 +42,33 @@ export const validateRequest = cache(
     return result;
   },
 );
+
+export const setRedirectCookie = (searchParams: URLSearchParams) => {
+  const redirectAfterPathname = searchParams.get('redirectAfter') ?? '';
+
+  if (redirectAfterPathname) {
+    cookies().set(authCookieNames.AFTER_REDIRECT_LINK, redirectAfterPathname, {
+      path: '/',
+      secure: false,
+      httpOnly: true,
+      maxAge: 60 * 10,
+      sameSite: 'lax',
+    });
+  }
+};
+
+export const getRedirectCookie = () => {
+  const redirectAfterPathnameEncoded = cookies().get(
+    authCookieNames.AFTER_REDIRECT_LINK,
+  )?.value;
+
+  const redirectAfterPathname = redirectAfterPathnameEncoded
+    ? decodeURIComponent(redirectAfterPathnameEncoded)
+    : null;
+
+  if (redirectAfterPathname) {
+    cookies().delete(authCookieNames.AFTER_REDIRECT_LINK);
+  }
+
+  return redirectAfterPathname;
+};

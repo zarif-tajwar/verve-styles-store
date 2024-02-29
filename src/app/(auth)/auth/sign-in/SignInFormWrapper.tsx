@@ -18,6 +18,8 @@ import { useAction } from 'next-safe-action/hooks';
 import { signInCredentialsAction } from '@/lib/actions/auth';
 import { errorToast, successToast } from '@/components/UI/Toaster';
 import Link from 'next/link';
+import SignInLink from '@/components/auth/SignInLink';
+import { useSearchParams } from 'next/navigation';
 // import OauthSignInButton from './oauthSignInButton';
 
 const SignInFormWrapper = () => {
@@ -25,6 +27,7 @@ const SignInFormWrapper = () => {
     resolver: zodResolver(CredentialsFormSchema),
     // reValidateMode: 'onBlur',
   });
+
   const { execute } = useAction(signInCredentialsAction, {
     onError: (error) => {
       // if (error.validationErrors) {
@@ -41,6 +44,9 @@ const SignInFormWrapper = () => {
   const onSubmit = (values: CredentialsFormSchemaType) => {
     execute(values);
   };
+
+  const searchParams = useSearchParams();
+  const redirectAfter = searchParams.get('redirectAfter');
 
   return (
     <div>
@@ -89,7 +95,7 @@ const SignInFormWrapper = () => {
         </p>
         <div className="absolute left-0 top-1/2 z-10 h-px w-full -translate-y-1/2 bg-primary-200"></div>
       </div>
-      <div>
+      <div className="space-y-4">
         <Button
           size={'md'}
           variant={'outline'}
@@ -97,9 +103,31 @@ const SignInFormWrapper = () => {
           roundness={'lg'}
           asChild
         >
-          <Link href={'/auth/sign-in/google'}>
+          <Link
+            href={{
+              pathname: '/auth/sign-in/google',
+              query: { ...(redirectAfter ? { redirectAfter } : {}) },
+            }}
+          >
             <GoogleIcon width={20} height={20} className="size-5" />
             {'Continue with Google'}
+          </Link>
+        </Button>
+        <Button
+          size={'md'}
+          variant={'outline'}
+          className="w-full gap-x-4 text-sm font-medium"
+          roundness={'lg'}
+          asChild
+        >
+          <Link
+            href={{
+              pathname: '/auth/sign-in/facebook',
+              query: { ...(redirectAfter ? { redirectAfter } : {}) },
+            }}
+          >
+            <FacebookIcon width={20} height={20} className="size-5" />
+            {'Continue with facebook'}
           </Link>
         </Button>
       </div>

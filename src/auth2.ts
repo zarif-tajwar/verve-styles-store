@@ -2,7 +2,7 @@ import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './lib/db';
 import { session, user } from './lib/db/schema/auth2';
-import { Google } from 'arctic';
+import { Facebook, Google } from 'arctic';
 import { env } from './lib/validation/env.mjs';
 
 export const authAdapter = new DrizzlePostgreSQLAdapter(db, session, user);
@@ -46,4 +46,10 @@ export const googleOauth = new Google(
   env.AUTH_GOOGLE_ID,
   env.AUTH_GOOGLE_SECRET,
   process.env.AUTH_GOOGLE_REDIRECT_URI!,
+);
+
+export const facebookOauth = new Facebook(
+  env.AUTH_FACEBOOK_ID,
+  env.AUTH_FACEBOOK_SECRET,
+  process.env.AUTH_FACEBOOK_REDIRECT_URI!,
 );
