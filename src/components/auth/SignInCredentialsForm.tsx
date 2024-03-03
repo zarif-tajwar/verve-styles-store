@@ -46,7 +46,7 @@ const SignInCredentialsForm = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="mb-8 flex flex-col justify-end gap-y-8"
         >
-          <div className="flex min-h-[13.5rem] flex-col justify-end gap-y-6">
+          <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
             <FormField
               name="email"
               control={form.control}

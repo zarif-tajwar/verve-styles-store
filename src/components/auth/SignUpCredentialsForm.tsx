@@ -2,18 +2,12 @@
 
 import { Button } from '@/components/UI/Button';
 import { Input } from '@/components/UI/Input';
-import { errorToast } from '@/components/UI/Toaster';
-import { signInCredentialsAction } from '@/lib/actions/auth';
-import {
-  CredentialsFormSchema,
-  CredentialsFormSchemaType,
-  SignUpCredentialsFormSchemaType,
-  SignUpCredentialsFormStepSchemas,
-} from '@/lib/validation/auth';
+import { useSignUpStore } from '@/lib/store/auth';
+import { SignUpCredentialsFormStepSchemas } from '@/lib/validation/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -23,8 +17,8 @@ import {
   FormMessage,
   PasswordInput,
 } from '../UI/Form';
-import { z } from 'zod';
-import { useSignUpStore } from '@/lib/store/auth';
+import { wait } from '@/lib/util';
+import Spinner from '../UI/Spinner';
 
 const SignUpCredentialsForm = () => {
   const formNameAndEmail = useForm<
@@ -46,21 +40,24 @@ const SignUpCredentialsForm = () => {
   const currentFormStep = useSignUpStore((store) => store.step);
   const setFormStep = useSignUpStore((store) => store.setStep);
 
-  const onSubmitNameAndEmail = (
+  const onSubmitNameAndEmail = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.nameAndEmail>,
   ) => {
+    await wait(500);
     setFormStep('password');
   };
 
-  const onSubmitPassword = (
+  const onSubmitPassword = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.password>,
   ) => {
+    await wait(500);
     setFormStep('verificationCode');
   };
 
-  const onSubmitVerificationCode = (
+  const onSubmitVerificationCode = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.verificationCode>,
   ) => {
+    await wait(500);
     setFormStep('emailAndFullname');
   };
 
@@ -72,7 +69,7 @@ const SignUpCredentialsForm = () => {
             onSubmit={formNameAndEmail.handleSubmit(onSubmitNameAndEmail)}
             className="mb-8 flex flex-col justify-end gap-y-8"
           >
-            <div className="flex min-h-[13.5rem] flex-col justify-end gap-y-6">
+            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
               <FormField
                 name="fullName"
                 control={formNameAndEmail.control}
@@ -117,8 +114,13 @@ const SignUpCredentialsForm = () => {
               className="w-full text-sm font-medium"
               size={'md'}
               type="submit"
+              disabled={formNameAndEmail.formState.isSubmitting}
             >
-              Continue
+              {!formNameAndEmail.formState.isSubmitting ? (
+                `Continue`
+              ) : (
+                <Spinner size={20} />
+              )}
             </Button>
           </form>
         </Form>
@@ -129,7 +131,7 @@ const SignUpCredentialsForm = () => {
             onSubmit={formPassword.handleSubmit(onSubmitPassword)}
             className="mb-8 flex flex-col justify-end gap-y-8"
           >
-            <div className="flex min-h-[13.5rem] flex-col justify-end gap-y-6">
+            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
               <FormField
                 name="password"
                 control={formPassword.control}
@@ -159,7 +161,7 @@ const SignUpCredentialsForm = () => {
                       <FormControl>
                         <PasswordInput
                           type="password"
-                          placeholder="Enter the same password"
+                          placeholder="Re-enter your password"
                           {...field}
                         />
                       </FormControl>
@@ -174,8 +176,13 @@ const SignUpCredentialsForm = () => {
               className="w-full text-sm font-medium"
               size={'md'}
               type="submit"
+              disabled={formPassword.formState.isSubmitting}
             >
-              Continue
+              {!formPassword.formState.isSubmitting ? (
+                `Continue`
+              ) : (
+                <Spinner size={20} />
+              )}
             </Button>
           </form>
         </Form>
@@ -188,18 +195,23 @@ const SignUpCredentialsForm = () => {
             )}
             className="mb-8 flex flex-col justify-end gap-y-8"
           >
-            <div className="flex min-h-[13.5rem] flex-col justify-end gap-y-6">
+            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
               <FormField
                 name="code"
                 control={formVerificationCode.control}
-                render={({ field }) => {
+                render={({ field: { onChange, ...rest } }) => {
                   return (
                     <FormItem>
                       <FormLabel>Verification Code</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your verification code"
-                          {...field}
+                          type="number"
+                          onChange={(e) => {
+                            const value = Number.parseInt(e.target.value);
+                            onChange(value || undefined);
+                          }}
+                          {...rest}
                         />
                       </FormControl>
                       <FormMessage />
@@ -213,27 +225,26 @@ const SignUpCredentialsForm = () => {
               className="w-full text-sm font-medium"
               size={'md'}
               type="submit"
+              disabled={formVerificationCode.formState.isSubmitting}
             >
-              Submit
+              {!formVerificationCode.formState.isSubmitting ? (
+                `Submit`
+              ) : (
+                <Spinner size={20} />
+              )}
             </Button>
           </form>
         </Form>
       )}
-      <div className="flex justify-between">
+      <p className="text-sm text-primary-300">
+        Already have an account?&nbsp;
         <Link
-          href={'/auth/sign-up'}
+          href={'/auth/sign-in'}
           className="text-sm font-medium text-primary-400 underline underline-offset-1 hover:text-primary-900"
         >
-          Create Account
+          Sign In
         </Link>
-
-        <Link
-          href={'/auth/sign-up'}
-          className="text-sm font-medium text-primary-400 underline underline-offset-1 hover:text-primary-900"
-        >
-          Forgot Password?
-        </Link>
-      </div>
+      </p>
     </div>
   );
 };

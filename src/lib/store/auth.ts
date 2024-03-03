@@ -8,7 +8,7 @@ type SignUpStore = {
   step: 'emailAndFullname' | 'password' | 'verificationCode';
 };
 
-const initialState: SignUpStore = { step: 'emailAndFullname' };
+const initialState: SignUpStore = { step: 'password' };
 
 export const useSignUpStore = create<SignUpStore & SignUpStoreAction>()(
   (set) => ({

@@ -51,22 +51,27 @@ export const SignUpCredentialsFormStepSchemas = {
       .min(1, 'Please enter your email address!')
       .email('Please enter a valid email address!'),
   }),
-  password: z.object({
-    password: z
-      .string({ required_error: 'Please enter your password!' })
-      .min(1, 'Please enter your password!')
-      .min(6, 'Your password must contain atleast 6 characters!')
-      .max(64, 'Your password must contain atmost 64 characters!'),
-    confirmPassword: z
-      .string({ required_error: 'Please enter your password again!' })
-      .min(1, 'Please enter your password!')
-      .min(6, 'Your password must contain atleast 6 characters!')
-      .max(64, 'Your password must contain atmost 64 characters!'),
-  }),
+  password: z
+    .object({
+      password: z
+        .string({ required_error: 'Please enter your password!' })
+        .min(1, 'Please enter your password!')
+        .min(6, 'Your password must contain atleast 6 characters!')
+        .max(64, 'Your password must contain atmost 64 characters!'),
+      confirmPassword: z
+        .string({ required_error: 'Please re-enter your password!' })
+        .min(1, 'Please re-enter your password!')
+        .min(6, 'Your password must contain atleast 6 characters!')
+        .max(64, 'Your password must contain atmost 64 characters!'),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: `Passwords don't match`,
+      path: ['confirmPassword'],
+    }),
   verificationCode: z.object({
     code: z
       .number({ required_error: 'Please enter your verification code!' })
-      .min(100000)
-      .max(999999),
+      .min(100000, 'Must be atleast 6 digits')
+      .max(999999999999, 'Invalid verification code'),
   }),
 };
