@@ -1,4 +1,4 @@
-import { googleOauth, lucia } from '@/auth2';
+import { facebookOauth, lucia } from '@/auth2';
 import { authCookieNames } from '@/lib/constants/auth';
 import { db } from '@/lib/db';
 import { oauthAccount, user } from '@/lib/db/schema/auth2';
@@ -8,73 +8,63 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { ulid } from 'ulidx';
 
-type GoogleUser = {
-  sub: string;
+type FacebookUser = {
+  id: string;
   name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-  email: string;
-  email_verified: boolean;
-  locale: string;
+  picture: {
+    data: {
+      height: number;
+      is_silhouette: boolean;
+      url: string;
+      width: number;
+    };
+  };
+  email: string | undefined;
 };
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const code = req.nextUrl.searchParams.get('code');
   const state = req.nextUrl.searchParams.get('state');
 
-  const storedState = cookies().get(authCookieNames.OAUTH_STATE_GOOGLE)?.value;
-  const storedCodeVerifier = cookies().get(
-    authCookieNames.OAUTH_CODE_VERIFIER_GOOGLE,
+  const storedState = cookies().get(
+    authCookieNames.OAUTH_STATE_FACEBOOK,
   )?.value;
 
   const postRedirectPathname = getRedirectCookie();
 
-  if (
-    !code ||
-    !state ||
-    !storedState ||
-    !storedCodeVerifier ||
-    state !== storedState
-  ) {
+  if (!code || !state || !storedState || state !== storedState) {
     return NextResponse.json('Invalid OAuth state or code verifier', {
       status: 400,
     });
   }
 
   try {
-    const tokens = await googleOauth.validateAuthorizationCode(
-      code,
-      storedCodeVerifier,
+    const tokens = await facebookOauth.validateAuthorizationCode(code);
+
+    const url = new URL('https://graph.facebook.com/me');
+    url.searchParams.set('access_token', tokens.accessToken);
+    url.searchParams.set(
+      'fields',
+      ['id', 'name', 'picture', 'email'].join(','),
     );
 
-    const googleUserResponse = await fetch(
-      'https://openidconnect.googleapis.com/v1/userinfo',
-      {
-        headers: {
-          Authorization: `Bearer ${tokens.accessToken}`,
+    const facebookUserResponse = await fetch(url);
+
+    const facebookUser = (await facebookUserResponse.json()) as FacebookUser;
+
+    if (!facebookUser.email) {
+      return new NextResponse(
+        'No primary email address or unverified email address',
+        {
+          status: 400,
         },
-      },
-    );
-
-    const googleUser = (await googleUserResponse.json()) as GoogleUser;
-
-    if (!googleUser.email) {
-      return new NextResponse('No primary email address', {
-        status: 400,
-      });
-    }
-
-    if (!googleUser.email_verified) {
-      return new NextResponse('Unverified email', {
-        status: 400,
-      });
+      );
     }
 
     const existingUser = await db
       .select()
       .from(user)
-      .where(eq(user.email, googleUser.email))
+      .where(eq(user.email, facebookUser.email))
       .then((res) => res.at(0));
 
     if (existingUser) {
@@ -83,19 +73,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         .from(oauthAccount)
         .where(
           and(
-            eq(oauthAccount.providerId, googleUser.sub),
-            eq(oauthAccount.provider, 'google'),
+            eq(oauthAccount.providerId, facebookUser.id),
+            eq(oauthAccount.provider, 'facebook'),
           ),
         )
         .then((res) => res.at(0));
 
       if (!existingOauthAccount) {
         await db.transaction(async (tx) => {
+          if (!facebookUser.email) {
+            tx.rollback();
+            return;
+          }
           await tx.insert(oauthAccount).values({
-            provider: 'google',
-            providerId: googleUser.sub,
+            provider: 'facebook',
+            providerId: facebookUser.id,
             userId: existingUser.id,
-            email: googleUser.email,
+            email: facebookUser.email,
           });
         });
       }
@@ -112,18 +106,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       const userId = ulid();
 
       await db.transaction(async (tx) => {
+        if (!facebookUser.email) {
+          tx.rollback();
+          return;
+        }
         await tx.insert(user).values({
           id: userId,
-          name: googleUser.name,
-          email: googleUser.email,
-          image: googleUser.picture,
+          name: facebookUser.name,
+          email: facebookUser.email,
+          image: facebookUser.picture.data.url,
+          emailVerified: true,
         });
 
         await tx.insert(oauthAccount).values({
-          provider: 'google',
-          providerId: googleUser.sub,
+          provider: 'facebook',
+          providerId: facebookUser.id,
           userId,
-          email: googleUser.email,
+          email: facebookUser.email,
         });
       });
 
@@ -143,7 +142,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         : 'http://localhost:3000/auth/sign-in/',
     );
   } catch (error) {
-    return NextResponse.json('Something went wrong with google oauth', {
+    console.log(JSON.stringify(error));
+    return NextResponse.json('Something went wrong with facebook oauth', {
       status: 500,
     });
   }

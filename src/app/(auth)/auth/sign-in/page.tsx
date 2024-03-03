@@ -1,18 +1,14 @@
-import { GoogleIcon, FacebookIcon } from '@/components/Svgs/icons';
-import SignInButton from './SignInButton';
-import bgImage from './sign-in-bg.jpg';
-import Image from 'next/image';
-import SignInFormWrapper from './SignInFormWrapper';
-import { auth } from '@/auth';
-import { redirect } from 'next/navigation';
+import OauthSignInButton from '@/components/auth/OauthSignInButton';
+import SignInCredentialsForm from '@/components/auth/SignInCredentialsForm';
+import { validateRequest } from '@/lib/server/auth';
 import { SearchParamsServer } from '@/lib/types/common';
 import { SignInPageErrorParam } from '@auth/core/types';
 import { ShieldAlert } from 'lucide-react';
 import { Metadata } from 'next';
-import { Argon2id } from 'oslo/password';
-import { validateRequest } from '@/lib/server/auth';
-import Link from 'next/link';
+import Image from 'next/image';
 import SignOutButton from './SignOutButton';
+import Link from 'next/link';
+import { cn } from '@/lib/util';
 
 const signinErrors: Record<SignInPageErrorParam | 'default', string> = {
   default: 'Unable to sign in.',
@@ -48,36 +44,51 @@ const SignInPage = async ({
   const auth = await validateRequest();
 
   return (
-    <main className="relative grid max-w-screen-xl gap-4 rounded-main bg-primary-0 p-4 shadow md:grid-cols-[1fr_1.2fr] lg:grid-cols-[1.3fr_1fr]">
-      <div className="absolute">
+    <main
+      className={cn(
+        'relative h-[calc(100dvh-var(--screen-padding)*2)] w-full rounded-main',
+        'grid grid-cols-[1fr_1fr]',
+      )}
+    >
+      <div className="absolute z-50">
         <p>{JSON.stringify(auth)}</p>
         <SignOutButton />
       </div>
-      <div className="hidden overflow-hidden rounded-main shadow-inner md:block">
-        <Image
-          src={bgImage}
-          className="max-w-full object-cover"
-          alt="Some neutral color T-shirts on a hanger."
-          priority
-        />
-      </div>
-      <div className="min-h-[20rem] p-2 sm:min-h-0 sm:p-8">
-        <div className="relative flex h-full w-full flex-col justify-center gap-12 sm:gap-8">
-          {errorMessage && (
-            <div className="absolute left-0 top-0 grid grid-cols-[auto_1fr] gap-2 rounded-xl bg-red-100 py-2 pl-3 pr-4 text-sm text-red-800">
-              <span className="pt-0.5">
-                <ShieldAlert className="h-6 w-6 opacity-70" />
-              </span>
-              <p>{errorMessage}</p>
-            </div>
-          )}
-          <div className="flex flex-col gap-1">
-            <h1 className="text-3xl font-semibold">Get inside Verve</h1>
-            <p className="text-primary-400">{`Don't keep your dream wardrobe waiting!`}</p>
+
+      <div className="relative flex h-full w-full flex-col items-center justify-center rounded-main bg-primary-0 shadow-sm">
+        {errorMessage && (
+          <div className="absolute left-0 top-0 grid grid-cols-[auto_1fr] gap-2 rounded-xl bg-red-100 py-2 pl-3 pr-4 text-sm text-red-800">
+            <span className="pt-0.5">
+              <ShieldAlert className="h-6 w-6 opacity-70" />
+            </span>
+            <p>{errorMessage}</p>
           </div>
-          <SignInFormWrapper />
+        )}
+        <div className="w-full max-w-sm">
+          <div className="mb-16">
+            <h1 className="mb-2 text-3xl font-semibold">
+              Login
+              <span className="text-lg font-medium text-primary-300">
+                &nbsp;&nbsp;To Verve
+              </span>
+            </h1>
+            <p className="text-lg text-primary-400">{`Don't keep your dream wardrobe waiting!`}</p>
+          </div>
+          <SignInCredentialsForm />
+
+          <div className="relative my-10 w-full">
+            <p className="relative z-20 mx-auto w-max bg-primary-0 px-2 text-sm font-semibold uppercase text-primary-300">
+              Or
+            </p>
+            <div className="absolute left-0 top-1/2 z-10 h-px w-full -translate-y-1/2 bg-primary-200"></div>
+          </div>
+          <div className="grid gap-y-4">
+            <OauthSignInButton provider="google" />
+            <OauthSignInButton provider="facebook" />
+          </div>
         </div>
       </div>
+      <div className="hidden overflow-hidden rounded-main md:block"></div>
     </main>
   );
 };

@@ -5,6 +5,7 @@ import Geist from './_fonts/geist/font';
 import { Toaster } from '@/components/UI/Toaster';
 import ScreenBlocker from '@/components/ScreenBlocker';
 import { cn } from '@/lib/util';
+import Provider from '@/lib/provider/provider';
 
 export const metadata: Metadata = {
   title: 'Verve Styles - Cloth Store',
@@ -32,9 +33,11 @@ export default function RootLayout({
           '[--nav-height:4rem]',
         )}
       >
-        {children}
-        <Toaster />
-        {/* <ScreenBlocker /> */}
+        <Provider>
+          {children}
+          <Toaster />
+          {/* <ScreenBlocker /> */}
+        </Provider>
       </body>
     </html>
   );

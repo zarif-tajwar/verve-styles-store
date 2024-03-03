@@ -4,6 +4,7 @@ import {
   timestamp,
   boolean,
   primaryKey,
+  integer,
 } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
@@ -18,11 +19,9 @@ export const user = pgTable('user', {
 
 export const emailVerification = pgTable('email_verification', {
   id: text('id').primaryKey(),
-  code: text('code').notNull(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
+  code: integer('code').notNull(),
   email: text('email').notNull(),
+  ip: text('ip').notNull(),
   expiresAt: timestamp('expires_at', {
     withTimezone: true,
     mode: 'date',

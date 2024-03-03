@@ -5,7 +5,7 @@ import NextTopLoader from 'nextjs-toploader';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Provider>
+    <>
       <NextTopLoader
         // color="#a4a4a4"
         showSpinner={false}
@@ -17,6 +17,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Navbar />
       {children}
       <Footer />
-    </Provider>
+    </>
   );
 }

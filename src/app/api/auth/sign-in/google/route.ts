@@ -6,6 +6,8 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  console.log('OAUTH CALLED');
+
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
 
