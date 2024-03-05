@@ -30,6 +30,19 @@ export const emailVerification = pgTable('email_verification', {
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
+export const passwordResetToken = pgTable('password_reset_token', {
+  id: text('id').primaryKey(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  expiresAt: timestamp('expires_at', {
+    withTimezone: true,
+    mode: 'date',
+  }).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
 export const session = pgTable('session', {
   id: text('id').primaryKey(),
   userId: text('user_id')

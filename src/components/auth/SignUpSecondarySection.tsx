@@ -1,17 +1,15 @@
 'use client';
 
 import { useSignUpStore } from '@/lib/store/auth';
-import { cn } from '@/lib/util';
 import OauthSignInButton from './OauthSignInButton';
 import SignInLink from './SignInLink';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const SignUpSecondarySection = () => {
   const formStep = useSignUpStore((store) => store.step);
 
   return (
     formStep === 'emailAndFullname' && (
-      <div className="animate-out fade-out-0">
+      <div>
         <p className="text-sm text-primary-300">
           Already have an account?&nbsp;
           <SignInLink className="text-sm font-medium text-primary-400 underline underline-offset-1 hover:text-primary-900">

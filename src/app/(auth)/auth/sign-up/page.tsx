@@ -15,7 +15,7 @@ const SignupPage = async () => {
     <main
       className={cn(
         'relative h-[calc(100dvh-var(--screen-padding)*2)] w-full rounded-main',
-        'grid grid-cols-[1fr_1fr]',
+        // 'grid grid-cols-[1fr_1fr]',
       )}
     >
       <div className="absolute z-50">
@@ -38,7 +38,7 @@ const SignupPage = async () => {
           <SignUpSecondarySection />
         </div>
       </div>
-      <div className="hidden overflow-hidden rounded-main md:block"></div>
+      {/* <div className="hidden overflow-hidden rounded-main md:block"></div> */}
     </main>
   );
 };

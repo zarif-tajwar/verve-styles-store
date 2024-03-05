@@ -5,6 +5,7 @@ import { db } from '../db';
 import {
   credentialsAccount,
   emailVerification,
+  passwordResetToken,
   user,
 } from '../db/schema/auth2';
 import { CustomError } from '../errors/custom-error';
@@ -16,6 +17,8 @@ import {
   SignUpCredentialsFormSchema,
   SignUpCredentialsFormStepSchemas,
   ValidateEmailVerificationSchema,
+  getPasswordResetLinkSchema,
+  passwordResetSchema,
 } from '../validation/auth';
 import { actionClient } from './safe-action';
 import { Argon2id } from 'oslo/password';
@@ -27,6 +30,7 @@ import { z } from 'zod';
 import { ulid } from 'ulidx';
 import { genRandomInt } from '../util';
 import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
+import { generateId } from 'lucia';
 
 // import { signIn, signOut } from '@/auth';
 // import 'server-only';
@@ -228,54 +232,6 @@ export const validateEmailVerificationAction = actionClient(
   },
 );
 
-export const signUpCredentialsAction = actionClient(
-  SignUpCredentialsFormSchema,
-  async (values) => {
-    const existingUser = await db
-      .select()
-      .from(user)
-      .where(eq(user.email, values.email))
-      .then((res) => res[0]);
-
-    if (existingUser) {
-      throw new CustomError('This email is already registered!');
-    }
-
-    const userId = ulid();
-    const hashedPassword = await new Argon2id().hash(values.password);
-
-    const createdUser = await db.transaction(async (tx) => {
-      const createdUser = await tx
-        .insert(user)
-        .values({ id: userId, email: values.email, name: values.fullName })
-        .returning()
-        .then((res) => res.at(0));
-
-      await tx.insert(credentialsAccount).values({ userId, hashedPassword });
-
-      return createdUser;
-    });
-
-    if (!createdUser) {
-      throw new CustomError('Something went wrong while creating the account!');
-    }
-
-    const session = await lucia.createSession(createdUser.id, {});
-    const sessionCookie = lucia.createSessionCookie(session.id);
-
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes,
-    );
-
-    return { success: true };
-  },
-);
-// export const signInCredentialsAction = async (
-//   values: CredentialsFormSchemaType,
-// ) => {};
-
 export const signOutAction = actionClient(z.object({}), async () => {
   const { session } = await validateRequest();
   if (!session) {
@@ -306,5 +262,102 @@ export const oauthSignInAction = actionClient(
     redirect(
       `/api/auth/sign-in/${provider}${searchParams.size > 0 ? `?${searchParams.toString()}` : ''}`,
     );
+  },
+);
+
+export const getPasswordResetLinkAction = actionClient(
+  getPasswordResetLinkSchema,
+  async ({ email }) => {
+    const existingUser = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, email))
+      .then((res) => res.at(0));
+
+    if (!existingUser) {
+      throw new CustomError('There is no account registered with this email.');
+    }
+
+    const tokenId = generateId(40);
+
+    const createdTokenData = await db.transaction(async (tx) => {
+      return await tx
+        .insert(passwordResetToken)
+        .values({
+          id: tokenId,
+          userId: existingUser.id,
+          expiresAt: createDate(new TimeSpan(10, 'h')),
+        })
+        .returning()
+        .then((res) => res.at(0));
+    });
+
+    if (!createdTokenData) {
+      throw new CustomError('Something went wrong!');
+    }
+
+    return { success: true };
+  },
+);
+
+export const passwordResetAction = actionClient(
+  passwordResetSchema,
+  async (values) => {
+    const referer = headers().get('referer');
+
+    if (!referer) {
+      throw new CustomError('Something went wrong!');
+    }
+
+    const url = new URL(referer);
+
+    const resetTokenId = url.pathname.slice(url.pathname.lastIndexOf('/') + 1);
+
+    const resetTokenData = await db
+      .select()
+      .from(passwordResetToken)
+      .where(eq(passwordResetToken.id, resetTokenId))
+      .then((res) => res.at(0));
+
+    if (!resetTokenData) {
+      throw new CustomError('Invalid reset token');
+    }
+
+    if (!isWithinExpirationDate(resetTokenData.expiresAt)) {
+      throw new CustomError(
+        'Your password reset token has been expired. Please go through the reset process again.',
+      );
+    }
+
+    const existingCredentialAccount = await db
+      .select()
+      .from(credentialsAccount)
+      .where(eq(credentialsAccount.userId, resetTokenData.userId))
+      .then((res) => res.at(0));
+
+    const hashedPassword = await new Argon2id().hash(values.password);
+
+    if (existingCredentialAccount) {
+      await db.transaction(async (tx) => {
+        await tx
+          .update(credentialsAccount)
+          .set({ hashedPassword, updatedAt: new Date() })
+          .where(eq(credentialsAccount.userId, resetTokenData.userId));
+      });
+    } else {
+      await db.transaction(async (tx) => {
+        await tx
+          .insert(credentialsAccount)
+          .values({ userId: resetTokenData.userId, hashedPassword });
+      });
+    }
+
+    await db.transaction(async (tx) => {
+      await tx
+        .delete(passwordResetToken)
+        .where(eq(passwordResetToken.userId, resetTokenData.userId));
+    });
+
+    return { success: true };
   },
 );

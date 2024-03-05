@@ -21,6 +21,7 @@ import {
   FormMessage,
   PasswordInput,
 } from '../UI/Form';
+import Spinner from '../UI/Spinner';
 
 const SignInCredentialsForm = () => {
   const form = useForm<CredentialsFormSchemaType>({
@@ -91,7 +92,7 @@ const SignInCredentialsForm = () => {
             size={'md'}
             type="submit"
           >
-            Sign In
+            {!form.formState.isSubmitting ? `Sign In` : <Spinner size={20} />}
           </Button>
         </form>
       </Form>
@@ -104,10 +105,10 @@ const SignInCredentialsForm = () => {
         </Link>
 
         <Link
-          href={'/auth/sign-up'}
+          href={'/auth/reset-password'}
           className="text-sm font-medium text-primary-400 underline underline-offset-1 hover:text-primary-900"
         >
-          Forgot Password?
+          Forgotten Password?
         </Link>
       </div>
     </div>

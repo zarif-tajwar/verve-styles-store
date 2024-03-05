@@ -24,8 +24,13 @@ import {
 } from '../UI/Form';
 import Spinner from '../UI/Spinner';
 import { errorToast, successToast } from '../UI/Toaster';
+import { CheckCircleIcon } from '@heroicons/react/16/solid';
+import { cn } from '@/lib/util';
+import { useRouter } from 'next/navigation';
 
 const SignUpCredentialsForm = () => {
+  const router = useRouter();
+
   const formNameAndEmail = useForm<
     z.infer<typeof SignUpCredentialsFormStepSchemas.nameAndEmail>
   >({
@@ -99,7 +104,7 @@ const SignUpCredentialsForm = () => {
       return;
     }
 
-    successToast('Successfully created your account!');
+    router.push('/shop');
   };
 
   return (
@@ -249,6 +254,7 @@ const SignUpCredentialsForm = () => {
               <FormField
                 name="code"
                 control={formVerificationCode.control}
+                disabled={formVerificationCode.formState.isSubmitSuccessful}
                 render={({ field: { onChange, ...rest } }) => {
                   return (
                     <FormItem>
@@ -272,7 +278,12 @@ const SignUpCredentialsForm = () => {
             </div>
             <Button
               roundness={'lg'}
-              className="w-full text-sm font-medium"
+              className={cn(
+                'w-full gap-2 text-sm font-medium',
+                !formVerificationCode.formState.isSubmitting &&
+                  formVerificationCode.formState.isSubmitSuccessful &&
+                  'pointer-events-none cursor-default bg-emerald-500 text-primary-0 hover:bg-emerald-500 hover:text-primary-0',
+              )}
               size={'md'}
               type="submit"
               disabled={formVerificationCode.formState.isSubmitting}
@@ -280,7 +291,16 @@ const SignUpCredentialsForm = () => {
               {formVerificationCode.formState.isSubmitting && (
                 <Spinner size={20} />
               )}
-              {!formVerificationCode.formState.isSubmitting && 'Submit'}
+              {!formVerificationCode.formState.isSubmitting &&
+                !formVerificationCode.formState.isSubmitSuccessful &&
+                'Submit'}
+              {!formVerificationCode.formState.isSubmitting &&
+                formVerificationCode.formState.isSubmitSuccessful && (
+                  <>
+                    <CheckCircleIcon className="size-4" />
+                    Success
+                  </>
+                )}
             </Button>
           </form>
         </Form>

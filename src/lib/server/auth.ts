@@ -7,9 +7,12 @@ import { lucia } from '@/auth2';
 import { redirect } from 'next/navigation';
 import { authCookieNames } from '../constants/auth';
 import { db } from '@/lib/db';
-import { user } from '../db/schema/auth2';
+import { passwordResetToken, user } from '../db/schema/auth2';
 import { CustomError } from '../errors/custom-error';
 import { eq } from 'drizzle-orm';
+import { wait } from '../util';
+import { z } from 'zod';
+import { isWithinExpirationDate } from 'oslo';
 
 export const validateRequest = cache(
   async (): Promise<
@@ -87,4 +90,27 @@ export const isEmailAlreadyRegistered = async (email: string) => {
   if (existingUser) return true;
 
   return false;
+};
+
+export const getPasswordResetTokenInfo = async ({
+  tokenId,
+}: {
+  tokenId: string;
+}) => {
+  const data = await db
+    .select()
+    .from(passwordResetToken)
+    .innerJoin(user, eq(passwordResetToken.userId, user.id))
+    .where(eq(passwordResetToken.id, tokenId))
+    .then((res) => res.at(0));
+
+  if (!data) {
+    return;
+  }
+
+  if (!isWithinExpirationDate(data.password_reset_token.expiresAt)) {
+    return { expired: true };
+  }
+
+  return { name: data.user.name, email: data.user.email };
 };
