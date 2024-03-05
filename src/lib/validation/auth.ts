@@ -75,3 +75,16 @@ export const SignUpCredentialsFormStepSchemas = {
       .max(999999999999, 'Invalid verification code'),
   }),
 };
+
+export const SendEmailVerificationSchema = z.intersection(
+  SignUpCredentialsFormStepSchemas.nameAndEmail.pick({ email: true }),
+  SignUpCredentialsFormStepSchemas.password,
+);
+
+export const ValidateEmailVerificationSchema = z.intersection(
+  z.intersection(
+    SignUpCredentialsFormStepSchemas.nameAndEmail,
+    SignUpCredentialsFormStepSchemas.password,
+  ),
+  SignUpCredentialsFormStepSchemas.verificationCode,
+);

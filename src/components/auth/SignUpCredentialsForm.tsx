@@ -2,10 +2,15 @@
 
 import { Button } from '@/components/UI/Button';
 import { Input } from '@/components/UI/Input';
+import {
+  isEmailAlreadyRegisteredAction,
+  sendEmailVerificationAction,
+  validateEmailVerificationAction,
+} from '@/lib/actions/auth';
 import { useSignUpStore } from '@/lib/store/auth';
 import { SignUpCredentialsFormStepSchemas } from '@/lib/validation/auth';
+import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -17,8 +22,8 @@ import {
   FormMessage,
   PasswordInput,
 } from '../UI/Form';
-import { wait } from '@/lib/util';
 import Spinner from '../UI/Spinner';
+import { errorToast, successToast } from '../UI/Toaster';
 
 const SignUpCredentialsForm = () => {
   const formNameAndEmail = useForm<
@@ -26,6 +31,7 @@ const SignUpCredentialsForm = () => {
   >({
     resolver: zodResolver(SignUpCredentialsFormStepSchemas.nameAndEmail),
   });
+
   const formPassword = useForm<
     z.infer<typeof SignUpCredentialsFormStepSchemas.password>
   >({
@@ -43,26 +49,61 @@ const SignUpCredentialsForm = () => {
   const onSubmitNameAndEmail = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.nameAndEmail>,
   ) => {
-    await wait(500);
-    setFormStep('password');
+    const result = await isEmailAlreadyRegisteredAction({
+      email: values.email,
+    });
+
+    if (result.serverError) {
+      formNameAndEmail.setError('email', {
+        message: 'This email is already registered!',
+      });
+      return;
+    }
+
+    if (!result.data) setFormStep('password');
   };
 
   const onSubmitPassword = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.password>,
   ) => {
-    await wait(500);
+    const result = await sendEmailVerificationAction({
+      email: formNameAndEmail.getValues('email'),
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+    });
+
+    if (result.serverError) {
+      errorToast('Something went wrong!');
+      return;
+    }
+
     setFormStep('verificationCode');
   };
 
   const onSubmitVerificationCode = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.verificationCode>,
   ) => {
-    await wait(500);
-    setFormStep('emailAndFullname');
+    const { email, fullName } = formNameAndEmail.getValues();
+    const { password, confirmPassword } = formPassword.getValues();
+
+    const result = await validateEmailVerificationAction({
+      code: values.code,
+      email,
+      fullName,
+      password,
+      confirmPassword,
+    });
+
+    if (result.serverError) {
+      formVerificationCode.setError('code', { message: result.serverError });
+      return;
+    }
+
+    successToast('Successfully created your account!');
   };
 
   return (
-    <div>
+    <>
       {currentFormStep === 'emailAndFullname' && (
         <Form {...formNameAndEmail}>
           <form
@@ -131,7 +172,7 @@ const SignUpCredentialsForm = () => {
             onSubmit={formPassword.handleSubmit(onSubmitPassword)}
             className="mb-8 flex flex-col justify-end gap-y-8"
           >
-            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
+            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6 duration-500 animate-in fade-in-0 slide-in-from-bottom-10">
               <FormField
                 name="password"
                 control={formPassword.control}
@@ -195,7 +236,16 @@ const SignUpCredentialsForm = () => {
             )}
             className="mb-8 flex flex-col justify-end gap-y-8"
           >
-            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
+            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-8 duration-500 animate-in fade-in-0 slide-in-from-bottom-10">
+              <div className="grid grid-cols-[auto_1fr] gap-2 rounded-lg border border-primary-100 p-3">
+                <InformationCircleIcon className="size-5 translate-y-0.5" />
+                <p>
+                  A verification code has been sent to{' '}
+                  <span className="whitespace-nowrap font-semibold text-primary-900 underline">
+                    {formNameAndEmail.getValues('email') ?? 'your email'}
+                  </span>
+                </p>
+              </div>
               <FormField
                 name="code"
                 control={formVerificationCode.control}
@@ -227,25 +277,15 @@ const SignUpCredentialsForm = () => {
               type="submit"
               disabled={formVerificationCode.formState.isSubmitting}
             >
-              {!formVerificationCode.formState.isSubmitting ? (
-                `Submit`
-              ) : (
+              {formVerificationCode.formState.isSubmitting && (
                 <Spinner size={20} />
               )}
+              {!formVerificationCode.formState.isSubmitting && 'Submit'}
             </Button>
           </form>
         </Form>
       )}
-      <p className="text-sm text-primary-300">
-        Already have an account?&nbsp;
-        <Link
-          href={'/auth/sign-in'}
-          className="text-sm font-medium text-primary-400 underline underline-offset-1 hover:text-primary-900"
-        >
-          Sign In
-        </Link>
-      </p>
-    </div>
+    </>
   );
 };
 

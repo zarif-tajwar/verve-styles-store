@@ -6,6 +6,7 @@ import { Toaster } from '@/components/UI/Toaster';
 import ScreenBlocker from '@/components/ScreenBlocker';
 import { cn } from '@/lib/util';
 import Provider from '@/lib/provider/provider';
+import NextTopLoader from 'nextjs-toploader';
 
 export const metadata: Metadata = {
   title: 'Verve Styles - Cloth Store',
@@ -34,6 +35,13 @@ export default function RootLayout({
         )}
       >
         <Provider>
+          <NextTopLoader
+            showSpinner={false}
+            shadow={false}
+            height={5}
+            template={`<div class="bar animate-pulse from-primary-200 to-primary-300 !bg-gradient-to-r" role="bar"><div class="peg"></div></div>
+        <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>`}
+          />
           {children}
           <Toaster />
           {/* <ScreenBlocker /> */}

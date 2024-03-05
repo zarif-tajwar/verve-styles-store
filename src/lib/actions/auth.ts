@@ -1,23 +1,32 @@
 'use server';
 
-import { eq } from 'drizzle-orm';
+import { and, eq, lt, gt } from 'drizzle-orm';
 import { db } from '../db';
-import { credentialsAccount, user } from '../db/schema/auth2';
+import {
+  credentialsAccount,
+  emailVerification,
+  user,
+} from '../db/schema/auth2';
 import { CustomError } from '../errors/custom-error';
 import {
   CredentialsFormSchema,
   CredentialsFormSchemaType,
   OauthSignInActionSchema,
+  SendEmailVerificationSchema,
   SignUpCredentialsFormSchema,
+  SignUpCredentialsFormStepSchemas,
+  ValidateEmailVerificationSchema,
 } from '../validation/auth';
 import { actionClient } from './safe-action';
 import { Argon2id } from 'oslo/password';
 import { lucia } from '@/auth2';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { validateRequest } from '../server/auth';
+import { isEmailAlreadyRegistered, validateRequest } from '../server/auth';
 import { z } from 'zod';
 import { ulid } from 'ulidx';
+import { genRandomInt } from '../util';
+import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
 
 // import { signIn, signOut } from '@/auth';
 // import 'server-only';
@@ -82,6 +91,143 @@ export const signInCredentialsAction = actionClient(
     redirect('/');
   },
 );
+
+export const isEmailAlreadyRegisteredAction = actionClient(
+  z.object({ email: z.string().email() }),
+  async ({ email }) => {
+    const isRegistered = await isEmailAlreadyRegistered(email);
+    if (isRegistered)
+      throw new CustomError('This email is already registered!');
+
+    return false;
+  },
+);
+
+export const sendEmailVerificationAction = actionClient(
+  SendEmailVerificationSchema,
+  async ({ email, password, confirmPassword }) => {
+    const isRegistered = await isEmailAlreadyRegistered(email);
+
+    if (isRegistered)
+      throw new CustomError('This email is already registered!');
+
+    if (password !== confirmPassword) {
+      throw new CustomError(`Passwords don't match!`);
+    }
+
+    const verificationCode = genRandomInt(100000, 999999);
+    const expiresAt = createDate(new TimeSpan(5, 'm'));
+    const ip = headers().get('x-forwarded-for')?.split(',').at(0);
+
+    if (!ip) {
+      throw new CustomError('Something went wrong with your network!');
+    }
+
+    const isVerificationCodeAlreadySent = await db
+      .select()
+      .from(emailVerification)
+      .where(
+        and(
+          eq(emailVerification.email, email),
+          gt(emailVerification.expiresAt, new Date()),
+          eq(emailVerification.ip, ip),
+        ),
+      )
+      .then((res) => res.at(0));
+
+    if (isVerificationCodeAlreadySent) {
+      return { success: true, message: 'Verification code was already sent!' };
+    }
+
+    const createdData = await db.transaction(async (tx) => {
+      return await tx
+        .insert(emailVerification)
+        .values({ id: ulid(), code: verificationCode, expiresAt, ip, email })
+        .returning()
+        .then((res) => res.at(0));
+    });
+
+    return { success: true };
+  },
+);
+
+export const validateEmailVerificationAction = actionClient(
+  ValidateEmailVerificationSchema,
+  async (values) => {
+    if (values.password !== values.confirmPassword) {
+      throw new CustomError(
+        `Your input password and confirmation password did not match!`,
+      );
+    }
+
+    const isRegistered = await isEmailAlreadyRegistered(values.email);
+    if (isRegistered)
+      throw new CustomError('This email is already registered!');
+
+    const ip = headers().get('x-forwarded-for')?.split(',').at(0);
+
+    if (!ip) {
+      throw new CustomError('Something went wrong with your network!');
+    }
+
+    const verificationResult = await db
+      .select()
+      .from(emailVerification)
+      .where(
+        and(
+          eq(emailVerification.code, values.code),
+          eq(emailVerification.email, values.email),
+        ),
+      )
+      .then((res) => res.at(0));
+
+    if (!verificationResult) {
+      throw new CustomError('Incorrect verification code!');
+    }
+
+    if (!isWithinExpirationDate(verificationResult.expiresAt)) {
+      throw new CustomError('This verification code has been expired!');
+    }
+
+    if (verificationResult.ip !== ip) {
+      throw new CustomError('Please try again with the same network!');
+    }
+
+    const userId = ulid();
+    const hashedPassword = await new Argon2id().hash(values.password);
+
+    await db.transaction(async (tx) => {
+      await tx
+        .delete(emailVerification)
+        .where(
+          and(
+            eq(emailVerification.code, values.code),
+            eq(emailVerification.email, values.email),
+          ),
+        );
+      await tx.insert(user).values({
+        id: userId,
+        name: values.fullName,
+        email: values.email,
+        emailVerified: true,
+      });
+      await tx.insert(credentialsAccount).values({
+        userId,
+        hashedPassword,
+      });
+    });
+
+    const session = await lucia.createSession(userId, {});
+    const sessionCookie = lucia.createSessionCookie(session.id);
+
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes,
+    );
+  },
+);
+
 export const signUpCredentialsAction = actionClient(
   SignUpCredentialsFormSchema,
   async (values) => {

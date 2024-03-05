@@ -152,12 +152,11 @@ const PasswordInput = React.forwardRef<
         {...props}
       ></Input>
       <Button
-        className="absolute right-1.5 top-1/2 size-7 -translate-y-1/2 text-primary-300 hover:text-primary-400"
+        className="absolute right-1.5 top-1/2 size-7 -translate-y-1/2 rounded-md text-primary-300 hover:text-primary-400"
         onClick={() => setVisible(!isVisible)}
         type="button"
         variant={'secondary'}
         size={'square'}
-        roundness={'lg'}
       >
         {isVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
       </Button>
@@ -176,7 +175,7 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn('text-sm text-primary-400', className)}
+      className={cn('text-sm font-medium text-primary-400', className)}
       {...props}
     />
   );

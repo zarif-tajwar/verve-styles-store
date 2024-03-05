@@ -10,7 +10,7 @@ export default async function AuthLayout({
   // if (session) redirect('/shop');
 
   return (
-    <div className="bg-primary-50 p-[var(--screen-padding)] [--screen-padding:0.5rem] sm:[--screen-padding:1rem]">
+    <div className="bg-primary-100 p-[var(--screen-padding)] [--screen-padding:0.5rem] sm:[--screen-padding:1rem]">
       {children}
     </div>
   );

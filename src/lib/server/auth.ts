@@ -6,6 +6,10 @@ import { cookies } from 'next/headers';
 import { lucia } from '@/auth2';
 import { redirect } from 'next/navigation';
 import { authCookieNames } from '../constants/auth';
+import { db } from '@/lib/db';
+import { user } from '../db/schema/auth2';
+import { CustomError } from '../errors/custom-error';
+import { eq } from 'drizzle-orm';
 
 export const validateRequest = cache(
   async (): Promise<
@@ -71,4 +75,16 @@ export const getRedirectCookie = () => {
   }
 
   return redirectAfterPathname;
+};
+
+export const isEmailAlreadyRegistered = async (email: string) => {
+  const existingUser = await db
+    .select()
+    .from(user)
+    .where(eq(user.email, email))
+    .then((res) => res[0]);
+
+  if (existingUser) return true;
+
+  return false;
 };
