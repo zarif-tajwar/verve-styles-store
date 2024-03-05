@@ -1,6 +1,14 @@
 'use server';
 
-import { and, eq, lt, gt } from 'drizzle-orm';
+import { lucia } from '@/auth2';
+import { and, eq, gt } from 'drizzle-orm';
+import { generateId } from 'lucia';
+import { cookies, headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
+import { Argon2id } from 'oslo/password';
+import { ulid } from 'ulidx';
+import { z } from 'zod';
 import { db } from '../db';
 import {
   credentialsAccount,
@@ -8,29 +16,19 @@ import {
   passwordResetToken,
   user,
 } from '../db/schema/auth2';
+import { sendEmail } from '../email';
 import { CustomError } from '../errors/custom-error';
+import { isEmailAlreadyRegistered, validateRequest } from '../server/auth';
+import { genRandomInt } from '../util';
 import {
   CredentialsFormSchema,
-  CredentialsFormSchemaType,
   OauthSignInActionSchema,
   SendEmailVerificationSchema,
-  SignUpCredentialsFormSchema,
-  SignUpCredentialsFormStepSchemas,
   ValidateEmailVerificationSchema,
   getPasswordResetLinkSchema,
   passwordResetSchema,
 } from '../validation/auth';
 import { actionClient } from './safe-action';
-import { Argon2id } from 'oslo/password';
-import { lucia } from '@/auth2';
-import { cookies, headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { isEmailAlreadyRegistered, validateRequest } from '../server/auth';
-import { z } from 'zod';
-import { ulid } from 'ulidx';
-import { genRandomInt } from '../util';
-import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
-import { generateId } from 'lucia';
 
 // import { signIn, signOut } from '@/auth';
 // import 'server-only';
@@ -73,7 +71,6 @@ export const signInCredentialsAction = actionClient(
       throw new CustomError('Incorrect email or password!');
     }
 
-    // const isPasswordValid = true;
     const isPasswordValid = await new Argon2id().verify(
       userData.password,
       values.password,
@@ -150,6 +147,22 @@ export const sendEmailVerificationAction = actionClient(
         .returning()
         .then((res) => res.at(0));
     });
+
+    if (!createdData) {
+      throw new Error('Something went wrong!');
+    }
+
+    try {
+      await sendEmail({
+        emailOptions: {
+          to: [email],
+          subject: `Email Signup Verification Code - Verve Styles`,
+          html: `<p>${createdData.code}</p>`,
+        },
+      });
+    } catch (err) {
+      console.log(JSON.stringify(err), 'EMAIL ERROR');
+    }
 
     return { success: true };
   },
@@ -295,6 +308,24 @@ export const getPasswordResetLinkAction = actionClient(
     if (!createdTokenData) {
       throw new CustomError('Something went wrong!');
     }
+
+    const origin = headers().get('origin');
+
+    if (!origin) {
+      throw new CustomError('Something went wrong!');
+    }
+
+    const resetLinkUrl = `${origin}/auth/reset-password/${createdTokenData.id}`;
+
+    const html = `<a href="${resetLinkUrl}">Reset Password</a>`;
+
+    await sendEmail({
+      emailOptions: {
+        to: email,
+        subject: `Reset Password - Verve Styles`,
+        html,
+      },
+    });
 
     return { success: true };
   },

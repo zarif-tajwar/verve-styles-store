@@ -1,7 +1,7 @@
-import { validateRequest } from '@/lib/server/auth';
-import SignOutButton from '../sign-in/SignOutButton';
-import { cn } from '@/lib/util';
 import GetPasswordResetLinkForm from '@/components/auth/GetPasswordResetLinkForm';
+import { validateRequest } from '@/lib/server/auth';
+import { cn } from '@/lib/util';
+import SignOutButton from '../sign-in/SignOutButton';
 
 const ResetPasswordPage = async () => {
   const auth = await validateRequest();
@@ -17,7 +17,6 @@ const ResetPasswordPage = async () => {
         <p>{JSON.stringify(auth)}</p>
         <SignOutButton />
       </div>
-
       <div className="relative flex h-full w-full flex-col items-center justify-center rounded-main bg-primary-0 shadow-sm">
         <div className="w-full max-w-sm">
           <div className="mb-16">
