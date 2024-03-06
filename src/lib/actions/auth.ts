@@ -27,12 +27,14 @@ import {
   ValidateEmailVerificationSchema,
   getPasswordResetLinkSchema,
   passwordResetSchema,
+  redirectAfterSchema,
 } from '../validation/auth';
 import { actionClient } from './safe-action';
 import { renderAsync } from '@react-email/render';
 import React from 'react';
 import { ResetPassword } from '@/components/mail/ResetPassword';
 import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
+import { revalidatePath } from 'next/cache';
 
 // import { signIn, signOut } from '@/auth';
 // import 'server-only';
@@ -58,7 +60,7 @@ import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
 // );
 
 export const signInCredentialsAction = actionClient(
-  CredentialsFormSchema,
+  CredentialsFormSchema.extend({ redirectAfter: redirectAfterSchema }),
   async (values) => {
     const userData = await db
       .select({
@@ -93,18 +95,32 @@ export const signInCredentialsAction = actionClient(
       sessionCookie.attributes,
     );
 
-    redirect('/');
+    redirect(
+      values.redirectAfter
+        ? `${decodeURIComponent(values.redirectAfter)}`
+        : '/shop',
+    );
   },
 );
 
 export const isEmailAlreadyRegisteredAction = actionClient(
   z.object({ email: z.string().email() }),
   async ({ email }) => {
-    const isRegistered = await isEmailAlreadyRegistered(email);
-    if (isRegistered)
-      throw new CustomError('This email is already registered!');
+    const existingUser = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, email))
+      .leftJoin(credentialsAccount, eq(user.id, credentialsAccount.userId))
+      .then((res) => res[0]);
 
-    return false;
+    if (!existingUser) return false;
+
+    if (existingUser.credentials_account)
+      throw new CustomError('This email is already registered!');
+    else
+      throw new CustomError(
+        'This email is already registered with a social account! Login with the social account that you used before.',
+      );
   },
 );
 
@@ -178,7 +194,10 @@ export const sendEmailVerificationAction = actionClient(
 );
 
 export const validateEmailVerificationAction = actionClient(
-  ValidateEmailVerificationSchema,
+  z.intersection(
+    ValidateEmailVerificationSchema,
+    z.object({ redirectAfter: redirectAfterSchema }),
+  ),
   async (values) => {
     if (values.password !== values.confirmPassword) {
       throw new CustomError(
@@ -251,6 +270,12 @@ export const validateEmailVerificationAction = actionClient(
       sessionCookie.value,
       sessionCookie.attributes,
     );
+
+    redirect(
+      values.redirectAfter
+        ? `${decodeURIComponent(values.redirectAfter)}`
+        : '/shop',
+    );
   },
 );
 
@@ -260,6 +285,8 @@ export const signOutAction = actionClient(z.object({}), async () => {
     throw new CustomError(`You're already logged out!`);
   }
 
+  const referer = headers().get('referer');
+
   await lucia.invalidateSession(session.id);
 
   const sessionCookie = lucia.createBlankSessionCookie();
@@ -268,6 +295,11 @@ export const signOutAction = actionClient(z.object({}), async () => {
     sessionCookie.value,
     sessionCookie.attributes,
   );
+
+  if (referer) {
+    revalidatePath(referer);
+    return;
+  }
 
   redirect('/auth/sign-in');
 });

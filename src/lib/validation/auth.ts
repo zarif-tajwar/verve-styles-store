@@ -105,3 +105,5 @@ export const passwordResetSchema = z
     message: `Passwords don't match`,
     path: ['confirmPassword'],
   });
+
+export const redirectAfterSchema = z.string().nullable();

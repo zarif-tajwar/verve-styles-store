@@ -8,9 +8,12 @@ import {
   validateEmailVerificationAction,
 } from '@/lib/actions/auth';
 import { useSignUpStore } from '@/lib/store/auth';
+import { cn } from '@/lib/util';
 import { SignUpCredentialsFormStepSchemas } from '@/lib/validation/auth';
+import { CheckCircleIcon } from '@heroicons/react/16/solid';
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -23,13 +26,12 @@ import {
   PasswordInput,
 } from '../UI/Form';
 import Spinner from '../UI/Spinner';
-import { errorToast, successToast } from '../UI/Toaster';
-import { CheckCircleIcon } from '@heroicons/react/16/solid';
-import { cn } from '@/lib/util';
-import { useRouter } from 'next/navigation';
+import { errorToast } from '../UI/Toaster';
 
 const SignUpCredentialsForm = () => {
-  const router = useRouter();
+  const currentSearchParamsObject = useSearchParams();
+
+  let redirectAfter = currentSearchParamsObject.get('redirectAfter');
 
   const formNameAndEmail = useForm<
     z.infer<typeof SignUpCredentialsFormStepSchemas.nameAndEmail>
@@ -58,9 +60,9 @@ const SignUpCredentialsForm = () => {
       email: values.email,
     });
 
-    if (result.serverError) {
+    if (result.serverError && result.serverError.includes('email')) {
       formNameAndEmail.setError('email', {
-        message: 'This email is already registered!',
+        message: result.serverError,
       });
       return;
     }
@@ -98,14 +100,15 @@ const SignUpCredentialsForm = () => {
       fullName,
       password,
       confirmPassword,
+      redirectAfter,
     });
+
+    if (!result) return;
 
     if (result.serverError) {
       formVerificationCode.setError('code', { message: result.serverError });
       return;
     }
-
-    router.push('/shop');
   };
 
   return (

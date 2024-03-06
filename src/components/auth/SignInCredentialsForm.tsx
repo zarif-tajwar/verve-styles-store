@@ -9,8 +9,8 @@ import {
   CredentialsFormSchemaType,
 } from '@/lib/validation/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -22,22 +22,34 @@ import {
   PasswordInput,
 } from '../UI/Form';
 import Spinner from '../UI/Spinner';
+import { useSearchParams } from 'next/navigation';
 
 const SignInCredentialsForm = () => {
   const form = useForm<CredentialsFormSchemaType>({
     resolver: zodResolver(CredentialsFormSchema),
   });
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
-  const { execute } = useAction(signInCredentialsAction, {
-    onError: (error) => {
-      if (error.serverError) {
-        errorToast(error.serverError, { position: 'top-center' });
-      }
-    },
-  });
+  const deactivateForm = form.formState.isSubmitting || loginSuccess;
+
+  const currentSearchParamsObject = useSearchParams();
+
+  let redirectAfter = currentSearchParamsObject.get('redirectAfter');
 
   const onSubmit = async (values: CredentialsFormSchemaType) => {
-    await execute(values);
+    const result = await signInCredentialsAction({
+      ...values,
+      redirectAfter,
+    });
+
+    if (!result) return;
+
+    if (result.serverError) {
+      errorToast(result.serverError, { position: 'top-center' });
+      return;
+    }
+
+    setLoginSuccess(true);
   };
 
   return (
@@ -51,6 +63,7 @@ const SignInCredentialsForm = () => {
             <FormField
               name="email"
               control={form.control}
+              disabled={deactivateForm}
               render={({ field }) => {
                 return (
                   <FormItem>
@@ -70,6 +83,7 @@ const SignInCredentialsForm = () => {
             <FormField
               name="password"
               control={form.control}
+              disabled={deactivateForm}
               render={({ field }) => {
                 return (
                   <FormItem>
@@ -91,7 +105,7 @@ const SignInCredentialsForm = () => {
             className="w-full text-sm font-medium"
             size={'md'}
             type="submit"
-            disabled={form.formState.isSubmitting}
+            disabled={deactivateForm}
           >
             {!form.formState.isSubmitting ? `Sign In` : <Spinner size={20} />}
           </Button>
@@ -99,7 +113,10 @@ const SignInCredentialsForm = () => {
       </Form>
       <div className="flex justify-between">
         <Link
-          href={'/auth/sign-up'}
+          href={{
+            pathname: '/auth/sign-up',
+            query: { ...(redirectAfter ? { redirectAfter } : {}) },
+          }}
           className="text-sm font-medium text-primary-400 underline underline-offset-1 hover:text-primary-900"
         >
           Create Account
