@@ -75,6 +75,7 @@ const SignUpCredentialsForm = () => {
       email: formNameAndEmail.getValues('email'),
       password: values.password,
       confirmPassword: values.confirmPassword,
+      fullName: formNameAndEmail.getValues('fullName'),
     });
 
     if (result.serverError) {

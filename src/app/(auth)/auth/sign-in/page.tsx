@@ -9,6 +9,7 @@ import Image from 'next/image';
 import SignOutButton from './SignOutButton';
 import Link from 'next/link';
 import { cn } from '@/lib/util';
+import TempButton from './TempButton';
 
 const signinErrors: Record<SignInPageErrorParam | 'default', string> = {
   default: 'Unable to sign in.',
@@ -53,6 +54,7 @@ const SignInPage = async ({
       <div className="absolute z-50">
         <p>{JSON.stringify(auth)}</p>
         <SignOutButton />
+        <TempButton/>
       </div>
 
       <div className="relative flex h-full w-full flex-col items-center justify-center rounded-main bg-primary-0 shadow-sm">

@@ -74,7 +74,7 @@ export const SignUpCredentialsFormStepSchemas = {
 };
 
 export const SendEmailVerificationSchema = z.intersection(
-  SignUpCredentialsFormStepSchemas.nameAndEmail.pick({ email: true }),
+  SignUpCredentialsFormStepSchemas.nameAndEmail,
   SignUpCredentialsFormStepSchemas.password,
 );
 

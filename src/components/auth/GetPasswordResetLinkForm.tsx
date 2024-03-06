@@ -69,6 +69,7 @@ const GetPasswordResetLinkForm = () => {
               className={'w-full text-sm font-medium'}
               size={'md'}
               type="submit"
+              disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && <Spinner size={20} />}
               {!form.formState.isSubmitting && 'Submit'}

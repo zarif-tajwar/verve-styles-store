@@ -29,6 +29,10 @@ import {
   passwordResetSchema,
 } from '../validation/auth';
 import { actionClient } from './safe-action';
+import { renderAsync } from '@react-email/render';
+import React from 'react';
+import { ResetPassword } from '@/components/mail/ResetPassword';
+import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
 
 // import { signIn, signOut } from '@/auth';
 // import 'server-only';
@@ -106,7 +110,7 @@ export const isEmailAlreadyRegisteredAction = actionClient(
 
 export const sendEmailVerificationAction = actionClient(
   SendEmailVerificationSchema,
-  async ({ email, password, confirmPassword }) => {
+  async ({ email, password, confirmPassword, fullName }) => {
     const isRegistered = await isEmailAlreadyRegistered(email);
 
     if (isRegistered)
@@ -152,17 +156,22 @@ export const sendEmailVerificationAction = actionClient(
       throw new Error('Something went wrong!');
     }
 
-    try {
-      await sendEmail({
-        emailOptions: {
-          to: [email],
-          subject: `Email Signup Verification Code - Verve Styles`,
-          html: `<p>${createdData.code}</p>`,
-        },
-      });
-    } catch (err) {
-      console.log(JSON.stringify(err), 'EMAIL ERROR');
-    }
+    const firstName = fullName.split(' ').at(0)!;
+
+    const html = await renderAsync(
+      React.createElement(EmailVerificaionCode, {
+        firstName,
+        code: createdData.code,
+      }),
+    );
+
+    await sendEmail({
+      emailOptions: {
+        to: email,
+        subject: `Verification Code - Verve Styles`,
+        html,
+      },
+    });
 
     return { success: true };
   },
@@ -317,7 +326,14 @@ export const getPasswordResetLinkAction = actionClient(
 
     const resetLinkUrl = `${origin}/auth/reset-password/${createdTokenData.id}`;
 
-    const html = `<a href="${resetLinkUrl}">Reset Password</a>`;
+    const firstName = existingUser.name.split(' ').at(0)!;
+
+    const html = await renderAsync(
+      React.createElement(ResetPassword, {
+        firstName,
+        resetLink: resetLinkUrl,
+      }),
+    );
 
     await sendEmail({
       emailOptions: {
@@ -365,6 +381,8 @@ export const passwordResetAction = actionClient(
       .from(credentialsAccount)
       .where(eq(credentialsAccount.userId, resetTokenData.userId))
       .then((res) => res.at(0));
+
+    await lucia.invalidateUserSessions(resetTokenData.userId);
 
     const hashedPassword = await new Argon2id().hash(values.password);
 

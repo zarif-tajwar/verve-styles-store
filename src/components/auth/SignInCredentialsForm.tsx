@@ -36,8 +36,8 @@ const SignInCredentialsForm = () => {
     },
   });
 
-  const onSubmit = (values: CredentialsFormSchemaType) => {
-    execute(values);
+  const onSubmit = async (values: CredentialsFormSchemaType) => {
+    await execute(values);
   };
 
   return (
@@ -91,6 +91,7 @@ const SignInCredentialsForm = () => {
             className="w-full text-sm font-medium"
             size={'md'}
             type="submit"
+            disabled={form.formState.isSubmitting}
           >
             {!form.formState.isSubmitting ? `Sign In` : <Spinner size={20} />}
           </Button>
