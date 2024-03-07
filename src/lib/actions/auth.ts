@@ -1,7 +1,7 @@
 'use server';
 
 import { lucia } from '@/auth2';
-import { and, eq, gt } from 'drizzle-orm';
+import { and, eq, gt, isNull, lt, ne, or } from 'drizzle-orm';
 import { generateId } from 'lucia';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -14,11 +14,12 @@ import {
   credentialsAccount,
   emailVerification,
   passwordResetToken,
+  session as sessionTable,
   user,
 } from '../db/schema/auth2';
 import { sendEmail } from '../email';
 import { CustomError } from '../errors/custom-error';
-import { isEmailAlreadyRegistered, validateRequest } from '../server/auth';
+import { getUserByEmail, validateRequest } from '../server/auth';
 import { genRandomInt } from '../util';
 import {
   CredentialsFormSchema,
@@ -36,29 +37,6 @@ import { ResetPassword } from '@/components/mail/ResetPassword';
 import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
 import { revalidatePath } from 'next/cache';
 
-// import { signIn, signOut } from '@/auth';
-// import 'server-only';
-// import { z } from 'zod';
-
-// export { signIn as signInAction, signOut as signOutAction };
-
-// const SimulateSignInActionSchema = z.object({});
-
-// export const simulateSignInAction = async () => {
-//   await signIn('credentials', { redirectTo: '/shop', redirect: true }, {});
-// };
-
-// export const simulateSignInAction = actionClient(
-//   SimulateSignInActionSchema,
-//   async () => {
-//     try {
-//       await signIn('credentials', { redirectTo: '/shop', redirect: true }, {});
-//     } catch (error) {
-//       throw new CustomError(error.message);
-//     }
-//   },
-// );
-
 export const signInCredentialsAction = actionClient(
   CredentialsFormSchema.extend({ redirectAfter: redirectAfterSchema }),
   async (values) => {
@@ -67,6 +45,7 @@ export const signInCredentialsAction = actionClient(
         userId: user.id,
         email: user.email,
         password: credentialsAccount.hashedPassword,
+        role: user.role,
       })
       .from(user)
       .innerJoin(credentialsAccount, eq(user.id, credentialsAccount.userId))
@@ -127,9 +106,9 @@ export const isEmailAlreadyRegisteredAction = actionClient(
 export const sendEmailVerificationAction = actionClient(
   SendEmailVerificationSchema,
   async ({ email, password, confirmPassword, fullName }) => {
-    const isRegistered = await isEmailAlreadyRegistered(email);
+    const existingUser = await getUserByEmail(email);
 
-    if (isRegistered)
+    if (existingUser)
       throw new CustomError('This email is already registered!');
 
     if (password !== confirmPassword) {
@@ -205,7 +184,7 @@ export const validateEmailVerificationAction = actionClient(
       );
     }
 
-    const isRegistered = await isEmailAlreadyRegistered(values.email);
+    const isRegistered = await getUserByEmail(values.email);
     if (isRegistered)
       throw new CustomError('This email is already registered!');
 
@@ -325,11 +304,15 @@ export const getPasswordResetLinkAction = actionClient(
     const existingUser = await db
       .select()
       .from(user)
-      .where(eq(user.email, email))
+      .where(and(eq(user.email, email)))
       .then((res) => res.at(0));
 
     if (!existingUser) {
       throw new CustomError('There is no account registered with this email.');
+    }
+
+    if (existingUser.role !== 'USER') {
+      throw new CustomError('Not allowed!');
     }
 
     const tokenId = generateId(40);
@@ -440,5 +423,51 @@ export const passwordResetAction = actionClient(
     });
 
     return { success: true };
+  },
+);
+
+export const simulateLoginAsTestUserAction = actionClient(
+  z.object({ redirectAfter: redirectAfterSchema }),
+  async (values) => {
+    const allTestUsers = await db
+      .select()
+      .from(user)
+      .where(
+        and(
+          eq(user.role, 'TEST_USER'),
+          or(
+            isNull(sessionTable.userId),
+            lt(sessionTable.expiresAt, new Date()),
+          ),
+        ),
+      )
+      .leftJoin(sessionTable, eq(user.id, sessionTable.userId));
+
+    if (allTestUsers.length < 1) {
+      throw new CustomError('No test users were found!');
+    }
+
+    const selectedTestUser = allTestUsers.at(
+      genRandomInt(0, allTestUsers.length - 1),
+    );
+
+    if (!selectedTestUser) {
+      throw new CustomError('No test users were found!');
+    }
+
+    const session = await lucia.createSession(selectedTestUser.user.id, {});
+    const sessionCookie = lucia.createSessionCookie(session.id);
+
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes,
+    );
+
+    redirect(
+      values.redirectAfter
+        ? `${decodeURIComponent(values.redirectAfter)}`
+        : '/shop',
+    );
   },
 );

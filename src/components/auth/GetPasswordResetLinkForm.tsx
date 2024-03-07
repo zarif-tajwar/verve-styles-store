@@ -36,9 +36,6 @@ const GetPasswordResetLinkForm = () => {
     <div>
       {!form.formState.isSubmitSuccessful && (
         <Form {...form}>
-          <p className="mb-2 text-balance font-medium text-primary-500">
-            Enter the email address associated with your Verve account.
-          </p>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="mb-8 flex flex-col justify-end gap-y-8"
@@ -50,7 +47,7 @@ const GetPasswordResetLinkForm = () => {
                 render={({ field }) => {
                   return (
                     <FormItem>
-                      <FormLabel className="sr-only">Email Address</FormLabel>
+                      <FormLabel>Account Email Address</FormLabel>
                       <FormControl>
                         <Input
                           type="text"
@@ -85,8 +82,7 @@ const GetPasswordResetLinkForm = () => {
             <span className="whitespace-nowrap font-semibold text-primary-900 underline">
               {form.getValues('email') ?? 'your email'}
             </span>
-            ) for a password reset link. Follow the instructions to reset your
-            password.
+            ) for a password reset link.
           </p>
         </div>
       )}

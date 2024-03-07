@@ -1,7 +1,7 @@
 import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './lib/db';
-import { session, user } from './lib/db/schema/auth2';
+import { UserSelect, session, user } from './lib/db/schema/auth2';
 import { Facebook, Google } from 'arctic';
 import { env } from './lib/validation/env.mjs';
 
@@ -16,7 +16,11 @@ export const lucia = new Lucia(authAdapter, {
     },
   },
   getUserAttributes: (attributes) => {
-    return { email: attributes.email, name: attributes.name };
+    return {
+      email: attributes.email,
+      name: attributes.name,
+      role: attributes.role,
+    };
   },
   getSessionAttributes: (attributes) => {
     // return { email: attributes.email };
@@ -36,6 +40,7 @@ declare module 'lucia' {
 interface DatabaseUserAttributes {
   email: string;
   name: string;
+  role: UserSelect['role'];
 }
 
 interface DatabaseSessionAttributes {

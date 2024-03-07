@@ -80,16 +80,12 @@ export const getRedirectCookie = () => {
   return redirectAfterPathname;
 };
 
-export const isEmailAlreadyRegistered = async (email: string) => {
-  const existingUser = await db
+export const getUserByEmail = async (email: string) => {
+  return await db
     .select()
     .from(user)
     .where(eq(user.email, email))
     .then((res) => res[0]);
-
-  if (existingUser) return true;
-
-  return false;
 };
 
 export const getPasswordResetTokenInfo = async ({

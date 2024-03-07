@@ -414,6 +414,13 @@
       "when": 1709625178135,
       "tag": "0058_nebulous_susan_delgado",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "5",
+      "when": 1709757748906,
+      "tag": "0059_careless_ego",
+      "breakpoints": true
     }
   ]
 }

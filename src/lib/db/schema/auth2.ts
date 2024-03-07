@@ -13,9 +13,13 @@ export const user = pgTable('user', {
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').default(false),
   image: text('image'),
+  role: text('role', { enum: ['USER', 'ADMIN', 'TEST_USER'] }).default('USER'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
+
+export type UserSelect = typeof user.$inferSelect;
+export type UserInsert = typeof user.$inferInsert;
 
 export const emailVerification = pgTable('email_verification', {
   id: text('id').primaryKey(),
