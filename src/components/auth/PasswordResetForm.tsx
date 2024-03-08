@@ -21,6 +21,7 @@ import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { wait } from '@/lib/util';
 import { useRouter } from 'next/navigation';
 import { useAction } from 'next-safe-action/hooks';
+import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
 
 const PasswordResetForm = () => {
   const router = useRouter();
@@ -49,64 +50,63 @@ const PasswordResetForm = () => {
     <div>
       {status !== 'hasSucceeded' && (
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mb-8 flex flex-col justify-end gap-y-8"
-          >
-            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
-              <FormField
-                name="password"
-                control={form.control}
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>New Password</FormLabel>
-                      <FormControl>
-                        <PasswordInput
-                          type="password"
-                          placeholder="Enter your new password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-              <FormField
-                name="confirmPassword"
-                control={form.control}
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Confirm New Password</FormLabel>
-                      <FormControl>
-                        <PasswordInput
-                          type="password"
-                          placeholder="Re-enter your new password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
-            <Button
-              roundness={'lg'}
-              className="w-full text-sm font-medium"
-              size={'md'}
-              type="submit"
-              disabled={status === 'executing'}
-            >
-              {status !== 'executing' ? (
-                `Change Password`
-              ) : (
-                <Spinner size={20} />
-              )}
-            </Button>
-          </form>
+          <AuthFormWrapper asChild>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <AuthFormFieldsWrapper>
+                <FormField
+                  name="password"
+                  control={form.control}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>New Password</FormLabel>
+                        <FormControl>
+                          <PasswordInput
+                            type="password"
+                            placeholder="Enter your new password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
+                  name="confirmPassword"
+                  control={form.control}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Confirm New Password</FormLabel>
+                        <FormControl>
+                          <PasswordInput
+                            type="password"
+                            placeholder="Re-enter your new password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </AuthFormFieldsWrapper>
+              <Button
+                roundness={'lg'}
+                className="w-full text-sm font-medium"
+                size={'md'}
+                type="submit"
+                disabled={status === 'executing'}
+              >
+                {status !== 'executing' ? (
+                  `Change Password`
+                ) : (
+                  <Spinner size={20} />
+                )}
+              </Button>
+            </form>
+          </AuthFormWrapper>
         </Form>
       )}
       {status === 'hasSucceeded' && (

@@ -23,6 +23,7 @@ import {
 } from '../UI/Form';
 import Spinner from '../UI/Spinner';
 import { useSearchParams } from 'next/navigation';
+import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
 
 const SignInCredentialsForm = () => {
   const form = useForm<CredentialsFormSchemaType>({
@@ -55,61 +56,60 @@ const SignInCredentialsForm = () => {
   return (
     <div>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="mb-8 flex flex-col justify-end gap-y-8"
-        >
-          <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
-            <FormField
-              name="email"
-              control={form.control}
+        <AuthFormWrapper asChild>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <AuthFormFieldsWrapper>
+              <FormField
+                name="email"
+                control={form.control}
+                disabled={deactivateForm}
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="Enter your email address"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <FormField
+                name="password"
+                control={form.control}
+                disabled={deactivateForm}
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <PasswordInput
+                          placeholder="Enter your password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            </AuthFormFieldsWrapper>
+            <Button
+              roundness={'lg'}
+              className="w-full text-sm font-medium"
+              size={'md'}
+              type="submit"
               disabled={deactivateForm}
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Email Address</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Enter your email address"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-            <FormField
-              name="password"
-              control={form.control}
-              disabled={deactivateForm}
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        placeholder="Enter your password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-          </div>
-          <Button
-            roundness={'lg'}
-            className="w-full text-sm font-medium"
-            size={'md'}
-            type="submit"
-            disabled={deactivateForm}
-          >
-            {!form.formState.isSubmitting ? `Sign In` : <Spinner size={20} />}
-          </Button>
-        </form>
+            >
+              {!form.formState.isSubmitting ? `Sign In` : <Spinner size={20} />}
+            </Button>
+          </form>
+        </AuthFormWrapper>
       </Form>
       <div className="flex justify-between">
         <Link

@@ -27,6 +27,7 @@ import {
 } from '../UI/Form';
 import Spinner from '../UI/Spinner';
 import { errorToast } from '../UI/Toaster';
+import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
 
 const SignUpCredentialsForm = () => {
   const currentSearchParamsObject = useSearchParams();
@@ -115,198 +116,201 @@ const SignUpCredentialsForm = () => {
     <>
       {currentFormStep === 'emailAndFullname' && (
         <Form {...formNameAndEmail}>
-          <form
-            onSubmit={formNameAndEmail.handleSubmit(onSubmitNameAndEmail)}
-            className="mb-8 flex flex-col justify-end gap-y-8"
-          >
-            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6">
-              <FormField
-                name="fullName"
-                control={formNameAndEmail.control}
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Your name</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="Enter your name"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-              <FormField
-                name="email"
-                control={formNameAndEmail.control}
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Email Address</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="Enter your email address"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
-            <Button
-              roundness={'lg'}
-              className="w-full text-sm font-medium"
-              size={'md'}
-              type="submit"
-              disabled={formNameAndEmail.formState.isSubmitting}
+          <AuthFormWrapper asChild>
+            <form
+              onSubmit={formNameAndEmail.handleSubmit(onSubmitNameAndEmail)}
+              className="mb-8 flex flex-col justify-end gap-y-8"
             >
-              {!formNameAndEmail.formState.isSubmitting ? (
-                `Continue`
-              ) : (
-                <Spinner size={20} />
-              )}
-            </Button>
-          </form>
+              <AuthFormFieldsWrapper>
+                <FormField
+                  name="fullName"
+                  control={formNameAndEmail.control}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Your name</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Enter your name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
+                  name="email"
+                  control={formNameAndEmail.control}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Enter your email address"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </AuthFormFieldsWrapper>
+              <Button
+                roundness={'lg'}
+                className="w-full text-sm font-medium"
+                size={'md'}
+                type="submit"
+                disabled={formNameAndEmail.formState.isSubmitting}
+              >
+                {!formNameAndEmail.formState.isSubmitting ? (
+                  `Continue`
+                ) : (
+                  <Spinner size={20} />
+                )}
+              </Button>
+            </form>
+          </AuthFormWrapper>
         </Form>
       )}
       {currentFormStep === 'password' && (
         <Form {...formPassword}>
-          <form
-            onSubmit={formPassword.handleSubmit(onSubmitPassword)}
-            className="mb-8 flex flex-col justify-end gap-y-8"
-          >
-            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-6 duration-500 animate-in fade-in-0 slide-in-from-bottom-10">
-              <FormField
-                name="password"
-                control={formPassword.control}
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <PasswordInput
-                          type="password"
-                          placeholder="Enter your password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-              <FormField
-                name="confirmPassword"
-                control={formPassword.control}
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Confirm password</FormLabel>
-                      <FormControl>
-                        <PasswordInput
-                          type="password"
-                          placeholder="Re-enter your password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
-            <Button
-              roundness={'lg'}
-              className="w-full text-sm font-medium"
-              size={'md'}
-              type="submit"
-              disabled={formPassword.formState.isSubmitting}
-            >
-              {!formPassword.formState.isSubmitting ? (
-                `Continue`
-              ) : (
-                <Spinner size={20} />
-              )}
-            </Button>
-          </form>
+          <AuthFormWrapper asChild>
+            <form onSubmit={formPassword.handleSubmit(onSubmitPassword)}>
+              <AuthFormFieldsWrapper revealAnimate>
+                <FormField
+                  name="password"
+                  control={formPassword.control}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <PasswordInput
+                            type="password"
+                            placeholder="Enter your password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
+                  name="confirmPassword"
+                  control={formPassword.control}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Confirm password</FormLabel>
+                        <FormControl>
+                          <PasswordInput
+                            type="password"
+                            placeholder="Re-enter your password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </AuthFormFieldsWrapper>
+              <Button
+                roundness={'lg'}
+                className="w-full text-sm font-medium"
+                size={'md'}
+                type="submit"
+                disabled={formPassword.formState.isSubmitting}
+              >
+                {!formPassword.formState.isSubmitting ? (
+                  `Continue`
+                ) : (
+                  <Spinner size={20} />
+                )}
+              </Button>
+            </form>
+          </AuthFormWrapper>
         </Form>
       )}
       {currentFormStep === 'verificationCode' && (
         <Form {...formVerificationCode}>
-          <form
-            onSubmit={formVerificationCode.handleSubmit(
-              onSubmitVerificationCode,
-            )}
-            className="mb-8 flex flex-col justify-end gap-y-8"
-          >
-            <div className="flex min-h-[13.5rem] flex-col justify-center gap-y-8 duration-500 animate-in fade-in-0 slide-in-from-bottom-10">
-              <div className="grid grid-cols-[auto_1fr] gap-2 rounded-lg border border-primary-100 p-3">
-                <InformationCircleIcon className="size-5 translate-y-0.5" />
-                <p>
-                  A verification code has been sent to{' '}
-                  <span className="whitespace-nowrap font-semibold text-primary-900 underline">
-                    {formNameAndEmail.getValues('email') ?? 'your email'}
-                  </span>
-                </p>
-              </div>
-              <FormField
-                name="code"
-                control={formVerificationCode.control}
-                disabled={formVerificationCode.formState.isSubmitSuccessful}
-                render={({ field: { onChange, ...rest } }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Verification Code</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter your verification code"
-                          type="number"
-                          onChange={(e) => {
-                            const value = Number.parseInt(e.target.value);
-                            onChange(value || undefined);
-                          }}
-                          {...rest}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
-            <Button
-              roundness={'lg'}
-              className={cn(
-                'w-full gap-2 text-sm font-medium',
-                !formVerificationCode.formState.isSubmitting &&
-                  formVerificationCode.formState.isSubmitSuccessful &&
-                  'pointer-events-none cursor-default bg-emerald-500 text-primary-0 hover:bg-emerald-500 hover:text-primary-0',
+          <AuthFormWrapper asChild>
+            <form
+              onSubmit={formVerificationCode.handleSubmit(
+                onSubmitVerificationCode,
               )}
-              size={'md'}
-              type="submit"
-              disabled={formVerificationCode.formState.isSubmitting}
             >
-              {formVerificationCode.formState.isSubmitting && (
-                <Spinner size={20} />
-              )}
-              {!formVerificationCode.formState.isSubmitting &&
-                !formVerificationCode.formState.isSubmitSuccessful &&
-                'Submit'}
-              {!formVerificationCode.formState.isSubmitting &&
-                formVerificationCode.formState.isSubmitSuccessful && (
-                  <>
-                    <CheckCircleIcon className="size-4" />
-                    Success
-                  </>
+              <AuthFormFieldsWrapper revealAnimate noMinHeight>
+                <div className="grid grid-cols-[auto_1fr] gap-2 rounded-lg border border-primary-100 p-3">
+                  <InformationCircleIcon className="size-5 translate-y-0.5" />
+                  <p>
+                    A verification code has been sent to{' '}
+                    <span className="whitespace-nowrap font-semibold text-primary-900 underline">
+                      {formNameAndEmail.getValues('email') ?? 'your email'}
+                    </span>
+                  </p>
+                </div>
+                <FormField
+                  name="code"
+                  control={formVerificationCode.control}
+                  disabled={formVerificationCode.formState.isSubmitSuccessful}
+                  render={({ field: { onChange, ...rest } }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Verification Code</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your verification code"
+                            type="number"
+                            onChange={(e) => {
+                              const value = Number.parseInt(e.target.value);
+                              onChange(value || undefined);
+                            }}
+                            {...rest}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </AuthFormFieldsWrapper>
+
+              <Button
+                roundness={'lg'}
+                className={cn(
+                  'w-full gap-2 text-sm font-medium',
+                  !formVerificationCode.formState.isSubmitting &&
+                    formVerificationCode.formState.isSubmitSuccessful &&
+                    'pointer-events-none cursor-default bg-emerald-500 text-primary-0 hover:bg-emerald-500 hover:text-primary-0',
                 )}
-            </Button>
-          </form>
+                size={'md'}
+                type="submit"
+                disabled={formVerificationCode.formState.isSubmitting}
+              >
+                {formVerificationCode.formState.isSubmitting && (
+                  <Spinner size={20} />
+                )}
+                {!formVerificationCode.formState.isSubmitting &&
+                  !formVerificationCode.formState.isSubmitSuccessful &&
+                  'Submit'}
+                {!formVerificationCode.formState.isSubmitting &&
+                  formVerificationCode.formState.isSubmitSuccessful && (
+                    <>
+                      <CheckCircleIcon className="size-4" />
+                      Success
+                    </>
+                  )}
+              </Button>
+            </form>
+          </AuthFormWrapper>
         </Form>
       )}
     </>

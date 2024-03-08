@@ -17,6 +17,7 @@ import {
 import { Input } from '../UI/Input';
 import Spinner from '../UI/Spinner';
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
+import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
 
 const GetPasswordResetLinkForm = () => {
   const form = useForm<z.infer<typeof getPasswordResetLinkSchema>>({
@@ -36,42 +37,41 @@ const GetPasswordResetLinkForm = () => {
     <div>
       {!form.formState.isSubmitSuccessful && (
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mb-8 flex flex-col justify-end gap-y-8"
-          >
-            <div className="flex flex-col justify-center gap-y-6">
-              <FormField
-                name="email"
-                control={form.control}
-                render={({ field }) => {
-                  return (
-                    <FormItem>
-                      <FormLabel>Account Email Address</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="Email address"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
-            <Button
-              roundness={'lg'}
-              className={'w-full text-sm font-medium'}
-              size={'md'}
-              type="submit"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting && <Spinner size={20} />}
-              {!form.formState.isSubmitting && 'Submit'}
-            </Button>
-          </form>
+          <AuthFormWrapper asChild>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <AuthFormFieldsWrapper noMinHeight>
+                <FormField
+                  name="email"
+                  control={form.control}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Account Email Address</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Email address"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </AuthFormFieldsWrapper>
+              <Button
+                roundness={'lg'}
+                className={'w-full text-sm font-medium'}
+                size={'md'}
+                type="submit"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting && <Spinner size={20} />}
+                {!form.formState.isSubmitting && 'Submit'}
+              </Button>
+            </form>
+          </AuthFormWrapper>
         </Form>
       )}
       {form.formState.isSubmitSuccessful && (

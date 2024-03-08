@@ -4,7 +4,7 @@ import OauthSignInButton from './OauthSignInButton';
 const AuthFooter = () => {
   return (
     <>
-      <div className="relative my-10 w-full">
+      <div className="relative my-8 w-full sm:my-10">
         <p className="relative z-20 mx-auto w-max bg-primary-0 px-2 text-sm font-semibold uppercase text-primary-300">
           Or
         </p>

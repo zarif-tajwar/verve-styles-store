@@ -38,7 +38,9 @@ const SignInLink = ({
     <Link
       href={{
         pathname: '/auth/sign-in',
-        query: { redirectAfter: redirectAfterLinkFinal },
+        query: {
+          ...(redirectAfter ? { redirectAfter: redirectAfterLinkFinal } : {}),
+        },
       }}
       {...props}
     >
