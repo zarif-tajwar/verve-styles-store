@@ -1,11 +1,12 @@
 import 'server-only';
 
-import { dedupedAuth } from '@/auth';
 import {
   and,
+  count,
   eq,
   ExtractTablesWithRelations,
   isNull,
+  or,
   SQL,
   sql,
 } from 'drizzle-orm';
@@ -14,20 +15,20 @@ import {
   NodePgQueryResultHKT,
 } from 'drizzle-orm/node-postgres';
 import { PgTransaction } from 'drizzle-orm/pg-core';
-import { Session } from 'next-auth';
-import { User } from 'next-auth/types';
+import { UserInsert } from '@/lib/db/schema/auth2';
+import { User } from 'lucia';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 import { db } from '../db';
-import { UserInsert, user as userTable } from '../db/schema/auth';
-import { cartItems, CartItemsSelect } from '../db/schema/cartItems';
+import { cartItems } from '../db/schema/cartItems';
 import { carts, CartsSelect } from '../db/schema/carts';
-import { productEntries } from '../db/schema/productEntries';
-import { products, ProductSelect } from '../db/schema/products';
-import { sizes, SizeSelect } from '../db/schema/sizes';
-import { decodeSingleSqid, encodeSingleSqid } from './sqids';
-import { productImages } from '../db/schema/productImages';
 import { clothing } from '../db/schema/clothing';
+import { productEntries } from '../db/schema/productEntries';
+import { productImages } from '../db/schema/productImages';
+import { products } from '../db/schema/products';
+import { sizes } from '../db/schema/sizes';
+import { auth } from './auth';
+import { decodeSingleSqid, encodeSingleSqid } from './sqids';
 
 export const createCart = async (
   dbInstance?:
@@ -72,101 +73,146 @@ export const getGuestUserCartId = async (createIfNotFound: boolean = false) => {
   }
 };
 
-export const getCartId = async (
-  session?: Session | null,
-  createIfNotFound: boolean = false,
-) => {
-  const authSession = session !== undefined ? session : await dedupedAuth();
+export const getCartId = cache(async (): Promise<CartsSelect['id'] | null> => {
+  const authObject = await auth();
 
-  let cartId = authSession?.user.cartId
-    ? decodeSingleSqid(authSession.user.cartId)
-    : undefined;
-
-  if (cartId) return cartId;
-
-  cartId = await getGuestUserCartId(createIfNotFound);
-
-  return cartId;
-};
-
-export const handleCartOnSignIn = async (user: User) => {
-  const encodedCartIdFromCookies = cookies().get('cartId')?.value;
-  let cartIdFromCookies = encodedCartIdFromCookies
-    ? decodeSingleSqid(encodedCartIdFromCookies)
-    : undefined;
-
-  await db.transaction(async (tx) => {
-    let userCartId: number | undefined = undefined;
-    const userCartIdDbCall = tx
+  if (authObject.user) {
+    const cartId = await db
       .select({ cartId: carts.id })
       .from(carts)
-      .innerJoin(userTable, eq(userTable.id, carts.userId))
-      .where(eq(userTable.id, user.id));
+      .where(eq(carts.userId, authObject.user.id))
+      .then((res) => res.at(0));
+
+    if (cartId) {
+      return cartId.cartId;
+    }
+  }
+
+  if (!authObject.user) {
+    const encodedCartIdFromCookies = cookies().get('cartId')?.value;
+    const cartIdFromCookies = encodedCartIdFromCookies
+      ? decodeSingleSqid(encodedCartIdFromCookies)
+      : null;
 
     if (cartIdFromCookies) {
-      const validateCookieCartDbCall = tx
+      const validatedCookiesCart = await db
         .select()
         .from(carts)
-        .where(eq(carts.id, cartIdFromCookies));
+        .where(and(eq(carts.id, cartIdFromCookies), isNull(carts.userId)))
+        .then((res) => res.at(0));
 
-      const [userCartIdData, validatedCartIdFromCookiesData] =
-        await Promise.all([userCartIdDbCall, validateCookieCartDbCall]);
-      if (userCartIdData) {
-        userCartId = userCartIdData.at(0)?.cartId;
+      if (!validatedCookiesCart) {
+        return null;
       }
-      if (validatedCartIdFromCookiesData) {
-        const validatedCookieCart = validatedCartIdFromCookiesData.at(0);
-        if (!validatedCookieCart) {
-          cartIdFromCookies = undefined;
-        }
-        if (
-          validatedCookieCart?.userId &&
-          validatedCookieCart.userId !== user.id
-        ) {
-          cartIdFromCookies = undefined;
-        }
-      }
-    } else {
-      userCartId = (await userCartIdDbCall)?.at(0)?.cartId;
-    }
 
-    if (userCartId && userCartId === cartIdFromCookies) {
-      cookies().delete('cartId');
-      tx.rollback();
-      return;
+      return cartIdFromCookies;
     }
+  }
 
-    if (cartIdFromCookies && userCartId !== cartIdFromCookies) {
-      const cookieCartItemsLength = (
+  return null;
+});
+
+export const handleCartOnSignIn = async (userId: User['id']) => {
+  const encodedCartIdFromCookies = cookies().get('cartId')?.value;
+  const cartIdFromCookies = encodedCartIdFromCookies
+    ? decodeSingleSqid(encodedCartIdFromCookies)
+    : null;
+
+  let shouldCreateNewCart = false;
+
+  if (cartIdFromCookies) {
+    const validatedCartResults = await db
+      .select({ cartId: carts.id, userId: carts.userId })
+      .from(carts)
+      .where(or(eq(carts.userId, userId), eq(carts.id, cartIdFromCookies)));
+
+    const validatedCookieCart = validatedCartResults.find(
+      (cart) => cart.cartId === cartIdFromCookies,
+    );
+
+    const validatedExistingUserCart = validatedCartResults.find(
+      (cart) => cart.userId === userId,
+    );
+
+    // if cookie cart exists and user does not exist
+    if (validatedCookieCart && !validatedExistingUserCart) {
+      await db.transaction(async (tx) => {
         await tx
-          .select()
-          .from(cartItems)
-          .where(eq(cartItems.cartId, cartIdFromCookies))
-      ).length;
+          .update(carts)
+          .set({ userId: userId })
+          .where(eq(carts.id, validatedCookieCart.cartId));
+      });
+    }
+    // if cookie cart doesnt exist and user does exist
+    if (!validatedCookieCart && validatedExistingUserCart) {
+      // do nothing
+    }
 
-      if (cookieCartItemsLength > 0) {
-        if (userCartId) await tx.delete(carts).where(eq(carts.id, userCartId));
+    // if cookie cart and user cart exists, and cookie cart is not from any user or its not the same as current users cartid
+    if (
+      validatedCookieCart &&
+      validatedExistingUserCart &&
+      !validatedCookieCart.userId &&
+      validatedCookieCart.cartId !== validatedExistingUserCart.cartId
+    ) {
+      const cookieCartCount = await db
+        .select({ count: count() })
+        .from(cartItems)
+        .where(eq(cartItems.cartId, validatedCookieCart.cartId))
+        .then((res) => res.at(0));
+
+      // if the local cookie cart has some items
+      if (cookieCartCount && cookieCartCount.count > 0) {
+        await db.transaction(async (tx) => {
+          const promises: Promise<unknown>[] = [];
+
+          promises.push(
+            tx
+              .delete(carts)
+              .where(eq(carts.id, validatedExistingUserCart.cartId)),
+          );
+          promises.push(
+            tx
+              .update(carts)
+              .set({ userId: userId })
+              .where(eq(carts.id, validatedCookieCart.cartId)),
+          );
+
+          await Promise.all(promises);
+        });
       }
-      await tx
-        .update(carts)
-        .set({ userId: user.id })
-        .where(eq(carts.id, cartIdFromCookies));
     }
 
-    if (!cartIdFromCookies && !userCartId) {
-      await tx.insert(carts).values({ userId: user.id });
+    if (!validatedCookieCart && !validatedExistingUserCart) {
+      shouldCreateNewCart = true;
     }
+  }
 
-    if (cookies().has('cartId')) cookies().delete('cartId');
-  });
+  if (!cartIdFromCookies) {
+    const existingUserCart = await db
+      .select({ cartId: carts.id, userId: carts.userId })
+      .from(carts)
+      .where(eq(carts.userId, userId))
+      .then((res) => res.at(0));
+
+    if (!existingUserCart) {
+      shouldCreateNewCart = true;
+    }
+  }
+
+  if (shouldCreateNewCart) {
+    await db.transaction(async (tx) => {
+      await tx.insert(carts).values({ userId: userId });
+    });
+  }
+
+  if (cookies().has('cartId')) cookies().delete('cartId');
 };
 
 export const getCartItems = async ({
   cartId,
-  isGuestFetcher,
 }: {
   cartId: CartsSelect['id'];
-  isGuestFetcher?: boolean;
 }) => {
   let conditionals: SQL[] = [
     eq(cartItems.cartId, cartId),
@@ -193,11 +239,6 @@ export const getCartItems = async ({
     .leftJoin(productImages, eq(products.id, productImages.productID))
     .$dynamic();
 
-  if (isGuestFetcher) {
-    query = query.innerJoin(carts, eq(carts.id, cartItems.cartId));
-    conditionals.push(isNull(carts.userId));
-  }
-
   query = query
     .where(and(...conditionals))
     .orderBy(sql`${cartItems.createdAt} DESC, ${cartItems.id} DESC`);
@@ -213,13 +254,11 @@ export const getCartItems = async ({
 export type FetchedCartItem = Awaited<ReturnType<typeof getCartItems>>[number];
 
 export const fetchCartItemsFromServerComp = cache(async () => {
-  const session = await dedupedAuth();
-  const cartId = await getCartId(session, true);
+  const cartId = await getCartId();
   if (!cartId) return;
 
   const cartItemsData = await getCartItems({
     cartId,
-    isGuestFetcher: !session,
   });
 
   return cartItemsData;

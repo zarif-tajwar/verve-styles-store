@@ -421,6 +421,20 @@
       "when": 1709757748906,
       "tag": "0059_careless_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "5",
+      "when": 1709900371093,
+      "tag": "0060_sparkling_tyrannus",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "5",
+      "when": 1709901540026,
+      "tag": "0061_purple_sebastian_shaw",
+      "breakpoints": true
     }
   ]
 }

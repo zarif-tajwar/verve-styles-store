@@ -2,7 +2,7 @@
 
 import { lucia } from '@/auth2';
 import { and, eq, gt, isNull, lt, ne, or } from 'drizzle-orm';
-import { generateId } from 'lucia';
+import { Session, generateId } from 'lucia';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
@@ -36,6 +36,7 @@ import React from 'react';
 import { ResetPassword } from '@/components/mail/ResetPassword';
 import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
 import { revalidatePath } from 'next/cache';
+import { handleCartOnSignIn } from '../server/cart';
 
 export const signInCredentialsAction = actionClient(
   CredentialsFormSchema.extend({ redirectAfter: redirectAfterSchema }),
@@ -65,7 +66,10 @@ export const signInCredentialsAction = actionClient(
       throw new CustomError('Incorrect email or password!');
     }
 
-    const session = await lucia.createSession(userData.userId, {});
+    const [_, session] = await Promise.all([
+      handleCartOnSignIn(userData.userId),
+      lucia.createSession(userData.userId, {}),
+    ]);
     const sessionCookie = lucia.createSessionCookie(session.id);
 
     cookies().set(
@@ -237,7 +241,11 @@ export const validateEmailVerificationAction = actionClient(
       });
     });
 
-    const session = await lucia.createSession(userId, {});
+    const [_, session] = await Promise.all([
+      handleCartOnSignIn(userId),
+      lucia.createSession(userId, {}),
+    ]);
+
     const sessionCookie = lucia.createSessionCookie(session.id);
 
     cookies().set(

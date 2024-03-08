@@ -83,11 +83,11 @@ export const useCartItemsMutations = ({
   const handleDelete = useCallback(async () => {
     if (refetchDelayAfterDeleteInMs > 0) {
       await Promise.all([
-        deleteMutation(cartItemId),
+        deleteMutation({ cartItemId }),
         wait(refetchDelayAfterDeleteInMs),
       ]);
     } else {
-      await deleteMutation(cartItemId);
+      await deleteMutation({ cartItemId });
     }
     queryClient.refetchQueries({ queryKey: CART_ITEM_DATA_QUERY_KEY });
   }, [cartItemId, deleteMutation, refetchDelayAfterDeleteInMs, queryClient]);

@@ -3,6 +3,7 @@ import { authCookieNames } from '@/lib/constants/auth';
 import { db } from '@/lib/db';
 import { oauthAccount, user } from '@/lib/db/schema/auth2';
 import { getRedirectCookie } from '@/lib/server/auth';
+import { handleCartOnSignIn } from '@/lib/server/cart';
 import { and, eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -94,7 +95,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
       }
 
-      const session = await lucia.createSession(existingUser.id, {});
+      const [_, session] = await Promise.all([
+        handleCartOnSignIn(existingUser.id),
+        lucia.createSession(existingUser.id, {}),
+      ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
       cookies().set(
@@ -126,7 +130,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
       });
 
-      const session = await lucia.createSession(userId, {});
+      const [_, session] = await Promise.all([
+        handleCartOnSignIn(userId),
+        lucia.createSession(userId, {}),
+      ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
       cookies().set(

@@ -1,41 +1,23 @@
-import { CartsSelect } from '@/lib/db/schema/carts';
-import { getCartItems, getGuestUserCartId } from '@/lib/server/cart';
-import { decodeSingleSqid } from '@/lib/server/sqids';
+import { getCartId, getCartItems } from '@/lib/server/cart';
 import { NextResponse } from 'next/server';
 
-export const GET = async () => {
-  return NextResponse.json({ data: [] });
-};
-// export const GET = auth(async function GET(req) {
-//   try {
-//     let cartId: CartsSelect['id'] | undefined = undefined;
+export async function GET() {
+  try {
+    const cartId = await getCartId();
 
-//     // if logged in
-//     if (req.auth?.user.cartId) {
-//       cartId = decodeSingleSqid(req.auth.user.cartId);
-//     }
+    if (!cartId) {
+      return NextResponse.json({ data: [] });
+    }
 
-//     // if guest user
-//     if (!req.auth) {
-//       cartId = await getGuestUserCartId(true);
-//     }
+    const cartItems = await getCartItems({
+      cartId,
+    });
 
-//     // if theres still no cart
-//     if (!cartId) {
-//       throw new Error();
-//     }
-
-//     const cartItems = await getCartItems({
-//       cartId,
-//       isGuestFetcher: !req.auth,
-//     });
-
-//     return NextResponse.json({ data: cartItems });
-//   } catch (error) {
-//     return NextResponse.json(
-//       // { message: error.message },
-//       { message: 'Something went wrong with the cart!' },
-//       { status: 500 },
-//     );
-//   }
-// });
+    return NextResponse.json({ data: cartItems });
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Something went wrong with the cart!' },
+      { status: 500 },
+    );
+  }
+}

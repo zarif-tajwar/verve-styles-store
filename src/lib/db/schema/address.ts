@@ -9,6 +9,7 @@ import {
 // import { user } from './auth';
 import { dummyUser } from './dummyUser';
 import { relations } from 'drizzle-orm';
+import { user } from './auth2';
 
 export const address = pgTable('address', {
   id: serial('id').primaryKey(),
@@ -20,7 +21,7 @@ export const address = pgTable('address', {
   type: varchar('type', { enum: ['not-relevant', 'home', 'office'] })
     .default('not-relevant')
     .notNull(),
-  userId: text('user_id'),
+  userId: text('user_id').references(() => user.id, { onDelete: 'cascade' }),
   dummyUserId: varchar('dummy_user_id').references(() => dummyUser.id),
   isDefault: boolean('is_default').default(false),
   isSaved: boolean('is_saved').default(false),
@@ -32,12 +33,12 @@ export type AddressSelect = typeof address.$inferSelect;
 export type AddressInsert = typeof address.$inferInsert;
 
 export const addressRelations = relations(address, ({ one }) => ({
-  // user: one(user, {
-  //   fields: [address.userId],
-  //   references: [user.id],
-  // }),
   dummyUser: one(dummyUser, {
     fields: [address.dummyUserId],
     references: [dummyUser.id],
+  }),
+  user: one(user, {
+    fields: [address.userId],
+    references: [user.id],
   }),
 }));
