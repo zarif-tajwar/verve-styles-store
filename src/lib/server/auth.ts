@@ -1,24 +1,21 @@
-'use server';
-
-import { cache } from 'react';
+import { lucia } from '@/auth2';
+import { db } from '@/lib/db';
+import { eq } from 'drizzle-orm';
 import type { Session, User } from 'lucia';
 import { cookies } from 'next/headers';
-import { lucia } from '@/auth2';
-import { redirect } from 'next/navigation';
-import { authCookieNames } from '../constants/auth';
-import { db } from '@/lib/db';
-import { passwordResetToken, user } from '../db/schema/auth2';
-import { CustomError } from '../errors/custom-error';
-import { eq } from 'drizzle-orm';
-import { wait } from '../util';
-import { z } from 'zod';
 import { isWithinExpirationDate } from 'oslo';
+import { cache } from 'react';
+import 'server-only';
+import { authCookieNames } from '../constants/auth';
+import { passwordResetToken, user } from '../db/schema/auth2';
+import { UserObjectClient } from '../types/auth';
 
-export const validateRequest = cache(
+export const auth = cache(
   async (): Promise<
     { user: User; session: Session } | { user: null; session: null }
   > => {
     const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+
     if (!sessionId) {
       return {
         user: null,
@@ -49,6 +46,14 @@ export const validateRequest = cache(
     return result;
   },
 );
+
+export const getUserObjectClient = (
+  user: User | null,
+): UserObjectClient | null => {
+  if (!user) return null;
+
+  return { name: user.name, image: user.image, email: user.email };
+};
 
 export const setRedirectCookie = (searchParams: URLSearchParams) => {
   const redirectAfterPathname = searchParams.get('redirectAfter') ?? '';

@@ -8,8 +8,9 @@ import Link from 'next/link';
 import { Button } from '../UI/Button';
 import Divider from '../UI/Divider';
 
-import { Session } from 'next-auth/types';
+import { UserObjectClient } from '@/lib/types/auth';
 import Image from 'next/image';
+import SignInLink from '../auth/SignInLink';
 
 const navDropdownItemClasses = cn(
   'rounded-lg font-medium text-primary-400',
@@ -20,7 +21,7 @@ const navDropdownItemClasses = cn(
 const truncateStr = (str: string, length: number) =>
   str.length > length ? str.slice(0, length - 1) + '...' : str;
 
-const NavUserDropdown = ({ user }: { user: Session['user'] | undefined }) => {
+const NavUserDropdown = ({ user }: { user: UserObjectClient | null }) => {
   return (
     <div className="hidden lg:block">
       <DropdownMenu.Root>
@@ -44,9 +45,9 @@ const NavUserDropdown = ({ user }: { user: Session['user'] | undefined }) => {
             sideOffset={4}
             className={cn(
               'min-w-[13rem] origin-top-right rounded-xl bg-primary-0 p-2 text-sm font-normal shadow-light-drop ring-1 ring-primary-50',
-              'data-[state=open]:fade-in data-[state=open]:animate-in data-[state=open]:zoom-in-90 data-[state=open]:duration-200',
-              'data-[state=closed]:fade-out data-[state=closed]:animate-out data-[state=closed]:zoom-out-90 data-[state=closed]:duration-200',
-              'ease-out-back z-20',
+              'data-[state=open]:duration-200 data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-90',
+              'data-[state=closed]:duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-90',
+              'z-20 ease-out-back',
             )}
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
@@ -55,10 +56,10 @@ const NavUserDropdown = ({ user }: { user: Session['user'] | undefined }) => {
                 className={navDropdownItemClasses}
                 asChild
               >
-                <Link href={'/auth/sign-in'}>
+                <SignInLink redirectAfter="same-url">
                   <LogIn className="size-5" />
                   <span>Sign In</span>
-                </Link>
+                </SignInLink>
               </DropdownMenu.DropdownMenuItem>
             ) : (
               <>
@@ -66,16 +67,16 @@ const NavUserDropdown = ({ user }: { user: Session['user'] | undefined }) => {
                   <div className="grid grid-cols-[auto_1fr] gap-2.5 py-2 pl-0.5 pr-2 outline-none">
                     {/* PROFILE IMAGE */}
                     <div className="relative aspect-square w-9 overflow-hidden rounded-full">
-                      {user.name && user.email && user.image ? (
+                      {user.image ? (
                         <Image
                           src={user.image}
                           fill
-                          alt={`Profile picture of ${user.name ?? user.email}`}
+                          alt={`Profile picture of ${user.name}`}
                           className="h-full w-full object-cover saturate-0"
                         />
                       ) : (
-                        <span className="bg-primary-50 uppercase">
-                          {user.name?.at(0)}
+                        <span className="inline-flex h-full w-full items-center justify-center bg-primary-50 font-semibold uppercase text-primary-400">
+                          {user.name.at(0)}
                         </span>
                       )}
                     </div>
@@ -123,7 +124,7 @@ const NavUserDropdown = ({ user }: { user: Session['user'] | undefined }) => {
                   >
                     <button
                       onClick={async () => {
-                        await signOutAction({ redirectTo: '/shop' });
+                        await signOutAction({});
                       }}
                     >
                       <LogOut className="h-5 w-5" />

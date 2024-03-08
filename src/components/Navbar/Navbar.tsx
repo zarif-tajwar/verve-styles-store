@@ -7,6 +7,7 @@ import HamburgerMenu from './HamburgerMenu';
 import MobileUserMenuWrapper from './MobileUserMenuWrapper';
 import NavDropdownMenuWrap from './NavDropdownMenuWrap';
 import NavLinks from './NavLinks';
+import { cookies } from 'next/headers';
 
 const Navbar = () => {
   return (
@@ -19,13 +20,13 @@ const Navbar = () => {
           <div className="flex h-full items-center justify-between lg:justify-start lg:gap-10">
             <div className="-ml-2 flex items-center lg:hidden">
               <HamburgerMenu />
-              <Suspense
+              {/* <Suspense
                 fallback={
                   <div className="size-10 animate-pulse rounded-full bg-primary-100"></div>
                 }
-              >
-                <MobileUserMenuWrapper />
-              </Suspense>
+              > */}
+              <MobileUserMenuWrapper />
+              {/* </Suspense> */}
             </div>
             <Link href={'/'}>
               <Logo />
@@ -35,13 +36,13 @@ const Navbar = () => {
               <div className="hidden flex-grow items-center justify-end lg:flex">
                 <SearchProduct />
               </div>
-              <Suspense
+              {/* <Suspense
                 fallback={
                   <span className="div h-10 w-20 animate-pulse rounded-full bg-primary-100 lg:-mx-2"></span>
                 }
-              >
-                <NavDropdownMenuWrap />
-              </Suspense>
+              > */}
+              <NavDropdownMenuWrap />
+              {/* </Suspense> */}
             </div>
           </div>
         </nav>

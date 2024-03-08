@@ -1,13 +1,8 @@
-import { auth } from '@/auth';
-import { redirect } from 'next/navigation';
+// import { auth } from '@/lib/server/auth';
+
+export const dynamic = 'force-static';
 
 const AdminPage = async () => {
-  const session = await auth();
-
-  console.log(session);
-
-  if (session?.user.role !== 'ADMIN') redirect('/shop');
-
   return <div>AdminPage</div>;
 };
 export default AdminPage;

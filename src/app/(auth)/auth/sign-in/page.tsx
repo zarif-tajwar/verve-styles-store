@@ -1,7 +1,9 @@
 import AuthFooter from '@/components/auth/AuthFooter';
 import { AuthHeader, AuthSection } from '@/components/auth/Common';
 import SignInCredentialsForm from '@/components/auth/SignInCredentialsForm';
+import { auth } from '@/lib/server/auth';
 import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: `Sign In to Verve Styles`,
@@ -9,6 +11,10 @@ export const metadata: Metadata = {
 };
 
 const SignInPage = async () => {
+  const authObject = await auth();
+  if (authObject.session) {
+    redirect('/shop');
+  }
   return (
     <AuthSection>
       <AuthHeader

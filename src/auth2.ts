@@ -20,11 +20,8 @@ export const lucia = new Lucia(authAdapter, {
       email: attributes.email,
       name: attributes.name,
       role: attributes.role,
+      image: attributes.image,
     };
-  },
-  getSessionAttributes: (attributes) => {
-    // return { email: attributes.email };
-    return {};
   },
 });
 
@@ -41,6 +38,7 @@ interface DatabaseUserAttributes {
   email: string;
   name: string;
   role: UserSelect['role'];
+  image: UserSelect['image'];
 }
 
 interface DatabaseSessionAttributes {

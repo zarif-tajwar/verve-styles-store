@@ -19,7 +19,7 @@ import {
 } from '../db/schema/auth2';
 import { sendEmail } from '../email';
 import { CustomError } from '../errors/custom-error';
-import { getUserByEmail, validateRequest } from '../server/auth';
+import { getUserByEmail, auth } from '../server/auth';
 import { genRandomInt } from '../util';
 import {
   CredentialsFormSchema,
@@ -75,12 +75,6 @@ export const signInCredentialsAction = actionClient(
     );
 
     return { success: true };
-
-    // redirect(
-    //   values.redirectAfter
-    //     ? `${decodeURIComponent(values.redirectAfter)}`
-    //     : '/shop',
-    // );
   },
 );
 
@@ -261,7 +255,7 @@ export const validateEmailVerificationAction = actionClient(
 );
 
 export const signOutAction = actionClient(z.object({}), async () => {
-  const { session } = await validateRequest();
+  const { session } = await auth();
   if (!session) {
     throw new CustomError(`You're already logged out!`);
   }
