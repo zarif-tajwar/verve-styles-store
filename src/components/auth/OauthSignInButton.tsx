@@ -6,11 +6,10 @@ import Spinner from '@/components/UI/Spinner';
 import { oauthSignInAction } from '@/lib/actions/auth';
 import { cn } from '@/lib/util';
 import { SupportedOauthProviders } from '@/lib/validation/auth';
-import { useMutation } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
-import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useTransition } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { AuthSkeletonButton } from './AuthSkeletons';
 
 const supportedOauthProviders: {
   provider: SupportedOauthProviders;
@@ -34,7 +33,10 @@ type OauthSignInButtonProps = {
   className?: string;
 };
 
-const OauthSignInButton = ({ provider, className }: OauthSignInButtonProps) => {
+const OauthSignInButtonClient = ({
+  provider,
+  className,
+}: OauthSignInButtonProps) => {
   const ProviderObject = supportedOauthProviders.find(
     (x) => x.provider === provider,
   );
@@ -71,4 +73,13 @@ const OauthSignInButton = ({ provider, className }: OauthSignInButtonProps) => {
     </Button>
   );
 };
+
+const OauthSignInButton = ({ ...props }: OauthSignInButtonProps) => {
+  return (
+    <Suspense fallback={<AuthSkeletonButton />}>
+      <OauthSignInButtonClient {...props} />
+    </Suspense>
+  );
+};
+
 export default OauthSignInButton;

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { ComponentPropsWithoutRef } from 'react';
+import { ComponentPropsWithoutRef, Suspense } from 'react';
 
 type LinkProps = Omit<ComponentPropsWithoutRef<typeof Link>, 'href'> &
   (
@@ -11,7 +11,7 @@ type LinkProps = Omit<ComponentPropsWithoutRef<typeof Link>, 'href'> &
     | { redirectAfter?: undefined; redirectAfterTo?: undefined }
   );
 
-const SignInLink = ({
+const SignInLinkClient = ({
   children,
   redirectAfter,
   redirectAfterTo,
@@ -48,4 +48,13 @@ const SignInLink = ({
     </Link>
   );
 };
+
+const SignInLink = ({ ...props }: LinkProps) => {
+  return (
+    <Suspense>
+      <SignInLinkClient {...props} />
+    </Suspense>
+  );
+};
+
 export default SignInLink;

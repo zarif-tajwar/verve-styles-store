@@ -28,8 +28,10 @@ import {
 import Spinner from '../UI/Spinner';
 import { errorToast } from '../UI/Toaster';
 import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
+import { Suspense } from 'react';
+import { AuthSkeletonForm } from './AuthSkeletons';
 
-const SignUpCredentialsForm = () => {
+const SignUpCredentialsFormClient = () => {
   const currentSearchParamsObject = useSearchParams();
 
   let redirectAfter = currentSearchParamsObject.get('redirectAfter');
@@ -314,6 +316,14 @@ const SignUpCredentialsForm = () => {
         </Form>
       )}
     </>
+  );
+};
+
+const SignUpCredentialsForm = () => {
+  return (
+    <Suspense fallback={<AuthSkeletonForm />}>
+      <SignUpCredentialsFormClient />
+    </Suspense>
   );
 };
 

@@ -74,11 +74,13 @@ export const signInCredentialsAction = actionClient(
       sessionCookie.attributes,
     );
 
-    redirect(
-      values.redirectAfter
-        ? `${decodeURIComponent(values.redirectAfter)}`
-        : '/shop',
-    );
+    return { success: true };
+
+    // redirect(
+    //   values.redirectAfter
+    //     ? `${decodeURIComponent(values.redirectAfter)}`
+    //     : '/shop',
+    // );
   },
 );
 

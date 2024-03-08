@@ -10,7 +10,7 @@ import {
 } from '@/lib/validation/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -22,10 +22,11 @@ import {
   PasswordInput,
 } from '../UI/Form';
 import Spinner from '../UI/Spinner';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
+import { AuthSkeletonForm } from './AuthSkeletons';
 
-const SignInCredentialsForm = () => {
+const SignInCredentialsFormClient = () => {
   const form = useForm<CredentialsFormSchemaType>({
     resolver: zodResolver(CredentialsFormSchema),
   });
@@ -33,6 +34,7 @@ const SignInCredentialsForm = () => {
 
   const deactivateForm = form.formState.isSubmitting || loginSuccess;
 
+  const router = useRouter();
   const currentSearchParamsObject = useSearchParams();
 
   let redirectAfter = currentSearchParamsObject.get('redirectAfter');
@@ -51,6 +53,10 @@ const SignInCredentialsForm = () => {
     }
 
     setLoginSuccess(true);
+
+    router.push(
+      redirectAfter ? `${decodeURIComponent(redirectAfter)}` : '/shop',
+    );
   };
 
   return (
@@ -130,6 +136,14 @@ const SignInCredentialsForm = () => {
         </Link>
       </div>
     </div>
+  );
+};
+
+const SignInCredentialsForm = () => {
+  return (
+    <Suspense fallback={<AuthSkeletonForm />}>
+      <SignInCredentialsFormClient />
+    </Suspense>
   );
 };
 

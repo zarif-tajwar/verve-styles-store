@@ -7,8 +7,14 @@ import { LockOpenIcon } from '@heroicons/react/20/solid';
 import { cn } from '@/lib/util';
 import Spinner from '../UI/Spinner';
 import { simulateLoginAsTestUserAction } from '@/lib/actions/auth';
+import { Suspense } from 'react';
+import { AuthSkeletonButton } from './AuthSkeletons';
 
-const LoginSimulateButton = ({ className }: { className?: string }) => {
+type LoginSimulateButtonProps = {
+  className?: string;
+};
+
+const LoginSimulateButtonClient = ({ className }: LoginSimulateButtonProps) => {
   const { status, execute } = useAction(simulateLoginAsTestUserAction);
 
   const currentSearchParamsObject = useSearchParams();
@@ -37,4 +43,13 @@ const LoginSimulateButton = ({ className }: { className?: string }) => {
     </Button>
   );
 };
+
+const LoginSimulateButton = ({ ...props }: LoginSimulateButtonProps) => {
+  return (
+    <Suspense fallback={<AuthSkeletonButton />}>
+      <LoginSimulateButtonClient {...props} />
+    </Suspense>
+  );
+};
+
 export default LoginSimulateButton;
