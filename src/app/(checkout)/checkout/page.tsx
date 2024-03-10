@@ -1,11 +1,8 @@
 import ShippingAddress from './ShippingAddress';
 
-import { Button } from '@/components/UI/Button';
 import { Container } from '@/components/UI/Container';
 import { redirectIfNotSignedIn } from '@/lib/server/auth';
 import { getCartItemsForCheckout } from '@/lib/server/checkout';
-import { ArrowLeftIcon } from '@heroicons/react/16/solid';
-import Link from 'next/link';
 import CheckoutCartItems from './CheckoutCartItems';
 import PaymentSection from './PaymentSection';
 import TestArea from './TestArea';
@@ -43,12 +40,6 @@ const CheckoutPage = async () => {
                 Your cart is empty! Add some cloths in your cart first.
               </p>
             </div>
-            <Button asChild>
-              <Link href={'/shop'} className="gap-2">
-                <ArrowLeftIcon className="size-4" />
-                Go back to shop
-              </Link>
-            </Button>
           </div>
         )}
       </Container>

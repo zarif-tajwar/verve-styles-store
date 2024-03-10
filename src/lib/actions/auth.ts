@@ -1,26 +1,30 @@
 'use server';
 
-import { authAdapter, lucia } from '@/auth2';
-import { and, eq, gt, isNull, lt, ne, or } from 'drizzle-orm';
-import { Session, generateId } from 'lucia';
+import { lucia } from '@/auth2';
+import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
+import { ResetPassword } from '@/components/mail/ResetPassword';
+import { renderAsync } from '@react-email/render';
+import { and, eq, gt, isNull, lt, or } from 'drizzle-orm';
+import { generateId } from 'lucia';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
 import { Argon2id } from 'oslo/password';
+import React from 'react';
 import { ulid } from 'ulidx';
 import { z } from 'zod';
 import { db } from '../db';
 import {
   credentialsAccount,
   emailVerification,
-  oauthAccount,
   passwordResetToken,
   session as sessionTable,
   user,
 } from '../db/schema/auth2';
 import { sendEmail } from '../email';
 import { CustomError } from '../errors/custom-error';
-import { getUserByEmail, auth } from '../server/auth';
+import { auth, getUserByEmail } from '../server/auth';
+import { handleCartOnSignIn } from '../server/cart';
 import { genRandomInt } from '../util';
 import {
   CredentialsFormSchema,
@@ -32,13 +36,6 @@ import {
   redirectAfterSchema,
 } from '../validation/auth';
 import { actionClient } from './safe-action';
-import { renderAsync } from '@react-email/render';
-import React from 'react';
-import { ResetPassword } from '@/components/mail/ResetPassword';
-import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
-import { revalidatePath } from 'next/cache';
-import { handleCartOnSignIn } from '../server/cart';
-import { authCookieNames } from '../constants/auth';
 
 export const signInCredentialsAction = actionClient(
   CredentialsFormSchema.extend({ redirectAfter: redirectAfterSchema }),

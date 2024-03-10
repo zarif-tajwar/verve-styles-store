@@ -17,7 +17,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   cookies().set(authCookieNames.OAUTH_STATE_GOOGLE, state, {
     path: '/',
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 60 * 10,
     sameSite: 'lax',
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   cookies().set(authCookieNames.OAUTH_CODE_VERIFIER_GOOGLE, codeVerifier, {
     path: '/',
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 60 * 10,
     sameSite: 'lax',

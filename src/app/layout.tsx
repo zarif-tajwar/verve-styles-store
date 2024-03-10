@@ -1,12 +1,11 @@
 import '@/app/globals.css';
-import type { Metadata } from 'next';
-import IntegralCF from './_fonts/integral-cf/font';
-import Geist from './_fonts/geist/font';
 import { Toaster } from '@/components/UI/Toaster';
-import ScreenBlocker from '@/components/ScreenBlocker';
-import { cn } from '@/lib/util';
 import Provider from '@/lib/provider/provider';
+import { cn } from '@/lib/util';
+import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
+import Geist from './_fonts/geist/font';
+import IntegralCF from './_fonts/integral-cf/font';
 
 export const metadata: Metadata = {
   title: 'Verve Styles - Cloth Store',

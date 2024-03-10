@@ -67,7 +67,7 @@ export const setRedirectCookie = (searchParams: URLSearchParams) => {
   if (redirectAfterPathname) {
     cookies().set(authCookieNames.AFTER_REDIRECT_LINK, redirectAfterPathname, {
       path: '/',
-      secure: false,
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       maxAge: 60 * 10,
       sameSite: 'lax',

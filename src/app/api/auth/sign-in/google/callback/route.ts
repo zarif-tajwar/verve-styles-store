@@ -6,6 +6,7 @@ import { getRedirectCookie } from '@/lib/server/auth';
 import { handleCartOnSignIn } from '@/lib/server/cart';
 import { and, eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 import { ulid } from 'ulidx';
 
@@ -144,15 +145,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         sessionCookie.attributes,
       );
     }
-
-    return NextResponse.redirect(
-      postRedirectPathname
-        ? `http://localhost:3000${postRedirectPathname}`
-        : 'http://localhost:3000/auth/sign-in/',
-    );
   } catch (error) {
-    return NextResponse.json('Something went wrong with google oauth', {
-      status: 500,
-    });
+    console.log(JSON.stringify(error));
   }
+  redirect(postRedirectPathname ? postRedirectPathname : '/shop');
 }

@@ -14,7 +14,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   cookies().set(authCookieNames.OAUTH_STATE_FACEBOOK, state, {
     path: '/',
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 60 * 10,
     sameSite: 'lax',

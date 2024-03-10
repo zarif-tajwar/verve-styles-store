@@ -5,8 +5,10 @@ export const env = createEnv({
   server: {
     AUTH_GOOGLE_ID: z.string(),
     AUTH_GOOGLE_SECRET: z.string(),
+    AUTH_GOOGLE_REDIRECT_URI: z.string(),
     AUTH_FACEBOOK_ID: z.string(),
     AUTH_FACEBOOK_SECRET: z.string(),
+    AUTH_FACEBOOK_REDIRECT_URI: z.string(),
     AUTH_SECRET: z.string(),
     ADMIN_EMAIL: z.string().email(),
     STAFF_EMAIL: z.string().email(),
@@ -35,8 +37,10 @@ export const env = createEnv({
   runtimeEnv: {
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
+    AUTH_GOOGLE_REDIRECT_URI: process.env.AUTH_GOOGLE_REDIRECT_URI,
     AUTH_FACEBOOK_ID: process.env.AUTH_FACEBOOK_ID,
     AUTH_FACEBOOK_SECRET: process.env.AUTH_FACEBOOK_SECRET,
+    AUTH_FACEBOOK_REDIRECT_URI: process.env.AUTH_FACEBOOK_REDIRECT_URI,
     AUTH_SECRET: process.env.AUTH_SECRET,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
     STAFF_EMAIL: process.env.STAFF_EMAIL,
