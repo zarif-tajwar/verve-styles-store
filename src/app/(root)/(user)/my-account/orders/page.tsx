@@ -1,29 +1,40 @@
-import { dedupedAuth } from '@/auth';
-import ClientSessionProvider from '@/lib/provider/client-session-provider';
-import { redirect } from 'next/navigation';
-import OrderFilters from './OrderFilters';
-import OrdersListing from './OrdersListing';
 import {
   AccountHeader,
   AccountHeading,
 } from '@/components/account/AccountCommon';
+import { redirectIfNotSignedIn } from '@/lib/server/auth';
+import { SearchParamsServer } from '@/lib/types/common';
+import { Suspense } from 'react';
+import OrderListingSkeleton from './OrderListingSkeleton';
+import Orders from './Orders';
+import OrdersListing from './OrdersListing';
+import OrdersPaginationServer from './OrdersPaginationServer';
 
-const OrdersPage = async () => {
-  const session = await dedupedAuth();
-  if (!session) {
-    redirect('/auth/sign-in');
-  }
+const OrdersPage = async ({
+  searchParams,
+}: {
+  searchParams: SearchParamsServer;
+}) => {
+  redirectIfNotSignedIn({
+    redirectAfter: '/my-account/orders',
+  });
 
   return (
-    <ClientSessionProvider session={session}>
-      <div className="w-full">
-        <AccountHeader>
-          <AccountHeading>Order History</AccountHeading>
-        </AccountHeader>
-        <OrderFilters />
-        <OrdersListing />
-      </div>
-    </ClientSessionProvider>
+    <div className="w-full">
+      <AccountHeader>
+        <AccountHeading>Order History</AccountHeading>
+      </AccountHeader>
+      <Orders
+        ordersListing={
+          <Suspense fallback={<OrderListingSkeleton />}>
+            <OrdersListing searchParams={searchParams} />
+          </Suspense>
+        }
+        ordersPagination={
+          <OrdersPaginationServer searchParams={searchParams} />
+        }
+      />
+    </div>
   );
 };
 export default OrdersPage;

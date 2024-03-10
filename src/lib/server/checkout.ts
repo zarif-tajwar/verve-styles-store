@@ -9,12 +9,15 @@ import { productEntries } from '../db/schema/productEntries';
 import { products } from '../db/schema/products';
 import { sizes } from '../db/schema/sizes';
 import { productImages } from '../db/schema/productImages';
+import { carts } from '../db/schema/carts';
+import { user } from '../db/schema/auth2';
+import { User } from 'lucia';
 
 export const getCartItemsForCheckout = async ({
-  cartId,
+  userId,
   sort,
 }: {
-  cartId: number;
+  userId: User['id'];
   sort?: boolean;
 }) => {
   let query = db
@@ -31,11 +34,13 @@ export const getCartItemsForCheckout = async ({
       stockQuantity: productEntries.quantity,
     })
     .from(cartItems)
+    .innerJoin(carts, eq(carts.id, cartItems.cartId))
+    .innerJoin(user, eq(user.id, carts.userId))
     .innerJoin(productEntries, eq(productEntries.id, cartItems.productEntryId))
     .innerJoin(products, eq(products.id, productEntries.productID))
     .innerJoin(sizes, eq(sizes.id, productEntries.sizeID))
     .leftJoin(productImages, eq(productImages.productID, products.id))
-    .where(and(eq(cartItems.cartId, cartId), eq(productImages.isDefault, true)))
+    .where(and(eq(carts.userId, userId), eq(productImages.isDefault, true)))
     .$dynamic();
   if (sort) {
     query = query.orderBy(

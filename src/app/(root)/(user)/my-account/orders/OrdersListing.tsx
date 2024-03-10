@@ -1,55 +1,26 @@
-'use client';
-
 import { Button } from '@/components/UI/Button';
 import Divider from '@/components/UI/Divider';
-import { getOrdersAction } from '@/lib/actions/user';
-import { useOrderFilterStore } from '@/lib/store/user-order';
+import { getOrdersServer } from '@/lib/server/user';
+import { SearchParamsServer } from '@/lib/types/common';
 import { priceFormat } from '@/lib/util';
-import { useQuery } from '@tanstack/react-query';
 import { Package } from 'lucide-react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react';
 import OrderItemsListing from './OrderItemsListing';
-import OrderListingSkeleton from './OrderListingSkeleton';
 import OrderStatus from './OrderStatus';
-import OrdersPagination from './OrdersPagination';
 
-const OrdersListing = () => {
-  const session = useSession();
-  const userId = session.data?.user.id;
-  const status = useOrderFilterStore((store) => store.status);
-  const page = useOrderFilterStore((store) => store.page);
-  const orderDateRange = useOrderFilterStore((store) => store.orderDateRange);
-
-  const { data: orders, isFetching } = useQuery({
-    queryKey: [status, orderDateRange, page],
-    queryFn: async () => {
-      if (!userId) return [];
-
-      const data = await getOrdersAction({
-        userId,
-        orderDateRange,
-        status,
-        page,
-      });
-
-      return data || [];
-    },
-    placeholderData: [],
-  });
-
-  if (!userId) {
-    return null;
-  }
-
+const OrdersListing = async ({
+  searchParams,
+}: {
+  searchParams: SearchParamsServer;
+}) => {
+  const orders = await getOrdersServer({ searchParams });
   return (
     <div className="rounded-main">
-      {isFetching && <OrderListingSkeleton />}
-      {orders && orders.length === 0 && !isFetching && (
+      {orders.length === 0 && (
         <p className="text-xl font-medium">No orders found!</p>
       )}
-      {orders && !isFetching && (
+      {orders.length > 0 && (
         <ul className="relative grid grid-cols-1 gap-10 rounded-xl">
           {orders.map((order, i) => {
             return (
@@ -151,7 +122,6 @@ const OrdersListing = () => {
           })}
         </ul>
       )}
-      {orders && <OrdersPagination ordersCount={orders.length} />}
     </div>
   );
 };

@@ -9,6 +9,7 @@ import 'server-only';
 import { authCookieNames } from '../constants/auth';
 import { passwordResetToken, user } from '../db/schema/auth2';
 import { UserObjectClient } from '../types/auth';
+import { redirect } from 'next/navigation';
 
 export const auth = cache(
   async (): Promise<
@@ -115,3 +116,23 @@ export const getPasswordResetTokenInfo = async ({
 
   return { name: data.user.name, email: data.user.email };
 };
+
+export const redirectIfNotSignedIn = cache(
+  async ({
+    redirectAfter,
+  }: {
+    redirectAfter?: string;
+  }): Promise<{
+    user: User;
+    session: Session;
+  }> => {
+    const authObject = await auth();
+
+    if (!authObject.user)
+      redirect(
+        `/auth/sign-in${redirectAfter ? `?redirectAfter=${encodeURIComponent(redirectAfter)}` : ''}`,
+      );
+
+    return authObject;
+  },
+);

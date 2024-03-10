@@ -41,38 +41,6 @@ export const createCart = async (
   return newCart;
 };
 
-export const getGuestUserCartId = async (createIfNotFound: boolean = false) => {
-  const encodedCartIdFromCookies = cookies().get('cartId')?.value;
-  let cartIdFromCookies = encodedCartIdFromCookies
-    ? decodeSingleSqid(encodedCartIdFromCookies)
-    : undefined;
-
-  if (cartIdFromCookies) {
-    const validatedCart = (
-      await db
-        .select({ userId: carts.userId })
-        .from(carts)
-        .where(eq(carts.id, cartIdFromCookies))
-    ).at(0);
-
-    if (!validatedCart || validatedCart.userId) {
-      cartIdFromCookies = undefined;
-      cookies().delete('cartId');
-    } else {
-      return cartIdFromCookies;
-    }
-  }
-
-  if (!cartIdFromCookies && createIfNotFound) {
-    const createdCartId = (await createCart()).at(0)?.id;
-
-    if (createdCartId) {
-      cookies().set('cartId', encodeSingleSqid(createdCartId));
-      return createdCartId;
-    }
-  }
-};
-
 export const getCartId = cache(async (): Promise<CartsSelect['id'] | null> => {
   const authObject = await auth();
 

@@ -1,10 +1,10 @@
 'use server';
 import {
-  generateRandomCompletedOrders,
+  // generateRandomCompletedOrders,
   getOrdersServer,
 } from '@/lib/server/user';
 
 export {
-  generateRandomCompletedOrders as generateRandomCompletedOrdersAction,
+  // generateRandomCompletedOrders as generateRandomCompletedOrdersAction,
   getOrdersServer as getOrdersAction,
 };

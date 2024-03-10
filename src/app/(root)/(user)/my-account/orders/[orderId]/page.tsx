@@ -20,6 +20,7 @@ import OrderStatus from '../OrderStatus';
 import Details from './_tabs/Details';
 import Invoice from './_tabs/Invoice';
 import OrderedProducts from './_tabs/OrderedProducts';
+import { redirectIfNotSignedIn } from '@/lib/server/auth';
 
 const invoiceTableColumns = getTableColumns(invoice);
 
@@ -36,8 +37,9 @@ const OrderDetailsPage = async ({
   params: { orderId: string };
   searchParams: { view: string | undefined };
 }) => {
-  const session = await dedupedAuth();
-  if (!session) redirect('/auth/sign-in');
+  const authObject = await redirectIfNotSignedIn({
+    redirectAfter: `/my-account/orders/${params.orderId}`,
+  });
 
   const parsedOrderId = z.coerce.number().safeParse(params.orderId);
   if (!parsedOrderId.success) redirect('/orders');
@@ -53,7 +55,7 @@ const OrderDetailsPage = async ({
       .innerJoin(orderDetails, eq(orderDetails.orderId, orders.id))
       .innerJoin(invoice, eq(invoice.orderId, orders.id))
       .innerJoin(orderStatus, eq(orderStatus.id, orderDetails.statusId))
-      .where(and(eq(orders.id, orderId), eq(orders.userId, session.user.id)))
+      .where(and(eq(orders.id, orderId), eq(orders.userId, authObject.user.id)))
   ).at(0);
 
   if (!orderData) redirect('/my-account/orders');

@@ -1,13 +1,13 @@
 import 'server-only';
-import { Session } from 'next-auth/types';
-import { db } from '../db';
-import { auth } from '@/auth';
-import { address } from '../db/schema/address';
-import { and, desc, eq } from 'drizzle-orm';
 
-export const getSavedAddressesServer = async (session?: Session) => {
-  const user = session ? session.user : (await auth())?.user;
-  if (!user) return;
+import { and, desc, eq } from 'drizzle-orm';
+import { db } from '../db';
+import { address } from '../db/schema/address';
+import { auth } from './auth';
+
+export const getSavedAddressesServer = async () => {
+  const { user } = await auth();
+  if (!user) return null;
 
   return await db
     .select()

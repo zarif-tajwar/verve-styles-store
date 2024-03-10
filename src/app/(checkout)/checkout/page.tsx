@@ -1,25 +1,22 @@
 import ShippingAddress from './ShippingAddress';
 
-import CheckoutCartItems from './CheckoutCartItems';
-import { auth, dedupedAuth } from '@/auth';
-import { redirect } from 'next/navigation';
-import { getCartItemsForCheckout } from '@/lib/server/checkout';
-import PaymentSection from './PaymentSection';
-import Link from 'next/link';
-import { decodeSingleSqid } from '@/lib/server/sqids';
-import TestArea from './TestArea';
-import Logo from '@/components/UI/Logo';
 import { Button } from '@/components/UI/Button';
-import { ArrowLeftIcon } from '@heroicons/react/16/solid';
 import { Container } from '@/components/UI/Container';
+import { redirectIfNotSignedIn } from '@/lib/server/auth';
+import { getCartItemsForCheckout } from '@/lib/server/checkout';
+import { ArrowLeftIcon } from '@heroicons/react/16/solid';
+import Link from 'next/link';
+import CheckoutCartItems from './CheckoutCartItems';
+import PaymentSection from './PaymentSection';
+import TestArea from './TestArea';
 
 const CheckoutPage = async () => {
-  const session = await dedupedAuth();
-  if (!session) redirect('/auth/sign-in');
-  if (!session.user.cartId) redirect('/shop');
+  const authObject = await redirectIfNotSignedIn({
+    redirectAfter: '/checkout',
+  });
 
   const cartItems = await getCartItemsForCheckout({
-    cartId: decodeSingleSqid(session.user.cartId),
+    userId: authObject.user.id,
     sort: true,
   });
 
