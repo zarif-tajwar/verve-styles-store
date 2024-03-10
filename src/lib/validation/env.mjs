@@ -5,8 +5,10 @@ export const env = createEnv({
   server: {
     AUTH_GOOGLE_ID: z.string(),
     AUTH_GOOGLE_SECRET: z.string(),
+    AUTH_GOOGLE_REDIRECT_URI: z.string(),
     AUTH_FACEBOOK_ID: z.string(),
     AUTH_FACEBOOK_SECRET: z.string(),
+    AUTH_FACEBOOK_REDIRECT_URI: z.string(),
     AUTH_SECRET: z.string(),
     ADMIN_EMAIL: z.string().email(),
     STAFF_EMAIL: z.string().email(),
@@ -22,6 +24,12 @@ export const env = createEnv({
     DB_URL: z.string(),
     EDGE_STORE_ACCESS_KEY: z.string(),
     EDGE_STORE_SECRET_KEY: z.string(),
+
+    SMTP_HOST: z.string(),
+    SMTP_PORT: z.coerce.number(),
+    SMTP_USER: z.string(),
+    SMTP_PASS: z.string(),
+    SMTP_FROM: z.string(),
   },
   client: {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string(),
@@ -29,8 +37,10 @@ export const env = createEnv({
   runtimeEnv: {
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
+    AUTH_GOOGLE_REDIRECT_URI: process.env.AUTH_GOOGLE_REDIRECT_URI,
     AUTH_FACEBOOK_ID: process.env.AUTH_FACEBOOK_ID,
     AUTH_FACEBOOK_SECRET: process.env.AUTH_FACEBOOK_SECRET,
+    AUTH_FACEBOOK_REDIRECT_URI: process.env.AUTH_FACEBOOK_REDIRECT_URI,
     AUTH_SECRET: process.env.AUTH_SECRET,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
     STAFF_EMAIL: process.env.STAFF_EMAIL,
@@ -39,6 +49,12 @@ export const env = createEnv({
     SENDGRID_PORT: process.env.SENDGRID_PORT,
     SENDGRID_USER: process.env.SENDGRID_USER,
     SENDGRID_EMAIL_FROM: process.env.SENDGRID_EMAIL_FROM,
+
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
+    SMTP_FROM: process.env.SMTP_FROM,
 
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_KEY: process.env.STRIPE_WEBHOOK_KEY,

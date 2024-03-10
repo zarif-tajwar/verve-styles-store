@@ -1,11 +1,8 @@
-import Hero from '@/components/HomePage/Hero';
-import Featured from '@/components/HomePage/Featured';
 import BrowseStyle from '@/components/HomePage/BrowseStyle';
 import CustomerReviews from '@/components/HomePage/CustomerReviews';
+import Featured from '@/components/HomePage/Featured';
+import Hero from '@/components/HomePage/Hero';
 import { Metadata } from 'next';
-
-export const revalidate = 86400;
-export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title: 'Find Cloths That Matches Your Style - Verve Styles',

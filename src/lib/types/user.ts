@@ -1,4 +1,4 @@
-import { OrderDetailsSelect } from '../db/schema/orderDetails';
+import { AddressSelect } from '../db/schema/address';
 import { OrderSelect } from '../db/schema/orders';
 
 export type UserOrderedProduct = {
@@ -16,4 +16,15 @@ export type UserOrder = {
   deliveryDate?: string | null;
   deliveredAt?: string | null;
   orderedProducts: UserOrderedProduct[];
+};
+
+export type UserAddress = {
+  id: string;
+  address: AddressSelect['address'];
+  city: AddressSelect['city'];
+  country: AddressSelect['country'];
+  phone: AddressSelect['phone'];
+  type: AddressSelect['type'];
+  isDefault: AddressSelect['isDefault'];
+  label: AddressSelect['label'];
 };

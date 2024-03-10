@@ -1,6 +1,8 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/util';
+import { Button } from './Button';
+import { Eye, EyeOff } from 'lucide-react';
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}

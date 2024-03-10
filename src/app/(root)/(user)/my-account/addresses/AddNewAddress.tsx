@@ -4,20 +4,19 @@ import { Button } from '@/components/UI/Button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/UI/Dialog';
 import { errorToast, successToast } from '@/components/UI/Toaster';
 import { addNewAddressAction } from '@/lib/actions/address';
+import { ADDRESS_QUERY_KEY } from '@/lib/constants/query-keys';
 import { PlusIcon } from '@heroicons/react/16/solid';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useState } from 'react';
 import AddressInputForm from './AddressInputForm';
-import { useMotionTemplate, useMotionValue, motion } from 'framer-motion';
-import { ScrollArea } from '@/components/UI/ScrollArea';
 
 const AddNewAddress = () => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { execute, status } = useAction(addNewAddressAction, {
     onSuccess: async ({ success }) => {
-      await queryClient.refetchQueries({ queryKey: ['addresses'] });
+      await queryClient.refetchQueries({ queryKey: [ADDRESS_QUERY_KEY] });
       successToast(success);
     },
     onError: async (errors) => {

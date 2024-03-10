@@ -3,10 +3,10 @@
 import { useShopQuery } from '@/lib/hooks/useShopFilter';
 import FilterProductsStatusText from './FilterProductsStatusText';
 import FilterSelectedTags from './FilterSelectedTags';
+import NoProductsFound from './NoProductsFound';
 import { ProductListing } from './ProductListing';
 import ShopFilterBottomMenu from './ShopFilterBottomMenu';
 import { ProductListingSkeleton } from './Skeleton';
-import NoProductsFound from './NoProductsFound';
 
 const Shop = () => {
   const { data: productItems, isFetching } = useShopQuery();

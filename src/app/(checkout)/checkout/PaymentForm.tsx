@@ -18,8 +18,11 @@ import { cn, wait } from '@/lib/util';
 import Spinner from '@/components/UI/Spinner';
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 
 const PaymentForm = () => {
+  const qc = useQueryClient();
   const stripe = useStripe();
   const elements = useElements();
   const { getCheckoutAddress } = useCheckoutAddress();
@@ -36,7 +39,6 @@ const PaymentForm = () => {
     const shippingAddress = getCheckoutAddress();
 
     if (!shippingAddress) {
-      // errorToast('Something went wrong with the address!');
       return;
     }
 
@@ -74,7 +76,8 @@ const PaymentForm = () => {
           duration: 5000,
         },
       );
-      router.replace('/cart');
+      qc.refetchQueries({ queryKey: CART_ITEM_DATA_QUERY_KEY });
+      router.replace('/shop?cart=open');
       return;
     }
 
@@ -108,6 +111,7 @@ const PaymentForm = () => {
         position: 'top-center',
       });
 
+      qc.refetchQueries({ queryKey: CART_ITEM_DATA_QUERY_KEY });
       await wait(1000);
       router.replace(href);
     }

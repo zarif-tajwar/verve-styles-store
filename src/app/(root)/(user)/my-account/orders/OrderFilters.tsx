@@ -1,5 +1,3 @@
-import { SearchIconSm } from '@/components/Svgs/icons';
-
 import FilterMenu from './FilterMenu';
 import OrderFilterSearch from './OrderFilterSearch';
 

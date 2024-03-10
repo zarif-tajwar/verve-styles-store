@@ -35,7 +35,7 @@ export const AddressFormSchema = z.object({
 export type AddressFormSchemaType = z.infer<typeof AddressFormSchema>;
 
 export const DefaultAddressFormSchema = z.object({
-  addressId: z.coerce.number(),
+  addressId: z.string(),
 });
 
 export type DefaultAddressFormSchemaType = z.infer<

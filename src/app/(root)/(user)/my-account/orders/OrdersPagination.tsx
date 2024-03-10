@@ -2,11 +2,15 @@
 
 import { ArrowLeftMicro } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
-import { useOrderFilterStore } from '@/lib/store/user-order';
+import { ORDERS_PER_PAGE } from '@/lib/constants/orders';
+import { parseAsInteger, useQueryState } from 'nuqs';
 
 const OrdersPagination = ({ ordersCount }: { ordersCount: number }) => {
-  const page = useOrderFilterStore((store) => store.page);
-  const setPage = useOrderFilterStore((store) => store.setPage);
+  const [queryState, setQueryState] = useQueryState(
+    'page',
+    parseAsInteger.withOptions({ shallow: false }),
+  );
+  const page = queryState ?? 1;
   return (
     <div className="flex justify-center pt-16">
       <div className="grid grid-cols-2 gap-4">
@@ -15,7 +19,7 @@ const OrdersPagination = ({ ordersCount }: { ordersCount: number }) => {
           roundness={'lg'}
           className="justify-between gap-3"
           disabled={page <= 1}
-          onClick={() => setPage(page - 1)}
+          onClick={() => setQueryState(page - 1)}
         >
           <ArrowLeftMicro className="-ml-0.5" />
           Previous
@@ -24,8 +28,8 @@ const OrdersPagination = ({ ordersCount }: { ordersCount: number }) => {
           variant={'secondary'}
           roundness={'lg'}
           className="justify-between gap-3"
-          onClick={() => setPage(page + 1)}
-          disabled={ordersCount < 4}
+          onClick={() => setQueryState(page + 1)}
+          disabled={ordersCount < ORDERS_PER_PAGE}
         >
           Next
           <ArrowLeftMicro className="-mr-0.5 rotate-180" />

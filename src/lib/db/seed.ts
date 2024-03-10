@@ -21,7 +21,7 @@ import {
 import { genRandomInt } from '../util';
 import { db } from './index';
 import { AddressInsert, address } from './schema/address';
-import { UserInsert, UserSelect, user } from './schema/auth';
+import { UserInsert, UserSelect, user } from './schema/auth2';
 import { clothing } from './schema/clothing';
 import { dressStyles } from './schema/dressStyles';
 import {
@@ -51,6 +51,8 @@ import { ProductImagesInsert, productImages } from './schema/productImages';
 import { products } from './schema/products';
 import { sizes } from './schema/sizes';
 import { UserReviewsInsert, userReviews } from './schema/userReviews';
+import { productRating } from './schema/productRating';
+import { productSalesCount } from './schema/productSalesCount';
 
 async function populateSizes() {
   await db
@@ -683,7 +685,7 @@ const insertSomeTestUsers = async (n: number) => {
       id: ulid(),
       email: randEmail({ firstName, lastName }),
       name: `${firstName} ${lastName}`,
-      role: 'TEST USER',
+      role: 'TEST_USER',
       emailVerified: null,
       image: faker.image.avatarGitHub(),
     };
@@ -695,7 +697,7 @@ const insertSomeTestUsers = async (n: number) => {
 
 const deleteAllTestUsers = async () => {
   return await db.transaction(async (tx) => {
-    await tx.delete(user).where(eq(user.role, 'TEST USER')).returning();
+    await tx.delete(user).where(eq(user.role, 'TEST_USER')).returning();
   });
 };
 
@@ -704,9 +706,9 @@ const populateTestUserAddresses = async () => {
   const testUsers = await db
     .select()
     .from(user)
-    .where(eq(user.role, 'TEST USER'));
+    .where(eq(user.role, 'TEST_USER'));
   for (let i = 0; i < testUsers.length; i++) {
-    for (let j = 0; j < genRandomInt(2, 5); j++) {
+    for (let j = 0; j < genRandomInt(3, 6); j++) {
       const fakeAddress = randAddress();
       const insertedAddress: AddressInsert = {
         address: fakeAddress.street,
@@ -724,31 +726,6 @@ const populateTestUserAddresses = async () => {
   }
 
   await db.insert(address).values(addressInsert);
-};
-
-const populateTestUserOrders = async () => {
-  const testUsersPromise = db
-    .select()
-    .from(user)
-    .innerJoin(address, eq(user.id, address.userId))
-    .where(and(eq(user.role, 'TEST USER'), eq(address.isDefault, true)));
-
-  const productEntriesPromise = db.select().from(productEntries);
-
-  const [testUsersData, productEntriesData] = await Promise.all([
-    testUsersPromise,
-    productEntriesPromise,
-  ]);
-
-  const promises: Promise<unknown>[] = [];
-
-  for (let i = 0; i < testUsersData.length; i++) {
-    const selectedUser = testUsersData.at(i)!;
-    const howManyOrdersShouldBeMade = genRandomInt(20, 30);
-    for (let j = 0; j < howManyOrdersShouldBeMade; j++) {
-      const howManyOrderLines = genRandomInt(3, 8);
-    }
-  }
 };
 
 const makeRandomFakeOrdersByUser = async ({
@@ -896,7 +873,7 @@ const makeRandomTestUserOrders = async () => {
   const allTestUsers = await db
     .select()
     .from(user)
-    .where(eq(user.role, 'TEST USER'));
+    .where(eq(user.role, 'TEST_USER'));
 
   const promises: Promise<unknown>[] = [];
 
@@ -920,7 +897,7 @@ const deleteOrders = async () => {
       .select({ orderId: orders.id })
       .from(orders)
       .innerJoin(user, eq(orders.userId, user.id))
-      .where(eq(user.role, 'TEST USER'))
+      .where(eq(user.role, 'TEST_USER'))
       .then((orders) => orders.map((order) => order.orderId));
 
     await tx
@@ -979,9 +956,7 @@ async function execute() {
 
   const start = performance.now();
 
-  for (let i = 0; i < 10; i++) {
-    await postFakeReviews(10000);
-  }
+  await db.refreshMaterializedView(productSalesCount);
 
   const end = performance.now();
 

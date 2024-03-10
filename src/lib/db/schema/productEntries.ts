@@ -30,7 +30,7 @@ export const productEntries = pgTable(
   (table) => ({
     unq: unique('unq').on(table.productID, table.sizeID),
     IdIdx: index('id_idx').on(table.id),
-    productIdIdx: index('product_id_idx').on(table.productID),
+    entry_productIdIdx: index('entry_product_id_idx').on(table.productID),
     sizeIdIdx: index('size_id_idx').on(table.sizeID),
   }),
 );

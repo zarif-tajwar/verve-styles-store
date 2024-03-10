@@ -1,20 +1,17 @@
 'use client';
 
 import * as AccountDetailsCard from '@/components/UI/AccountDetailsCard';
-import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
+import { useAddressesQuery } from '@/lib/queries/address';
 import {
   BriefcaseIcon,
   HashtagIcon,
   HomeIcon,
 } from '@heroicons/react/16/solid';
-import { useSession } from 'next-auth/react';
 import AddressDelete from './AddressDelete';
 import EditAddress from './EditAddress';
 
 const AddressList = () => {
-  const session = useSession();
-  const { data, isFetching } = useAddressesQuery(session.data ?? undefined);
-  const addresses = data?.data;
+  const { data: addresses, isFetching } = useAddressesQuery();
 
   if (isFetching) {
     return (

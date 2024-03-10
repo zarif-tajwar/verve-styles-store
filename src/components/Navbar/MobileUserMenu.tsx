@@ -13,6 +13,7 @@ import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
 import { signOutAction } from '@/lib/actions/auth';
 import { cn } from '@/lib/util';
+import SignInLink from '../auth/SignInLink';
 
 const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   return (
@@ -31,7 +32,7 @@ const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         <Dialog.Content
           className={cn(
             'fixed left-0 top-[var(--nav-height)] z-50 h-[calc(100dvh-var(--nav-height))] w-screen border-t border-primary-100 bg-primary-0',
-            'data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 origin-top data-[state=closed]:duration-200 data-[state=open]:duration-300',
+            'origin-top data-[state=closed]:duration-200 data-[state=open]:duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
           )}
         >
           <ScrollArea className="h-full max-h-[calc(100svh-var(--nav-height))] w-full">
@@ -52,9 +53,9 @@ const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                           size={'md'}
                           asChild
                         >
-                          <Link href={'/auth/sign-in'}>
+                          <SignInLink>
                             <LogIn className="size-5" /> Sign In
-                          </Link>
+                          </SignInLink>
                         </Button>
                       </Dialog.Close>
                     )}
@@ -98,7 +99,7 @@ const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                             className="gap-3"
                             size={'md'}
                             onClick={async () => {
-                              await signOutAction({ redirectTo: '/shop' });
+                              await signOutAction({});
                             }}
                           >
                             <LogOutIcon className="size-5" strokeWidth={1.5} />{' '}

@@ -16,20 +16,21 @@ export const useCartItemsQuery = () => {
   return useQuery({
     queryKey: CART_ITEM_DATA_QUERY_KEY,
     queryFn: async () => {
-      let cartItems: FetchedCartItem[] = [];
       try {
         const res = await fetch('/api/cart');
         if (!res.ok) {
           throw new Error();
         } else {
-          cartItems = (await res.json()).data;
+          const cartItems: FetchedCartItem[] = await res
+            .json()
+            .then((res) => res.data);
+          return cartItems;
         }
       } catch (error) {
         errorToast('Something went wrong while fetching the cart!');
+        return [];
       }
-      return cartItems;
     },
-    refetchOnMount: false,
     placeholderData: (prev) => prev,
   });
 };
@@ -83,11 +84,11 @@ export const useCartItemsMutations = ({
   const handleDelete = useCallback(async () => {
     if (refetchDelayAfterDeleteInMs > 0) {
       await Promise.all([
-        deleteMutation(cartItemId),
+        deleteMutation({ cartItemId }),
         wait(refetchDelayAfterDeleteInMs),
       ]);
     } else {
-      await deleteMutation(cartItemId);
+      await deleteMutation({ cartItemId });
     }
     queryClient.refetchQueries({ queryKey: CART_ITEM_DATA_QUERY_KEY });
   }, [cartItemId, deleteMutation, refetchDelayAfterDeleteInMs, queryClient]);

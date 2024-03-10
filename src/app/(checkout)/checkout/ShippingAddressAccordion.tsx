@@ -1,15 +1,15 @@
 'use client';
 
-import { AddressSelect } from '@/lib/db/schema/address';
+import { useCheckoutStore } from '@/lib/store/checkout-store';
+import { UserAddress } from '@/lib/types/user';
+import { Root as AccordionRoot } from '@radix-ui/react-accordion';
 import ShippingAddressInput from './ShippingAddressInput';
 import ShippingAddressSelect from './ShippingAddressSelect';
-import { Root as AccordionRoot } from '@radix-ui/react-accordion';
-import { useCheckoutStore } from '@/lib/store/checkout-store';
 
 const ShippingAddressAccordion = ({
   savedAddresses,
 }: {
-  savedAddresses: AddressSelect[];
+  savedAddresses: UserAddress[];
 }) => {
   const setShippingAddressMode = useCheckoutStore(
     (store) => store.setShippingAdressMode,

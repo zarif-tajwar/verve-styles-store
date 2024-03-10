@@ -1,13 +1,13 @@
 'use client';
 
 import { useCheckoutStore } from '@/lib/store/checkout-store';
-import * as RadioGroup from '@radix-ui/react-radio-group';
-import ShippingAddressInputForm from './ShippingAddressInputForm';
-import ShippingAddressSelect from './ShippingAddressSelect';
-import { AddressSelect } from '@/lib/db/schema/address';
-import { AnimatePresence, Variants, motion } from 'framer-motion';
+import { UserAddress } from '@/lib/types/user';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import { AnimatePresence, Variants, motion } from 'framer-motion';
+import ShippingAddressInputForm from './ShippingAddressInputForm';
+import ShippingAddressSelect from './ShippingAddressSelect';
 
 const animVariants: Variants = {
   hidden: {
@@ -25,7 +25,7 @@ const animVariants: Variants = {
 const ShippingAddressRadio = ({
   savedAddresses,
 }: {
-  savedAddresses: AddressSelect[];
+  savedAddresses: UserAddress[];
 }) => {
   const setShippingAddressMode = useCheckoutStore(
     (store) => store.setShippingAdressMode,

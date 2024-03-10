@@ -1,18 +1,18 @@
 import { FacebookIcon, GoogleIcon } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
 import { db } from '@/lib/db';
-import { accounts } from '@/lib/db/schema/auth';
+import { oauthAccount } from '@/lib/db/schema/auth2';
 import { cn } from '@/lib/util';
-import { BuiltInProviderType } from '@auth/core/providers';
 import { and, eq } from 'drizzle-orm';
 import { Check } from 'lucide-react';
-import { Session } from 'next-auth/types';
 import ConnectAccountButton from './ConnectAccountButton';
+import { User } from 'lucia';
+import { SupportedOauthProviders } from '@/lib/validation/auth';
 
 type Providers = {
   label: string;
   icon: typeof GoogleIcon;
-  provider: BuiltInProviderType;
+  provider: SupportedOauthProviders;
 }[];
 
 const providers: Providers = [
@@ -20,21 +20,18 @@ const providers: Providers = [
   { label: 'facebook', icon: FacebookIcon, provider: 'facebook' },
 ];
 
-const SocialAccounts = async ({ session }: { session: Session }) => {
-  const userRole = session.user.role;
-
-  if (userRole === 'TEST USER') {
+const SocialAccounts = async ({ user }: { user: User }) => {
+  if (user.role === 'TEST_USER') {
     return <div>Not Available for Test Users!</div>;
   }
 
   const linkedSocialProviders = await db
     .select({
-      provider: accounts.provider,
-      email: accounts.email,
-      name: accounts.name,
+      provider: oauthAccount.provider,
+      email: oauthAccount.email,
     })
-    .from(accounts)
-    .where(and(eq(accounts.userId, session.user.id)));
+    .from(oauthAccount)
+    .where(and(eq(oauthAccount.userId, user.id)));
 
   return (
     <div className="grid w-full gap-x-16 gap-y-8 sm:grid-cols-2">

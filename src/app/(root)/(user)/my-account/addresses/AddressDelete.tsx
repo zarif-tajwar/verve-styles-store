@@ -3,7 +3,7 @@
 import { Button } from '@/components/UI/Button';
 import { errorToast, messageToast } from '@/components/UI/Toaster';
 import { deleteAddressAction } from '@/lib/actions/address';
-import { AddressSelect } from '@/lib/db/schema/address';
+import { ADDRESS_QUERY_KEY } from '@/lib/constants/query-keys';
 import { cn } from '@/lib/util';
 import { XMarkIcon } from '@heroicons/react/16/solid';
 import * as Popover from '@radix-ui/react-popover';
@@ -12,12 +12,12 @@ import { Trash } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 
-const AddressDelete = ({ addressId }: { addressId: AddressSelect['id'] }) => {
+const AddressDelete = ({ addressId }: { addressId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { execute } = useAction(deleteAddressAction, {
     onSuccess: async ({ success }) => {
-      await queryClient.refetchQueries({ queryKey: ['addresses'] });
+      await queryClient.refetchQueries({ queryKey: [ADDRESS_QUERY_KEY] });
       messageToast(success);
     },
     onError: (errors) => {

@@ -1,9 +1,9 @@
-import { dedupedAuth } from '@/auth';
 import { Skeleton as AccountCardSkeleton } from '@/components/UI/AccountDetailsCard';
 import { db } from '@/lib/db';
 import { invoice } from '@/lib/db/schema/invoice';
 import { orderDetails, orderStatus } from '@/lib/db/schema/orderDetails';
 import { orders } from '@/lib/db/schema/orders';
+import { redirectIfNotSignedIn } from '@/lib/server/auth';
 import { calcTotalFromInvoiceData } from '@/lib/server/checkout';
 import { cn, priceFormat } from '@/lib/util';
 import {
@@ -36,8 +36,9 @@ const OrderDetailsPage = async ({
   params: { orderId: string };
   searchParams: { view: string | undefined };
 }) => {
-  const session = await dedupedAuth();
-  if (!session) redirect('/auth/sign-in');
+  const authObject = await redirectIfNotSignedIn({
+    redirectAfter: `/my-account/orders/${params.orderId}`,
+  });
 
   const parsedOrderId = z.coerce.number().safeParse(params.orderId);
   if (!parsedOrderId.success) redirect('/orders');
@@ -53,7 +54,7 @@ const OrderDetailsPage = async ({
       .innerJoin(orderDetails, eq(orderDetails.orderId, orders.id))
       .innerJoin(invoice, eq(invoice.orderId, orders.id))
       .innerJoin(orderStatus, eq(orderStatus.id, orderDetails.statusId))
-      .where(and(eq(orders.id, orderId), eq(orders.userId, session.user.id)))
+      .where(and(eq(orders.id, orderId), eq(orders.userId, authObject.user.id)))
   ).at(0);
 
   if (!orderData) redirect('/my-account/orders');

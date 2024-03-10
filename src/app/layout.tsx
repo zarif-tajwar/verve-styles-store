@@ -1,10 +1,11 @@
 import '@/app/globals.css';
-import type { Metadata } from 'next';
-import IntegralCF from './_fonts/integral-cf/font';
-import Geist from './_fonts/geist/font';
 import { Toaster } from '@/components/UI/Toaster';
-import ScreenBlocker from '@/components/ScreenBlocker';
+import Provider from '@/lib/provider/provider';
 import { cn } from '@/lib/util';
+import type { Metadata } from 'next';
+import NextTopLoader from 'nextjs-toploader';
+import Geist from './_fonts/geist/font';
+import IntegralCF from './_fonts/integral-cf/font';
 
 export const metadata: Metadata = {
   title: 'Verve Styles - Cloth Store',
@@ -12,6 +13,9 @@ export const metadata: Metadata = {
   openGraph: {
     images: '/opg.jpg',
   },
+  metadataBase: !!process.env.VERCEL
+    ? undefined
+    : new URL('http://localhost:3000'),
 };
 
 export default function RootLayout({
@@ -29,9 +33,18 @@ export default function RootLayout({
           '[--nav-height:4rem]',
         )}
       >
-        {children}
-        <Toaster />
-        {/* <ScreenBlocker /> */}
+        <Provider>
+          <NextTopLoader
+            showSpinner={false}
+            shadow={false}
+            height={5}
+            template={`<div class="bar animate-pulse from-primary-200 to-primary-300 !bg-gradient-to-r" role="bar"><div class="peg"></div></div>
+        <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>`}
+          />
+          {children}
+          <Toaster />
+          {/* <ScreenBlocker /> */}
+        </Provider>
       </body>
     </html>
   );

@@ -2,12 +2,9 @@
 
 import { Button } from '@/components/UI/Button';
 import Divider from '@/components/UI/Divider';
-import { getOrdersAction } from '@/lib/actions/user';
-import { useOrderFilterStore } from '@/lib/store/user-order';
+import { useOrdersQuery } from '@/lib/queries/orders';
 import { priceFormat } from '@/lib/util';
-import { useQuery } from '@tanstack/react-query';
 import { Package } from 'lucide-react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react';
 import OrderItemsListing from './OrderItemsListing';
@@ -16,33 +13,7 @@ import OrderStatus from './OrderStatus';
 import OrdersPagination from './OrdersPagination';
 
 const OrdersListing = () => {
-  const session = useSession();
-  const userId = session.data?.user.id;
-  const status = useOrderFilterStore((store) => store.status);
-  const page = useOrderFilterStore((store) => store.page);
-  const orderDateRange = useOrderFilterStore((store) => store.orderDateRange);
-
-  const { data: orders, isFetching } = useQuery({
-    queryKey: [status, orderDateRange, page],
-    queryFn: async () => {
-      if (!userId) return [];
-
-      const data = await getOrdersAction({
-        userId,
-        orderDateRange,
-        status,
-        page,
-      });
-
-      return data || [];
-    },
-    placeholderData: [],
-  });
-
-  if (!userId) {
-    return null;
-  }
-
+  const { data: orders, isFetching } = useOrdersQuery();
   return (
     <div className="rounded-main">
       {isFetching && <OrderListingSkeleton />}

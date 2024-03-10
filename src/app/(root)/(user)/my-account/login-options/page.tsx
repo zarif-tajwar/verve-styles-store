@@ -1,19 +1,17 @@
-import { cn } from '@/lib/util';
-import SocialAccounts from './SocialAccounts';
-import { Suspense } from 'react';
-import LoadingState from './LoadingState';
-import { dedupedAuth } from '@/auth';
-import { redirect } from 'next/navigation';
 import {
   AccountHeader,
   AccountHeading,
 } from '@/components/account/AccountCommon';
+import { redirectIfNotSignedIn } from '@/lib/server/auth';
+import { cn } from '@/lib/util';
+import { Suspense } from 'react';
+import LoadingState from './LoadingState';
+import SocialAccounts from './SocialAccounts';
 
 const LoginOptions = async () => {
-  const session = await dedupedAuth();
-  if (!session) {
-    redirect('/auth/sign-in');
-  }
+  const authObject = await redirectIfNotSignedIn({
+    redirectAfter: '/my-account/login-options',
+  });
 
   return (
     <div className="w-full">
@@ -26,7 +24,7 @@ const LoginOptions = async () => {
       <div className={cn('mt-8 min-h-[32rem] rounded-main')}>
         <h2 className="mb-12 text-2xl font-semibold">Social Accounts</h2>
         <Suspense fallback={<LoadingState />}>
-          <SocialAccounts session={session} />
+          <SocialAccounts user={authObject.user} />
         </Suspense>
       </div>
     </div>

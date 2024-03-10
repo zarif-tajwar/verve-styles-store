@@ -372,6 +372,69 @@
       "when": 1706568676289,
       "tag": "0052_rapid_hardball",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "5",
+      "when": 1709030988012,
+      "tag": "0053_skinny_apocalypse",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "5",
+      "when": 1709059353183,
+      "tag": "0054_lyrical_lockheed",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "5",
+      "when": 1709146502208,
+      "tag": "0055_striped_thor_girl",
+      "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "5",
+      "when": 1709451504229,
+      "tag": "0056_cooing_leech",
+      "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "5",
+      "when": 1709451527653,
+      "tag": "0057_breezy_silver_fox",
+      "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "5",
+      "when": 1709625178135,
+      "tag": "0058_nebulous_susan_delgado",
+      "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "5",
+      "when": 1709757748906,
+      "tag": "0059_careless_ego",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "5",
+      "when": 1709900371093,
+      "tag": "0060_sparkling_tyrannus",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "5",
+      "when": 1709901540026,
+      "tag": "0061_purple_sebastian_shaw",
+      "breakpoints": true
     }
   ]
 }

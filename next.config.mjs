@@ -1,9 +1,9 @@
 import './src/lib/validation/env.mjs';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // typescript: {
+  //   ignoreBuildErrors: true,
+  // },
   images: {
     remotePatterns: [
       {
@@ -32,6 +32,10 @@ const nextConfig = {
         port: '',
       },
     ],
+  },
+  webpack: (config) => {
+    config.externals.push('@node-rs/argon2', '@node-rs/bcrypt');
+    return config;
   },
 };
 
