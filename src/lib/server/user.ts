@@ -6,6 +6,7 @@ import { SearchParamsServer } from '../types/common';
 import { UserOrder } from '../types/user';
 import { GetOrdersSchema } from '../validation/orders';
 import { auth } from './auth';
+import { ORDERS_PER_PAGE } from '../constants/orders';
 
 export const getOrdersServer = cache(
   async ({ searchParams }: { searchParams: SearchParamsServer }) => {
@@ -16,8 +17,6 @@ export const getOrdersServer = cache(
     const parseSearchParams = GetOrdersSchema.safeParse(searchParams);
 
     if (!parseSearchParams.success) return [];
-
-    console.log(parseSearchParams.data, 'INPUT ORDER GETTER PARAMS');
 
     const { status, page, orderDateRange } = parseSearchParams.data;
 
@@ -100,10 +99,10 @@ export const getOrdersServer = cache(
     query.append(sql.join(conditionals, sql.raw(' and ')));
 
     query.append(sql` ORDER BY od.placed_at DESC`);
-    query.append(sql` LIMIT 4`);
+    query.append(sql` LIMIT ${ORDERS_PER_PAGE}`);
 
     if (page > 1) {
-      query.append(sql` OFFSET ${4 * (page - 1)}`);
+      query.append(sql` OFFSET ${ORDERS_PER_PAGE * (page - 1)}`);
     }
 
     const res = await db.execute(query);

@@ -4,13 +4,12 @@ import { rand, randAddress, randPhoneNumber, randText } from '@ngneat/falso';
 import { createId } from '@paralleldrive/cuid2';
 import { SQL, and, eq, inArray, sql } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/pg-core';
-import { Session } from 'next-auth/types';
+import { User } from 'lucia';
 import { revalidatePath } from 'next/cache';
 import Stripe from 'stripe';
 import * as z from 'zod';
 import { db } from '../db';
 import { address } from '../db/schema/address';
-import { UserSelect } from '../db/schema/auth';
 import { CartItemsSelect, cartItems } from '../db/schema/cartItems';
 import { invoice } from '../db/schema/invoice';
 import {
@@ -41,7 +40,7 @@ const CheckoutAddressInputSchema = z.object({
 });
 const CheckoutAddressSelectSchema = z.object({
   mode: z.literal('select'),
-  addressId: z.number(),
+  addressId: z.string(),
 });
 
 const PerformCheckoutSchema = z.object({
@@ -64,21 +63,14 @@ type PerformCheckoutReturn = Promise<
 
 const checkoutCommonAction = async ({
   values: { shippingAddress },
-  session,
-  userId,
+  user,
 }: {
   values: PerformCheckoutSchemaType;
-  session: Session;
-  userId: UserSelect['id'];
+  user: User;
 }) => {
   // Handling Cart
-  const cartId = session.user.cartId
-    ? decodeSingleSqid(session.user.cartId)
-    : undefined;
 
-  if (!cartId) throw new CustomError('Shopping cart not found!');
-
-  const orderedCartItems = await getCartItemsForCheckout({ cartId });
+  const orderedCartItems = await getCartItemsForCheckout({ userId: user.id });
 
   if (orderedCartItems.length === 0)
     throw new CustomError('Shopping cart is empty!');
@@ -107,8 +99,8 @@ const checkoutCommonAction = async ({
         .from(address)
         .where(
           and(
-            eq(address.id, shippingAddress.addressId),
-            eq(address.userId, userId),
+            eq(address.id, decodeSingleSqid(shippingAddress.addressId)),
+            eq(address.userId, user.id),
           ),
         )
     ).at(0);
@@ -146,7 +138,7 @@ const checkoutCommonAction = async ({
   const createdOrder = await db.transaction(async (tx) => {
     try {
       const createdOrder = (
-        await tx.insert(orders).values({ userId }).returning()
+        await tx.insert(orders).values({ userId: user.id }).returning()
       ).at(0);
 
       if (!createdOrder) {
@@ -183,8 +175,8 @@ const checkoutCommonAction = async ({
         .values({
           ...addressInsertData!,
           orderId: createdOrder.id,
-          customerEmail: session.user.email ?? null,
-          customerName: session.user.name ?? '',
+          customerEmail: user.email,
+          customerName: user.name,
         });
 
       // updating stock quantity and creating orderLine
@@ -257,7 +249,7 @@ const checkoutCommonAction = async ({
 
 export const performDummyCheckout = authorizedActionClient(
   z.object({}),
-  async ({}, { userId, session }) => {
+  async ({}, user) => {
     const fakeAddress = randAddress();
 
     const values: PerformCheckoutSchemaType = {
@@ -275,8 +267,7 @@ export const performDummyCheckout = authorizedActionClient(
     };
     const orderData = await checkoutCommonAction({
       values,
-      userId,
-      session,
+      user,
     });
 
     if (!orderData.orderId) return orderData;
@@ -305,8 +296,8 @@ export const performDummyCheckout = authorizedActionClient(
 
 export const performCheckoutAction = authorizedActionClient(
   PerformCheckoutSchema,
-  async (values, { userId, session }): PerformCheckoutReturn => {
-    const orderData = await checkoutCommonAction({ values, userId, session });
+  async (values, user): PerformCheckoutReturn => {
+    const orderData = await checkoutCommonAction({ values, user });
 
     if (!(orderData.orderId && orderData.total)) {
       return;
@@ -346,14 +337,14 @@ const CreateOrderPaymentDetailsSchema = z.object({
 
 export const createOrderPaymentDetails = authorizedActionClient(
   CreateOrderPaymentDetailsSchema,
-  async ({ orderId, paymentMethod, paymentMethodSessionId }, { userId }) => {
+  async ({ orderId, paymentMethod, paymentMethodSessionId }, user) => {
     const res = await db.transaction(async (tx) => {
       try {
         const isAllowed = (
           await tx
             .select({ orderId: orders.id })
             .from(orders)
-            .where(and(eq(orders.userId, userId), eq(orders.id, orderId)))
+            .where(and(eq(orders.userId, user.id), eq(orders.id, orderId)))
         ).at(0);
         if (!isAllowed) {
           throw new CustomError();

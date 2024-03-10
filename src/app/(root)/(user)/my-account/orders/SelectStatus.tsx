@@ -9,18 +9,12 @@ import {
   SelectValue,
 } from '@/components/UI/Select';
 import { OrdersFilterSelectValues } from '@/lib/constants/orders';
-import { GetOrdersUseQueryStateSchema } from '@/lib/types/orders';
+import { useOrderFilters } from '@/lib/hooks/useOrderFilters';
 import { SelectGroup } from '@radix-ui/react-select';
 import { XIcon } from 'lucide-react';
-import { SetValues, Values } from 'nuqs';
 
-const SelectStatus = ({
-  queryStates,
-  setQueryStates,
-}: {
-  queryStates: Values<GetOrdersUseQueryStateSchema>;
-  setQueryStates: SetValues<GetOrdersUseQueryStateSchema>;
-}) => {
+const SelectStatus = () => {
+  const { queryStates, setQueryStates } = useOrderFilters();
   const status = queryStates.status;
   return (
     <div className="relative">

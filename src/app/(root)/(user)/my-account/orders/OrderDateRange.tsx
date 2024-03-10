@@ -1,18 +1,13 @@
 'use client';
 
 import { DatePickerWithRange } from '@/components/UI/DatePicker';
-import { GetOrdersUseQueryStateSchema } from '@/lib/types/orders';
+import { useOrderFilters } from '@/lib/hooks/useOrderFilters';
 import { XIcon } from 'lucide-react';
-import { SetValues, Values } from 'nuqs';
 import { DateRange } from 'react-day-picker';
 
-const OrderDateRange = ({
-  queryStates,
-  setQueryStates,
-}: {
-  queryStates: Values<GetOrdersUseQueryStateSchema>;
-  setQueryStates: SetValues<GetOrdersUseQueryStateSchema>;
-}) => {
+const OrderDateRange = () => {
+  const { queryStates, setQueryStates } = useOrderFilters();
+
   const dateFrom = queryStates.orderDateRange?.at(0);
   const dateTo = queryStates.orderDateRange?.at(1);
   let dateRange: DateRange | undefined = undefined;

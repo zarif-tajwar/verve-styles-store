@@ -2,6 +2,7 @@
 
 import { ArrowLeftMicro } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
+import { ORDERS_PER_PAGE } from '@/lib/constants/orders';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
 const OrdersPagination = ({ ordersCount }: { ordersCount: number }) => {
@@ -17,7 +18,7 @@ const OrdersPagination = ({ ordersCount }: { ordersCount: number }) => {
           variant={'secondary'}
           roundness={'lg'}
           className="justify-between gap-3"
-          // disabled={page <= 1}
+          disabled={page <= 1}
           onClick={() => setQueryState(page - 1)}
         >
           <ArrowLeftMicro className="-ml-0.5" />
@@ -28,7 +29,7 @@ const OrdersPagination = ({ ordersCount }: { ordersCount: number }) => {
           roundness={'lg'}
           className="justify-between gap-3"
           onClick={() => setQueryState(page + 1)}
-          // disabled={ordersCount < 4}
+          disabled={ordersCount < ORDERS_PER_PAGE}
         >
           Next
           <ArrowLeftMicro className="-mr-0.5 rotate-180" />

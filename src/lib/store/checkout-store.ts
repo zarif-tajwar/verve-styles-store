@@ -1,6 +1,6 @@
 import { UseFormGetValues, UseFormTrigger } from 'react-hook-form';
 import { create } from 'zustand';
-import { AddressSelect } from '../db/schema/address';
+import { UserAddress } from '../types/user';
 import { AddressFormSchemaType } from '../validation/address-form';
 
 type CheckoutStoreAction = {
@@ -14,7 +14,7 @@ type CheckoutStoreAction = {
   setAddressFormDataGetter: (
     dataGetter: UseFormGetValues<AddressFormSchemaType>,
   ) => void;
-  setAddressId: (addressId: AddressSelect['id']) => void;
+  setAddressId: (addressId: UserAddress['id']) => void;
 };
 
 type CheckoutStore = {
@@ -27,7 +27,7 @@ type CheckoutStore = {
         | UseFormTrigger<AddressFormSchemaType>
         | undefined;
     };
-    select: { addressId: AddressSelect['id'] | undefined };
+    select: { addressId: UserAddress['id'] | undefined };
   };
 };
 

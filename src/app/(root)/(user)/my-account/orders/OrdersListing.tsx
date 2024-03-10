@@ -1,26 +1,26 @@
+'use client';
+
 import { Button } from '@/components/UI/Button';
 import Divider from '@/components/UI/Divider';
-import { getOrdersServer } from '@/lib/server/user';
-import { SearchParamsServer } from '@/lib/types/common';
+import { useOrdersQuery } from '@/lib/queries/orders';
 import { priceFormat } from '@/lib/util';
 import { Package } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import OrderItemsListing from './OrderItemsListing';
+import OrderListingSkeleton from './OrderListingSkeleton';
 import OrderStatus from './OrderStatus';
+import OrdersPagination from './OrdersPagination';
 
-const OrdersListing = async ({
-  searchParams,
-}: {
-  searchParams: SearchParamsServer;
-}) => {
-  const orders = await getOrdersServer({ searchParams });
+const OrdersListing = () => {
+  const { data: orders, isFetching } = useOrdersQuery();
   return (
     <div className="rounded-main">
-      {orders.length === 0 && (
+      {isFetching && <OrderListingSkeleton />}
+      {orders && orders.length === 0 && !isFetching && (
         <p className="text-xl font-medium">No orders found!</p>
       )}
-      {orders.length > 0 && (
+      {orders && !isFetching && (
         <ul className="relative grid grid-cols-1 gap-10 rounded-xl">
           {orders.map((order, i) => {
             return (
@@ -122,6 +122,7 @@ const OrdersListing = async ({
           })}
         </ul>
       )}
+      {orders && <OrdersPagination ordersCount={orders.length} />}
     </div>
   );
 };

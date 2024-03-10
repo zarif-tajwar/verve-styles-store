@@ -1,6 +1,4 @@
-import { getSavedAddressesServer } from '@/lib/actions/address';
-import ShippingAddressAccordion from './ShippingAddressAccordion';
-import AddressInputForm from '@/app/(root)/(user)/my-account/addresses/AddressInputForm';
+import { getSavedAddressesServer } from '@/lib/server/address';
 import ShippingAddressInputForm from './ShippingAddressInputForm';
 import ShippingAddressRadio from './ShippingAddressRadio';
 
@@ -19,7 +17,6 @@ const ShippingAddress = async () => {
       </div>
       <div className="">
         {savedAddresses.length > 0 ? (
-          // <ShippingAddressAccordion savedAddresses={savedAddresses} />
           <ShippingAddressRadio savedAddresses={savedAddresses} />
         ) : (
           <ShippingAddressInputForm

@@ -3,38 +3,35 @@
 import { SaveIcon } from '@/components/Svgs/icons';
 import { Button } from '@/components/UI/Button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/UI/Dialog';
+import { ScrollArea } from '@/components/UI/ScrollArea';
 import Spinner from '@/components/UI/Spinner';
 import { errorToast, successToast } from '@/components/UI/Toaster';
+import AddressSelectItem from '@/components/account/address/AddressSelectItem';
 import { changeDefaultAddressAction } from '@/lib/actions/address';
-import { useAddressesQuery } from '@/lib/hooks/useAddressQuery';
-import { cn } from '@/lib/util';
+import { ADDRESS_QUERY_KEY } from '@/lib/constants/query-keys';
+import { useAddressesQuery } from '@/lib/queries/address';
 import {
   DefaultAddressFormSchema,
   DefaultAddressFormSchemaType,
 } from '@/lib/validation/address-form';
 import { LinkIcon } from '@heroicons/react/16/solid';
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-// import * as ScrollArea from '@radix-ui/react-scroll-area';
-import { ScrollArea } from '@/components/UI/ScrollArea';
 import { useQueryClient } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
 import { useAction } from 'next-safe-action/hooks';
 import React, { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { CheckCircleIcon } from '@heroicons/react/24/outline';
-import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
-import { AddressItem } from '@/app/(checkout)/checkout/ShippingAddressSelect';
 
 const ChangeDefaultAddress = () => {
-  const session = useSession();
-  const addressesQuery = useAddressesQuery(session.data ?? undefined);
+  const { data: addresses } = useAddressesQuery();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { execute } = useAction(changeDefaultAddressAction, {
     onSuccess: async ({ success }) => {
-      await queryClient.refetchQueries({ queryKey: ['addresses'] });
+      await queryClient.refetchQueries({ queryKey: [ADDRESS_QUERY_KEY] });
       setIsDialogOpen(false);
       successToast(success);
     },
@@ -47,8 +44,6 @@ const ChangeDefaultAddress = () => {
       }
     },
   });
-
-  const addresses = addressesQuery.data?.data;
 
   const selectedValue = useMemo(
     () => addresses?.find((address) => address.isDefault)?.id,
@@ -122,7 +117,7 @@ const ChangeDefaultAddress = () => {
                                       <CheckCircleIcon className="size-6 text-primary-100 group-data-[state=checked]:hidden" />
                                       <CheckCircleIconSolid className="hidden size-6 text-primary-900 group-data-[state=checked]:block" />
                                     </RadioGroup.Item>
-                                    <AddressItem address={address} />
+                                    <AddressSelectItem address={address} />
                                   </label>
                                   <div className="h-px w-full bg-primary-50 last:hidden"></div>
                                 </React.Fragment>

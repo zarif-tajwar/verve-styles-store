@@ -4,15 +4,16 @@ import { Button } from '@/components/UI/Button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/UI/Dialog';
 import { errorToast, successToast } from '@/components/UI/Toaster';
 import { editAddressAction } from '@/lib/actions/address';
-import { AddressSelect } from '@/lib/db/schema/address';
+import { UserAddress } from '@/lib/types/user';
 import { PencilSquareIcon } from '@heroicons/react/16/solid';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 import AddressInputForm from './AddressInputForm';
+import { ADDRESS_QUERY_KEY } from '@/lib/constants/query-keys';
 
 type EditAddressProps = {
-  addressData: AddressSelect;
+  addressData: UserAddress;
 };
 
 const EditAddress = ({ addressData }: EditAddressProps) => {
@@ -21,7 +22,7 @@ const EditAddress = ({ addressData }: EditAddressProps) => {
 
   const { execute } = useAction(editAddressAction, {
     onSuccess: async ({ success }) => {
-      await queryClient.refetchQueries({ queryKey: ['addresses'] });
+      await queryClient.refetchQueries({ queryKey: [ADDRESS_QUERY_KEY] });
       successToast(success);
     },
     onError: (errors) => {

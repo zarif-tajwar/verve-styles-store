@@ -15,11 +15,10 @@ import {
   useMotionValue,
 } from 'framer-motion';
 import { useEffect, useMemo, useRef } from 'react';
+import { CartIcon } from '../Svgs/icons';
 import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
-import Spinner from '../UI/Spinner';
 import CartSkeleton from './CartSkeleton';
-import { CartIcon } from '../Svgs/icons';
 
 const CartItemsListing = ({
   cartItems,

@@ -3,19 +3,19 @@
 import { Button } from '@/components/UI/Button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/UI/Dialog';
 import { ScrollArea } from '@/components/UI/ScrollArea';
-import { AddressSelect } from '@/lib/db/schema/address';
+import AddressSelectItem from '@/components/account/address/AddressSelectItem';
 import { useCheckoutStore } from '@/lib/store/checkout-store';
-import React, { useEffect, useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
-import * as RadioGroup from '@radix-ui/react-radio-group';
+import { UserAddress } from '@/lib/types/user';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 import { DialogClose } from '@radix-ui/react-dialog';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import React, { useEffect } from 'react';
 
 const ShippingAddressSelect = ({
   savedAddresses,
 }: {
-  savedAddresses: AddressSelect[];
+  savedAddresses: UserAddress[];
 }) => {
   const addressId = useCheckoutStore(
     (store) => store.shippingAddress.select.addressId,
@@ -35,7 +35,7 @@ const ShippingAddressSelect = ({
           ? `Currently Selected Address`
           : `Your Saved Address`}
       </h3>
-      <AddressItem address={selectedAddress!} />
+      <AddressSelectItem address={selectedAddress!} />
       {savedAddresses.length > 1 && (
         <AddressSelectModal savedAddresses={savedAddresses} />
       )}
@@ -44,43 +44,10 @@ const ShippingAddressSelect = ({
 };
 export default ShippingAddressSelect;
 
-export const AddressItem = ({ address }: { address: AddressSelect }) => {
-  return (
-    <div className="relative text-sm">
-      <div className="mb-4 flex items-center gap-2 text-sm leading-none sm:text-base">
-        <p className="font-semibold text-primary-400">{address.label}</p>
-        {address.isDefault && (
-          <span className="text-sm font-medium text-primary-300">
-            (DEFAULT)
-          </span>
-        )}
-      </div>
-      <dl className="grid w-full gap-x-8 gap-y-2 font-medium text-primary-500 [@media(width>460px)]:grid-cols-2">
-        <div className="space-y-1">
-          <dd className="text-primary-400 opacity-90">Address</dd>
-          <dt className="font-medium">{address.address}</dt>
-        </div>
-        <div className="space-y-1">
-          <dd className="text-primary-400 opacity-90">City</dd>
-          <dt className="font-medium">{address.city}</dt>
-        </div>
-        <div className="space-y-1">
-          <dd className="text-primary-400 opacity-90">Country</dd>
-          <dt className="font-medium">{address.country}</dt>
-        </div>
-        <div className="space-y-1">
-          <dd className="text-primary-400 opacity-90">Phone</dd>
-          <dt className="font-medium">{address.phone}</dt>
-        </div>
-      </dl>
-    </div>
-  );
-};
-
 const AddressSelectModal = ({
   savedAddresses,
 }: {
-  savedAddresses: AddressSelect[];
+  savedAddresses: UserAddress[];
 }) => {
   const addressId = useCheckoutStore(
     (store) => store.shippingAddress.select.addressId,
@@ -119,7 +86,7 @@ const AddressSelectModal = ({
             <RadioGroup.Root
               value={addressId?.toString()}
               onValueChange={(value) => {
-                setAddressId(Number.parseInt(value));
+                setAddressId(value);
               }}
             >
               <div className="grid px-4">
@@ -138,7 +105,7 @@ const AddressSelectModal = ({
                           <CheckCircleIcon className="size-6 text-primary-100 group-data-[state=checked]:hidden" />
                           <CheckCircleIconSolid className="hidden size-6 text-primary-900 group-data-[state=checked]:block" />
                         </RadioGroup.Item>
-                        <AddressItem address={address} />
+                        <AddressSelectItem address={address} />
                       </label>
                       <div className="h-px w-full bg-primary-50 last:hidden"></div>
                     </React.Fragment>

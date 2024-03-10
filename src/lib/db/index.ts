@@ -16,7 +16,7 @@ import * as addressSchema from './schema/address';
 import * as productImagesSchema from './schema/productImages';
 import * as edgeStoreSchema from './schema/edgeStore';
 import * as orderLineSchema from './schema/orderLine';
-import * as authSchema from './schema/auth';
+import * as authSchema from './schema/auth2';
 import * as dummyUserSchema from './schema/dummyUser';
 import 'dotenv/config';
 import { Logger } from 'drizzle-orm/logger';

@@ -1,45 +1,18 @@
 'use server';
 
-import { db } from '../db';
-import * as z from 'zod';
-import { actionClient, authorizedActionClient } from './safe-action';
-import { and, desc, eq } from 'drizzle-orm';
-import { AddressInsert, address } from '../db/schema/address';
-import { auth, dedupedAuth } from '@/auth';
-import { AddressFormSchema } from '../validation/address-form';
-import { Session } from 'next-auth/types';
-import { CustomError } from '../errors/custom-error';
 import { rand, randAddress, randPhoneNumber, randText } from '@ngneat/falso';
-
-const GetAddressSchema = z
-  .object({
-    session: z.custom<Session>((val) => val),
-  })
-  .partial();
-
-export const getAddressesAction = actionClient(
-  GetAddressSchema,
-  async ({ session }) => {
-    try {
-      const user = session ? session.user : (await dedupedAuth())?.user;
-      if (!user) throw new CustomError();
-
-      return await db
-        .select()
-        .from(address)
-        .where(and(eq(address.userId, user.id), eq(address.isSaved, true)))
-        .orderBy(desc(address.createdAt), address.id);
-    } catch (e) {
-      throw new CustomError(
-        'Something went wrong while fetching the addresses',
-      );
-    }
-  },
-);
+import { and, eq } from 'drizzle-orm';
+import * as z from 'zod';
+import { db } from '../db';
+import { AddressInsert, address } from '../db/schema/address';
+import { CustomError } from '../errors/custom-error';
+import { decodeSingleSqid } from '../server/sqids';
+import { AddressFormSchema } from '../validation/address-form';
+import { authorizedActionClient } from './safe-action';
 
 export const addNewAddressAction = authorizedActionClient(
   AddressFormSchema,
-  async (data, { userId }) => {
+  async (data, { id: userId }) => {
     let label = data.label;
     if (!label) {
       if (data.type === 'home') label = 'Home Address';
@@ -79,11 +52,12 @@ export const addNewAddressAction = authorizedActionClient(
   },
 );
 
-const DeleteAdressSchema = z.object({ addressId: z.number() });
+const DeleteAdressSchema = z.object({ addressId: z.string() });
 
 export const deleteAddressAction = authorizedActionClient(
   DeleteAdressSchema,
-  async ({ addressId }, { userId }) => {
+  async (values, { id: userId }) => {
+    const addressId = decodeSingleSqid(values.addressId);
     try {
       await db.transaction(async (tx) => {
         const deletedAddress = (
@@ -120,13 +94,14 @@ export const deleteAddressAction = authorizedActionClient(
 );
 
 const EditAddressSchema = z.object({
-  addressId: z.number(),
+  addressId: z.string(),
   newAddressValues: AddressFormSchema.partial(),
 });
 
 export const editAddressAction = authorizedActionClient(
   EditAddressSchema,
-  async ({ addressId, newAddressValues }, { userId }) => {
+  async ({ addressId: addressIdEncoded, newAddressValues }, { id: userId }) => {
+    const addressId = decodeSingleSqid(addressIdEncoded);
     try {
       await db.transaction(async (tx) => {
         const updatedAddress = (
@@ -148,24 +123,14 @@ export const editAddressAction = authorizedActionClient(
   },
 );
 
-export const getSavedAddressesServer = async (session?: Session) => {
-  const user = session ? session.user : (await auth())?.user;
-  if (!user) return;
-
-  return await db
-    .select()
-    .from(address)
-    .where(and(eq(address.userId, user.id), eq(address.isSaved, true)))
-    .orderBy(desc(address.createdAt), address.id);
-};
-
 const ChangeDefaultAddressSchema = z.object({
-  addressId: z.number(),
+  addressId: z.string(),
 });
 
 export const changeDefaultAddressAction = authorizedActionClient(
   ChangeDefaultAddressSchema,
-  async ({ addressId }, { userId }) => {
+  async (values, { id: userId }) => {
+    const addressId = decodeSingleSqid(values.addressId);
     try {
       await db.transaction(async (tx) => {
         const sq = tx
@@ -216,7 +181,7 @@ const GenerateRandomAddressSchema = z.object({});
 
 export const generateRandomAddressAction = authorizedActionClient(
   GenerateRandomAddressSchema,
-  async ({}, { userId }) => {
+  async ({}, { id: userId }) => {
     try {
       await db.transaction(async (tx) => {
         const userDefaultAddress = (

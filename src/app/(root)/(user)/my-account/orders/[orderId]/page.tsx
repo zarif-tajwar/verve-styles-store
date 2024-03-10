@@ -1,9 +1,9 @@
-import { dedupedAuth } from '@/auth';
 import { Skeleton as AccountCardSkeleton } from '@/components/UI/AccountDetailsCard';
 import { db } from '@/lib/db';
 import { invoice } from '@/lib/db/schema/invoice';
 import { orderDetails, orderStatus } from '@/lib/db/schema/orderDetails';
 import { orders } from '@/lib/db/schema/orders';
+import { redirectIfNotSignedIn } from '@/lib/server/auth';
 import { calcTotalFromInvoiceData } from '@/lib/server/checkout';
 import { cn, priceFormat } from '@/lib/util';
 import {
@@ -20,7 +20,6 @@ import OrderStatus from '../OrderStatus';
 import Details from './_tabs/Details';
 import Invoice from './_tabs/Invoice';
 import OrderedProducts from './_tabs/OrderedProducts';
-import { redirectIfNotSignedIn } from '@/lib/server/auth';
 
 const invoiceTableColumns = getTableColumns(invoice);
 

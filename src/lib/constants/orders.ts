@@ -4,3 +4,5 @@ export const OrdersFilterSelectValues = [
   'cancelled',
   'returned',
 ] as const;
+
+export const ORDERS_PER_PAGE = 4;

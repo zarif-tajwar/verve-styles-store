@@ -15,8 +15,6 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@auth/core": "^0.19.1",
-    "@auth/drizzle-adapter": "^0.3.17",
     "@edgestore/server": "^0.1.6",
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^3.3.4",
@@ -76,7 +74,6 @@
     "lucia": "^3.0.1",
     "lucide-react": "^0.323.0",
     "next": "14.1.0",
-    "next-auth": "5.0.0-beta.4",
     "next-safe-action": "^6.0.2",
     "nextjs-toploader": "^1.6.6",
     "nprogress": "^0.2.0",

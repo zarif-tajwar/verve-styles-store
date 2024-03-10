@@ -21,7 +21,7 @@ import {
 import { genRandomInt } from '../util';
 import { db } from './index';
 import { AddressInsert, address } from './schema/address';
-import { UserInsert, UserSelect, user } from './schema/auth';
+import { UserInsert, UserSelect, user } from './schema/auth2';
 import { clothing } from './schema/clothing';
 import { dressStyles } from './schema/dressStyles';
 import {
@@ -683,7 +683,7 @@ const insertSomeTestUsers = async (n: number) => {
       id: ulid(),
       email: randEmail({ firstName, lastName }),
       name: `${firstName} ${lastName}`,
-      role: 'TEST USER',
+      role: 'TEST_USER',
       emailVerified: null,
       image: faker.image.avatarGitHub(),
     };
@@ -695,7 +695,7 @@ const insertSomeTestUsers = async (n: number) => {
 
 const deleteAllTestUsers = async () => {
   return await db.transaction(async (tx) => {
-    await tx.delete(user).where(eq(user.role, 'TEST USER')).returning();
+    await tx.delete(user).where(eq(user.role, 'TEST_USER')).returning();
   });
 };
 
@@ -704,7 +704,7 @@ const populateTestUserAddresses = async () => {
   const testUsers = await db
     .select()
     .from(user)
-    .where(eq(user.role, 'TEST USER'));
+    .where(eq(user.role, 'TEST_USER'));
   for (let i = 0; i < testUsers.length; i++) {
     for (let j = 0; j < genRandomInt(2, 5); j++) {
       const fakeAddress = randAddress();
@@ -731,7 +731,7 @@ const populateTestUserOrders = async () => {
     .select()
     .from(user)
     .innerJoin(address, eq(user.id, address.userId))
-    .where(and(eq(user.role, 'TEST USER'), eq(address.isDefault, true)));
+    .where(and(eq(user.role, 'TEST_USER'), eq(address.isDefault, true)));
 
   const productEntriesPromise = db.select().from(productEntries);
 
@@ -896,7 +896,7 @@ const makeRandomTestUserOrders = async () => {
   const allTestUsers = await db
     .select()
     .from(user)
-    .where(eq(user.role, 'TEST USER'));
+    .where(eq(user.role, 'TEST_USER'));
 
   const promises: Promise<unknown>[] = [];
 
@@ -920,7 +920,7 @@ const deleteOrders = async () => {
       .select({ orderId: orders.id })
       .from(orders)
       .innerJoin(user, eq(orders.userId, user.id))
-      .where(eq(user.role, 'TEST USER'))
+      .where(eq(user.role, 'TEST_USER'))
       .then((orders) => orders.map((order) => order.orderId));
 
     await tx

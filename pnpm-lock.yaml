@@ -5,12 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@auth/core':
-    specifier: ^0.19.1
-    version: 0.19.1(nodemailer@6.9.9)
-  '@auth/drizzle-adapter':
-    specifier: ^0.3.17
-    version: 0.3.17(nodemailer@6.9.9)
   '@edgestore/server':
     specifier: ^0.1.6
     version: 0.1.6(react-dom@18.2.0)(react@18.2.0)(zod@3.22.4)
@@ -188,9 +182,6 @@ dependencies:
   next:
     specifier: 14.1.0
     version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
-  next-auth:
-    specifier: 5.0.0-beta.4
-    version: 5.0.0-beta.4(next@14.1.0)(nodemailer@6.9.9)(react@18.2.0)
   next-safe-action:
     specifier: ^6.0.2
     version: 6.0.2(ajv@6.12.6)(next@14.1.0)(react@18.2.0)
@@ -321,67 +312,6 @@ packages:
   /@alloc/quick-lru@5.2.0:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
-
-  /@auth/core@0.18.4(nodemailer@6.9.9):
-    resolution: {integrity: sha512-GsNhsP1xE/3FoNS3dVkPjqRljLNJ4iyL2OLv3klQGNvw3bMpROFcK4lqhx7+pPHiamnVaYt2vg1xbB+lsNaevg==}
-    peerDependencies:
-      nodemailer: ^6.8.0
-    peerDependenciesMeta:
-      nodemailer:
-        optional: true
-    dependencies:
-      '@panva/hkdf': 1.1.1
-      cookie: 0.6.0
-      jose: 5.2.1
-      nodemailer: 6.9.9
-      oauth4webapi: 2.10.2
-      preact: 10.11.3
-      preact-render-to-string: 5.2.3(preact@10.11.3)
-    dev: false
-
-  /@auth/core@0.19.1(nodemailer@6.9.9):
-    resolution: {integrity: sha512-teirzfIp1MWSEX8SN4kNCfD9BOBnX8bL02WyWCOk4TVSucvRxG9GEWcUPRd8KcX4yZ0xVOGiQq7R6JkB2brjVQ==}
-    peerDependencies:
-      nodemailer: ^6.8.0
-    peerDependenciesMeta:
-      nodemailer:
-        optional: true
-    dependencies:
-      '@panva/hkdf': 1.1.1
-      '@types/cookie': 0.6.0
-      cookie: 0.6.0
-      jose: 5.2.1
-      nodemailer: 6.9.9
-      oauth4webapi: 2.10.2
-      preact: 10.11.3
-      preact-render-to-string: 5.2.3(preact@10.11.3)
-    dev: false
-
-  /@auth/core@0.23.0(nodemailer@6.9.9):
-    resolution: {integrity: sha512-vReM7RIX4BDj/EKyM6OiYnEw4u0MOEC+c2tB7V0qoZy2JZ/hn1xEuDMJwmdcvZNCjQ6kp4cW/6eTcCcEDsRbEA==}
-    peerDependencies:
-      nodemailer: ^6.8.0
-    peerDependenciesMeta:
-      nodemailer:
-        optional: true
-    dependencies:
-      '@panva/hkdf': 1.1.1
-      '@types/cookie': 0.6.0
-      cookie: 0.6.0
-      jose: 5.2.1
-      nodemailer: 6.9.9
-      oauth4webapi: 2.10.2
-      preact: 10.11.3
-      preact-render-to-string: 5.2.3(preact@10.11.3)
-    dev: false
-
-  /@auth/drizzle-adapter@0.3.17(nodemailer@6.9.9):
-    resolution: {integrity: sha512-pyHwshtINeJfUGdA6e+2lIzklfTZB2V60iLPbGXbcMMiECmsKXeEPS+xlwtJryY2ckwOoxG9a781cVX371QxUg==}
-    dependencies:
-      '@auth/core': 0.23.0(nodemailer@6.9.9)
-    transitivePeerDependencies:
-      - nodemailer
-    dev: false
 
   /@babel/code-frame@7.23.5:
     resolution: {integrity: sha512-CgH3s1a96LipHCmSUmYFPwY7MNx8C3avkq7i4Wl3cfa662ldtUe4VM1TPXX70pfmrlWTb6jLqTYrZyT2ZTJBgA==}
@@ -4038,10 +3968,6 @@ packages:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
     dev: false
 
-  /@types/cookie@0.6.0:
-    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
-    dev: false
-
   /@types/core-js@2.5.8:
     resolution: {integrity: sha512-VgnAj6tIAhJhZdJ8/IpxdatM8G4OD3VWGlp6xIxUGENZlpbob9Ty4VVdC1FIEp0aK6DBscDDjyzy5FB60TuNqg==}
     dev: true
@@ -5008,11 +4934,6 @@ packages:
 
   /cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
-    engines: {node: '>= 0.6'}
-    dev: false
-
-  /cookie@0.6.0:
-    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
     dev: false
 
@@ -6791,10 +6712,6 @@ packages:
     resolution: {integrity: sha512-W+oqK4H+r5sITxfxpSU+MMdr/YSWGvgZMQDIsNoBDGGy4i7GBPTtvFKibQzW06n3U3TqHjhvBJsirShsEJ6eeQ==}
     dev: false
 
-  /jose@5.2.1:
-    resolution: {integrity: sha512-qiaQhtQRw6YrOaOj0v59h3R6hUY9NvxBmmnMfKemkqYmBB0tEc97NbLP7ix44VP5p9/0YHG8Vyhzuo5YBNwviA==}
-    dev: false
-
   /js-beautify@1.15.1:
     resolution: {integrity: sha512-ESjNzSlt/sWE8sciZH8kBF8BPlwXPwhR6pWKAw8bw4Bwj+iZcnKW6ONWUutJ7eObuBZQpiIb8S7OYspWrKt7rA==}
     engines: {node: '>=14'}
@@ -7196,22 +7113,6 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: false
 
-  /next-auth@5.0.0-beta.4(next@14.1.0)(nodemailer@6.9.9)(react@18.2.0):
-    resolution: {integrity: sha512-vgocjvwPA8gxd/zrIP/vr9lJ/HeNe+C56lPP1D3sdyenHt8KncQV6ro7q0xCsDp1fcOKx7WAWVZH5o8aMxDzgw==}
-    peerDependencies:
-      next: ^14
-      nodemailer: ^6.6.5
-      react: ^18.2.0
-    peerDependenciesMeta:
-      nodemailer:
-        optional: true
-    dependencies:
-      '@auth/core': 0.18.4(nodemailer@6.9.9)
-      next: 14.1.0(react-dom@18.2.0)(react@18.2.0)
-      nodemailer: 6.9.9
-      react: 18.2.0
-    dev: false
-
   /next-safe-action@6.0.2(ajv@6.12.6)(next@14.1.0)(react@18.2.0):
     resolution: {integrity: sha512-czJrcw4Ov6obePv/AwUki+Z90xxFH6Gx9V5cBN/TU/cuEggxj151kTggo0h1fAiYqZEOxw5PRbDvutvm9/exaw==}
     engines: {node: '>=18.17'}
@@ -7306,6 +7207,7 @@ packages:
   /nodemailer@6.9.9:
     resolution: {integrity: sha512-dexTll8zqQoVJEZPwQAKzxxtFn0qTnjdQTchoU6Re9BUUGBJiOy3YMn/0ShTW6J5M0dfQ1NeDeRTTl4oIWgQMA==}
     engines: {node: '>=6.0.0'}
+    dev: true
 
   /nopt@7.2.0:
     resolution: {integrity: sha512-CVDtwCdhYIvnAzFoJ6NJ6dX3oga9/HyciQDnG1vQDjSLMeKLJ4A93ZqYKDrgYSr1FBY5/hMYC+2VCi24pgpkGA==}
@@ -7343,10 +7245,6 @@ packages:
     dependencies:
       mitt: 3.0.1
       next: 14.1.0(react-dom@18.2.0)(react@18.2.0)
-    dev: false
-
-  /oauth4webapi@2.10.2:
-    resolution: {integrity: sha512-ib0x1f4tCaZkTEEnRpkt96D8F2e38AFWzTOwpha1Wmme5kD+RFFgDVkrXyBSxBefFeQUoODVaieS/w9QmkZbnQ==}
     dev: false
 
   /object-assign@4.1.1:
@@ -7841,19 +7739,6 @@ packages:
   /postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
 
-  /preact-render-to-string@5.2.3(preact@10.11.3):
-    resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
-    peerDependencies:
-      preact: '>=10'
-    dependencies:
-      preact: 10.11.3
-      pretty-format: 3.8.0
-    dev: false
-
-  /preact@10.11.3:
-    resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
-    dev: false
-
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -7916,10 +7801,6 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
     dev: true
-
-  /pretty-format@3.8.0:
-    resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
-    dev: false
 
   /prism-react-renderer@2.1.0(react@18.2.0):
     resolution: {integrity: sha512-I5cvXHjA1PVGbGm1MsWCpvBCRrYyxEri0MC7/JbfIfYfcXAxHyO5PaUjs3A8H5GW6kJcLhTHxxMaOZZpRZD2iQ==}

@@ -4,8 +4,10 @@ import { Button } from '@/components/UI/Button';
 import Spinner from '@/components/UI/Spinner';
 import { errorToast, successToast } from '@/components/UI/Toaster';
 import { performDummyCheckout } from '@/lib/actions/checkout';
+import { CART_ITEM_DATA_QUERY_KEY } from '@/lib/constants/query-keys';
 import { wait } from '@/lib/util';
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
+import { useQueryClient } from '@tanstack/react-query';
 import copy from 'copy-to-clipboard';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -13,6 +15,7 @@ import { useState } from 'react';
 const TestArea = () => {
   const cardNumber = '4242 4242 4242 4242';
 
+  const qc = useQueryClient();
   const [hasCopied, setHasCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -48,6 +51,7 @@ const TestArea = () => {
           duration: 5000,
         },
       );
+      qc.refetchQueries({ queryKey: CART_ITEM_DATA_QUERY_KEY });
       router.replace('/cart');
       return;
     }
@@ -58,6 +62,7 @@ const TestArea = () => {
     successToast('Your order was placed successfully', {
       position: 'top-center',
     });
+    qc.refetchQueries({ queryKey: CART_ITEM_DATA_QUERY_KEY });
     await wait(1000);
     router.replace(href);
   };

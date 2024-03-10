@@ -2,13 +2,13 @@
 
 import { Button } from '@/components/UI/Button';
 import { cn } from '@/lib/util';
-import { BuiltInProviderType } from '@auth/core/providers';
+import { SupportedOauthProviders } from '@/lib/validation/auth';
 import { LinkIcon } from 'lucide-react';
 
 const ConnectAccountButton = ({
   provider,
 }: {
-  provider: BuiltInProviderType;
+  provider: SupportedOauthProviders;
 }) => {
   return (
     <Button className={cn('min-w-[96px] justify-start gap-2 pl-4 font-medium')}>
