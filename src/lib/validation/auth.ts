@@ -23,6 +23,7 @@ export const SupportedOauthProvidersSchema = z.enum(['facebook', 'google']);
 export const OauthSignInActionSchema = z.object({
   provider: SupportedOauthProvidersSchema,
   redirectAfterPathname: z.string().nullish().optional(),
+  connectAccount: z.boolean().optional(),
 });
 
 export type SupportedOauthProviders = z.infer<

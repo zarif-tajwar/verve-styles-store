@@ -1,6 +1,6 @@
 'use server';
 
-import { lucia } from '@/auth2';
+import { authAdapter, lucia } from '@/auth2';
 import { and, eq, gt, isNull, lt, ne, or } from 'drizzle-orm';
 import { Session, generateId } from 'lucia';
 import { cookies, headers } from 'next/headers';
@@ -13,6 +13,7 @@ import { db } from '../db';
 import {
   credentialsAccount,
   emailVerification,
+  oauthAccount,
   passwordResetToken,
   session as sessionTable,
   user,
@@ -37,6 +38,7 @@ import { ResetPassword } from '@/components/mail/ResetPassword';
 import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
 import { revalidatePath } from 'next/cache';
 import { handleCartOnSignIn } from '../server/cart';
+import { authCookieNames } from '../constants/auth';
 
 export const signInCredentialsAction = actionClient(
   CredentialsFormSchema.extend({ redirectAfter: redirectAfterSchema }),
@@ -279,9 +281,10 @@ export const signOutAction = actionClient(z.object({}), async () => {
     sessionCookie.attributes,
   );
 
+  console.log(referer, 'LOG OUT REFERER');
+
   if (referer) {
-    revalidatePath(referer);
-    return;
+    redirect(referer);
   }
 
   redirect('/auth/sign-in');

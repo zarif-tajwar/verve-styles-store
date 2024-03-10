@@ -1,15 +1,20 @@
 import { lucia } from '@/auth2';
 import { db } from '@/lib/db';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { Session, User } from 'lucia';
 import { cookies } from 'next/headers';
 import { isWithinExpirationDate } from 'oslo';
 import { cache } from 'react';
 import 'server-only';
 import { authCookieNames } from '../constants/auth';
-import { passwordResetToken, user } from '../db/schema/auth2';
+import { oauthAccount, passwordResetToken, user } from '../db/schema/auth2';
 import { UserObjectClient } from '../types/auth';
 import { redirect } from 'next/navigation';
+import { NextRequest } from 'next/server';
+import {
+  SupportedOauthProviders,
+  SupportedOauthProvidersSchema,
+} from '../validation/auth';
 
 export const auth = cache(
   async (): Promise<

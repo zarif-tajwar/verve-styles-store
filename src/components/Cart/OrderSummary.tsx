@@ -6,6 +6,7 @@ import { priceFormat } from '@/lib/util';
 import { MoveRight } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../UI/Button';
+import SignInLink from '../auth/SignInLink';
 
 const OrderSummary = ({
   cartItemsData,
@@ -68,10 +69,10 @@ const OrderSummary = ({
             </Button>
           ) : (
             <Button asChild size={'xl'} className="w-full gap-3">
-              <Link href={'/auth/sign-in'}>
+              <SignInLink redirectAfter redirectAfterTo="/checkout">
                 Sign in to Checkout
                 <MoveRight />
-              </Link>
+              </SignInLink>
             </Button>
           )}
         </div>

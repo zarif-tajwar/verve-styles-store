@@ -31,7 +31,6 @@ export const useCartItemsQuery = () => {
         return [];
       }
     },
-    refetchOnMount: false,
     placeholderData: (prev) => prev,
   });
 };

@@ -10,7 +10,7 @@ import SocialAccounts from './SocialAccounts';
 
 const LoginOptions = async () => {
   const authObject = await redirectIfNotSignedIn({
-    redirectAfter: '/login-options',
+    redirectAfter: '/my-account/login-options',
   });
 
   return (

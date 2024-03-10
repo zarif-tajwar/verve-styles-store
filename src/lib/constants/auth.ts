@@ -8,4 +8,5 @@ export const authCookieNames = {
   OAUTH_CODE_VERIFIER_GOOGLE: 'oauth_code_verifier_google',
   OAUTH_STATE_FACEBOOK: 'oauth_state_facebook',
   AFTER_REDIRECT_LINK: 'sign_in_after_redirect',
+  ACCOUNT_CONNECT: 'account_connect',
 };
