@@ -2,8 +2,13 @@ import { AuthHeader, AuthSection } from '@/components/auth/Common';
 import PasswordResetForm from '@/components/auth/PasswordResetForm';
 import { getPasswordResetTokenInfo } from '@/lib/server/auth';
 import { SearchParamsServer } from '@/lib/types/common';
-import { cn } from '@/lib/util';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
+export const metadata: Metadata = {
+  title: `Reset Password - Verve Styles`,
+  description: `Reset verve account password!`,
+};
 
 interface PageProps {
   params: { tokenId: string };
