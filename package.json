@@ -23,6 +23,8 @@
     "@next/bundle-analyzer": "^14.1.0",
     "@next/eslint-plugin-next": "^14.1.0",
     "@ngneat/falso": "^7.1.1",
+    "@node-rs/argon2": "^1.8.0",
+    "@node-rs/bcrypt": "^1.10.0",
     "@paralleldrive/cuid2": "^2.2.2",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.0.4",
