@@ -459,7 +459,11 @@ export const simulateLoginAsTestUserAction = actionClient(
       throw new CustomError('No test users were found!');
     }
 
-    const session = await lucia.createSession(selectedTestUser.user.id, {});
+    const [_, session] = await Promise.all([
+      handleCartOnSignIn(selectedTestUser.user.id),
+      lucia.createSession(selectedTestUser.user.id, {}),
+    ]);
+
     const sessionCookie = lucia.createSessionCookie(session.id);
 
     cookies().set(
