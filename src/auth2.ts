@@ -48,11 +48,15 @@ interface DatabaseSessionAttributes {
 export const googleOauth = new Google(
   env.AUTH_GOOGLE_ID,
   env.AUTH_GOOGLE_SECRET,
-  env.AUTH_GOOGLE_REDIRECT_URI,
+  process.env.VERCEL
+    ? `${process.env.VERCEL_URL}/api/auth/sign-in/google/callback`
+    : env.AUTH_GOOGLE_REDIRECT_URI,
 );
 
 export const facebookOauth = new Facebook(
   env.AUTH_FACEBOOK_ID,
   env.AUTH_FACEBOOK_SECRET,
-  env.AUTH_FACEBOOK_REDIRECT_URI,
+  process.env.VERCEL
+    ? `${process.env.VERCEL_URL}/api/auth/sign-in/facebook/callback`
+    : env.AUTH_FACEBOOK_REDIRECT_URI,
 );

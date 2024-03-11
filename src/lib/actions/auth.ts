@@ -278,8 +278,6 @@ export const signOutAction = actionClient(z.object({}), async () => {
     sessionCookie.attributes,
   );
 
-  console.log(referer, 'LOG OUT REFERER');
-
   if (referer) {
     redirect(referer);
   }
