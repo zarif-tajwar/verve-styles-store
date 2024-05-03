@@ -1,9 +1,9 @@
 import 'dotenv/config';
 import { sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/postgres-js';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import fs from 'fs';
 import path from 'node:path';
-import postgres from 'postgres';
+import { Pool } from 'pg';
 import { env } from '../validation/env';
 import { productRating } from './schema/productRating';
 import { productSalesCount } from './schema/productSalesCount';
@@ -11,7 +11,7 @@ import { productSalesCount } from './schema/productSalesCount';
 const seed = async () => {
   const connectionString = env.DB_URL;
 
-  const connection = postgres(connectionString);
+  const connection = new Pool({ connectionString });
   const db = drizzle(connection);
 
   const script_locations = [
@@ -29,7 +29,7 @@ const seed = async () => {
 const refresh = async () => {
   const connectionString = env.DB_URL;
 
-  const connection = postgres(connectionString);
+  const connection = new Pool({ connectionString });
   const db = drizzle(connection);
 
   await db.refreshMaterializedView(productSalesCount);

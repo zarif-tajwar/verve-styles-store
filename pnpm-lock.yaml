@@ -151,7 +151,7 @@ dependencies:
     version: 16.4.1
   drizzle-orm:
     specifier: ^0.30.10
-    version: 0.30.10(@neondatabase/serverless@0.9.1)(@types/pg@8.11.0)(@types/react@18.2.55)(pg@8.11.3)(postgres@3.4.4)(react@18.2.0)
+    version: 0.30.10(@neondatabase/serverless@0.9.1)(@types/pg@8.11.0)(@types/react@18.2.55)(pg@8.11.3)(react@18.2.0)
   drizzle-zod:
     specifier: ^0.5.1
     version: 0.5.1(drizzle-orm@0.30.10)(zod@3.22.4)
@@ -206,9 +206,6 @@ dependencies:
   pg:
     specifier: ^8.11.3
     version: 8.11.3
-  postgres:
-    specifier: ^3.4.4
-    version: 3.4.4
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -5673,7 +5670,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.30.10(@neondatabase/serverless@0.9.1)(@types/pg@8.11.0)(@types/react@18.2.55)(pg@8.11.3)(postgres@3.4.4)(react@18.2.0):
+  /drizzle-orm@0.30.10(@neondatabase/serverless@0.9.1)(@types/pg@8.11.0)(@types/react@18.2.55)(pg@8.11.3)(react@18.2.0):
     resolution: {integrity: sha512-IRy/QmMWw9lAQHpwbUh1b8fcn27S/a9zMIzqea1WNOxK9/4EB8gIo+FZWLiPXzl2n9ixGSv8BhsLZiOppWEwBw==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -5757,7 +5754,6 @@ packages:
       '@types/pg': 8.11.0
       '@types/react': 18.2.55
       pg: 8.11.3
-      postgres: 3.4.4
       react: 18.2.0
     dev: false
 
@@ -5767,7 +5763,7 @@ packages:
       drizzle-orm: '>=0.23.13'
       zod: '*'
     dependencies:
-      drizzle-orm: 0.30.10(@neondatabase/serverless@0.9.1)(@types/pg@8.11.0)(@types/react@18.2.55)(pg@8.11.3)(postgres@3.4.4)(react@18.2.0)
+      drizzle-orm: 0.30.10(@neondatabase/serverless@0.9.1)(@types/pg@8.11.0)(@types/react@18.2.55)(pg@8.11.3)(react@18.2.0)
       zod: 3.22.4
     dev: false
 
@@ -8164,11 +8160,6 @@ packages:
 
   /postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
-
-  /postgres@3.4.4:
-    resolution: {integrity: sha512-IbyN+9KslkqcXa8AO9fxpk97PA4pzewvpi2B3Dwy9u4zpV32QicaEdgmF3eSQUzdRk7ttDHQejNgAEr4XoeH4A==}
-    engines: {node: '>=12'}
-    dev: false
 
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
