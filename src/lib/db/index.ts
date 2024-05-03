@@ -21,7 +21,7 @@ import * as dummyUserSchema from './schema/dummyUser';
 import 'dotenv/config';
 import { Logger } from 'drizzle-orm/logger';
 import { Pool } from '@neondatabase/serverless';
-import { env } from '@/lib/validation/env.mjs';
+import { env } from '@/lib/validation/env';
 
 class CustomLogger implements Logger {
   logQuery(query: string, params: unknown[]): void {
