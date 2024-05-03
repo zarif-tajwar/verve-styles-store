@@ -3,7 +3,7 @@ import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './lib/db';
 import { UserSelect, session, user } from './lib/db/schema/auth2';
 import { Facebook, Google } from 'arctic';
-import { env } from './lib/validation/env.mjs';
+import { env } from './lib/validation/env';
 
 export const authAdapter = new DrizzlePostgreSQLAdapter(db, session, user);
 

@@ -13,7 +13,7 @@ import {
   ProductEntrySelect,
   productEntries,
 } from '@/lib/db/schema/productEntries';
-import { env } from '@/lib/validation/env.mjs';
+import { env } from '@/lib/validation/env';
 
 export async function POST(req: Request) {
   let event: Stripe.Event;

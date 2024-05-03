@@ -1,6 +1,6 @@
 import type { Config } from 'drizzle-kit';
 import 'dotenv/config';
-import { env } from '@/lib/validation/env.mjs';
+import { env } from '@/lib/validation/env';
 
 export default {
   dbCredentials: {

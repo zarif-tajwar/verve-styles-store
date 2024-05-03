@@ -14,8 +14,6 @@ export const env = createEnv({
     STRIPE_WEBHOOK_KEY: z.string(),
     SQID_SECRET: z.string(),
     DB_URL: z.string(),
-    EDGE_STORE_ACCESS_KEY: z.string(),
-    EDGE_STORE_SECRET_KEY: z.string(),
 
     SMTP_HOST: z.string(),
     SMTP_PORT: z.coerce.number(),
@@ -44,8 +42,6 @@ export const env = createEnv({
     STRIPE_WEBHOOK_KEY: process.env.STRIPE_WEBHOOK_KEY,
     SQID_SECRET: process.env.SQID_SECRET,
     DB_URL: process.env.DB_URL,
-    EDGE_STORE_ACCESS_KEY: process.env.EDGE_STORE_ACCESS_KEY,
-    EDGE_STORE_SECRET_KEY: process.env.EDGE_STORE_SECRET_KEY,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   },

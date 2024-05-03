@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { createTransport, SendMailOptions } from 'nodemailer';
-import { env } from './validation/env.mjs';
+import { env } from './validation/env';
 
 export const emailTransporter = createTransport({
   host: env.SMTP_HOST,

@@ -1,5 +1,5 @@
 import Sqids from 'sqids';
-import { env } from '@/lib/validation/env.mjs';
+import { env } from '@/lib/validation/env';
 
 // For hiding sensitive integer values
 

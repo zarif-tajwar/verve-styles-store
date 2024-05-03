@@ -1,4 +1,8 @@
-import './src/lib/validation/env.mjs';
+import { fileURLToPath } from 'node:url';
+import createJiti from 'jiti';
+const jiti = createJiti(fileURLToPath(import.meta.url));
+
+jiti('./src/lib/validation/env');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // typescript: {

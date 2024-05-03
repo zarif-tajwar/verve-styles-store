@@ -1,5 +1,5 @@
 import { Stripe, loadStripe } from '@stripe/stripe-js';
-import { env } from '@/lib/validation/env.mjs';
+import { env } from '@/lib/validation/env';
 
 let stripePromise: Promise<Stripe | null>;
 
