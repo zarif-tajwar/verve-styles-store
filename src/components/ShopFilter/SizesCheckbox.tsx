@@ -11,6 +11,8 @@ const SizesCheckbox = () => {
   );
   const { checkedValues, handleCheck } = multipleOptionCheck('sizes');
 
+  console.log('Sizes re-rended');
+
   return (
     <div className="flex flex-wrap gap-2">
       {sizesOptions.map((option) => (

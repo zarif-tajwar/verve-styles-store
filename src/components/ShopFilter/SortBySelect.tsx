@@ -33,6 +33,8 @@ const SelectMain = () => {
   const { currentOptionValue, handleValueChange } =
     singleOptionCheck('sort_by');
 
+  console.log('Select re-rended');
+
   return (
     <Select
       value={currentOptionValue || defaultSortOptionValue}

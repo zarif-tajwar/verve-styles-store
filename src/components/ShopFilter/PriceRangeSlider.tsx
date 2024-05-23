@@ -18,6 +18,8 @@ const PriceRangeSlider = () => {
 
   const [min, max] = currentValue;
 
+  console.log('Price re-rended');
+
   return (
     <div>
       <Slider.Root

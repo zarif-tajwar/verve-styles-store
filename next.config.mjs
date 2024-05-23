@@ -8,6 +8,7 @@ const nextConfig = {
   // typescript: {
   //   ignoreBuildErrors: true,
   // },
+  experimental: { reactCompiler: true, ppr: true },
   images: {
     remotePatterns: [
       {

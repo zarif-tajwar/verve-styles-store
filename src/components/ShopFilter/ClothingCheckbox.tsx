@@ -12,6 +12,8 @@ const ClothingCheckbox = () => {
   );
   const { checkedValues, handleCheck } = multipleOptionCheck('clothing');
 
+  console.log('Clothing re-rended');
+
   return (
     <div className="grid grid-cols-2 gap-2.5 text-sm font-normal">
       {clothingItemsOptions.map((option) => (

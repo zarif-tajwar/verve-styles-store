@@ -12,6 +12,8 @@ const DressStyleCheckbox = () => {
   );
   const { checkedValues, handleCheck } = multipleOptionCheck('styles');
 
+  console.log('Dress-style re-rended');
+
   return (
     <div>
       <div className="grid grid-cols-2 gap-2.5 text-black/60">

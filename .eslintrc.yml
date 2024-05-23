@@ -12,3 +12,4 @@ rules:
     - 'error'
     - 'drizzleObjectName':
         - 'db'
+  # 'react-compiler/react-compiler': 'error'
