@@ -1,5 +1,8 @@
 import Footer from '@/components/Footer/Footer';
 import Navbar from '@/components/Navbar/Navbar';
+import { Suspense } from 'react';
+
+export const experimental_ppr = true;
 
 export default async function Layout({
   children,
@@ -8,7 +11,11 @@ export default async function Layout({
 }) {
   return (
     <>
-      <Navbar />
+      <Suspense
+        fallback={<div className="h-[var(--nav-height)] animate-pulse"></div>}
+      >
+        <Navbar />
+      </Suspense>
       {children}
       <Footer />
     </>

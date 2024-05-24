@@ -1,6 +1,6 @@
 import { ProductListingSkeleton } from '@/components/ShopFilter/Skeleton';
 
-const loading = () => {
+const Loading = () => {
   return (
     <>
       <div className="col-start-1 row-start-1"></div>
@@ -10,4 +10,4 @@ const loading = () => {
     </>
   );
 };
-export default loading;
+export default Loading;
