@@ -12,8 +12,21 @@ import { OrdersFilterSelectValues } from '@/lib/constants/orders';
 import { useOrderFilters } from '@/lib/hooks/useOrderFilters';
 import { SelectGroup } from '@radix-ui/react-select';
 import { XIcon } from 'lucide-react';
+import { Suspense } from 'react';
 
 const SelectStatus = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-9 min-w-48 animate-pulse rounded-md bg-primary-50" />
+      }
+    >
+      <SelectStatusClient />
+    </Suspense>
+  );
+};
+
+const SelectStatusClient = () => {
   const { queryStates, setQueryStates } = useOrderFilters();
   const status = queryStates.status;
   return (

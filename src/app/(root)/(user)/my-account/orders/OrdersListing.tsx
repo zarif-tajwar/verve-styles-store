@@ -6,13 +6,21 @@ import { useOrdersQuery } from '@/lib/queries/orders';
 import { priceFormat } from '@/lib/util';
 import { Package } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
+import React, { Suspense } from 'react';
 import OrderItemsListing from './OrderItemsListing';
 import OrderListingSkeleton from './OrderListingSkeleton';
 import OrderStatus from './OrderStatus';
 import OrdersPagination from './OrdersPagination';
 
 const OrdersListing = () => {
+  return (
+    <Suspense fallback={<OrderListingSkeleton />}>
+      <OrdersListingClient />
+    </Suspense>
+  );
+};
+
+const OrdersListingClient = () => {
   const { data: orders, isFetching } = useOrdersQuery();
   return (
     <div className="rounded-main">

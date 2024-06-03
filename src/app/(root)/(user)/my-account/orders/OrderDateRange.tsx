@@ -3,9 +3,22 @@
 import { DatePickerWithRange } from '@/components/UI/DatePicker';
 import { useOrderFilters } from '@/lib/hooks/useOrderFilters';
 import { XIcon } from 'lucide-react';
+import { Suspense } from 'react';
 import { DateRange } from 'react-day-picker';
 
 const OrderDateRange = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-9 min-w-48 animate-pulse rounded-md bg-primary-50" />
+      }
+    >
+      <OrderDateRangeClient />
+    </Suspense>
+  );
+};
+
+const OrderDateRangeClient = () => {
   const { queryStates, setQueryStates } = useOrderFilters();
 
   const dateFrom = queryStates.orderDateRange?.at(0);
