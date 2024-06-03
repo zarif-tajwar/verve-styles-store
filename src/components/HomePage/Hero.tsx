@@ -6,6 +6,7 @@ import { PartnerLogo } from '../Svgs/PartnerLogo';
 import { Button } from '../UI/Button';
 import { Container } from '../UI/Container';
 import { Section } from '../UI/Section';
+import { AspectRatio } from '../UI/AspectRatio';
 
 const highlightedInfos = [
   '200+ International Brands',
@@ -49,14 +50,14 @@ const Hero = () => {
       <Container
         className={cn(
           'relative grid flex-grow grid-cols-1 overflow-y-hidden',
-          'md:grid-cols-5',
+          'lg:grid-cols-5',
         )}
       >
         {/* HERO CONTENT */}
         <div
           className={cn(
             'flex items-center py-10 md:py-16 container:py-24',
-            'md:col-span-3',
+            'lg:col-span-3',
           )}
         >
           <div>
@@ -91,7 +92,26 @@ const Hero = () => {
           </div>
         </div>
         {/* HERO IMAGE */}
+
         <div
+          className={
+            'grid place-items-center items-end lg:col-span-2 lg:place-items-end'
+          }
+        >
+          <div className="w-full max-w-[20rem] lg:max-w-[26rem]">
+            <AspectRatio ratio={879 / 1440}>
+              <Image
+                src={'/hero-image-model.png'}
+                alt="A handsome yong man standing confidently wearing verve cloths."
+                width={879}
+                height={1440}
+                className="h-full w-full object-cover"
+              />
+            </AspectRatio>
+          </div>
+        </div>
+
+        {/* <div
           className={cn(
             'md:h-full',
             'flex items-end justify-center md:justify-end',
@@ -101,7 +121,7 @@ const Hero = () => {
         >
           <div
             className={cn(
-              'md:w-auto md:max-w-[26rem]',
+              'max-h-[1000px] lg:max-h-none lg:w-auto lg:max-w-[26rem]',
               'flex items-end',
               'w-full max-w-[16rem]',
             )}
@@ -111,10 +131,10 @@ const Hero = () => {
               alt="A handsome yong man standing confidently wearing verve cloths."
               width={879}
               height={1440}
-              className="object-scale-down object-right-bottom"
+              className="object-scale-down object-bottom lg:object-right-bottom"
             />
           </div>
-        </div>
+        </div> */}
       </Container>
       <div className="w-full bg-black">
         <Container className="py-6 md:py-10">
