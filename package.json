@@ -28,6 +28,7 @@
     "@node-rs/bcrypt": "^1.10.0",
     "@paralleldrive/cuid2": "^2.2.2",
     "@radix-ui/react-accordion": "^1.1.2",
+    "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -98,7 +99,7 @@
     "tailwindcss-easing": "^0.2.1",
     "typescript": "5.3.3",
     "use-debounce": "^10.0.0",
-    "vaul": "^0.9.0",
+    "vaul": "^0.9.1",
     "zod": "^3.22.4",
     "zustand": "^4.5.0"
   },
@@ -116,7 +117,7 @@
     "nodemailer": "^6.9.9",
     "postcss": "^8.4.34",
     "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.11",
+    "prettier-plugin-tailwindcss": "^0.6.1",
     "tailwindcss": "^3.4.1",
     "ulidx": "^2.2.1"
   }
