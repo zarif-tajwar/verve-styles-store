@@ -7,7 +7,7 @@ import { renderAsync } from '@react-email/render';
 import { and, eq, gt, isNull, lt, or } from 'drizzle-orm';
 import { generateId } from 'lucia';
 import { cookies, headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { RedirectType, redirect } from 'next/navigation';
 import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
 import { Argon2id } from 'oslo/password';
 import React from 'react';
@@ -36,6 +36,7 @@ import {
   redirectAfterSchema,
 } from '../validation/auth';
 import { actionClient } from './safe-action';
+import { revalidatePath } from 'next/cache';
 
 export const signInCredentialsAction = actionClient(
   CredentialsFormSchema.extend({ redirectAfter: redirectAfterSchema }),
@@ -253,11 +254,11 @@ export const validateEmailVerificationAction = actionClient(
       sessionCookie.attributes,
     );
 
-    redirect(
-      values.redirectAfter
-        ? `${decodeURIComponent(values.redirectAfter)}`
-        : '/shop',
-    );
+    const redirectAfter =
+      (values.redirectAfter && decodeURIComponent(values.redirectAfter)) ||
+      '/shop';
+
+    return { redirectAfter };
   },
 );
 
@@ -470,10 +471,10 @@ export const simulateLoginAsTestUserAction = actionClient(
       sessionCookie.attributes,
     );
 
-    redirect(
-      values.redirectAfter
-        ? `${decodeURIComponent(values.redirectAfter)}`
-        : '/shop',
-    );
+    const redirectAfter =
+      (values.redirectAfter && decodeURIComponent(values.redirectAfter)) ||
+      '/shop';
+
+    return { redirectAfter };
   },
 );

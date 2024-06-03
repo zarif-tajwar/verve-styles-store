@@ -5,3 +5,5 @@ export const SHOP_FILTER_PRODUCTS_QUERY_KEY = 'getShopFilterProducts';
 export const ADDRESS_QUERY_KEY = 'getAddresses';
 
 export const ORDERS_QUERY_KEY = 'getOrders';
+
+export const AUTH_QUERY_KEY = 'AUTH';
