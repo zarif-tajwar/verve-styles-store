@@ -1,21 +1,15 @@
 'use client';
 
-import { revalidatePathAction } from '@/lib/actions/checkout';
 import { CartItemProps } from '@/lib/types/cart';
 import { priceFormat } from '@/lib/util';
-import { MoveRight } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '../UI/Button';
-import SignInLink from '../auth/SignInLink';
+import CartCheckoutButton from './CartCheckoutButton';
 
 const OrderSummary = ({
   cartItemsData,
   deliveryCharge,
-  isLoggedIn,
 }: {
   cartItemsData: CartItemProps[];
   deliveryCharge: number;
-  isLoggedIn: boolean;
 }) => {
   const subtotal = cartItemsData.reduce(
     (acc, curr) => acc + Number.parseFloat(curr.price) * curr.quantity,
@@ -54,28 +48,7 @@ const OrderSummary = ({
           </div>
         </dl>
         <div className="hidden h-full w-px bg-primary-50 md:block lg:hidden"></div>
-        <div className="flex items-center justify-center">
-          {isLoggedIn ? (
-            <Button
-              asChild
-              size={'xl'}
-              className="w-full gap-3"
-              onClick={() => revalidatePathAction('/checkout')}
-            >
-              <Link href={'/checkout'}>
-                Go to checkout
-                <MoveRight />
-              </Link>
-            </Button>
-          ) : (
-            <Button asChild size={'xl'} className="w-full gap-3">
-              <SignInLink redirectAfter redirectAfterTo="/checkout">
-                Sign in to Checkout
-                <MoveRight />
-              </SignInLink>
-            </Button>
-          )}
-        </div>
+        <CartCheckoutButton />
       </div>
     </div>
   );

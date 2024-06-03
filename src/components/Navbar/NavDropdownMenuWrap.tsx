@@ -1,20 +1,24 @@
-import { auth, getUserObjectClient } from '@/lib/server/auth';
-import CartMenu from './CartMenu';
-import NavUserDropdown from './NavUserDropdown';
+import dynamic from 'next/dynamic';
 import SearchMenu from './SearchMenu';
 
+const NavUserDropdownLazy = dynamic(() => import('./NavUserDropdown'), {
+  loading: () => (
+    <div className="size-10 animate-pulse rounded-full bg-primary-100"></div>
+  ),
+});
+
+const CartMenuLazy = dynamic(() => import('./CartMenu'), {
+  loading: () => (
+    <div className="size-10 animate-pulse rounded-full bg-primary-100"></div>
+  ),
+});
+
 const NavDropdownMenuWrap = async () => {
-  const authObject = await auth();
-
-  const isLoggedIn = !!authObject.session;
-
-  const userObjectClient = getUserObjectClient(authObject.user);
-
   return (
     <div className="flex items-center lg:-mx-2">
       <SearchMenu />
-      <CartMenu isLoggedIn={isLoggedIn} />
-      <NavUserDropdown user={userObjectClient} />
+      <CartMenuLazy />
+      <NavUserDropdownLazy />
     </div>
   );
 };

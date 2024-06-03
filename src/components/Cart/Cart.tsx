@@ -23,11 +23,9 @@ import CartSkeleton from './CartSkeleton';
 const CartItemsListing = ({
   cartItems,
   deliveryCharge,
-  isLoggedIn,
 }: {
   cartItems: FetchedCartItem[];
   deliveryCharge: number;
-  isLoggedIn: boolean;
 }) => {
   const totalCartItems = cartItems.length;
 
@@ -101,11 +99,7 @@ const CartItemsListing = ({
           </ScrollArea>
         </div>
       </div>
-      <OrderSummary
-        isLoggedIn={isLoggedIn}
-        deliveryCharge={deliveryCharge}
-        cartItemsData={cartItems}
-      />
+      <OrderSummary deliveryCharge={deliveryCharge} cartItemsData={cartItems} />
     </div>
   );
 };
@@ -148,13 +142,7 @@ const TemporaryButtons = () => {
   );
 };
 
-const Cart = ({
-  deliveryCharge,
-  isLoggedIn,
-}: {
-  deliveryCharge: number;
-  isLoggedIn: boolean;
-}) => {
+const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
   const { data, isLoading, isFetched } = useCartItemsQuery();
 
   const cartItemsData = data;
@@ -170,7 +158,6 @@ const Cart = ({
             <CartItemsListing
               cartItems={cartItemsData}
               deliveryCharge={deliveryCharge}
-              isLoggedIn={isLoggedIn}
             />
           )}
           {isLoading && <CartSkeleton />}

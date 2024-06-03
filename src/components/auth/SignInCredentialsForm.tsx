@@ -25,8 +25,11 @@ import Spinner from '../UI/Spinner';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
 import { AuthSkeletonForm } from './AuthSkeletons';
+import { useQueryClient } from '@tanstack/react-query';
+import { AUTH_QUERY_KEY } from '@/lib/constants/query-keys';
 
 const SignInCredentialsFormClient = () => {
+  const qc = useQueryClient();
   const form = useForm<CredentialsFormSchemaType>({
     resolver: zodResolver(CredentialsFormSchema),
   });
@@ -54,6 +57,7 @@ const SignInCredentialsFormClient = () => {
 
     setLoginSuccess(true);
 
+    qc.refetchQueries({ queryKey: [AUTH_QUERY_KEY] });
     router.push(
       redirectAfter ? `${decodeURIComponent(redirectAfter)}` : '/shop',
     );

@@ -1,21 +1,38 @@
 'use client';
 
-import {
-  HomeIcon,
-  ShoppingBagIcon,
-  SparklesIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
+import { useAuthQuery } from '@/lib/queries/auth';
+import { cn } from '@/lib/util';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
 import { FileClockIcon, LogIn, LogOutIcon, User2 } from 'lucide-react';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
-import { signOutAction } from '@/lib/actions/auth';
-import { cn } from '@/lib/util';
 import SignInLink from '../auth/SignInLink';
 
-const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+const MobileUserMenu = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="size-10 animate-pulse rounded-full bg-primary-100"></div>
+      }
+    >
+      <MobileUserMenuClient />
+    </Suspense>
+  );
+};
+
+const MobileUserMenuClient = () => {
+  const { data: user, isLoading } = useAuthQuery();
+
+  if (user === undefined || isLoading)
+    return (
+      <div className="size-10 animate-pulse rounded-full bg-primary-100"></div>
+    );
+
+  const isLoggedIn = user !== null;
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -53,7 +70,7 @@ const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                           size={'md'}
                           asChild
                         >
-                          <SignInLink>
+                          <SignInLink redirectAfter="same-url">
                             <LogIn className="size-5" /> Sign In
                           </SignInLink>
                         </Button>
@@ -98,12 +115,15 @@ const MobileUserMenu = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                             align={'left'}
                             className="gap-3"
                             size={'md'}
-                            onClick={async () => {
-                              await signOutAction({});
-                            }}
+                            asChild
                           >
-                            <LogOutIcon className="size-5" strokeWidth={1.5} />{' '}
-                            Logout
+                            <a href="/api/auth/logout">
+                              <LogOutIcon
+                                className="size-5"
+                                strokeWidth={1.5}
+                              />{' '}
+                              Logout
+                            </a>
                           </Button>
                         </Dialog.Close>
                       </>

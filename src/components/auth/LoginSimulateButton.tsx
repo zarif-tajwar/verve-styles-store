@@ -1,7 +1,7 @@
 'use client';
 
 import { useAction } from 'next-safe-action/hooks';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '../UI/Button';
 import { LockOpenIcon } from '@heroicons/react/20/solid';
 import { cn } from '@/lib/util';
@@ -9,13 +9,22 @@ import Spinner from '../UI/Spinner';
 import { simulateLoginAsTestUserAction } from '@/lib/actions/auth';
 import { Suspense } from 'react';
 import { AuthSkeletonButton } from './AuthSkeletons';
+import { useQueryClient } from '@tanstack/react-query';
+import { AUTH_QUERY_KEY } from '@/lib/constants/query-keys';
 
 type LoginSimulateButtonProps = {
   className?: string;
 };
 
 const LoginSimulateButtonClient = ({ className }: LoginSimulateButtonProps) => {
-  const { status, execute } = useAction(simulateLoginAsTestUserAction);
+  const router = useRouter();
+  const qc = useQueryClient();
+  const { status, execute } = useAction(simulateLoginAsTestUserAction, {
+    onSuccess: ({ redirectAfter }) => {
+      qc.refetchQueries({ queryKey: [AUTH_QUERY_KEY] });
+      router.push(redirectAfter);
+    },
+  });
 
   const currentSearchParamsObject = useSearchParams();
 

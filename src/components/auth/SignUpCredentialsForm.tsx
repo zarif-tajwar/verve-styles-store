@@ -13,7 +13,7 @@ import { SignUpCredentialsFormStepSchemas } from '@/lib/validation/auth';
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -30,8 +30,12 @@ import { errorToast } from '../UI/Toaster';
 import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
 import { Suspense } from 'react';
 import { AuthSkeletonForm } from './AuthSkeletons';
+import { AUTH_QUERY_KEY } from '@/lib/constants/query-keys';
+import { useQueryClient } from '@tanstack/react-query';
 
 const SignUpCredentialsFormClient = () => {
+  const router = useRouter();
+  const qc = useQueryClient();
   const currentSearchParamsObject = useSearchParams();
 
   let redirectAfter = currentSearchParamsObject.get('redirectAfter');
@@ -107,6 +111,11 @@ const SignUpCredentialsFormClient = () => {
     });
 
     if (!result) return;
+
+    if (result.data?.redirectAfter) {
+      qc.refetchQueries({ queryKey: [AUTH_QUERY_KEY] });
+      router.push(redirectAfter || '/shop');
+    }
 
     if (result.serverError) {
       formVerificationCode.setError('code', { message: result.serverError });
