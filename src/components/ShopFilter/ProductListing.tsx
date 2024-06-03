@@ -42,6 +42,7 @@ export const ProductListing = ({
                   alt={`${product.name}`}
                   className="z-[11] object-cover grayscale"
                   fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1024px) 25vw, 20vw"
                 />
               )}
             </div>

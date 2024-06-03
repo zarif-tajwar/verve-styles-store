@@ -124,8 +124,6 @@ const ProductImageShowcase = ({
                       <Image
                         src={img.url}
                         alt={img.alt}
-                        // width={444}
-                        // height={666}
                         className="object-cover grayscale"
                         fill
                       />

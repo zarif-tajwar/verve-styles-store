@@ -65,6 +65,7 @@ const BrowseStyle = () => {
                             alt={`A handsome young man wearing verve's ${option.text} clothing`}
                             fill
                             className="object-cover object-left-bottom"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1024px) 25vw, 20vw"
                           />
                         </div>
                       </Link>

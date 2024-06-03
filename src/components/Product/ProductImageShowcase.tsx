@@ -92,6 +92,9 @@ const ProductImageShowcase = ({
                         alt={img.alt}
                         className="object-cover grayscale"
                         fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 40vw, (max-width: 1024px) 30vw, (max-width: 1280px) 20vw, 15vw"
+                        loading="eager"
+                        priority
                       />
                     </div>
                   </CarouselItem>
@@ -127,6 +130,9 @@ const ProductImageShowcase = ({
                           alt={img.alt}
                           className="object-cover grayscale"
                           fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, (max-width: 1024px) 50vw, (max-width: 1280px) 40vw, 33vw"
+                          loading="eager"
+                          priority
                         />
                       </div>
                     </CarouselItem>

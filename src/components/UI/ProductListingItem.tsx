@@ -39,7 +39,7 @@ const ProductRating = React.forwardRef<HTMLDivElement, ProductRatingProps>(
       <Comp
         ref={ref}
         className={cn(
-          '-ml-1 mb-4 flex items-center gap-3  @[15rem]/item:mb-5',
+          '-ml-1 mb-4 flex items-center gap-3 @[15rem]/item:mb-5',
           className,
         )}
         {...props}
@@ -76,7 +76,13 @@ const ProductImage = React.forwardRef<HTMLDivElement, ProductImageProps>(
         )}
         {...props}
       >
-        <Image src={src} alt={alt} className="object-cover grayscale" fill />
+        <Image
+          src={src}
+          alt={alt}
+          className="object-cover grayscale"
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1024px) 25vw, 20vw"
+        />
       </Comp>
     );
   },
@@ -96,7 +102,7 @@ const ProductName = React.forwardRef<HTMLHeadingElement, ProductNameProps>(
       <Comp
         ref={ref}
         className={cn(
-          'mb-0 line-clamp-1 text-lg font-semibold capitalize @[15rem]/item:mb-1  @[15rem]/item:text-xl  @[18rem]/item:mb-1.5 @[18rem]/item:text-2xl',
+          'mb-0 line-clamp-1 text-lg font-semibold capitalize @[15rem]/item:mb-1 @[15rem]/item:text-xl @[18rem]/item:mb-1.5 @[18rem]/item:text-2xl',
           className,
         )}
         {...props}

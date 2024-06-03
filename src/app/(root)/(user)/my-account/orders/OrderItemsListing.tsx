@@ -30,6 +30,7 @@ const OrderItemsListing = ({
                     alt={product.name}
                     className="object-cover"
                     fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1024px) 25vw, 20vw"
                   />
                 </div>
                 <div className="flex flex-col justify-between">

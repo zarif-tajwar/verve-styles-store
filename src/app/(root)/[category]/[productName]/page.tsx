@@ -17,7 +17,7 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense, cache } from 'react';
 
-export async function generateStaticParams() {
+async function genStaticParamsFunc() {
   const slugs = await db
     .select({
       name: products.name,
@@ -32,6 +32,10 @@ export async function generateStaticParams() {
     productName: `${makeValidURL(slug.name)}-${slug.id}`,
   }));
 }
+
+export const generateStaticParams = !!process.env.VERCEL
+  ? genStaticParamsFunc
+  : undefined;
 
 export const dynamicParams = false;
 

@@ -106,35 +106,13 @@ const Hero = () => {
                 width={879}
                 height={1440}
                 className="h-full w-full object-cover"
+                priority={true}
+                loading="eager"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 70vw, (max-width: 1280px) 30vw, 20vw"
               />
             </AspectRatio>
           </div>
         </div>
-
-        {/* <div
-          className={cn(
-            'md:h-full',
-            'flex items-end justify-center md:justify-end',
-            'md:col-span-2 md:mr-[10%]',
-            'md:pt-4',
-          )}
-        >
-          <div
-            className={cn(
-              'max-h-[1000px] lg:max-h-none lg:w-auto lg:max-w-[26rem]',
-              'flex items-end',
-              'w-full max-w-[16rem]',
-            )}
-          >
-            <Image
-              src={'/hero-image-model.png'}
-              alt="A handsome yong man standing confidently wearing verve cloths."
-              width={879}
-              height={1440}
-              className="object-scale-down object-bottom lg:object-right-bottom"
-            />
-          </div>
-        </div> */}
       </Container>
       <div className="w-full bg-black">
         <Container className="py-6 md:py-10">
