@@ -91,6 +91,7 @@ const CartItem = memo(
         <AnimatePresence key={'cartItemContainer'} mode="wait" initial={false}>
           {!confirmDelete && (
             <motion.div
+              data-vaul-no-drag
               exit={{
                 opacity: 0,
                 height: '0px',

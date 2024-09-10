@@ -83,10 +83,7 @@ const CartItemsListing = ({
         className="rounded-main border border-primary-100 pt-[var(--vertical-padding)] [--vertical-padding:1rem] sm:[--vertical-padding:1.25rem] md:[--vertical-padding:1.5rem] lg:col-span-3 landscape:[@media(height<625px)]:[--min-height:384px]"
       >
         <div className="px-1 sm:px-2">
-          <ScrollArea
-            scrollBarClassName="w-2 translate-x-0.5 sm:translate-x-0"
-            data-vaul-no-drag
-          >
+          <ScrollArea scrollBarClassName="w-2 translate-x-0.5 sm:translate-x-0">
             <motion.div
               style={{ height: heightFinal }}
               className={cn(
