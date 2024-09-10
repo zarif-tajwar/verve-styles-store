@@ -26,6 +26,18 @@ const NavLinks = () => (
           <Link href={'/shop'}>Shop</Link>
         </Button>
       </li>
+      <li>
+        <Button
+          asChild
+          variant={'ghost'}
+          size={'md'}
+          className="gap-2 px-5 font-medium"
+        >
+          <Link href={'https://github.com/zarif-tajwar/verve-styles-store'}>
+            Github
+          </Link>
+        </Button>
+      </li>
     </ul>
   </div>
 );

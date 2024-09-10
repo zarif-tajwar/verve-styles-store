@@ -1,7 +1,9 @@
 'use client';
 
-import { Hamburger } from '../Svgs/icons';
-import { Button } from '../UI/Button';
+import { GithubOutlineIcon, Hamburger } from '@/components/Svgs/icons';
+import { Button } from '@/components/UI/Button';
+import { ScrollArea } from '@/components/UI/ScrollArea';
+import { cn } from '@/lib/util';
 import {
   HomeIcon,
   ShoppingBagIcon,
@@ -10,8 +12,6 @@ import {
 } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
 import Link from 'next/link';
-import { ScrollArea } from '../UI/ScrollArea';
-import { cn } from '@/lib/util';
 
 const HamburgerMenu = () => {
   return (
@@ -30,7 +30,7 @@ const HamburgerMenu = () => {
         <Dialog.Content
           className={cn(
             'fixed left-0 top-[var(--nav-height)] z-50 h-[calc(100dvh-var(--nav-height))] w-screen border-t border-primary-100 bg-primary-0',
-            'data-[state=open]:animate-in data-[state=open]:fade-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 origin-top data-[state=closed]:duration-200 data-[state=open]:duration-300',
+            'origin-top data-[state=closed]:duration-200 data-[state=open]:duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
           )}
         >
           <ScrollArea className="h-full max-h-[calc(100svh-var(--nav-height))] w-full">
@@ -65,6 +65,27 @@ const HamburgerMenu = () => {
                       >
                         <Link href={'/shop'}>
                           <ShoppingBagIcon className="size-5" /> Shop
+                        </Link>
+                      </Button>
+                    </Dialog.Close>
+                    <Dialog.Close asChild>
+                      <Button
+                        variant={'secondary'}
+                        align={'left'}
+                        className="gap-3"
+                        size={'md'}
+                        asChild
+                      >
+                        <Link
+                          href={
+                            'https://github.com/zarif-tajwar/verve-styles-store'
+                          }
+                        >
+                          <GithubOutlineIcon
+                            className="size-5"
+                            strokeWidth={1.8}
+                          />
+                          Github
                         </Link>
                       </Button>
                     </Dialog.Close>

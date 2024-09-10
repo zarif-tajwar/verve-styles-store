@@ -106,7 +106,7 @@ const SocialMediaLinks = [
   {
     title: 'GitHub',
     icon: SocialMedia.github,
-    href: 'https://www.github.com/',
+    href: 'https://github.com/zarif-tajwar/verve-styles-store',
   },
 ];
 
