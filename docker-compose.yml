@@ -9,8 +9,12 @@ services:
     ports:
       - ${DB_PORT}:5432
 
-  adminer:
-    image: adminer
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
     restart: always
     ports:
-      - 8080:8080
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
