@@ -1,6 +1,6 @@
 'use client';
 
-import { XMarkIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon } from '@heroicons/react/20/solid';
 import { Slider2Icon, SliderIcon } from '../Svgs/icons';
 import { Button } from '../UI/Button';
 import { Container } from '../UI/Container';
@@ -16,7 +16,6 @@ import DressStyleCheckbox from './DressStyleCheckbox';
 import PriceRangeSlider from './PriceRangeSlider';
 import SizesCheckbox from './SizesCheckbox';
 import SortByRadioGroup from './SortByRadioGroup';
-import SortBySelect from './SortBySelect';
 
 const ShopFiltersDrawer = () => {
   return (
@@ -28,11 +27,11 @@ const ShopFiltersDrawer = () => {
             Filters
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="h-[calc(95dvh-var(--close-size))] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem]">
+        <DrawerContent className="h-[calc(95dvh-var(--close-size)-16px)] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem]">
           <Container className="">
             <div className="relative">
-              <DrawerClose className="absolute right-0 top-0 inline-flex size-[var(--close-size)] -translate-y-full items-center justify-center rounded-full text-primary-0 transition-transform duration-200 hover:scale-125">
-                <XMarkIcon className="size-[75%]" strokeWidth={2} />
+              <DrawerClose className="absolute -top-2 right-0 inline-flex size-[var(--close-size)] -translate-y-full items-center justify-center rounded-full bg-primary-0 text-primary-500 transition-colors duration-200 hover:bg-primary-50">
+                <XMarkIcon className="size-6" />
               </DrawerClose>
             </div>
           </Container>
@@ -49,7 +48,7 @@ const ShopFiltersDrawer = () => {
               </div>
             </Container>
             <Divider className="" />
-            <Container className="overflow-auto py-8">
+            <Container data-vaul-no-drag className="overflow-auto py-8">
               <div className="">
                 <div className="px-2">
                   <h3 className="mb-[var(--heading-margin)] text-lg font-semibold capitalize">

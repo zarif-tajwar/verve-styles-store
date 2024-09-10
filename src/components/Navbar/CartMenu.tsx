@@ -2,7 +2,7 @@
 
 import useCartDrawerOpen from '@/lib/hooks/useCartDrawerOpen';
 import { cn } from '@/lib/util';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/20/solid';
 import { Suspense } from 'react';
 import Cart from '../Cart/Cart';
 import { CartIcon } from '../Svgs/icons';
@@ -39,15 +39,15 @@ const CartMenuClient = () => {
       </DrawerTrigger>
       <DrawerContent
         className={cn(
-          'h-[calc(95dvh-var(--close-size))] w-screen rounded-t-main [--close-size:2.5rem] sm:[--close-size:3rem] portrait:h-[calc(100dvh-var(--close-size))]',
-          'landscape:[@media(height<720px)]:h-[calc(100dvh-var(--close-size))]',
+          'h-[calc(95dvh-var(--close-size)-16px)] w-screen rounded-t-main [--close-size:2.5rem] portrait:h-[calc(100dvh-var(--close-size)-16px)]',
+          'landscape:[@media(height<720px)]:h-[calc(100dvh-var(--close-size)-16px)]',
         )}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <Container>
           <div className="relative">
-            <DrawerClose className="absolute right-0 top-0 inline-flex size-[var(--close-size)] -translate-y-full items-center justify-center rounded-full text-primary-0 transition-transform duration-200 hover:scale-125">
-              <XMarkIcon className="size-[75%]" strokeWidth={2} />
+            <DrawerClose className="absolute -top-2 right-0 inline-flex size-[var(--close-size)] -translate-y-full items-center justify-center rounded-full bg-primary-0 text-primary-500 transition-colors duration-200 hover:bg-primary-50">
+              <XMarkIcon className="size-6" />
             </DrawerClose>
           </div>
         </Container>
