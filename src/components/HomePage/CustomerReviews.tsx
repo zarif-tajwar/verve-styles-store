@@ -1,29 +1,64 @@
 'use client';
 
 import {
-  HTMLAttributes,
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-} from 'react';
-import { cn } from '@/lib/util';
-import { useInView } from 'framer-motion';
-import { Button } from '../UI/Button';
-import Star from '../UI/Star';
-import { ArrowRight } from 'lucide-react';
-import { Verified } from '../Svgs/icons';
-import {
   Carousel,
   CarouselApi,
   CarouselButtons,
   CarouselContent,
   CarouselItem,
   CarouselViewport,
-} from '../UI/Carousel';
-import { Container } from '../UI/Container';
-import { SectionHeading } from '../UI/Homepage';
-import { Section } from '../UI/Section';
+} from '@/components/UI/Carousel';
+import { Container } from '@/components/UI/Container';
+import { SectionHeading } from '@/components/UI/Homepage';
+import { Section } from '@/components/UI/Section';
+import Star from '@/components/UI/Star';
+import { cn } from '@/lib/util';
+import { type Variants, motion, useInView } from 'framer-motion';
+import {
+  HTMLAttributes,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Verified } from '../Svgs/icons';
+
+const staggerParentVariants: Variants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+const revealVariants: Variants = {
+  initial: { y: '100%', opacity: '0%' },
+  animate: {
+    y: '0%',
+    opacity: '100%',
+    transition: {
+      type: 'tween',
+      ease: 'backInOut',
+      duration: 0.7,
+    },
+  },
+};
+
+const reviewVariants: Variants = {
+  initial: { y: '10%', opacity: '0%' },
+  animate: {
+    y: '0%',
+    opacity: '100%',
+    transition: {
+      type: 'tween',
+      ease: 'backInOut',
+      duration: 0.7,
+    },
+  },
+};
+
+const MotionCarouselItem = motion(CarouselItem);
 
 const CustomerReviews = () => {
   const [api, setApi] = useState<CarouselApi>();
@@ -57,11 +92,16 @@ const CustomerReviews = () => {
   return (
     <Section className="overflow-x-clip pb-24 md:pb-32 lg:pb-40" id="reviews">
       <Container className="relative">
-        <div>
+        <motion.div
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={staggerParentVariants}
+        >
           <Carousel
             opts={{
               align: 'center',
-              startIndex: 1,
+              startIndex: 0,
               dragFree: true,
               slidesToScroll: 1,
               breakpoints: {
@@ -73,19 +113,22 @@ const CustomerReviews = () => {
             setApi={setApi}
             ref={carouselRef}
           >
-            <SectionHeading className="text-left">
-              Our Happy Customers
+            <SectionHeading className="overflow-hidden text-left">
+              <motion.span className="inline-flex" variants={revealVariants}>
+                Our Happy Customers
+              </motion.span>
             </SectionHeading>
             <CarouselViewport>
               <CarouselContent className="-ml-5 cursor-grab">
                 {Reviews.map((review, i) => {
                   return (
-                    <CarouselItem
+                    <MotionCarouselItem
+                      variants={reviewVariants}
                       key={i}
                       className="pl-5 sm:basis-1/2 lg:basis-1/3"
                     >
                       <ReviewCard review={review} className="h-full w-full" />
-                    </CarouselItem>
+                    </MotionCarouselItem>
                   );
                 })}
               </CarouselContent>
@@ -94,7 +137,7 @@ const CustomerReviews = () => {
               <CarouselButtons className="right-0 top-1.5 md:absolute" />
             </div>
           </Carousel>
-        </div>
+        </motion.div>
       </Container>
     </Section>
   );

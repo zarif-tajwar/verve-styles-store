@@ -1,9 +1,49 @@
+'use client';
+
 import { cn } from '@/lib/util';
 import Image from 'next/image';
 import Link from 'next/link';
-import { SectionHeading } from '../UI/Homepage';
-import { Container } from '../UI/Container';
-import { Section } from '../UI/Section';
+import { SectionHeading } from '@/components/UI/Homepage';
+import { Container } from '@/components/UI/Container';
+import { Section } from '@/components/UI/Section';
+import { type Variants, motion } from 'framer-motion';
+
+const MotionLink = motion(Link);
+
+const staggerParentVariants: Variants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+const revealVariants: Variants = {
+  initial: { y: '100%', opacity: '0%' },
+  animate: {
+    y: '0%',
+    opacity: '100%',
+    transition: {
+      type: 'tween',
+      ease: 'backInOut',
+      duration: 0.7,
+    },
+  },
+};
+
+const styleOptionVariants: Variants = {
+  initial: { y: '10%', opacity: '0%' },
+  animate: {
+    y: '0%',
+    opacity: '100%',
+    transition: {
+      type: 'tween',
+      ease: 'backInOut',
+      duration: 0.7,
+    },
+  },
+};
 
 const BrowseStyle = () => {
   const styleOptionPairs = [
@@ -31,12 +71,22 @@ const BrowseStyle = () => {
   return (
     <Section>
       <Container className="[@media(width<=768px)]:p-0">
-        <div className="rounded-[2.5rem] bg-offwhite px-4 py-12 md:px-8 md:py-12 lg:p-16">
-          <SectionHeading>Browse by Dress Style</SectionHeading>
+        <motion.div
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={staggerParentVariants}
+          className="rounded-[2.5rem] bg-offwhite px-4 py-12 md:px-8 md:py-12 lg:p-16"
+        >
+          <SectionHeading className="overflow-hidden">
+            <motion.span className="inline-flex" variants={revealVariants}>
+              Browse by Dress Style
+            </motion.span>
+          </SectionHeading>
           <div className="space-y-4 md:space-y-5">
             {styleOptionPairs.map((styleOptions, pairIndex) => {
               return (
-                <div
+                <motion.div
                   key={pairIndex}
                   className={cn(
                     'grid gap-4 md:gap-5',
@@ -48,7 +98,8 @@ const BrowseStyle = () => {
                 >
                   {styleOptions.map((option, optionIndex) => {
                     return (
-                      <Link
+                      <MotionLink
+                        variants={styleOptionVariants}
                         href={option.href}
                         key={optionIndex}
                         className={cn(
@@ -68,14 +119,14 @@ const BrowseStyle = () => {
                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1024px) 25vw, 20vw"
                           />
                         </div>
-                      </Link>
+                      </MotionLink>
                     );
                   })}
-                </div>
+                </motion.div>
               );
             })}
           </div>
-        </div>
+        </motion.div>
       </Container>
     </Section>
   );

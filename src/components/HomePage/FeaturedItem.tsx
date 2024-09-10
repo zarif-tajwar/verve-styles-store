@@ -1,18 +1,91 @@
 'use client';
-import { cn, makeValidURL, priceFormat } from '@/lib/util';
-import Link from 'next/link';
-import { Button } from '../UI/Button';
-import { SectionHeading } from '../UI/Homepage';
-import * as ProductListingItem from '../UI/ProductListingItem';
+import { Button } from '@/components/UI/Button';
 import {
   Carousel,
   CarouselButtons,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   CarouselViewport,
-} from '../UI/Carousel';
+} from '@/components/UI/Carousel';
+import { SectionHeading } from '@/components/UI/Homepage';
+import * as ProductListingItem from '@/components/UI/ProductListingItem';
+import { cn, makeValidURL, priceFormat } from '@/lib/util';
+import { type Variants, motion } from 'framer-motion';
+import Link from 'next/link';
+
+const MotionLink = motion(Link);
+const MotionProductListingItem = motion(ProductListingItem.ProductListingItem);
+const MotionProductName = motion(ProductListingItem.ProductName);
+const MotionProductRating = motion(ProductListingItem.ProductRating);
+const MotionProductPrice = motion(ProductListingItem.ProductPrice);
+const MotionProductImage = motion(ProductListingItem.ProductImage);
+
+const staggerParentVariants: Variants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+const revealVariants: Variants = {
+  initial: { y: '100%', opacity: '0%' },
+  animate: {
+    y: '0%',
+    opacity: '100%',
+    transition: {
+      type: 'tween',
+      ease: 'backInOut',
+      duration: 0.7,
+    },
+  },
+};
+
+const motionLinkStaggerParentVariants: Variants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const productImageVariants: Variants = {
+  initial: { y: '10%', opacity: 0 },
+  animate: {
+    y: '0%',
+    opacity: 1,
+    transition: {
+      type: 'tween',
+      ease: 'backInOut',
+      duration: 0.6,
+    },
+  },
+};
+
+const productItemVariants: Variants = {
+  initial: { y: '100%', opacity: '0%' },
+  animate: {
+    y: '0%',
+    opacity: '100%',
+    transition: {
+      type: 'tween',
+      ease: 'backInOut',
+      duration: 0.4,
+    },
+  },
+};
+
+const buttonVariants: Variants = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+    },
+  },
+};
 
 const FeaturedItem = ({
   title,
@@ -31,8 +104,17 @@ const FeaturedItem = ({
   href: string;
 }) => {
   return (
-    <div>
-      <SectionHeading>{title}</SectionHeading>
+    <motion.div
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true, amount: 0.5 }}
+      variants={staggerParentVariants}
+    >
+      <SectionHeading className="overflow-hidden">
+        <motion.span className="inline-flex" variants={revealVariants}>
+          {title}
+        </motion.span>
+      </SectionHeading>
       <Carousel
         opts={{
           align: 'center',
@@ -58,23 +140,40 @@ const FeaturedItem = ({
               return (
                 <CarouselItem
                   key={i}
-                  className="basis-[max(25%,16rem)] md:pl-5"
+                  className="basis-[max(25%,16rem)] overflow-hidden md:pl-5"
                 >
-                  <Link href={href}>
-                    <ProductListingItem.ProductListingItem>
-                      <ProductListingItem.ProductImage
-                        alt={alt}
-                        src={product.image}
-                      />
-                      <ProductListingItem.ProductName>
+                  <MotionLink
+                    href={href}
+                    variants={motionLinkStaggerParentVariants}
+                    className="inline-block h-full w-full"
+                  >
+                    <MotionProductListingItem>
+                      <div className="overflow-hidden">
+                        <MotionProductImage
+                          alt={alt}
+                          src={product.image}
+                          variants={productImageVariants}
+                          className="origin-bottom-left"
+                        />
+                      </div>
+                      <MotionProductName
+                        className="overflow-hidden"
+                        variants={productItemVariants}
+                      >
                         {product.productName}
-                      </ProductListingItem.ProductName>
-                      <ProductListingItem.ProductRating rating={ratingFloat} />
-                      <ProductListingItem.ProductPrice>
+                      </MotionProductName>
+                      <MotionProductRating
+                        variants={productItemVariants}
+                        rating={ratingFloat}
+                      />
+                      <MotionProductPrice
+                        className="overflow-hidden"
+                        variants={productItemVariants}
+                      >
                         {priceFormat(Number.parseFloat(product.productPrice))}
-                      </ProductListingItem.ProductPrice>
-                    </ProductListingItem.ProductListingItem>
-                  </Link>
+                      </MotionProductPrice>
+                    </MotionProductListingItem>
+                  </MotionLink>
                 </CarouselItem>
               );
             })}
@@ -90,11 +189,13 @@ const FeaturedItem = ({
         </div>
       </Carousel>
       <div className="flex items-center justify-center">
-        <Button variant={'outline'} size={'xl'} asChild className="">
-          <Link href={href}>View All</Link>
+        <Button variant={'outline'} size={'xl'} asChild>
+          <MotionLink variants={buttonVariants} href={href}>
+            View All
+          </MotionLink>
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

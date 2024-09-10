@@ -1,8 +1,7 @@
 'use client';
 
-import * as ProductListingItem from '@/components/UI/ProductListingItem';
 import { FilteredProductItem } from '@/lib/server/shop';
-import { cn, makeValidURL, priceFormat } from '@/lib/util';
+import { cn, makeValidURL } from '@/lib/util';
 import Image from 'next/image';
 import Link from 'next/link';
 import Star from '../UI/Star';

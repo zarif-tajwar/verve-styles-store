@@ -1,12 +1,59 @@
+'use client';
+
+import { PartnerLogo } from '@/components/Svgs/PartnerLogo';
+import { AspectRatio } from '@/components/UI/AspectRatio';
+import { Button } from '@/components/UI/Button';
+import { Container } from '@/components/UI/Container';
+import { Section } from '@/components/UI/Section';
 import { cn } from '@/lib/util';
+import { motion, type Variants } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { PartnerLogo } from '../Svgs/PartnerLogo';
-import { Button } from '../UI/Button';
-import { Container } from '../UI/Container';
-import { Section } from '../UI/Section';
-import { AspectRatio } from '../UI/AspectRatio';
+
+const staggerParentVariants: Variants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const revealVariants: Variants = {
+  initial: { y: '100%', opacity: '0%' },
+  animate: {
+    y: '0%',
+    opacity: '100%',
+    transition: {
+      type: 'tween',
+      ease: 'backInOut',
+      duration: 0.7,
+    },
+  },
+};
+
+const highlightInfoParentVariants: Variants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const highlightedInfoRevealParents: Variants = {
+  initial: { scale: 0.7, opacity: '0%' },
+  animate: {
+    scale: 1,
+    opacity: '100%',
+    transition: {
+      type: 'tween',
+      ease: 'easeOut',
+      duration: 0.3,
+    },
+  },
+};
 
 const highlightedInfos = [
   '200+ International Brands',
@@ -24,7 +71,10 @@ const HighlightInfo = ({
   const [first, ...rest] = children.split(' ');
 
   return (
-    <div className="md:flex">
+    <motion.div
+      variants={highlightedInfoRevealParents}
+      className="origin-bottom-left md:flex"
+    >
       {!noDivider && (
         <div className="mx-3 hidden w-px bg-primary-200 md:block lg:mx-6"></div>
       )}
@@ -36,7 +86,7 @@ const HighlightInfo = ({
           {rest.join(' ')}
         </span>
       </p>
-    </div>
+    </motion.div>
   );
 };
 
@@ -54,43 +104,54 @@ const Hero = () => {
         )}
       >
         {/* HERO CONTENT */}
-        <div
+        <motion.div
           className={cn(
             'flex items-center py-10 md:py-16 container:py-24',
             'lg:col-span-3',
           )}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={staggerParentVariants}
         >
           <div>
-            <h1
+            <div
               className={cn(
-                'mb-4 font-integral-cf font-bold lg:mb-8',
+                'pb-4 font-integral-cf font-bold lg:mb-8',
                 'text-[clamp(2rem,10vw,4rem)] leading-[1.1]',
-                'whitespace-nowrap',
+                'overflow-hidden whitespace-nowrap',
               )}
             >
-              FIND CLOTHES <br /> THAT MATCHES <br /> YOUR STYLE
-            </h1>
-            <p className="mb-10 text-balance text-base text-primary-400 sm:text-lg">
-              Browse through our diverse range of meticulously crafted garments,
-              designed to bring out your individuality and cater to your sense
-              of style.
-            </p>
-            <Button
-              asChild
-              size={'xl'}
-              className="mb-16 w-full md:max-w-[13rem]"
+              <motion.h1 variants={revealVariants}>
+                FIND CLOTHES <br /> THAT MATCHES <br /> YOUR STYLE
+              </motion.h1>
+            </div>
+            <div className="text-balance pb-10 text-base text-primary-400 sm:text-lg">
+              <motion.p variants={revealVariants}>
+                Browse through our diverse range of meticulously crafted
+                garments, designed to bring out your individuality and cater to
+                your sense of style.
+              </motion.p>
+            </div>
+            <div className="mb-16 w-full md:max-w-[13rem]">
+              <motion.div variants={revealVariants} className="w-full">
+                <Button asChild size={'xl'} className="w-full">
+                  <Link href="/shop">Shop Now</Link>
+                </Button>
+              </motion.div>
+            </div>
+            <motion.div
+              variants={highlightInfoParentVariants}
+              className="grid gap-y-6 text-primary-400 md:flex"
             >
-              <Link href="/shop">Shop Now</Link>
-            </Button>
-            <div className="grid gap-y-6 text-primary-400 md:flex">
               {highlightedInfos.map((info, i) => (
                 <React.Fragment key={info}>
                   <HighlightInfo noDivider={i === 0}>{info}</HighlightInfo>
                 </React.Fragment>
               ))}
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
         {/* HERO IMAGE */}
 
         <div
@@ -98,7 +159,19 @@ const Hero = () => {
             'grid place-items-center items-end lg:col-span-2 lg:place-items-end'
           }
         >
-          <div className="w-full max-w-[20rem] lg:max-w-[26rem]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{
+              opacity: 1,
+              scale: 1,
+              transition: {
+                duration: 0.4,
+                ease: 'easeOut',
+              },
+            }}
+            viewport={{ once: true, amount: 0.5 }}
+            className="w-full max-w-[20rem] origin-bottom lg:max-w-[26rem]"
+          >
             <AspectRatio ratio={879 / 1440}>
               <Image
                 src={'/hero-image-model.png'}
@@ -111,7 +184,7 @@ const Hero = () => {
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 70vw, (max-width: 1280px) 30vw, 20vw"
               />
             </AspectRatio>
-          </div>
+          </motion.div>
         </div>
       </Container>
       <div className="w-full bg-black">
