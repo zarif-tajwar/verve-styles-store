@@ -15,7 +15,7 @@ const staggerParentVariants: Variants = {
   initial: {},
   animate: {
     transition: {
-      staggerChildren: 0.2,
+      staggerChildren: 0.15,
     },
   },
 };
@@ -111,7 +111,7 @@ const Hero = () => {
           )}
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: true, amount: 0.3 }}
           variants={staggerParentVariants}
         >
           <div>
@@ -169,7 +169,7 @@ const Hero = () => {
                 ease: 'easeOut',
               },
             }}
-            viewport={{ once: true, amount: 0.5 }}
+            viewport={{ once: true, amount: 0.3 }}
             className="w-full max-w-[20rem] origin-bottom lg:max-w-[26rem]"
           >
             <AspectRatio ratio={879 / 1440}>

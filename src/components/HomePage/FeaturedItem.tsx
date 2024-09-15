@@ -107,7 +107,7 @@ const FeaturedItem = ({
     <motion.div
       initial="initial"
       whileInView="animate"
-      viewport={{ once: true, amount: 0.5 }}
+      viewport={{ once: true, amount: 0.3 }}
       variants={staggerParentVariants}
     >
       <SectionHeading className="overflow-hidden">

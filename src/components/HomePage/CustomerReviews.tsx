@@ -27,7 +27,7 @@ const staggerParentVariants: Variants = {
   initial: {},
   animate: {
     transition: {
-      staggerChildren: 0.3,
+      staggerChildren: 0.15,
     },
   },
 };
@@ -95,7 +95,7 @@ const CustomerReviews = () => {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: true, amount: 0.3 }}
           variants={staggerParentVariants}
         >
           <Carousel

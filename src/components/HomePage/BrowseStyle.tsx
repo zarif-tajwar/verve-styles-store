@@ -14,7 +14,7 @@ const staggerParentVariants: Variants = {
   initial: {},
   animate: {
     transition: {
-      staggerChildren: 0.3,
+      staggerChildren: 0.15,
     },
   },
 };
@@ -74,7 +74,7 @@ const BrowseStyle = () => {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: true, amount: 0.3 }}
           variants={staggerParentVariants}
           className="rounded-[2.5rem] bg-offwhite px-4 py-12 md:px-8 md:py-12 lg:p-16"
         >
