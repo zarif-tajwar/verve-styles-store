@@ -99,7 +99,7 @@
     "tailwindcss-easing": "^0.2.1",
     "typescript": "5.3.3",
     "use-debounce": "^10.0.0",
-    "vaul": "^0.9.1",
+    "vaul": "^0.9.3",
     "zod": "^3.22.4",
     "zustand": "^4.5.0"
   },
