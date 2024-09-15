@@ -74,7 +74,7 @@ const BrowseStyle = () => {
         <motion.div
           initial="initial"
           whileInView="animate"
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: true, amount: 'some' }}
           variants={staggerParentVariants}
           className="rounded-[2.5rem] bg-offwhite px-4 py-12 md:px-8 md:py-12 lg:p-16"
         >
