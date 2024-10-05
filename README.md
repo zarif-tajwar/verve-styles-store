@@ -2,7 +2,7 @@
 
 This e-commerce storefront was built from scratch with the purpose of gaining experience with important core tools of our current full-stack meta-framework era.
 
-[![Skateshop](https://res.cloudinary.com/dwwqgvfux/image/upload/v1714754150/cqjqtld2yg4fmrlhtkzn.jpg)](https://verve-styles.vercel.app)
+[![Verve Styles](https://res.cloudinary.com/dwwqgvfux/image/upload/v1714754150/cqjqtld2yg4fmrlhtkzn.jpg)](https://verve-styles.vercel.app)
 
 ## Table of Contents
 
