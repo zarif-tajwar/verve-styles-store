@@ -1,1 +1,2 @@
+tsc --noEmit
 pnpm pre-commit

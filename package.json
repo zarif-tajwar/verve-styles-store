@@ -126,6 +126,12 @@
     "ulidx": "^2.2.1"
   },
   "lint-staged": {
-    "*.ts": "eslint --cache \"src/**/*.ts\" "
+    "*/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint"
+    ],
+    "*/**/*.{json,css,md}": [
+      "prettier --write"
+    ]
   }
 }
