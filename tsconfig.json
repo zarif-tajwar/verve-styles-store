@@ -28,7 +28,10 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next.config.mjs"
+    "next.config.mjs",
+    "lint-staged.config.cjs",
+    "postcss.config.js",
+    "prettier.config.cjs"
   ],
   "exclude": ["node_modules"]
 }
