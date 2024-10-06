@@ -13,7 +13,9 @@
     "db:push": "drizzle-kit push:pg",
     "db:seed": "node -r esbuild-register src/lib/db/seed.ts",
     "db:init": "drizzle-kit push:pg && node -r esbuild-register src/lib/db/seed.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "prepare": "husky",
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "@edgestore/server": "^0.1.6",
@@ -113,12 +115,17 @@
     "autoprefixer": "^10.4.17",
     "drizzle-kit": "^0.20.17",
     "esbuild-register": "^3.5.0",
+    "husky": "^9.1.6",
     "jiti": "^1.21.0",
+    "lint-staged": "^15.2.10",
     "nodemailer": "^6.9.9",
     "postcss": "^8.4.34",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.6.1",
     "tailwindcss": "^3.4.1",
     "ulidx": "^2.2.1"
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache \"src/**/*.ts\" "
   }
 }
