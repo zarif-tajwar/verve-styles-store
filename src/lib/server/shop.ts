@@ -27,7 +27,7 @@ export type FilteredProductItem = {
 };
 
 export const getShopProductsServer = async (
-  inputSearchParams: SearchParamsServer,
+  inputSearchParams: Awaited<SearchParamsServer>,
 ): Promise<FilteredProductItem[]> => {
   const parsed = FilterSearchQueryValuesSchema.safeParse(inputSearchParams);
 

@@ -33,14 +33,15 @@ const OrderDetailsPage = async ({
   params,
   searchParams,
 }: {
-  params: { orderId: string };
-  searchParams: { view: string | undefined };
+  params: Promise<{ orderId: string }>;
+  searchParams: Promise<{ view: string | undefined }>;
 }) => {
+  const { orderId: orderIdStr } = await params;
   const authObject = await redirectIfNotSignedIn({
-    redirectAfter: `/my-account/orders/${params.orderId}`,
+    redirectAfter: `/my-account/orders/${orderIdStr}`,
   });
 
-  const parsedOrderId = z.coerce.number().safeParse(params.orderId);
+  const parsedOrderId = z.coerce.number().safeParse(orderIdStr);
   if (!parsedOrderId.success) redirect('/orders');
 
   const orderId = parsedOrderId.data;
@@ -83,12 +84,14 @@ const OrderDetailsPage = async ({
 
   let view: ViewValueType = defaultViewValue;
 
+  const { view: searchParamsView } = await searchParams;
+
   if (
-    searchParams.view &&
-    viewValues.includes(searchParams.view as ViewValueType) &&
-    searchParams.view !== defaultViewValue
+    searchParamsView &&
+    viewValues.includes(searchParamsView as ViewValueType) &&
+    searchParamsView !== defaultViewValue
   ) {
-    view = searchParams.view as ViewValueType;
+    view = searchParamsView as ViewValueType;
   }
 
   return (

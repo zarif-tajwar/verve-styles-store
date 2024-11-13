@@ -11,13 +11,14 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  params: { tokenId: string };
+  params: Promise<{ tokenId: string }>;
   searchParams: SearchParamsServer;
 }
 
 const PasswordResetTokenPage = async ({ params }: PageProps) => {
+  const { tokenId } = await params;
   const passwordResetTokenInfo = await getPasswordResetTokenInfo({
-    tokenId: params.tokenId,
+    tokenId,
   });
 
   if (!passwordResetTokenInfo) {
