@@ -279,13 +279,7 @@ export const AddressInputFormFields = React.forwardRef<
 
 AddressInputFormFields.displayName = 'AddressInputFormFields';
 
-const InputErrorMessage = ({
-  message,
-  key,
-}: {
-  message: string | undefined;
-  key: string;
-}) => {
+const InputErrorMessage = ({ message }: { message: string | undefined }) => {
   return (
     <AnimatePresence>
       {message && (
@@ -301,7 +295,6 @@ const InputErrorMessage = ({
             opacity: 0,
             transition: { ease: 'easeIn', duration: 0.2 },
           }}
-          key={key}
           className="overflow-hidden"
         >
           <p className="text-sm font-medium text-red-700">{message}</p>

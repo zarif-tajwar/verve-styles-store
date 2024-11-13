@@ -11,6 +11,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 import AddressInputForm from './AddressInputForm';
 import { ADDRESS_QUERY_KEY } from '@/lib/constants/query-keys';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 type EditAddressProps = {
   addressData: UserAddress;
@@ -44,7 +45,9 @@ const EditAddress = ({ addressData }: EditAddressProps) => {
       </DialogTrigger>
       <DialogContent className="p-6 sm:max-w-3xl sm:p-8">
         <div className="relative mb-8 sm:mb-10 md:mb-12">
-          <h2 className="mb-1 text-xl font-semibold">Edit Address</h2>
+          <DialogTitle className="mb-1 text-xl font-semibold">
+            Edit Address
+          </DialogTitle>
           <p className="text-sm text-primary-400 sm:text-base">
             Make changes to your address here.
             <br />

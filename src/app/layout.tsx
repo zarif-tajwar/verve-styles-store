@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import NextTopLoader from 'nextjs-toploader';
 import Geist from './_fonts/geist/font';
 import IntegralCF from './_fonts/integral-cf/font';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export const metadata: Metadata = {
   title: 'Verve Styles - Cloth Store',
@@ -33,18 +34,20 @@ export default function RootLayout({
           '[--nav-height:4rem]',
         )}
       >
-        <Provider>
-          <NextTopLoader
-            showSpinner={false}
-            shadow={false}
-            height={5}
-            template={`<div class="bar animate-pulse from-primary-200 to-primary-300 !bg-gradient-to-r" role="bar"><div class="peg"></div></div>
-        <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>`}
-          />
-          {children}
-          <Toaster />
-          {/* <ScreenBlocker /> */}
-        </Provider>
+        <NuqsAdapter>
+          <Provider>
+            <NextTopLoader
+              showSpinner={false}
+              shadow={false}
+              height={5}
+              template={`<div class="bar animate-pulse from-primary-200 to-primary-300 !bg-gradient-to-r" role="bar"><div class="peg"></div></div>
+              <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>`}
+            />
+            {children}
+            <Toaster />
+            {/* <ScreenBlocker /> */}
+          </Provider>
+        </NuqsAdapter>
       </body>
     </html>
   );

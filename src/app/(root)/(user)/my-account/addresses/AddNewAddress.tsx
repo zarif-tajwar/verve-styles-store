@@ -10,6 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 import AddressInputForm from './AddressInputForm';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 const AddNewAddress = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,9 +44,9 @@ const AddNewAddress = () => {
       </DialogTrigger>
       <DialogContent className="p-6 sm:max-w-3xl sm:p-8">
         <div className="relative mb-8 sm:mb-10 md:mb-12">
-          <h2 className="mb-1 text-lg font-semibold sm:text-xl">
+          <DialogTitle className="mb-1 text-lg font-semibold sm:text-xl">
             Add New Address
-          </h2>
+          </DialogTitle>
           <p className="text-sm text-primary-400 sm:text-base">{`Type your address here. Click save when you're done.`}</p>
         </div>
         <AddressInputForm
