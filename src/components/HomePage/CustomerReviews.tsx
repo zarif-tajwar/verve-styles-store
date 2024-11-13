@@ -58,7 +58,7 @@ const reviewVariants: Variants = {
   },
 };
 
-const MotionCarouselItem = motion(CarouselItem);
+const MotionCarouselItem = motion.create(CarouselItem);
 
 const CustomerReviews = () => {
   const [api, setApi] = useState<CarouselApi>();

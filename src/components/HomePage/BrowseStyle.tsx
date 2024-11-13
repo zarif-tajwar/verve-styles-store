@@ -8,7 +8,7 @@ import { Container } from '@/components/UI/Container';
 import { Section } from '@/components/UI/Section';
 import { type Variants, motion } from 'framer-motion';
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 const staggerParentVariants: Variants = {
   initial: {},
