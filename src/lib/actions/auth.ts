@@ -72,7 +72,7 @@ export const signInCredentialsAction = actionClient(
     ]);
     const sessionCookie = lucia.createSessionCookie(session.id);
 
-    cookies().set(
+    (await cookies()).set(
       sessionCookie.name,
       sessionCookie.value,
       sessionCookie.attributes,
@@ -117,7 +117,7 @@ export const sendEmailVerificationAction = actionClient(
 
     const verificationCode = genRandomInt(100000, 999999);
     const expiresAt = createDate(new TimeSpan(5, 'm'));
-    const ip = headers().get('x-forwarded-for')?.split(',').at(0);
+    const ip = (await headers()).get('x-forwarded-for')?.split(',').at(0);
 
     if (!ip) {
       throw new CustomError('Something went wrong with your network!');
@@ -188,7 +188,7 @@ export const validateEmailVerificationAction = actionClient(
     if (isRegistered)
       throw new CustomError('This email is already registered!');
 
-    const ip = headers().get('x-forwarded-for')?.split(',').at(0);
+    const ip = (await headers()).get('x-forwarded-for')?.split(',').at(0);
 
     if (!ip) {
       throw new CustomError('Something went wrong with your network!');
@@ -248,7 +248,7 @@ export const validateEmailVerificationAction = actionClient(
 
     const sessionCookie = lucia.createSessionCookie(session.id);
 
-    cookies().set(
+    (await cookies()).set(
       sessionCookie.name,
       sessionCookie.value,
       sessionCookie.attributes,
@@ -268,12 +268,12 @@ export const signOutAction = actionClient(z.object({}), async () => {
     throw new CustomError(`You're already logged out!`);
   }
 
-  const referer = headers().get('referer');
+  const referer = (await headers()).get('referer');
 
   await lucia.invalidateSession(session.id);
 
   const sessionCookie = lucia.createBlankSessionCookie();
-  cookies().set(
+  (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
     sessionCookie.attributes,
@@ -336,7 +336,7 @@ export const getPasswordResetLinkAction = actionClient(
       throw new CustomError('Something went wrong!');
     }
 
-    const origin = headers().get('origin');
+    const origin = (await headers()).get('origin');
 
     if (!origin) {
       throw new CustomError('Something went wrong!');
@@ -368,7 +368,7 @@ export const getPasswordResetLinkAction = actionClient(
 export const passwordResetAction = actionClient(
   passwordResetSchema,
   async (values) => {
-    const referer = headers().get('referer');
+    const referer = (await headers()).get('referer');
 
     if (!referer) {
       throw new CustomError('Something went wrong!');
@@ -465,7 +465,7 @@ export const simulateLoginAsTestUserAction = actionClient(
 
     const sessionCookie = lucia.createSessionCookie(session.id);
 
-    cookies().set(
+    (await cookies()).set(
       sessionCookie.name,
       sessionCookie.value,
       sessionCookie.attributes,

@@ -12,7 +12,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     scopes: ['email', 'public_profile'],
   });
 
-  cookies().set(authCookieNames.OAUTH_STATE_FACEBOOK, state, {
+  (await cookies()).set(authCookieNames.OAUTH_STATE_FACEBOOK, state, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,

@@ -366,6 +366,6 @@ export const createOrderPaymentDetails = authorizedActionClient(
   },
 );
 
-export const revalidatePathAction = (href: string) => {
+export const revalidatePathAction = async (href: string) => {
   revalidatePath(href);
 };

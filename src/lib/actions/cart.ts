@@ -99,7 +99,7 @@ export const addCartItemAction = actionClient(
       const newCart = await createCart().then((res) => res.at(0));
       if (newCart) {
         cartId = newCart.id;
-        cookies().set('cartId', encodeSingleSqid(newCart.id));
+        (await cookies()).set('cartId', encodeSingleSqid(newCart.id));
       }
     }
 

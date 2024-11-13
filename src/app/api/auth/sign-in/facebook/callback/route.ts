@@ -28,11 +28,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const code = req.nextUrl.searchParams.get('code');
   const state = req.nextUrl.searchParams.get('state');
 
-  const storedState = cookies().get(
+  const cookiesStore = await cookies();
+
+  const storedState = cookiesStore.get(
     authCookieNames.OAUTH_STATE_FACEBOOK,
   )?.value;
 
-  const postRedirectPathname = getRedirectCookie();
+  const postRedirectPathname = await getRedirectCookie();
 
   if (!code || !state || !storedState || state !== storedState) {
     return NextResponse.json('Invalid OAuth state or code verifier', {
@@ -102,7 +104,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
-      cookies().set(
+      cookiesStore.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes,
@@ -137,7 +139,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
-      cookies().set(
+      cookiesStore.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes,

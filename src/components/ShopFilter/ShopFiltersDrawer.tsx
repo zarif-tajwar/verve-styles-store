@@ -9,6 +9,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerTitle,
   DrawerTrigger,
 } from '../UI/Drawer';
 import ClothingCheckbox from './ClothingCheckbox';
@@ -41,9 +42,9 @@ const ShopFiltersDrawer = () => {
                 <span className="mx-auto inline-block h-2.5 w-24 rounded-full bg-primary-100 sm:h-3 sm:w-28 md:w-36"></span>
               </div>
               <div className="flex items-center justify-between px-2 py-3">
-                <h2 className="font-geist text-2xl font-semibold capitalize">
+                <DrawerTitle className="font-geist text-2xl font-semibold capitalize">
                   Filters
-                </h2>
+                </DrawerTitle>
                 <Slider2Icon className="text-primary-300" />
               </div>
             </Container>

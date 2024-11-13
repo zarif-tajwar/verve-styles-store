@@ -22,15 +22,19 @@ type GoogleUser = {
 };
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  const cookiesStore = await cookies();
+
   const code = req.nextUrl.searchParams.get('code');
   const state = req.nextUrl.searchParams.get('state');
 
-  const storedState = cookies().get(authCookieNames.OAUTH_STATE_GOOGLE)?.value;
-  const storedCodeVerifier = cookies().get(
+  const storedState = cookiesStore.get(
+    authCookieNames.OAUTH_STATE_GOOGLE,
+  )?.value;
+  const storedCodeVerifier = cookiesStore.get(
     authCookieNames.OAUTH_CODE_VERIFIER_GOOGLE,
   )?.value;
 
-  const postRedirectPathname = getRedirectCookie();
+  const postRedirectPathname = await getRedirectCookie();
 
   if (
     !code ||
@@ -108,7 +112,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
-      cookies().set(
+      cookiesStore.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes,
@@ -139,7 +143,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
-      cookies().set(
+      cookiesStore.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes,

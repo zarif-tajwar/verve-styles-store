@@ -15,7 +15,8 @@ export const auth = cache(
   async (): Promise<
     { user: User; session: Session } | { user: null; session: null }
   > => {
-    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+    const cookiesStore = await cookies();
+    const sessionId = cookiesStore.get(lucia.sessionCookieName)?.value ?? null;
 
     if (!sessionId) {
       return {
@@ -29,7 +30,7 @@ export const auth = cache(
     try {
       if (result.session && result.session.fresh) {
         const sessionCookie = lucia.createSessionCookie(result.session.id);
-        cookies().set(
+        cookiesStore.set(
           sessionCookie.name,
           sessionCookie.value,
           sessionCookie.attributes,
@@ -37,7 +38,7 @@ export const auth = cache(
       }
       if (!result.session) {
         const sessionCookie = lucia.createBlankSessionCookie();
-        cookies().set(
+        cookiesStore.set(
           sessionCookie.name,
           sessionCookie.value,
           sessionCookie.attributes,
@@ -56,22 +57,27 @@ export const getUserObjectClient = (
   return { name: user.name, image: user.image, email: user.email };
 };
 
-export const setRedirectCookie = (searchParams: URLSearchParams) => {
+export const setRedirectCookie = async (searchParams: URLSearchParams) => {
   const redirectAfterPathname = searchParams.get('redirectAfter') ?? '';
 
   if (redirectAfterPathname) {
-    cookies().set(authCookieNames.AFTER_REDIRECT_LINK, redirectAfterPathname, {
-      path: '/',
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: true,
-      maxAge: 60 * 10,
-      sameSite: 'lax',
-    });
+    (await cookies()).set(
+      authCookieNames.AFTER_REDIRECT_LINK,
+      redirectAfterPathname,
+      {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 60 * 10,
+        sameSite: 'lax',
+      },
+    );
   }
 };
 
-export const getRedirectCookie = () => {
-  const redirectAfterPathnameEncoded = cookies().get(
+export const getRedirectCookie = async () => {
+  const cookiesStore = await cookies();
+  const redirectAfterPathnameEncoded = cookiesStore.get(
     authCookieNames.AFTER_REDIRECT_LINK,
   )?.value;
 
@@ -80,7 +86,7 @@ export const getRedirectCookie = () => {
     : null;
 
   if (redirectAfterPathname) {
-    cookies().delete(authCookieNames.AFTER_REDIRECT_LINK);
+    cookiesStore.delete(authCookieNames.AFTER_REDIRECT_LINK);
   }
 
   return redirectAfterPathname;

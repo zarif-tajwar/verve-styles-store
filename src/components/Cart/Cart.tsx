@@ -19,6 +19,7 @@ import { CartIcon } from '../Svgs/icons';
 import { Button } from '../UI/Button';
 import { ScrollArea } from '../UI/ScrollArea';
 import CartSkeleton from './CartSkeleton';
+import { DrawerTitle } from '../UI/Drawer';
 
 const CartItemsListing = ({
   cartItems,
@@ -147,9 +148,9 @@ const Cart = ({ deliveryCharge }: { deliveryCharge: number }) => {
   return (
     <div className="relative h-full">
       <div className="grid h-full grid-cols-1 grid-rows-[auto_1fr]">
-        <h2 className="mb-3 px-4 font-integral-cf text-3xl sm:mb-5 sm:px-5 md:mb-6 md:px-0 md:text-4xl">
+        <DrawerTitle className="mb-3 px-4 font-integral-cf text-3xl sm:mb-5 sm:px-5 md:mb-6 md:px-0 md:text-4xl">
           My Cart
-        </h2>
+        </DrawerTitle>
         <div>
           {!isLoading && cartItemsData && cartItemsData.length > 0 && (
             <CartItemsListing
