@@ -23,9 +23,14 @@ const TestArea = () => {
 
   const handleDummyCheckout = async () => {
     setLoading(true);
-    const { data, serverError, validationErrors } = await performDummyCheckout(
-      {},
-    );
+    const actionRes = await performDummyCheckout();
+
+    if (!actionRes) {
+      errorToast('Something went wrong!');
+      return;
+    }
+
+    const { data, serverError, validationErrors } = actionRes;
 
     if (serverError) {
       errorToast(serverError);

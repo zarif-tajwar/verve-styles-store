@@ -247,9 +247,8 @@ const checkoutCommonAction = async ({
   return createdOrder;
 };
 
-export const performDummyCheckout = authorizedActionClient(
-  z.object({}),
-  async ({}, user) => {
+export const performDummyCheckout = authorizedActionClient.action(
+  async ({ ctx: { user } }) => {
     const fakeAddress = randAddress();
 
     const values: PerformCheckoutSchemaType = {
@@ -294,40 +293,41 @@ export const performDummyCheckout = authorizedActionClient(
   },
 );
 
-export const performCheckoutAction = authorizedActionClient(
-  PerformCheckoutSchema,
-  async (values, user): PerformCheckoutReturn => {
-    const orderData = await checkoutCommonAction({ values, user });
+export const performCheckoutAction = authorizedActionClient
+  .schema(PerformCheckoutSchema)
+  .action(
+    async ({ parsedInput: values, ctx: { user } }): PerformCheckoutReturn => {
+      const orderData = await checkoutCommonAction({ values, user });
 
-    if (!(orderData.orderId && orderData.total)) {
-      return;
-    }
+      if (!(orderData.orderId && orderData.total)) {
+        return;
+      }
 
-    // Handling Payment
-    const paymentIntent: Stripe.PaymentIntent = await stripe.paymentIntents
-      .create({
-        amount: orderData.total * 100,
-        currency: 'usd',
-        automatic_payment_methods: { enabled: true },
-        metadata: {
-          orderId: orderData.orderId,
-        },
-      })
-      .catch(() => {
+      // Handling Payment
+      const paymentIntent: Stripe.PaymentIntent = await stripe.paymentIntents
+        .create({
+          amount: orderData.total * 100,
+          currency: 'usd',
+          automatic_payment_methods: { enabled: true },
+          metadata: {
+            orderId: orderData.orderId,
+          },
+        })
+        .catch(() => {
+          throw new CustomError('Something went wrong with Stripe Payment');
+        });
+
+      if (!paymentIntent.client_secret) {
         throw new CustomError('Something went wrong with Stripe Payment');
-      });
+      }
 
-    if (!paymentIntent.client_secret) {
-      throw new CustomError('Something went wrong with Stripe Payment');
-    }
-
-    return {
-      stripeClientSecret: paymentIntent.client_secret,
-      orderId: orderData.orderId,
-      isThereUnavailableProduct: false,
-    };
-  },
-);
+      return {
+        stripeClientSecret: paymentIntent.client_secret,
+        orderId: orderData.orderId,
+        isThereUnavailableProduct: false,
+      };
+    },
+  );
 
 const CreateOrderPaymentDetailsSchema = z.object({
   orderId: z.number(),
@@ -335,36 +335,40 @@ const CreateOrderPaymentDetailsSchema = z.object({
   paymentMethodSessionId: z.string(),
 });
 
-export const createOrderPaymentDetails = authorizedActionClient(
-  CreateOrderPaymentDetailsSchema,
-  async ({ orderId, paymentMethod, paymentMethodSessionId }, user) => {
-    const res = await db.transaction(async (tx) => {
-      try {
-        const isAllowed = (
-          await tx
-            .select({ orderId: orders.id })
-            .from(orders)
-            .where(and(eq(orders.userId, user.id), eq(orders.id, orderId)))
-        ).at(0);
-        if (!isAllowed) {
-          throw new CustomError();
+export const createOrderPaymentDetails = authorizedActionClient
+  .schema(CreateOrderPaymentDetailsSchema)
+  .action(
+    async ({
+      parsedInput: { orderId, paymentMethod, paymentMethodSessionId },
+      ctx: { user },
+    }) => {
+      const res = await db.transaction(async (tx) => {
+        try {
+          const isAllowed = (
+            await tx
+              .select({ orderId: orders.id })
+              .from(orders)
+              .where(and(eq(orders.userId, user.id), eq(orders.id, orderId)))
+          ).at(0);
+          if (!isAllowed) {
+            throw new CustomError();
+          }
+
+          const createdPaymentDetails = await tx
+            .insert(orderPaymentDetails)
+            .values({ orderId, paymentMethod, paymentMethodSessionId })
+            .returning();
+
+          return createdPaymentDetails;
+        } catch (err) {
+          throw new CustomError(
+            'Something went wrong while creating the payment details! Please contact support!',
+          );
         }
-
-        const createdPaymentDetails = await tx
-          .insert(orderPaymentDetails)
-          .values({ orderId, paymentMethod, paymentMethodSessionId })
-          .returning();
-
-        return createdPaymentDetails;
-      } catch (err) {
-        throw new CustomError(
-          'Something went wrong while creating the payment details! Please contact support!',
-        );
-      }
-    });
-    return res;
-  },
-);
+      });
+      return res;
+    },
+  );
 
 export const revalidatePathAction = async (href: string) => {
   revalidatePath(href);

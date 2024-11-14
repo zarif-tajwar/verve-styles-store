@@ -31,7 +31,7 @@ const PasswordResetForm = () => {
   });
 
   const { execute, status } = useAction(passwordResetAction, {
-    onError: ({ serverError }) => {
+    onError: ({ error: { serverError } }) => {
       if (serverError) {
         errorToast(serverError, { position: 'top-center' });
       }

@@ -1,26 +1,16 @@
-import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
+import { createSafeActionClient } from 'next-safe-action';
 import { CustomError } from '../errors/custom-error';
 import { auth } from '../server/auth';
 
-export const authorizedActionClient = createSafeActionClient({
-  middleware: async () => {
-    const { user } = await auth();
-    if (!user) throw new CustomError('Not logged in!');
-    return user;
-  },
-  handleReturnedServerError: (e) => {
-    if (e instanceof CustomError) {
-      return e.message;
-    }
-    return DEFAULT_SERVER_ERROR;
+export const actionClient = createSafeActionClient({
+  handleServerError: (e) => {
+    if (e instanceof CustomError) return e.message;
+    return 'Oops, something went wrong!';
   },
 });
 
-export const actionClient = createSafeActionClient({
-  handleReturnedServerError: (e) => {
-    if (e instanceof CustomError) {
-      return e.message;
-    }
-    return DEFAULT_SERVER_ERROR;
-  },
+export const authorizedActionClient = actionClient.use(async ({ next }) => {
+  const { user } = await auth();
+  if (!user) throw new CustomError('Not logged in!');
+  return next({ ctx: { user } });
 });

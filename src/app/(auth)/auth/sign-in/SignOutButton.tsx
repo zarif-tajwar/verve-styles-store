@@ -7,7 +7,7 @@ import { useAction } from 'next-safe-action/hooks';
 
 const SignOutButton = () => {
   const { execute } = useAction(signOutAction, {
-    onError: ({ serverError }) => {
+    onError: ({ error: { serverError } }) => {
       if (serverError) {
         errorToast(serverError);
       }
@@ -16,7 +16,7 @@ const SignOutButton = () => {
   return (
     <Button
       onClick={() => {
-        execute({});
+        execute();
       }}
     >
       Sign Out

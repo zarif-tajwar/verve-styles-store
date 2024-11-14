@@ -18,6 +18,7 @@ import { Input } from '../UI/Input';
 import Spinner from '../UI/Spinner';
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
+import { errorToast } from '../UI/Toaster';
 
 const GetPasswordResetLinkForm = () => {
   const form = useForm<z.infer<typeof getPasswordResetLinkSchema>>({
@@ -27,9 +28,17 @@ const GetPasswordResetLinkForm = () => {
   const onSubmit = async (
     values: z.infer<typeof getPasswordResetLinkSchema>,
   ) => {
-    const result = await getPasswordResetLinkAction({ email: values.email });
-    if (result.serverError) {
-      form.setError('email', { message: result.serverError });
+    const actionRes = await getPasswordResetLinkAction({ email: values.email });
+
+    if (!actionRes) {
+      errorToast('Something went wrong!');
+      return;
+    }
+
+    const { serverError } = actionRes;
+
+    if (serverError) {
+      form.setError('email', { message: serverError });
     }
   };
 

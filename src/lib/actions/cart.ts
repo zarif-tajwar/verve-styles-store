@@ -17,9 +17,9 @@ import {
 import { actionClient } from './safe-action';
 import { cookies } from 'next/headers';
 
-export const deleteCartItemAction = actionClient(
-  DeleteCartItemSchema,
-  async ({ cartItemId }) => {
+export const deleteCartItemAction = actionClient
+  .schema(DeleteCartItemSchema)
+  .action(async ({ parsedInput: { cartItemId } }) => {
     const cartId = await getCartId();
 
     if (!cartId) {
@@ -44,18 +44,11 @@ export const deleteCartItemAction = actionClient(
     }
 
     return deleted;
-  },
-);
+  });
 
-export const updateCartItemQuantityAction = actionClient(
-  UpdateCartItemQuantitySchema,
-  async ({
-    cartItemId,
-    newQuantity,
-  }: {
-    cartItemId: string;
-    newQuantity: CartItemsInsert['quantity'];
-  }) => {
+export const updateCartItemQuantityAction = actionClient
+  .schema(UpdateCartItemQuantitySchema)
+  .action(async ({ parsedInput: { cartItemId, newQuantity } }) => {
     const cartId = await getCartId();
 
     if (!cartId) {
@@ -87,12 +80,11 @@ export const updateCartItemQuantityAction = actionClient(
     }
 
     return updated;
-  },
-);
+  });
 
-export const addCartItemAction = actionClient(
-  AddCartItemSchema,
-  async ({ productId, sizeId, quantity }) => {
+export const addCartItemAction = actionClient
+  .schema(AddCartItemSchema)
+  .action(async ({ parsedInput: { productId, sizeId, quantity } }) => {
     let cartId = await getCartId();
 
     if (!cartId) {
@@ -157,8 +149,7 @@ export const addCartItemAction = actionClient(
     });
 
     return cartItem;
-  },
-);
+  });
 
 export const generateCartItems = async ({ num }: { num: number }) => {
   const cartId = await getCartId();

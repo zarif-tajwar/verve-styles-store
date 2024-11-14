@@ -48,9 +48,14 @@ const PaymentForm = () => {
       return;
     }
 
-    const { data, serverError, validationErrors } = await performCheckoutAction(
-      { shippingAddress },
-    );
+    const actionRes = await performCheckoutAction({ shippingAddress });
+
+    if (!actionRes) {
+      errorToast('Something went wrong!');
+      return;
+    }
+
+    const { data, serverError, validationErrors } = actionRes;
 
     if (serverError) {
       errorToast(serverError);

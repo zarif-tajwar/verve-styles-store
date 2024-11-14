@@ -3,11 +3,11 @@
 import { lucia } from '@/auth2';
 import { EmailVerificaionCode } from '@/components/mail/EmailVerificationCode';
 import { ResetPassword } from '@/components/mail/ResetPassword';
-import { renderAsync } from '@react-email/render';
+import { render } from '@react-email/render';
 import { and, eq, gt, isNull, lt, or } from 'drizzle-orm';
 import { generateId } from 'lucia';
 import { cookies, headers } from 'next/headers';
-import { RedirectType, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
 import { Argon2id } from 'oslo/password';
 import React from 'react';
@@ -36,11 +36,10 @@ import {
   redirectAfterSchema,
 } from '../validation/auth';
 import { actionClient } from './safe-action';
-import { revalidatePath } from 'next/cache';
 
-export const signInCredentialsAction = actionClient(
-  CredentialsFormSchema.extend({ redirectAfter: redirectAfterSchema }),
-  async (values) => {
+export const signInCredentialsAction = actionClient
+  .schema(CredentialsFormSchema.extend({ redirectAfter: redirectAfterSchema }))
+  .action(async ({ parsedInput: values }) => {
     const userData = await db
       .select({
         userId: user.id,
@@ -79,12 +78,11 @@ export const signInCredentialsAction = actionClient(
     );
 
     return { success: true };
-  },
-);
+  });
 
-export const isEmailAlreadyRegisteredAction = actionClient(
-  z.object({ email: z.string().email() }),
-  async ({ email }) => {
+export const isEmailAlreadyRegisteredAction = actionClient
+  .schema(z.object({ email: z.string().email() }))
+  .action(async ({ parsedInput: { email } }) => {
     const existingUser = await db
       .select()
       .from(user)
@@ -100,84 +98,89 @@ export const isEmailAlreadyRegisteredAction = actionClient(
       throw new CustomError(
         'This email is already registered with a social account! Login with the social account that you used before.',
       );
-  },
-);
+  });
 
-export const sendEmailVerificationAction = actionClient(
-  SendEmailVerificationSchema,
-  async ({ email, password, confirmPassword, fullName }) => {
-    const existingUser = await getUserByEmail(email);
+export const sendEmailVerificationAction = actionClient
+  .schema(SendEmailVerificationSchema)
+  .action(
+    async ({ parsedInput: { email, password, confirmPassword, fullName } }) => {
+      const existingUser = await getUserByEmail(email);
 
-    if (existingUser)
-      throw new CustomError('This email is already registered!');
+      if (existingUser)
+        throw new CustomError('This email is already registered!');
 
-    if (password !== confirmPassword) {
-      throw new CustomError(`Passwords don't match!`);
-    }
+      if (password !== confirmPassword) {
+        throw new CustomError(`Passwords don't match!`);
+      }
 
-    const verificationCode = genRandomInt(100000, 999999);
-    const expiresAt = createDate(new TimeSpan(5, 'm'));
-    const ip = (await headers()).get('x-forwarded-for')?.split(',').at(0);
+      const verificationCode = genRandomInt(100000, 999999);
+      const expiresAt = createDate(new TimeSpan(5, 'm'));
+      const ip = (await headers()).get('x-forwarded-for')?.split(',').at(0);
 
-    if (!ip) {
-      throw new CustomError('Something went wrong with your network!');
-    }
+      if (!ip) {
+        throw new CustomError('Something went wrong with your network!');
+      }
 
-    const isVerificationCodeAlreadySent = await db
-      .select()
-      .from(emailVerification)
-      .where(
-        and(
-          eq(emailVerification.email, email),
-          gt(emailVerification.expiresAt, new Date()),
-          eq(emailVerification.ip, ip),
-        ),
-      )
-      .then((res) => res.at(0));
-
-    if (isVerificationCodeAlreadySent) {
-      return { success: true, message: 'Verification code was already sent!' };
-    }
-
-    const createdData = await db.transaction(async (tx) => {
-      return await tx
-        .insert(emailVerification)
-        .values({ id: ulid(), code: verificationCode, expiresAt, ip, email })
-        .returning()
+      const isVerificationCodeAlreadySent = await db
+        .select()
+        .from(emailVerification)
+        .where(
+          and(
+            eq(emailVerification.email, email),
+            gt(emailVerification.expiresAt, new Date()),
+            eq(emailVerification.ip, ip),
+          ),
+        )
         .then((res) => res.at(0));
-    });
 
-    if (!createdData) {
-      throw new Error('Something went wrong!');
-    }
+      if (isVerificationCodeAlreadySent) {
+        return {
+          success: true,
+          message: 'Verification code was already sent!',
+        };
+      }
 
-    const firstName = fullName.split(' ').at(0)!;
+      const createdData = await db.transaction(async (tx) => {
+        return await tx
+          .insert(emailVerification)
+          .values({ id: ulid(), code: verificationCode, expiresAt, ip, email })
+          .returning()
+          .then((res) => res.at(0));
+      });
 
-    const html = await renderAsync(
-      React.createElement(EmailVerificaionCode, {
-        firstName,
-        code: createdData.code,
-      }),
-    );
+      if (!createdData) {
+        throw new Error('Something went wrong!');
+      }
 
-    await sendEmail({
-      emailOptions: {
-        to: email,
-        subject: `Verification Code - Verve Styles`,
-        html,
-      },
-    });
+      const firstName = fullName.split(' ').at(0)!;
 
-    return { success: true };
-  },
-);
+      const html = await render(
+        React.createElement(EmailVerificaionCode, {
+          firstName,
+          code: createdData.code,
+        }),
+      );
 
-export const validateEmailVerificationAction = actionClient(
-  z.intersection(
-    ValidateEmailVerificationSchema,
-    z.object({ redirectAfter: redirectAfterSchema }),
-  ),
-  async (values) => {
+      await sendEmail({
+        emailOptions: {
+          to: email,
+          subject: `Verification Code - Verve Styles`,
+          html,
+        },
+      });
+
+      return { success: true };
+    },
+  );
+
+export const validateEmailVerificationAction = actionClient
+  .schema(
+    z.intersection(
+      ValidateEmailVerificationSchema,
+      z.object({ redirectAfter: redirectAfterSchema }),
+    ),
+  )
+  .action(async ({ parsedInput: values }) => {
     if (values.password !== values.confirmPassword) {
       throw new CustomError(
         `Your input password and confirmation password did not match!`,
@@ -259,10 +262,9 @@ export const validateEmailVerificationAction = actionClient(
       '/shop';
 
     return { redirectAfter };
-  },
-);
+  });
 
-export const signOutAction = actionClient(z.object({}), async () => {
+export const signOutAction = actionClient.action(async () => {
   const { session } = await auth();
   if (!session) {
     throw new CustomError(`You're already logged out!`);
@@ -286,9 +288,9 @@ export const signOutAction = actionClient(z.object({}), async () => {
   redirect('/auth/sign-in');
 });
 
-export const oauthSignInAction = actionClient(
-  OauthSignInActionSchema,
-  async ({ provider, redirectAfterPathname }) => {
+export const oauthSignInAction = actionClient
+  .schema(OauthSignInActionSchema)
+  .action(async ({ parsedInput: { provider, redirectAfterPathname } }) => {
     const searchParams = new URLSearchParams();
 
     if (redirectAfterPathname) {
@@ -298,12 +300,11 @@ export const oauthSignInAction = actionClient(
     redirect(
       `/api/auth/sign-in/${provider}${searchParams.size > 0 ? `?${searchParams.toString()}` : ''}`,
     );
-  },
-);
+  });
 
-export const getPasswordResetLinkAction = actionClient(
-  getPasswordResetLinkSchema,
-  async ({ email }) => {
+export const getPasswordResetLinkAction = actionClient
+  .schema(getPasswordResetLinkSchema)
+  .action(async ({ parsedInput: { email } }) => {
     const existingUser = await db
       .select()
       .from(user)
@@ -346,7 +347,7 @@ export const getPasswordResetLinkAction = actionClient(
 
     const firstName = existingUser.name.split(' ').at(0)!;
 
-    const html = await renderAsync(
+    const html = await render(
       React.createElement(ResetPassword, {
         firstName,
         resetLink: resetLinkUrl,
@@ -362,12 +363,11 @@ export const getPasswordResetLinkAction = actionClient(
     });
 
     return { success: true };
-  },
-);
+  });
 
-export const passwordResetAction = actionClient(
-  passwordResetSchema,
-  async (values) => {
+export const passwordResetAction = actionClient
+  .schema(passwordResetSchema)
+  .action(async ({ parsedInput: values }) => {
     const referer = (await headers()).get('referer');
 
     if (!referer) {
@@ -426,12 +426,11 @@ export const passwordResetAction = actionClient(
     });
 
     return { success: true };
-  },
-);
+  });
 
-export const simulateLoginAsTestUserAction = actionClient(
-  z.object({ redirectAfter: redirectAfterSchema }),
-  async (values) => {
+export const simulateLoginAsTestUserAction = actionClient
+  .schema(z.object({ redirectAfter: redirectAfterSchema }))
+  .action(async ({ parsedInput: values }) => {
     const allTestUsers = await db
       .select()
       .from(user)
@@ -476,5 +475,4 @@ export const simulateLoginAsTestUserAction = actionClient(
       '/shop';
 
     return { redirectAfter };
-  },
-);
+  });

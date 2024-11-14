@@ -111,11 +111,11 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1(tailwindcss@3.4.14)
       '@tanstack/react-query':
-        specifier: ^5.59.20
-        version: 5.59.20(react@18.3.1)
+        specifier: ^5.60.2
+        version: 5.60.2(react@18.3.1)
       '@tanstack/react-query-devtools':
-        specifier: ^5.59.20
-        version: 5.59.20(@tanstack/react-query@5.59.20(react@18.3.1))(react@18.3.1)
+        specifier: ^5.60.2
+        version: 5.60.2(@tanstack/react-query@5.60.2(react@18.3.1))(react@18.3.1)
       '@types/node':
         specifier: 20.11.16
         version: 20.11.16
@@ -174,8 +174,8 @@ importers:
         specifier: ^0.2.3
         version: 0.2.3(eslint@9.14.0(jiti@2.4.0))
       framer-motion:
-        specifier: ^11.11.15
-        version: 11.11.15(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^11.11.16
+        version: 11.11.16(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       geist:
         specifier: ^1.3.1
         version: 1.3.1(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -192,8 +192,8 @@ importers:
         specifier: 15.0.3
         version: 15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-safe-action:
-        specifier: ^6.2.0
-        version: 6.2.0(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        specifier: ^7.9.9
+        version: 7.9.9(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.23.8)
       nextjs-toploader:
         specifier: ^3.7.15
         version: 3.7.15(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -333,60 +333,6 @@ packages:
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
-
-  '@decs/typeschema@0.12.2':
-    resolution: {integrity: sha512-PA8uAH/Xfsa5X2UNNSnb5i6vB8qWZywp4+d2U8kNMCO7qwirYRPbFCHwIfWBJyURh4rULn3Ey+VBADLcK2xxaQ==}
-    deprecated: TypeSchema has been restructured. Install @typeschema/main or @typeschema/all instead.
-    peerDependencies:
-      '@deepkit/type': ^1.0.1-alpha.113
-      '@effect/schema': ^0.60.6
-      '@sinclair/typebox': ^0.32.11
-      ajv: ^8.12.0
-      arktype: ^1.0.29-alpha
-      effect: ^2.1.2
-      fp-ts: ^2.16.2
-      io-ts: ^2.2.21
-      joi: ^17.12.0
-      ow: ^0.28.2
-      runtypes: ^6.7.0
-      superstruct: ^1.0.3
-      valibot: ^0.26.0
-      vite: ^5.0.12
-      yup: ^1.3.3
-      zod: ^3.22.4
-    peerDependenciesMeta:
-      '@deepkit/type':
-        optional: true
-      '@effect/schema':
-        optional: true
-      '@sinclair/typebox':
-        optional: true
-      ajv:
-        optional: true
-      arktype:
-        optional: true
-      effect:
-        optional: true
-      fp-ts:
-        optional: true
-      io-ts:
-        optional: true
-      joi:
-        optional: true
-      ow:
-        optional: true
-      runtypes:
-        optional: true
-      superstruct:
-        optional: true
-      valibot:
-        optional: true
-      vite:
-        optional: true
-      yup:
-        optional: true
-      zod:
-        optional: true
 
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -2055,14 +2001,14 @@ packages:
   '@tanstack/query-devtools@5.59.20':
     resolution: {integrity: sha512-vxhuQ+8VV4YWQSFxQLsuM+dnEKRY7VeRzpNabFXdhEwsBYLrjXlF1pM38A8WyKNLqZy8JjyRO8oP4Wd/oKHwuQ==}
 
-  '@tanstack/react-query-devtools@5.59.20':
-    resolution: {integrity: sha512-AL/eQS1NFZhwwzq2Bq9Gd8wTTH+XhPNOJlDFpzPMu9NC5CQVgA0J8lWrte/sXpdWNo5KA4hgHnEdImZsF4h6Lw==}
+  '@tanstack/react-query-devtools@5.60.2':
+    resolution: {integrity: sha512-h+4/KwgUuAu4fcfrlSnD9K4gxR9Glbi3SbQUWBl2iF9Nt94aVcmCwAACGHWqqKhDPz1KOiRe9bIq2KZ4UsZMEA==}
     peerDependencies:
-      '@tanstack/react-query': ^5.59.20
+      '@tanstack/react-query': ^5.60.2
       react: ^18 || ^19
 
-  '@tanstack/react-query@5.59.20':
-    resolution: {integrity: sha512-Zly0egsK0tFdfSbh5/mapSa+Zfc3Et0Zkar7Wo5sQkFzWyB3p3uZWOHR2wrlAEEV2L953eLuDBtbgFvMYiLvUw==}
+  '@tanstack/react-query@5.60.2':
+    resolution: {integrity: sha512-JhpJNxIAPuE0YCpP1Py4zAsgx+zY0V531McRMtQbwVlJF8+mlZwcOPrzGmPV248K8IP+mPbsfxXToVNMNwjUcw==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -2900,8 +2846,8 @@ packages:
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
-  framer-motion@11.11.15:
-    resolution: {integrity: sha512-fib+OpUe4nap4W1vhaDohnPU+42B5s1q+jNkNkb6TfzmDYtRhDyvn4mkRCAD5a2cQKOI3nJZP7yqGYtxnlmleg==}
+  framer-motion@11.11.16:
+    resolution: {integrity: sha512-PAK9NkCdRuwNTkKh9chSHokvEkwLJ/JyePNG/Fgmk4ygeQmth8wneITlxQAykOeYWgRvetk1i22PcMiG/VRuWg==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0
@@ -3388,12 +3334,26 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  next-safe-action@6.2.0:
-    resolution: {integrity: sha512-gssUs3OLoNjLXZalrQaly38s/mUtXsIcKWGIK3jFkW8GHl0/Xhq+3G8yEEyObET2YlYqUj79K+mH3iTNBLDcMw==}
+  next-safe-action@7.9.9:
+    resolution: {integrity: sha512-wFKKCgfHNsObfbDrbOQV8WAE6RnVx7dwmuUazqdNaTL3ZdDzUlRTnIIVI36qSjmgA3zwwxj3nvfxgK9d0fWr5w==}
     engines: {node: '>=18.17'}
     peerDependencies:
+      '@sinclair/typebox': '>= 0.33.3'
       next: '>= 14.0.0'
       react: '>= 18.2.0'
+      react-dom: '>= 18.2.0'
+      valibot: '>= 0.36.0'
+      yup: '>= 1.0.0'
+      zod: '>= 3.0.0'
+    peerDependenciesMeta:
+      '@sinclair/typebox':
+        optional: true
+      valibot:
+        optional: true
+      yup:
+        optional: true
+      zod:
+        optional: true
 
   next@15.0.3:
     resolution: {integrity: sha512-ontCbCRKJUIoivAdGB34yCaOcPgYXr9AAkV/IwqFfWWTXEPUgLYkSkqBhIk9KK7gGmgjc64B+RdoeIDM13Irnw==}
@@ -4330,10 +4290,6 @@ packages:
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
-
-  '@decs/typeschema@0.12.2(zod@3.23.8)':
-    optionalDependencies:
-      zod: 3.23.8
 
   '@discoveryjs/json-ext@0.5.7': {}
 
@@ -5726,13 +5682,13 @@ snapshots:
 
   '@tanstack/query-devtools@5.59.20': {}
 
-  '@tanstack/react-query-devtools@5.59.20(@tanstack/react-query@5.59.20(react@18.3.1))(react@18.3.1)':
+  '@tanstack/react-query-devtools@5.60.2(@tanstack/react-query@5.60.2(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/query-devtools': 5.59.20
-      '@tanstack/react-query': 5.59.20(react@18.3.1)
+      '@tanstack/react-query': 5.60.2(react@18.3.1)
       react: 18.3.1
 
-  '@tanstack/react-query@5.59.20(react@18.3.1)':
+  '@tanstack/react-query@5.60.2(react@18.3.1)':
     dependencies:
       '@tanstack/query-core': 5.59.20
       react: 18.3.1
@@ -6724,7 +6680,7 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  framer-motion@11.11.15(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  framer-motion@11.11.16(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       tslib: 2.8.1
     optionalDependencies:
@@ -7186,29 +7142,13 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-safe-action@6.2.0(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
+  next-safe-action@7.9.9(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.23.8):
     dependencies:
-      '@decs/typeschema': 0.12.2(zod@3.23.8)
       next: 15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       zod: 3.23.8
-    transitivePeerDependencies:
-      - '@deepkit/type'
-      - '@effect/schema'
-      - '@sinclair/typebox'
-      - ajv
-      - arktype
-      - effect
-      - fp-ts
-      - io-ts
-      - joi
-      - ow
-      - runtypes
-      - superstruct
-      - valibot
-      - vite
-      - yup
 
   next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:

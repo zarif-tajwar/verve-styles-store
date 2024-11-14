@@ -63,31 +63,45 @@ const SignUpCredentialsFormClient = () => {
   const onSubmitNameAndEmail = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.nameAndEmail>,
   ) => {
-    const result = await isEmailAlreadyRegisteredAction({
+    const actionRes = await isEmailAlreadyRegisteredAction({
       email: values.email,
     });
 
-    if (result.serverError && result.serverError.includes('email')) {
+    if (!actionRes) {
+      errorToast('Something went wrong!');
+      return;
+    }
+
+    const { data, serverError } = actionRes;
+
+    if (serverError && serverError.includes('email')) {
       formNameAndEmail.setError('email', {
-        message: result.serverError,
+        message: serverError,
       });
       return;
     }
 
-    if (!result.data) setFormStep('password');
+    if (!data) setFormStep('password');
   };
 
   const onSubmitPassword = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.password>,
   ) => {
-    const result = await sendEmailVerificationAction({
+    const actionRes = await sendEmailVerificationAction({
       email: formNameAndEmail.getValues('email'),
       password: values.password,
       confirmPassword: values.confirmPassword,
       fullName: formNameAndEmail.getValues('fullName'),
     });
 
-    if (result.serverError) {
+    if (!actionRes) {
+      errorToast('Something went wrong!');
+      return;
+    }
+
+    const { serverError } = actionRes;
+
+    if (serverError) {
       errorToast('Something went wrong!');
       return;
     }

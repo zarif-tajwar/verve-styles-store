@@ -15,17 +15,14 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 const AddNewAddress = () => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { execute, status } = useAction(addNewAddressAction, {
-    onSuccess: async ({ success }) => {
+  const { execute } = useAction(addNewAddressAction, {
+    onSuccess: async ({ data }) => {
       await queryClient.refetchQueries({ queryKey: [ADDRESS_QUERY_KEY] });
-      successToast(success);
+      if (data?.success) successToast(data.success);
     },
-    onError: async (errors) => {
-      if (errors.serverError) {
-        errorToast('Failed', { description: errors.serverError });
-      }
-      if (errors.fetchError) {
-        errorToast('Failed', { description: errors.fetchError });
+    onError: async ({ error }) => {
+      if (error.serverError) {
+        errorToast('Failed', { description: error.serverError });
       }
     },
   });

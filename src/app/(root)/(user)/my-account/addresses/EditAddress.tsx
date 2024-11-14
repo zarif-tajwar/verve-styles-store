@@ -22,16 +22,13 @@ const EditAddress = ({ addressData }: EditAddressProps) => {
   const queryClient = useQueryClient();
 
   const { execute } = useAction(editAddressAction, {
-    onSuccess: async ({ success }) => {
+    onSuccess: async ({ data }) => {
       await queryClient.refetchQueries({ queryKey: [ADDRESS_QUERY_KEY] });
-      successToast(success);
+      if (data?.success) successToast(data.success);
     },
-    onError: (errors) => {
-      if (errors.serverError) {
-        errorToast('Failed', { description: errors.serverError });
-      }
-      if (errors.fetchError) {
-        errorToast('Failed', { description: errors.fetchError });
+    onError: ({ error: { serverError } }) => {
+      if (serverError) {
+        errorToast('Failed', { description: serverError });
       }
     },
   });

@@ -9,16 +9,13 @@ import { useAction } from 'next-safe-action/hooks';
 const GenRandAddress = () => {
   const queryClient = useQueryClient();
   const { execute, status } = useAction(generateRandomAddressAction, {
-    onSuccess: async ({ message }) => {
+    onSuccess: async ({ data }) => {
       await queryClient.refetchQueries({ queryKey: ['addresses'] });
-      successToast(message);
+      if (data?.message) successToast(data.message);
     },
-    onError: async (errors) => {
-      if (errors.serverError) {
-        errorToast('Failed', { description: errors.serverError });
-      }
-      if (errors.fetchError) {
-        errorToast('Failed', { description: errors.fetchError });
+    onError: async ({ error: { serverError } }) => {
+      if (serverError) {
+        errorToast('Failed', { description: serverError });
       }
     },
   });
@@ -27,7 +24,7 @@ const GenRandAddress = () => {
     <Button
       variant={'secondary'}
       onClick={async () => {
-        await execute({});
+        await execute();
       }}
       disabled={status === 'executing'}
     >
