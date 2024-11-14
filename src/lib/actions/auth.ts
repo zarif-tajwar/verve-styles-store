@@ -140,6 +140,29 @@ export const sendEmailVerificationAction = actionClient
         };
       }
 
+      const firstName = fullName.split(' ').at(0)!;
+
+      const html = await render(
+        React.createElement(EmailVerificaionCode, {
+          firstName,
+          code: verificationCode,
+        }),
+      );
+
+      try {
+        const emailRes = await sendEmail({
+          emailOptions: {
+            to: email,
+            subject: `Verification Code - Verve Styles`,
+            html,
+          },
+        });
+        if (emailRes.accepted.length === 0) throw new Error();
+      } catch (err) {
+        console.log(`Password Reset Email Error: ${(err as Error).message}`);
+        throw new CustomError('Failed to send the email!');
+      }
+
       const createdData = await db.transaction(async (tx) => {
         return await tx
           .insert(emailVerification)
@@ -151,23 +174,6 @@ export const sendEmailVerificationAction = actionClient
       if (!createdData) {
         throw new Error('Something went wrong!');
       }
-
-      const firstName = fullName.split(' ').at(0)!;
-
-      const html = await render(
-        React.createElement(EmailVerificaionCode, {
-          firstName,
-          code: createdData.code,
-        }),
-      );
-
-      await sendEmail({
-        emailOptions: {
-          to: email,
-          subject: `Verification Code - Verve Styles`,
-          html,
-        },
-      });
 
       return { success: true };
     },
@@ -321,6 +327,37 @@ export const getPasswordResetLinkAction = actionClient
 
     const tokenId = generateId(40);
 
+    const origin = (await headers()).get('origin');
+
+    if (!origin) {
+      throw new CustomError('Something went wrong!');
+    }
+
+    const resetLinkUrl = `${origin}/auth/reset-password/${tokenId}`;
+
+    const firstName = existingUser.name.split(' ').at(0)!;
+
+    const html = await render(
+      React.createElement(ResetPassword, {
+        firstName,
+        resetLink: resetLinkUrl,
+      }),
+    );
+
+    try {
+      const emailRes = await sendEmail({
+        emailOptions: {
+          to: email,
+          subject: `Reset Password - Verve Styles`,
+          html,
+        },
+      });
+      if (emailRes.accepted.length === 0) throw new Error();
+    } catch (err) {
+      console.log(`Password Reset Email Error: ${(err as Error).message}`);
+      throw new CustomError('Failed to send the email!');
+    }
+
     const createdTokenData = await db.transaction(async (tx) => {
       return await tx
         .insert(passwordResetToken)
@@ -336,31 +373,6 @@ export const getPasswordResetLinkAction = actionClient
     if (!createdTokenData) {
       throw new CustomError('Something went wrong!');
     }
-
-    const origin = (await headers()).get('origin');
-
-    if (!origin) {
-      throw new CustomError('Something went wrong!');
-    }
-
-    const resetLinkUrl = `${origin}/auth/reset-password/${createdTokenData.id}`;
-
-    const firstName = existingUser.name.split(' ').at(0)!;
-
-    const html = await render(
-      React.createElement(ResetPassword, {
-        firstName,
-        resetLink: resetLinkUrl,
-      }),
-    );
-
-    await sendEmail({
-      emailOptions: {
-        to: email,
-        subject: `Reset Password - Verve Styles`,
-        html,
-      },
-    });
 
     return { success: true };
   });

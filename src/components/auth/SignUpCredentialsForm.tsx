@@ -26,7 +26,7 @@ import {
   PasswordInput,
 } from '../UI/Form';
 import Spinner from '../UI/Spinner';
-import { errorToast } from '../UI/Toaster';
+import { errorToast, messageToast } from '../UI/Toaster';
 import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
 import { Suspense } from 'react';
 import { AuthSkeletonForm } from './AuthSkeletons';
@@ -99,12 +99,14 @@ const SignUpCredentialsFormClient = () => {
       return;
     }
 
-    const { serverError } = actionRes;
+    const { serverError, data } = actionRes;
 
     if (serverError) {
-      errorToast('Something went wrong!');
+      errorToast(serverError);
       return;
     }
+
+    if (data?.message) messageToast(data.message);
 
     setFormStep('verificationCode');
   };
