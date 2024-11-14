@@ -14,7 +14,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const oauthUrl = await googleOauth.createAuthorizationURL(
     state,
     codeVerifier,
-    { scopes: ['profile', 'email'] },
+    ['openid', 'profile', 'email'],
   );
 
   cookiesStore.set(authCookieNames.OAUTH_STATE_GOOGLE, state, {

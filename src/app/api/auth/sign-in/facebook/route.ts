@@ -8,9 +8,10 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const state = generateState();
 
-  const oauthUrl = await facebookOauth.createAuthorizationURL(state, {
-    scopes: ['email', 'public_profile'],
-  });
+  const oauthUrl = await facebookOauth.createAuthorizationURL(state, [
+    'email',
+    'public_profile',
+  ]);
 
   (await cookies()).set(authCookieNames.OAUTH_STATE_FACEBOOK, state, {
     path: '/',

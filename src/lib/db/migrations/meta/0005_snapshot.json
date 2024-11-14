@@ -1,10 +1,8 @@
 {
-  "version": "5",
-  "dialect": "pg",
-  "id": "301793c8-41e5-4d5d-b329-2aac6284ba8e",
-  "prevId": "176f0136-d571-4d5d-bc18-08e3642f2512",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "clothing": {
+    "public.clothing": {
       "name": "clothing",
       "schema": "",
       "columns": {
@@ -30,18 +28,29 @@
       },
       "indexes": {
         "clothing_name_index": {
-          "name": "clothing_name_index",
           "columns": [
-            "name"
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "clothing_name_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "dress_styles": {
+    "public.dress_styles": {
       "name": "dress_styles",
       "schema": "",
       "columns": {
@@ -68,9 +77,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "product_entries": {
+    "public.product_entries": {
       "name": "product_entries",
       "schema": "",
       "columns": {
@@ -115,46 +127,62 @@
       },
       "indexes": {
         "product_id_idx": {
-          "name": "product_id_idx",
           "columns": [
-            "product_id"
+            {
+              "expression": "product_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "product_id_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "size_id_idx": {
-          "name": "size_id_idx",
           "columns": [
-            "size_id"
+            {
+              "expression": "size_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "size_id_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "product_entries_product_id_products_id_fk": {
           "name": "product_entries_product_id_products_id_fk",
           "tableFrom": "product_entries",
-          "tableTo": "products",
           "columnsFrom": [
             "product_id"
           ],
+          "tableTo": "products",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "product_entries_size_id_sizes_id_fk": {
           "name": "product_entries_size_id_sizes_id_fk",
           "tableFrom": "product_entries",
-          "tableTo": "sizes",
           "columnsFrom": [
             "size_id"
           ],
+          "tableTo": "sizes",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -166,9 +194,12 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "products": {
+    "public.products": {
       "name": "products",
       "schema": "",
       "columns": {
@@ -238,52 +269,71 @@
       },
       "indexes": {
         "product_id_index": {
-          "name": "product_id_index",
           "columns": [
-            "id"
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "product_id_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "product_name_index": {
-          "name": "product_name_index",
           "columns": [
-            "name"
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "product_name_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "products_clothing_id_clothing_id_fk": {
           "name": "products_clothing_id_clothing_id_fk",
           "tableFrom": "products",
-          "tableTo": "clothing",
           "columnsFrom": [
             "clothing_id"
           ],
+          "tableTo": "clothing",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "products_style_id_dress_styles_id_fk": {
           "name": "products_style_id_dress_styles_id_fk",
           "tableFrom": "products",
-          "tableTo": "dress_styles",
           "columnsFrom": [
             "style_id"
           ],
+          "tableTo": "dress_styles",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "sizes": {
+    "public.sizes": {
       "name": "sizes",
       "schema": "",
       "columns": {
@@ -310,7 +360,10 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     }
   },
   "enums": {},
@@ -319,5 +372,11 @@
     "schemas": {},
     "tables": {},
     "columns": {}
-  }
+  },
+  "id": "301793c8-41e5-4d5d-b329-2aac6284ba8e",
+  "prevId": "176f0136-d571-4d5d-bc18-08e3642f2512",
+  "sequences": {},
+  "policies": {},
+  "views": {},
+  "roles": {}
 }

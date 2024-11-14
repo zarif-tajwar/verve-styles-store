@@ -1,10 +1,8 @@
 {
-  "version": "5",
-  "dialect": "pg",
-  "id": "a3dbee73-eb96-4081-afd5-50ce790bb7d8",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "clothing": {
+    "public.clothing": {
       "name": "clothing",
       "schema": "",
       "columns": {
@@ -31,9 +29,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "dress_styles": {
+    "public.dress_styles": {
       "name": "dress_styles",
       "schema": "",
       "columns": {
@@ -60,9 +61,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "products": {
+    "public.products": {
       "name": "products",
       "schema": "",
       "columns": {
@@ -122,34 +126,37 @@
         "products_clothing_id_clothing_id_fk": {
           "name": "products_clothing_id_clothing_id_fk",
           "tableFrom": "products",
-          "tableTo": "clothing",
           "columnsFrom": [
             "clothing_id"
           ],
+          "tableTo": "clothing",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "products_clothing_id_dress_styles_id_fk": {
           "name": "products_clothing_id_dress_styles_id_fk",
           "tableFrom": "products",
-          "tableTo": "dress_styles",
           "columnsFrom": [
             "clothing_id"
           ],
+          "tableTo": "dress_styles",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "sizes": {
+    "public.sizes": {
       "name": "sizes",
       "schema": "",
       "columns": {
@@ -176,7 +183,10 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     }
   },
   "enums": {},
@@ -185,5 +195,11 @@
     "schemas": {},
     "tables": {},
     "columns": {}
-  }
+  },
+  "id": "a3dbee73-eb96-4081-afd5-50ce790bb7d8",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "sequences": {},
+  "policies": {},
+  "views": {},
+  "roles": {}
 }

@@ -1,13 +1,14 @@
 import type { Config } from 'drizzle-kit';
+import { defineConfig } from 'drizzle-kit';
 import 'dotenv/config';
 import { env } from '@/lib/validation/env';
 
-export default {
+export default defineConfig({
   dbCredentials: {
-    connectionString: env.DB_URL,
+    url: env.DB_URL,
   },
-  driver: 'pg',
+  dialect: 'postgresql',
   breakpoints: true,
   schema: './src/lib/db/schema',
   out: './src/lib/db/migrations',
-} satisfies Config;
+});
