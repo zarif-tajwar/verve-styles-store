@@ -7,7 +7,7 @@ import OrderFilters from './OrderFilters';
 import OrdersListing from './OrdersListing';
 
 const OrdersPage = async () => {
-  redirectIfNotSignedIn({
+  await redirectIfNotSignedIn({
     redirectAfter: '/my-account/orders',
   });
 
