@@ -65,34 +65,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const googleUser = decodeIdToken(tokens.idToken()) as GoogleUser;
 
-    // const tokens = await googleOauth.validateAuthorizationCode(
-    //   code,
-    //   storedCodeVerifier,
-    // );
-
-    // const googleUserResponse = await fetch(
-    //   'https://openidconnect.googleapis.com/v1/userinfo',
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${tokens.accessToken()}`,
-    //     },
-    //   },
-    // );
-
-    // const googleUser = (await googleUserResponse.json()) as GoogleUser;
-
-    // if (!googleUser.email) {
-    //   return new NextResponse('No primary email address', {
-    //     status: 400,
-    //   });
-    // }
-
-    // if (!googleUser.email_verified) {
-    //   return new NextResponse('Unverified email', {
-    //     status: 400,
-    //   });
-    // }
-
     const existingUser = await db
       .select()
       .from(user)
