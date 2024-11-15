@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
         : process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
     const vercelOrigin = vercelTargetUrl
-      ? `htpps://${vercelTargetUrl}`
+      ? `https://${vercelTargetUrl}`
       : undefined;
 
     const targetOrigin =
