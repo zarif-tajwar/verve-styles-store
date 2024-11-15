@@ -10,10 +10,11 @@ import { SHOP_FILTER_PRODUCTS_QUERY_KEY } from '@/lib/constants/query-keys';
 import { SearchParamsServer } from '@/lib/types/common';
 
 const ShopPage = async ({
-  searchParams,
+  searchParams: searchParamsPromise,
 }: {
   searchParams: SearchParamsServer;
 }) => {
+  const searchParams = await searchParamsPromise;
   const queryKey = [SHOP_FILTER_PRODUCTS_QUERY_KEY, searchParams];
   const queryClient = new QueryClient();
 

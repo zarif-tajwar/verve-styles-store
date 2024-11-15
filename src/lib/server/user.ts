@@ -9,7 +9,7 @@ import { auth } from './auth';
 import { ORDERS_PER_PAGE } from '../constants/orders';
 
 export const getOrdersServer = cache(
-  async ({ searchParams }: { searchParams: SearchParamsServer }) => {
+  async ({ searchParams }: { searchParams: Awaited<SearchParamsServer> }) => {
     const { user } = await auth();
 
     if (!user) return null;

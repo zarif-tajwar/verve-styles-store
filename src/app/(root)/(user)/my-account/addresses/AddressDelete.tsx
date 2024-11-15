@@ -16,16 +16,13 @@ const AddressDelete = ({ addressId }: { addressId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { execute } = useAction(deleteAddressAction, {
-    onSuccess: async ({ success }) => {
+    onSuccess: async ({ data }) => {
       await queryClient.refetchQueries({ queryKey: [ADDRESS_QUERY_KEY] });
-      messageToast(success);
+      if (data?.success) messageToast(data.success);
     },
-    onError: (errors) => {
-      if (errors.serverError) {
-        errorToast('Failed', { description: errors.serverError });
-      }
-      if (errors.fetchError) {
-        errorToast('Failed', { description: errors.fetchError });
+    onError: ({ error: { serverError } }) => {
+      if (serverError) {
+        errorToast('Failed', { description: serverError });
       }
     },
   });

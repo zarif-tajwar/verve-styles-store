@@ -1,6 +1,10 @@
 import WIP from '@/components/UI/WIP';
+import { redirectIfNotSignedIn } from '@/lib/server/auth';
 
-const PreferencesPage = () => {
+const PreferencesPage = async () => {
+  await redirectIfNotSignedIn({
+    redirectAfter: '/my-account',
+  });
   return (
     <div>
       <WIP />

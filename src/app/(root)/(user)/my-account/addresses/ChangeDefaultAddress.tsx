@@ -30,17 +30,14 @@ const ChangeDefaultAddress = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { execute } = useAction(changeDefaultAddressAction, {
-    onSuccess: async ({ success }) => {
+    onSuccess: async ({ data }) => {
       await queryClient.refetchQueries({ queryKey: [ADDRESS_QUERY_KEY] });
       setIsDialogOpen(false);
-      successToast(success);
+      if (data?.success) successToast(data.success);
     },
-    onError: (errors) => {
-      if (errors.serverError) {
-        errorToast('Failed', { description: errors.serverError });
-      }
-      if (errors.fetchError) {
-        errorToast('Failed', { description: errors.fetchError });
+    onError: ({ error: { serverError } }) => {
+      if (serverError) {
+        errorToast('Failed', { description: serverError });
       }
     },
   });

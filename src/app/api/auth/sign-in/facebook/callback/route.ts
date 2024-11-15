@@ -28,11 +28,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const code = req.nextUrl.searchParams.get('code');
   const state = req.nextUrl.searchParams.get('state');
 
-  const storedState = cookies().get(
+  const cookiesStore = await cookies();
+
+  const storedState = cookiesStore.get(
     authCookieNames.OAUTH_STATE_FACEBOOK,
   )?.value;
 
-  const postRedirectPathname = getRedirectCookie();
+  const postRedirectPathname = await getRedirectCookie();
 
   if (!code || !state || !storedState || state !== storedState) {
     return NextResponse.json('Invalid OAuth state or code verifier', {
@@ -44,7 +46,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const tokens = await facebookOauth.validateAuthorizationCode(code);
 
     const url = new URL('https://graph.facebook.com/me');
-    url.searchParams.set('access_token', tokens.accessToken);
+    url.searchParams.set('access_token', tokens.accessToken());
     url.searchParams.set(
       'fields',
       ['id', 'name', 'picture', 'email'].join(','),
@@ -102,7 +104,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
-      cookies().set(
+      cookiesStore.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes,
@@ -137,7 +139,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
-      cookies().set(
+      cookiesStore.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes,

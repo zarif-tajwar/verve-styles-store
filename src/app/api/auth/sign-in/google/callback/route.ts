@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import { oauthAccount, user } from '@/lib/db/schema/auth2';
 import { getRedirectCookie } from '@/lib/server/auth';
 import { handleCartOnSignIn } from '@/lib/server/cart';
+import { decodeIdToken, OAuth2Tokens } from 'arctic';
 import { and, eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -22,15 +23,19 @@ type GoogleUser = {
 };
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  const cookiesStore = await cookies();
+
   const code = req.nextUrl.searchParams.get('code');
   const state = req.nextUrl.searchParams.get('state');
 
-  const storedState = cookies().get(authCookieNames.OAUTH_STATE_GOOGLE)?.value;
-  const storedCodeVerifier = cookies().get(
+  const storedState = cookiesStore.get(
+    authCookieNames.OAUTH_STATE_GOOGLE,
+  )?.value;
+  const storedCodeVerifier = cookiesStore.get(
     authCookieNames.OAUTH_CODE_VERIFIER_GOOGLE,
   )?.value;
 
-  const postRedirectPathname = getRedirectCookie();
+  const postRedirectPathname = await getRedirectCookie();
 
   if (
     !code ||
@@ -39,39 +44,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     !storedCodeVerifier ||
     state !== storedState
   ) {
-    return NextResponse.json('Invalid OAuth state or code verifier', {
+    return NextResponse.json('Please restart the process.', {
       status: 400,
     });
   }
 
   try {
-    const tokens = await googleOauth.validateAuthorizationCode(
-      code,
-      storedCodeVerifier,
-    );
-
-    const googleUserResponse = await fetch(
-      'https://openidconnect.googleapis.com/v1/userinfo',
-      {
-        headers: {
-          Authorization: `Bearer ${tokens.accessToken}`,
-        },
-      },
-    );
-
-    const googleUser = (await googleUserResponse.json()) as GoogleUser;
-
-    if (!googleUser.email) {
-      return new NextResponse('No primary email address', {
+    let tokens: OAuth2Tokens;
+    try {
+      tokens = await googleOauth.validateAuthorizationCode(
+        code,
+        storedCodeVerifier,
+      );
+    } catch (err) {
+      console.log(JSON.stringify(err));
+      return NextResponse.json('Please restart the process.', {
         status: 400,
       });
     }
 
-    if (!googleUser.email_verified) {
-      return new NextResponse('Unverified email', {
-        status: 400,
-      });
-    }
+    const googleUser = decodeIdToken(tokens.idToken()) as GoogleUser;
 
     const existingUser = await db
       .select()
@@ -108,7 +100,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
-      cookies().set(
+      cookiesStore.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes,
@@ -139,7 +131,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ]);
       const sessionCookie = lucia.createSessionCookie(session.id);
 
-      cookies().set(
+      cookiesStore.set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes,

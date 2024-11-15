@@ -13,12 +13,14 @@ import { cn, makeValidURL, priceFormat } from '@/lib/util';
 import { type Variants, motion } from 'framer-motion';
 import Link from 'next/link';
 
-const MotionLink = motion(Link);
-const MotionProductListingItem = motion(ProductListingItem.ProductListingItem);
-const MotionProductName = motion(ProductListingItem.ProductName);
-const MotionProductRating = motion(ProductListingItem.ProductRating);
-const MotionProductPrice = motion(ProductListingItem.ProductPrice);
-const MotionProductImage = motion(ProductListingItem.ProductImage);
+const MotionLink = motion.create(Link);
+const MotionProductListingItem = motion.create(
+  ProductListingItem.ProductListingItem,
+);
+const MotionProductName = motion.create(ProductListingItem.ProductName);
+const MotionProductRating = motion.create(ProductListingItem.ProductRating);
+const MotionProductPrice = motion.create(ProductListingItem.ProductPrice);
+const MotionProductImage = motion.create(ProductListingItem.ProductImage);
 
 const staggerParentVariants: Variants = {
   initial: {},

@@ -57,7 +57,7 @@ export const getCartId = cache(async (): Promise<CartsSelect['id'] | null> => {
   }
 
   if (!authObject.user) {
-    const encodedCartIdFromCookies = cookies().get('cartId')?.value;
+    const encodedCartIdFromCookies = (await cookies()).get('cartId')?.value;
     const cartIdFromCookies = encodedCartIdFromCookies
       ? decodeSingleSqid(encodedCartIdFromCookies)
       : null;
@@ -81,7 +81,9 @@ export const getCartId = cache(async (): Promise<CartsSelect['id'] | null> => {
 });
 
 export const handleCartOnSignIn = async (userId: User['id']) => {
-  const encodedCartIdFromCookies = cookies().get('cartId')?.value;
+  const cookiesStore = await cookies();
+
+  const encodedCartIdFromCookies = cookiesStore.get('cartId')?.value;
   const cartIdFromCookies = encodedCartIdFromCookies
     ? decodeSingleSqid(encodedCartIdFromCookies)
     : null;
@@ -174,7 +176,7 @@ export const handleCartOnSignIn = async (userId: User['id']) => {
     });
   }
 
-  if (cookies().has('cartId')) cookies().delete('cartId');
+  if (cookiesStore.has('cartId')) cookiesStore.delete('cartId');
 };
 
 export const getCartItems = async ({

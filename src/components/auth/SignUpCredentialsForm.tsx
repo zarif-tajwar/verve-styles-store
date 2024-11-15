@@ -26,7 +26,7 @@ import {
   PasswordInput,
 } from '../UI/Form';
 import Spinner from '../UI/Spinner';
-import { errorToast } from '../UI/Toaster';
+import { errorToast, messageToast } from '../UI/Toaster';
 import { AuthFormFieldsWrapper, AuthFormWrapper } from './Common';
 import { Suspense } from 'react';
 import { AuthSkeletonForm } from './AuthSkeletons';
@@ -63,34 +63,50 @@ const SignUpCredentialsFormClient = () => {
   const onSubmitNameAndEmail = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.nameAndEmail>,
   ) => {
-    const result = await isEmailAlreadyRegisteredAction({
+    const actionRes = await isEmailAlreadyRegisteredAction({
       email: values.email,
     });
 
-    if (result.serverError && result.serverError.includes('email')) {
+    if (!actionRes) {
+      errorToast('Something went wrong!');
+      return;
+    }
+
+    const { data, serverError } = actionRes;
+
+    if (serverError && serverError.includes('email')) {
       formNameAndEmail.setError('email', {
-        message: result.serverError,
+        message: serverError,
       });
       return;
     }
 
-    if (!result.data) setFormStep('password');
+    if (!data) setFormStep('password');
   };
 
   const onSubmitPassword = async (
     values: z.infer<typeof SignUpCredentialsFormStepSchemas.password>,
   ) => {
-    const result = await sendEmailVerificationAction({
+    const actionRes = await sendEmailVerificationAction({
       email: formNameAndEmail.getValues('email'),
       password: values.password,
       confirmPassword: values.confirmPassword,
       fullName: formNameAndEmail.getValues('fullName'),
     });
 
-    if (result.serverError) {
+    if (!actionRes) {
       errorToast('Something went wrong!');
       return;
     }
+
+    const { serverError, data } = actionRes;
+
+    if (serverError) {
+      errorToast(serverError);
+      return;
+    }
+
+    if (data?.message) messageToast(data.message);
 
     setFormStep('verificationCode');
   };

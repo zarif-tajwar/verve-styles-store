@@ -1,4 +1,4 @@
-import { drizzle } from 'drizzle-orm/neon-serverless';
+// import { drizzle } from 'drizzle-orm/neon-serverless';
 import * as sizesSchema from './schema/sizes';
 import * as clothingSchema from './schema/clothing';
 import * as dressStylesSchema from './schema/dressStyles';
@@ -20,8 +20,10 @@ import * as authSchema from './schema/auth2';
 import * as dummyUserSchema from './schema/dummyUser';
 import 'dotenv/config';
 import { Logger } from 'drizzle-orm/logger';
-import { Pool } from '@neondatabase/serverless';
+// import { Pool } from '@neondatabase/serverless';
 import { env } from '@/lib/validation/env';
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
 
 class CustomLogger implements Logger {
   logQuery(query: string, params: unknown[]): void {

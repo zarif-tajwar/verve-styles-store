@@ -20,9 +20,9 @@ const LoginSimulateButtonClient = ({ className }: LoginSimulateButtonProps) => {
   const router = useRouter();
   const qc = useQueryClient();
   const { status, execute } = useAction(simulateLoginAsTestUserAction, {
-    onSuccess: ({ redirectAfter }) => {
+    onSuccess: ({ data }) => {
       qc.refetchQueries({ queryKey: [AUTH_QUERY_KEY] });
-      router.push(redirectAfter);
+      if (data) router.push(data.redirectAfter);
     },
   });
 

@@ -6,16 +6,18 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  const cookiesStore = await cookies();
+
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
 
   const oauthUrl = await googleOauth.createAuthorizationURL(
     state,
     codeVerifier,
-    { scopes: ['profile', 'email'] },
+    ['openid', 'profile', 'email'],
   );
 
-  cookies().set(authCookieNames.OAUTH_STATE_GOOGLE, state, {
+  cookiesStore.set(authCookieNames.OAUTH_STATE_GOOGLE, state, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
@@ -23,7 +25,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     sameSite: 'lax',
   });
 
-  cookies().set(authCookieNames.OAUTH_CODE_VERIFIER_GOOGLE, codeVerifier, {
+  cookiesStore.set(authCookieNames.OAUTH_CODE_VERIFIER_GOOGLE, codeVerifier, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,

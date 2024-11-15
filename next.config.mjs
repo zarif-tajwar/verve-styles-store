@@ -5,9 +5,6 @@ const jiti = createJiti(fileURLToPath(import.meta.url));
 jiti('./src/lib/validation/env');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // typescript: {
-  //   ignoreBuildErrors: true,
-  // },
   images: {
     remotePatterns: [
       {
@@ -37,10 +34,7 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config) => {
-    config.externals.push('@node-rs/argon2', '@node-rs/bcrypt');
-    return config;
-  },
+  serverExternalPackages: ['@node-rs/argon2', '@node-rs/bcrypt'],
 };
 
 export default nextConfig;

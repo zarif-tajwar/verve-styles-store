@@ -1,10 +1,8 @@
 {
-  "version": "5",
-  "dialect": "pg",
-  "id": "2feb7c8a-4a47-4463-8926-7e2d6466eab1",
-  "prevId": "a3dbee73-eb96-4081-afd5-50ce790bb7d8",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "clothing": {
+    "public.clothing": {
       "name": "clothing",
       "schema": "",
       "columns": {
@@ -31,9 +29,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "dress_styles": {
+    "public.dress_styles": {
       "name": "dress_styles",
       "schema": "",
       "columns": {
@@ -60,9 +61,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "product_entries": {
+    "public.product_entries": {
       "name": "product_entries",
       "schema": "",
       "columns": {
@@ -110,28 +114,28 @@
         "product_entries_product_id_products_id_fk": {
           "name": "product_entries_product_id_products_id_fk",
           "tableFrom": "product_entries",
-          "tableTo": "products",
           "columnsFrom": [
             "product_id"
           ],
+          "tableTo": "products",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "product_entries_size_id_sizes_id_fk": {
           "name": "product_entries_size_id_sizes_id_fk",
           "tableFrom": "product_entries",
-          "tableTo": "sizes",
           "columnsFrom": [
             "size_id"
           ],
+          "tableTo": "sizes",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -143,9 +147,12 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "products": {
+    "public.products": {
       "name": "products",
       "schema": "",
       "columns": {
@@ -211,34 +218,37 @@
         "products_clothing_id_clothing_id_fk": {
           "name": "products_clothing_id_clothing_id_fk",
           "tableFrom": "products",
-          "tableTo": "clothing",
           "columnsFrom": [
             "clothing_id"
           ],
+          "tableTo": "clothing",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "products_style_id_dress_styles_id_fk": {
           "name": "products_style_id_dress_styles_id_fk",
           "tableFrom": "products",
-          "tableTo": "dress_styles",
           "columnsFrom": [
             "style_id"
           ],
+          "tableTo": "dress_styles",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "sizes": {
+    "public.sizes": {
       "name": "sizes",
       "schema": "",
       "columns": {
@@ -265,7 +275,10 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     }
   },
   "enums": {},
@@ -274,5 +287,11 @@
     "schemas": {},
     "tables": {},
     "columns": {}
-  }
+  },
+  "id": "2feb7c8a-4a47-4463-8926-7e2d6466eab1",
+  "prevId": "a3dbee73-eb96-4081-afd5-50ce790bb7d8",
+  "sequences": {},
+  "policies": {},
+  "views": {},
+  "roles": {}
 }

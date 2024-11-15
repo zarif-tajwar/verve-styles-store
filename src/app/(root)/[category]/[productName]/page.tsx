@@ -40,12 +40,12 @@ export const generateStaticParams = !!process.env.VERCEL
 export const dynamicParams = false;
 
 interface PageProps {
-  params: { category: string; productName: string };
+  params: Promise<{ category: string; productName: string }>;
   searchParams: SearchParamsServer;
 }
 
 const getProduct = cache(
-  async ({ params }: { params: PageProps['params'] }) => {
+  async ({ params }: { params: Awaited<PageProps['params']> }) => {
     const productColumns = getTableColumns(products);
     const productId = Number.parseInt(
       params.productName.slice(params.productName.lastIndexOf('-') + 1),
@@ -90,7 +90,7 @@ export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const product = await getProduct({ params });
+  const product = await getProduct({ params: await params });
 
   const previousImages = (await parent).openGraph?.images || [];
 
@@ -104,7 +104,8 @@ export async function generateMetadata(
 }
 
 const ProductPage = async ({ params }: PageProps) => {
-  const product = await getProduct({ params });
+  const { category, productName } = await params;
+  const product = await getProduct({ params: { category, productName } });
 
   const ratingStr = product.averageRating || '0.0';
   const ratingFloat = Number.parseFloat(ratingStr);
@@ -146,7 +147,7 @@ const ProductPage = async ({ params }: PageProps) => {
                   productId={product.id}
                   name={product.name}
                   price={product.price}
-                  clothing={params.category}
+                  clothing={category}
                 />
               </Suspense>
             </div>
