@@ -1,13 +1,12 @@
 'use client';
 
-import { cn, isValueInArray } from '@/lib/util';
+import { cn } from '@/lib/util';
 import * as Tabs from '@radix-ui/react-tabs';
+import { motion } from 'motion/react';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
-import React, { useCallback, useEffect } from 'react';
-import WIP from '../UI/WIP';
-import { Button } from '../UI/Button';
+import React, { useCallback } from 'react';
 import { Container } from '../UI/Container';
-import { motion } from 'framer-motion';
+import WIP from '../UI/WIP';
 
 const ProductDetails = () => (
   <div>

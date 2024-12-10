@@ -5,7 +5,7 @@ import { UserAddress } from '@/lib/types/user';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import { AnimatePresence, Variants, motion } from 'framer-motion';
+import { AnimatePresence, Variants, motion } from 'motion/react';
 import ShippingAddressInputForm from './ShippingAddressInputForm';
 import ShippingAddressSelect from './ShippingAddressSelect';
 
