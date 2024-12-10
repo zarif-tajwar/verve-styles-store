@@ -6,7 +6,7 @@ import { Button } from '@/components/UI/Button';
 import { Container } from '@/components/UI/Container';
 import { Section } from '@/components/UI/Section';
 import { cn } from '@/lib/util';
-import { motion, type Variants } from 'framer-motion';
+import { motion, type Variants } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';

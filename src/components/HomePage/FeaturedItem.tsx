@@ -10,7 +10,7 @@ import {
 import { SectionHeading } from '@/components/UI/Homepage';
 import * as ProductListingItem from '@/components/UI/ProductListingItem';
 import { cn, makeValidURL, priceFormat } from '@/lib/util';
-import { type Variants, motion } from 'framer-motion';
+import { type Variants, motion } from 'motion/react';
 import Link from 'next/link';
 
 const MotionLink = motion.create(Link);

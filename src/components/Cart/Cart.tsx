@@ -13,7 +13,7 @@ import {
   motion,
   useMotionTemplate,
   useMotionValue,
-} from 'framer-motion';
+} from 'motion/react';
 import { useEffect, useMemo, useRef } from 'react';
 import { CartIcon } from '../Svgs/icons';
 import { Button } from '../UI/Button';

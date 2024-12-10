@@ -13,7 +13,7 @@ import { SectionHeading } from '@/components/UI/Homepage';
 import { Section } from '@/components/UI/Section';
 import Star from '@/components/UI/Star';
 import { cn } from '@/lib/util';
-import { type Variants, motion, useInView } from 'framer-motion';
+import { type Variants, motion, useInView } from 'motion/react';
 import {
   HTMLAttributes,
   useCallback,
