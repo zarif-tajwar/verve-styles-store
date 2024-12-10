@@ -3,7 +3,7 @@
 import { cn, priceFormat } from '@/lib/util';
 import PaymentElements from './PaymentElements';
 import { useRef } from 'react';
-import { AnimatePresence, useInView, motion } from 'framer-motion';
+import { AnimatePresence, useInView, motion } from 'motion/react';
 import { Button } from '@/components/UI/Button';
 import { ArrowLongDownIcon } from '@heroicons/react/16/solid';
 

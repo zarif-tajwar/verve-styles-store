@@ -4,7 +4,7 @@ import { useCountDown } from '@/lib/hooks/useCountdown';
 import { useCartItemsMutations } from '@/lib/queries/cart';
 import { CartItemProps } from '@/lib/types/cart';
 import { cn, makeValidURL, priceFormat } from '@/lib/util';
-import { AnimatePresence, MotionConfig, Variants, motion } from 'framer-motion';
+import { AnimatePresence, MotionConfig, Variants, motion } from 'motion/react';
 import { History, Trash } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

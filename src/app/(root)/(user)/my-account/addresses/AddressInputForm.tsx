@@ -23,7 +23,7 @@ import {
   HomeIcon,
 } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import * as React from 'react';
 import { Controller, UseFormReturn, useForm } from 'react-hook-form';
 

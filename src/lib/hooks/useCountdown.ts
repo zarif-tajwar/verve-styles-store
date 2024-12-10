@@ -10,11 +10,11 @@ export const useCountDown: (
   const [counter, setCountDown] = useState(total);
   const [startCountDown, setStartCountDown] = useState(false);
   // Store the created interval
-  const intervalId = useRef<NodeJS.Timeout>();
+  const intervalId = useRef<NodeJS.Timeout | null>(null);
   const start: () => void = () => setStartCountDown(true);
   const pause: () => void = () => setStartCountDown(false);
   const reset: () => void = () => {
-    clearInterval(intervalId.current);
+    if (intervalId.current) clearInterval(intervalId.current);
     setStartCountDown(false);
     setCountDown(total);
   };
@@ -26,7 +26,9 @@ export const useCountDown: (
     // Clear interval when count to zero
     if (counter === 0) clearInterval(intervalId.current);
     // Clear interval when unmount
-    return () => clearInterval(intervalId.current);
+    return () => {
+      if (intervalId.current) clearInterval(intervalId.current);
+    };
   }, [startCountDown, counter, ms]);
 
   return [counter, start, pause, reset];

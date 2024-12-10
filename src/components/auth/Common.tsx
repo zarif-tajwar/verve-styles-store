@@ -1,6 +1,5 @@
 import { cn } from '@/lib/util';
 import { Slot } from '@radix-ui/react-slot';
-import { animate } from 'framer-motion';
 import Link from 'next/link';
 import React from 'react';
 

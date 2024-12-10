@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { SectionHeading } from '@/components/UI/Homepage';
 import { Container } from '@/components/UI/Container';
 import { Section } from '@/components/UI/Section';
-import { type Variants, motion } from 'framer-motion';
+import { type Variants, motion } from 'motion/react';
 
 const MotionLink = motion.create(Link);
 
