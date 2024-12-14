@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   openGraph: {
     images: '/opg.jpg',
   },
-  metadataBase: !!process.env.VERCEL
-    ? new URL(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`)
+  metadataBase: !!process.env.COOLIFY_URL
+    ? new URL(`https://${process.env.COOLIFY_URL}`)
     : new URL('http://localhost:3000'),
 };
 

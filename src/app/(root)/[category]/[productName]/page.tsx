@@ -33,7 +33,7 @@ async function genStaticParamsFunc() {
   }));
 }
 
-export const generateStaticParams = !!process.env.VERCEL
+export const generateStaticParams = !!process.env.COOLIFY_URL
   ? genStaticParamsFunc
   : undefined;
 
