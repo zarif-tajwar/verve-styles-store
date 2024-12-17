@@ -35,6 +35,10 @@ const nextConfig = {
     ],
   },
   serverExternalPackages: ['@node-rs/argon2', '@node-rs/bcrypt'],
+  experimental: {
+    staticGenerationMaxConcurrency: 1,
+    staticGenerationMinPagesPerWorker: 20,
+  },
 };
 
 export default nextConfig;
