@@ -52,7 +52,7 @@ const ProductImageShowcase = ({
 
   return (
     <div className="">
-      <div className="grid h-full grid-cols-1 grid-rows-[1fr_auto] gap-[var(--gap)] text-2xl font-semibold [--gap:0.625rem] [--thumbnail-size:7rem] md:[--thumbnail-size:8rem] xl:h-max xl:grid-cols-[var(--thumbnail-size)_1fr] xl:grid-rows-1 xl:[--gap:1rem] xl:[--thumbnail-size:9rem]">
+      <div className="grid h-full grid-cols-1 grid-rows-[1fr_auto] gap-[var(--gap)] text-2xl font-semibold [--gap:0.625rem] [--thumbnail-size:7rem] md:[--thumbnail-size:8rem] xl:grid-cols-[var(--thumbnail-size)_1fr] xl:grid-rows-1 xl:[--gap:1rem] xl:[--thumbnail-size:9rem]">
         <Carousel
           setApi={setThumbnailCarouselApi}
           className="row-start-2 row-end-2 h-full overflow-clip xl:row-start-auto xl:row-end-auto"
@@ -114,10 +114,7 @@ const ProductImageShowcase = ({
                   return (
                     <CarouselItem
                       key={i}
-                      className={cn(
-                        'pl-[var(--gap)]',
-                        'h-full xl:aspect-square xl:h-auto',
-                      )}
+                      className={cn('pl-[var(--gap)]', 'h-full xl:h-auto')}
                     >
                       <div
                         className={cn(
