@@ -71,7 +71,7 @@
     "lucia": "^3.2.2",
     "lucide-react": "^0.456.0",
     "motion": "^11.13.3",
-    "next": "15.0.5",
+    "next": "15.0.7",
     "next-safe-action": "^7.9.9",
     "nextjs-toploader": "^3.7.15",
     "nprogress": "^0.2.0",
