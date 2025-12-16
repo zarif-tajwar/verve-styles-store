@@ -130,7 +130,7 @@ const SignUpCredentialsFormClient = () => {
 
     if (result.data?.redirectAfter) {
       qc.refetchQueries({ queryKey: [AUTH_QUERY_KEY] });
-      router.push(redirectAfter || '/shop');
+      router.push(result.data.redirectAfter || '/shop');
     }
 
     if (result.serverError) {
