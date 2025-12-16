@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { ComponentPropsWithoutRef, Suspense } from 'react';
+import { ComponentPropsWithoutRef, Suspense, useEffect } from 'react';
 
 type LinkProps = Omit<ComponentPropsWithoutRef<typeof Link>, 'href'> &
   (
@@ -25,9 +25,13 @@ const SignInLinkClient = ({
   let redirectAfterLinkFinal: string | undefined = undefined;
 
   if (redirectAfter === 'same-url') {
-    redirectAfterLinkFinal = encodeURIComponent(
-      `${currentPathname}?${currentSearchParams}`,
-    );
+    if (currentSearchParams.length > 0) {
+      redirectAfterLinkFinal = encodeURIComponent(
+        `${currentPathname}?${currentSearchParams}`,
+      );
+    } else {
+      redirectAfterLinkFinal = encodeURIComponent(currentPathname);
+    }
   }
 
   if (redirectAfter && redirectAfter !== 'same-url') {
